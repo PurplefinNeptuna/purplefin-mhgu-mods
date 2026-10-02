@@ -146,3 +146,13 @@ cmake --build tools/quest-build --parallel 6
 
 No in-game validation, quest-save validation, texture replacement/import test,
 music playback/loop test, or model-export round trip has been performed.
+
+## Cleanup on 2026-10-02
+
+Redundant installer downloads and the npm download cache were removed after
+checking installed counterparts. Release metadata and checksum/provenance records
+remain in `tools/downloads/`; installed tools, runtimes and pinned build dependencies
+remain intact. Smoke-test logs and JSON evidence stay under `work/tool-smoke/`;
+large extracted/round-trip sample trees can be regenerated from the retained inputs.
+Historical visual package/work outputs are compacted into the workspace cleanup
+backup archive, outside Eden. See `docs/CLEANUP_HD_PROJECT.md`.

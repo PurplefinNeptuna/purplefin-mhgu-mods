@@ -29,12 +29,20 @@ running save editors, or altering emulator configuration.
 
 ## Current Forge development baseline
 
-As of 2026-10-02, the user uses the tested **patched Forge + patched Better
-Input** package, `forge-better-inputs-compat`, on unchanged Eden with MHGU
-1.4.0. Preserve this baseline during future mod development. The original
-`forge` and `better-inputs` packages are retained for rollback and should remain
-disabled when the combined package is active; re-inspect actual activation and
-file hashes before making changes. Other packages' activation is independent.
+As of 2026-10-02, the tested patched Forge and Better Input binaries are
+packaged separately as `forge-patched` and `better-inputs-patched`, on unchanged
+Eden with MHGU 1.4.0. Preserve their hashes and configuration during development.
+Rollback packages and backups must stay in workspace `backups/`, outside Eden;
+do not leave disabled original/rollback packages in Eden's mod/cheat directory.
+Re-inspect actual activation and file hashes before making changes.
+
+Current resource merge order is **Base -> HD Project -> Z_Balanced -> others**.
+Later layers override changed resources compared with base; unchanged resources
+must not erase lower-layer improvements. Preserve whole resources and matching
+font/texture pairs, including necessary companions that match base. Use the
+supplied `HD` library source and the accepted independent higher-priority mods.
+V4 packages/donors are retired. See `docs/CLEANUP_HD_PROJECT.md` and
+`mods/hd-project/README.md` for ownership and package dependencies.
 
 The maintained local Forge repository is `tools/forge-local/`, on
 `codex/forge-legacyctx14`. Do not treat it as a disposable downloaded tool.

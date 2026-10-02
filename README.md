@@ -4,11 +4,13 @@ Prepared on 2026-10-01 for the Switch title `0100770008DD8000`, using Eden on
 Linux. The supplied dump and existing mod library have been inspected read-only.
 
 **Current runtime baseline, 2026-10-02:** MHGU 1.4.0 uses our tested patched
-Forge + patched Better Input package on unchanged Eden. Keep this baseline for
+Forge and patched Better Input binaries in separate `forge-patched` and
+`better-inputs-patched` packages on unchanged Eden. Keep this baseline for
 future mods. The source is preserved locally on `codex/forge-legacyctx14` in
 `tools/forge-local/`. See [local branch maintenance](docs/FORGE_LOCAL_BRANCH.md)
 and [completed runtime tests](docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
 
+- HD Project cleanup and merge order: [docs/CLEANUP_HD_PROJECT.md](docs/CLEANUP_HD_PROJECT.md)
 - Agent/project guidance: [AGENTS.md](AGENTS.md)
 - Local baseline and package selections: [docs/LOCAL_STATE.md](docs/LOCAL_STATE.md)
 - Wiki workflow and tool references: [docs/REFERENCES.md](docs/REFERENCES.md)
@@ -42,6 +44,6 @@ in `docs/TOOLS.md`, including tool-specific limits.
 Initial workspace preparation did not change original game files, existing
 mods, saves or Eden settings. Subsequent Forge compatibility work passed
 automated and user-run in-game checks; its exact scope is recorded above.
-The workspace Git repository remains on `main`; the local Forge repository
+The cleanup branch is `codex/cleanup-forge-hd-project`; the local Forge repository
 has its own patch branch and commit. Re-inspect other enabled mods before
 combining packages.

@@ -1,32 +1,25 @@
 # Local baseline
 
-## Current Forge baseline: 2026-10-02
+## Current packages: 2026-10-02 cleanup
 
-The user installed and tested the combined `forge-better-inputs-compat`
-package with patched Forge `1.4.1-legacyctx14` and patched Better Input on
-MHGU 1.4.0. This is the baseline for future mod development. The original
-Forge/Better Input packages remain rollback inputs; keep them disabled when
-the combined package is active. Activation is based on the user's successful
-tests, not inferred from directory presence. Other mods' activation still
-requires inspection.
+Patched Forge and Better Input now use separate `forge-patched` and
+`better-inputs-patched` packages. Their tested executable hashes and configuration
+are unchanged. HD Project replaces HD Textures v4 and HD UI v4. The resolved
+HD Project/Z_Balanced/modern-control set follows Base -> HD Project -> Z_Balanced
+-> others and includes the accepted weakness markers and authored help/crosshair
+fixes. See [CLEANUP_HD_PROJECT.md](CLEANUP_HD_PROJECT.md).
 
-The live combined package was inspected read-only on 2026-10-02 and matches
-the tested artifacts:
+The effective configured MHGU disabled list was empty before migration; stale
+uncounted entries are removed during deployment. This configured snapshot is
+not proof of a running process's activation. Historical Forge runtime acceptance
+is recorded in [FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md](FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
+The new package split and visual set require a fresh in-game check.
 
-- Package: `~/.local/share/eden/load/0100770008DD8000/forge-better-inputs-compat/`.
-- `exefs/subsdk9`: SHA-256 `374684063adb939b389f0e4d1c8766c09e52339bfe9eaedadd4a8f44635252a7`.
-- `romfs/nativeNX/plugins/better_inputs.nro`: SHA-256 `84b1549aabda3cfd4228e02a9516d16d8d142787b4589191bb84c39cdbcba872`.
-- Config currently has log level `error` and overlay key 73 (Insert).
-- Renderer: Vulkan; both caches and asynchronous shader compilation on;
-  asynchronous presentation off. Eden was not patched.
-- Runtime acceptance: rebuilt Forge alone, three game restarts, the three
-  Eden-start sequence, save loading, overlay navigation, Better Input controls,
-  and a quest/village transition passed (manual outcomes confirmed by the user).
-  Saved logs verify one arena and six hooks per combined game boot.
-
-Local branch and future upstream replay: [FORGE_LOCAL_BRANCH.md](FORGE_LOCAL_BRANCH.md).
-Evidence: [FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md](FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
-The inventories below are historical snapshots from initial preparation.
+No rollback packages or backup files belong in Eden's MHGU load directory.
+Recovery copies are retained in workspace backups. Current complete inventory,
+activation snapshot and backup location are recorded in `local-state.json` and
+the deployment report. Source library/dump files, saves and renderer settings
+are preserved. The inventories below are historical preparation snapshots.
 
 Dump inspected 2026-10-01T15:41:35.466591+07:00; mod inventories refreshed 2026-10-01T16:30:58.286682+07:00 (Asia/Jakarta). Activation status comes from the user; Eden configuration was not inspected.
 
@@ -100,7 +93,9 @@ The DLC injector ZIP contains a Windows executable plus `system`/`system_backup`
 - `blender` and `010editor` were not found on PATH during initialization.
   Blender is now installed locally; 010 Editor was not installed.
 - The full local toolkit and smoke checks are documented in [TOOLS.md](TOOLS.md).
-- This project has not created, installed, or enabled any mods. The existing Eden packages were supplied by the user; no saves or emulator settings were changed by this preparation.
+- Initial preparation did not install mods. Later authorized development and
+  cleanup installed the selected packages; deployment reports record the changes.
+  Saves and unrelated emulator settings remain preserved.
 - Mod-specific build recipes and host tests now exist under `scripts/` and
   `mods/`; there is no automated in-game test suite. Git was initialized on
   `main` on 2026-10-01. The workspace sources, recipes, and documentation are
