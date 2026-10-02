@@ -160,12 +160,28 @@ GMD format limitations. The default GMD source rejects the tested keyed game
 format; the older published encoder discards metadata. Do not assume either
 can safely round-trip every GMD. ImHex does not execute 010 Editor templates.
 
-Ghidra and the prepared DTI dumper are documented in `docs/RESEARCH_TOOLING.md`.
+For code and gameplay mods, consult `docs/RESEARCH_TOOLING.md` and search the
+imported Ghidra exports and saved DTI index for relevant classes, properties,
+functions and offsets before implementing changes. Use
+`./scripts/tool.sh research find QUERY --kind dti`; select `functions`,
+`symbols`, `types` or `dti` as appropriate. Exports are under
+`work/research-tooling/ghidra-export/`; the runtime dump and index are under
+`work/research-tooling/dti/`. Use asset references/tools for resource edits.
+
 The imported database has image base `0x009c9000`, one changed `.text` byte and
 conflicting imported type layouts. Subtract its image base for Forge offsets;
-use the verified original NSO for patch bytes. Preserve the supplied GZF and
-local annotations. The dumper is staged outside Eden with its opt-in flag absent;
-preparing tooling does not authorize its save-filesystem write or runtime trial.
+verify layouts and expected patch bytes against the actual target binary.
+Preserve the supplied GZF and local annotations. DTI records include inherited
+properties and repeated class names from registry/singleton enumeration;
+`vft_kind` distinguishes object vtables from skipped DTI vtables.
+
+The 2026-10-03 trial produced and indexed 3,152 class records and 66,752 property
+records. Quest controls failed during the dumping session and worked again
+after removing the dumper and restarting. See `docs/DTI_DUMPER_RUNTIME.md`.
+Keep the dumper and opt-in flag removed during normal play; consult the saved
+results without rerunning it. A future extraction requires a separately
+authorized runtime trial, save backups, retained logs, removal of the temporary
+package/flag and a game restart before playing.
 
 Linux is the development host. Do not assume Windows GUI tools or old .NET
 Desktop Runtime requirements work with the installed Linux `dotnet`. Inspect
