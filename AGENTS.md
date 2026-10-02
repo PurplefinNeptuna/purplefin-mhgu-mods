@@ -140,6 +140,11 @@ confirm the live game's version/build before any executable or cheat changes.
 
 ## Tooling and validation
 
+Use the project-local Humanizer skill at `.agents/skills/humanizer/SKILL.md`
+when editing user-facing prose. Keep commands, identifiers, paths, hashes,
+binary formats and validation claims exact. The skill applies to wording,
+not gameplay, assets or technical behavior.
+
 Use `./START_TOOLS.sh` for the installed desktop toolbox, or
 `./scripts/tool.sh TOOL [arguments]` for individual tools. Read `docs/TOOLS.md`
 for tested versions, runtime isolation, Kuriimu2's temporary path alias, and
