@@ -13,6 +13,7 @@ and [completed runtime tests](docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
 - Local baseline and package selections: [docs/LOCAL_STATE.md](docs/LOCAL_STATE.md)
 - Wiki workflow and tool references: [docs/REFERENCES.md](docs/REFERENCES.md)
 - Installed tools and launch instructions: [docs/TOOLS.md](docs/TOOLS.md)
+- Modern weapon controls and English help: [combined package](mods/modern-weapon-controls/BUNDLE.md)
 
 The game dump lives at
 `~/.local/share/eden/dump/0100770008DD8000/`.
