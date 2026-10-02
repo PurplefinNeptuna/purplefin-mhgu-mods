@@ -117,6 +117,8 @@ def build():
     if (SOURCE / "src/json.rs").read_bytes() != (RECIPE / "json.rs").read_bytes():
         raise ValueError("JSON helper differs from recipe")
     main = ROOT / "work/modern-longsword-controls/update-exefs/main"
+    if sha(main) != recipe["main_sha256"]:
+        raise ValueError("Copied main executable fingerprint changed")
     image, _ = main_image(main.read_bytes())
     for signature in recipe["target_signatures"]:
         offset = int(signature["offset"], 16)
