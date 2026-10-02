@@ -27,6 +27,8 @@ available and are reused. No system packages were installed.
 | [Titanbreak](https://github.com/RTHKKona/Titanbreak-Tools) | Monster HP, rage, loot, stagger, resident data | `./scripts/tool.sh titanbreak` |
 | [MHGUQuestEditor](https://github.com/Fexty12573/MHGUQuestEditor) | Native Linux quest editor built from source | `./scripts/tool.sh quest` |
 | [GMD](https://github.com/beeequeue/gmd) | Text decoding/encoding; current upstream source build | `./scripts/tool.sh gmd --help` |
+| [Ghidra](https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.1.4_build) 12.1.4 | Imported MHGU 1.4.0 code database, disassembly and decompilation | `./scripts/tool.sh ghidra` |
+| [MHGU DTI dumper](https://github.com/Fexty12573/mhgu-dti-dumper) | Staged Forge runtime reflection tool; runtime trial pending | `./scripts/tool.sh dti-dumper status` |
 | Wiki model plugins | MHGU MaxScript import/export resources | `./scripts/tool.sh model-plugins` |
 | Wiki binary templates | 010 Editor `.bt` reference files | `./scripts/tool.sh templates` |
 
@@ -36,6 +38,12 @@ Application versions and source commits are recorded in
 when provided; Blender's official SHA-256 and .NET's official SHA-512 were
 checked. Locally recorded hashes without an upstream digest are inventory
 records, not independent authenticity verification.
+
+The Ghidra database, searchable code/type indexes and prepared DTI dumper are
+documented in [RESEARCH_TOOLING.md](RESEARCH_TOOLING.md). The supplied database
+has one changed `.text` byte and conflicting imported type definitions; use the
+verified original NSO for patch bytes. The dumper is staged outside Eden and
+requires a separate runtime trial.
 
 ## ARC workflow
 

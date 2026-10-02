@@ -160,6 +160,13 @@ GMD format limitations. The default GMD source rejects the tested keyed game
 format; the older published encoder discards metadata. Do not assume either
 can safely round-trip every GMD. ImHex does not execute 010 Editor templates.
 
+Ghidra and the prepared DTI dumper are documented in `docs/RESEARCH_TOOLING.md`.
+The imported database has image base `0x009c9000`, one changed `.text` byte and
+conflicting imported type layouts. Subtract its image base for Forge offsets;
+use the verified original NSO for patch bytes. Preserve the supplied GZF and
+local annotations. The dumper is staged outside Eden with its opt-in flag absent;
+preparing tooling does not authorize its save-filesystem write or runtime trial.
+
 Linux is the development host. Do not assume Windows GUI tools or old .NET
 Desktop Runtime requirements work with the installed Linux `dotnet`. Inspect
 a tool's current upstream documentation before choosing or installing it.

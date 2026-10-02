@@ -20,6 +20,8 @@ CHOICES = {
     "Audacity — audio": "audacity",
     "Titanbreak — monster data": "titanbreak",
     "MHGUQuestEditor — quest data": "quest",
+    "Ghidra — MHGU 1.4.0 code research": "ghidra",
+    "DTI dumper — build and runtime-trial instructions": "dti-resources",
     "STQR editor — audio metadata in browser": "stqr",
     "010 Editor templates — open folder": "templates",
     "MHGU model plugins — open folder": "model-plugins",
