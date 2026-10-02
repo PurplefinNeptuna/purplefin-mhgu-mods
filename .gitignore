@@ -1,0 +1,24 @@
+# Game-derived and generated working material
+/work/
+/build/
+/backups/
+/tools/
+/references/
+__pycache__/
+*.py[cod]
+.venv/
+*.log
+
+# Keep game assets out of future source control, even outside work/build.
+*.arc
+*.tex
+*.mod
+*.lmt
+*.gmd
+*.nsp
+*.xci
+*.nca
+*.zip
+*.7z
+*.exe
+*.dll
