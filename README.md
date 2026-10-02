@@ -17,6 +17,7 @@ and [completed runtime tests](docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
 - Installed tools and launch instructions: [docs/TOOLS.md](docs/TOOLS.md)
 - Ghidra database and DTI dumper: [docs/RESEARCH_TOOLING.md](docs/RESEARCH_TOOLING.md)
 - Modern weapon controls and English help: [combined package](mods/modern-weapon-controls/BUNDLE.md)
+- Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
 The game dump lives at
 `~/.local/share/eden/dump/0100770008DD8000/`.
