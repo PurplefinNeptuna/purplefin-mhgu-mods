@@ -16,6 +16,21 @@ public class ExportDamageNumberResearch extends GhidraScript {
         byte[] original = Files.readAllBytes(Path.of(args[1]));
         long base = currentProgram.getImageBase().getOffset();
         if (base != 0x9c9000L) throw new IllegalStateException("Unexpected database image base");
+        if (args[2].startsWith("enum:")) {
+            String path = args[2].substring(5);
+            var type = currentProgram.getDataTypeManager().getDataType(path);
+            if (!(type instanceof ghidra.program.model.data.Enum enumeration))
+                throw new IllegalArgumentException("No enum at " + path);
+            Map<String,Object> result = new LinkedHashMap<>();
+            result.put("path",path); result.put("executable_sha256",currentProgram.getExecutableSHA256());
+            Map<String,Long> values = new LinkedHashMap<>();
+            for (String name : enumeration.getNames()) values.put(name,enumeration.getValue(name));
+            result.put("values",values);
+            result.put("scope","Imported enum annotations; confirm use in original instructions");
+            Files.writeString(out.resolve("enum.json"),new GsonBuilder().setPrettyPrinting().create().toJson(result)+"\n");
+            println("DAMAGE_NUMBER_RESEARCH_COMPLETE " + out);
+            return;
+        }
         if (args[2].startsWith("scan:")) {
             Set<Long> values = new HashSet<>();
             for (String text : args[2].substring(5).split(",")) values.add(Long.decode(text));
