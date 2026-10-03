@@ -66,6 +66,26 @@ the three Eden-start sequence, save loading, overlay navigation, Better Input
 controls and a quest/village transition passed. Runtime evidence is in
 `docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md`. No custom Eden build is required.
 
+## Forge plugin development rules
+
+When using the Forge loader, use its available APIs and methods to their fullest
+applicable extent. Inspect the maintained `tools/forge-local/include/forge/`
+headers, implementations and installed exports before adding equivalent private
+code. This includes plugin callbacks, logging, input, singleton lookup, memory,
+hooks, rendering and filesystem helpers. Use Forge's counted save-data mount
+for plugin preferences beside Better Input, with each plugin's own filenames.
+Verify the actual ARM32 ABI and resource limits. If a Forge facility cannot meet
+the verified requirements, document the specific limitation and use lower-level
+code only for that gap; preserve the existing documented compatibility fixes.
+
+Every plugin's settings/status UI must sit inside its own named collapsible
+section in Forge, as the damage-number plugin does. Place detailed diagnostics
+in a nested collapsible section. Give widgets stable, plugin-specific ImGui IDs.
+Collapsing the settings section controls panel visibility; gameplay rendering
+and plugin operation continue through their appropriate callbacks.
+
+Read `docs/FORGE_PLUGIN_GUIDELINES.md` when developing or reviewing a Forge plugin.
+
 ## Reference material
 
 Primary reference: <https://github.com/RTHKKona/MHGU-Modding> and its
