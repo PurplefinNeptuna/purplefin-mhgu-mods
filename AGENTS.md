@@ -78,11 +78,14 @@ Verify the actual ARM32 ABI and resource limits. If a Forge facility cannot meet
 the verified requirements, document the specific limitation and use lower-level
 code only for that gap; preserve the existing documented compatibility fixes.
 
-Every plugin's settings/status UI must sit inside its own named collapsible
-section in Forge, as the damage-number plugin does. Place detailed diagnostics
-in a nested collapsible section. Give widgets stable, plugin-specific ImGui IDs.
-Collapsing the settings section controls panel visibility; gameplay rendering
-and plugin operation continue through their appropriate callbacks.
+Every plugin's settings/status UI must sit inside its own compact, unframed
+collapsible tree row under Forge's **Plugin UI**, matching **Better Inputs Config**.
+Use `ImGui::TreeNode` / `igTreeNode_Str`, paired with `TreePop` on every opened
+path; keep the row closed by default. Put detailed diagnostics in a nested compact
+tree row. The large framed `CollapsingHeader` style is for Forge's parent sections,
+not individual plugins. Give widgets stable, plugin-specific ImGui IDs. Collapsing
+the settings row controls panel visibility; gameplay rendering and plugin operation
+continue through their appropriate callbacks.
 
 Read `docs/FORGE_PLUGIN_GUIDELINES.md` when developing or reviewing a Forge plugin.
 
