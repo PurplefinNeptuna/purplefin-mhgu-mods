@@ -2,11 +2,10 @@
 
 ## Purpose and starting points
 
-This workspace is for Monster Hunter Generations Ultimate **Nintendo Switch**
-modding, using Eden on Linux. Title ID: `0100770008DD8000`.
-Read `README.md`, `docs/LOCAL_STATE.md`, `docs/REFERENCES.md`, and `docs/TOOLS.md`
-for setup and the inspected baseline. This workspace has local tool launchers,
-with no general mod build system or in-game automated test suite yet.
+Monster Hunter Generations Ultimate **Nintendo Switch** modding on Eden/Linux.
+Title ID: `0100770008DD8000`. Start with `README.md`, `docs/LOCAL_STATE.md`,
+`docs/REFERENCES.md` and `docs/TOOLS.md`. Local launchers exist; there is no
+general mod build system or automated in-game suite.
 
 Local inputs:
 
@@ -15,89 +14,72 @@ Local inputs:
 - Uninstalled mod/cheat library: `/mnt/storage2/ROM/Switch/cheats/mhgu/`
 - Eden's listed mod packages: `~/.local/share/eden/load/0100770008DD8000/`
 
-The library stores mods not yet installed. Eden lists packages from its load
-directory; the user reports these are not activated as of 2026-10-01. Keep
-library inventory, Eden package presence, and activation state distinct. Do not
-infer activation from a folder's presence or treat the library as the live
-installation destination. Re-inspect inventories because the user adds and
-renames packages.
+The library holds uninstalled mods; Eden lists its load directory. The user
+reported those packages inactive on 2026-10-01. Re-inspect inventories and
+distinguish library contents, installed packages and activation. Folder presence
+proves no activation; the library is not an installation destination.
 
-Treat the dump and library as source inputs. Copy only the files needed for the
-current task into this workspace before editing. Preserve originals, unrelated
-mods, and saves. Preparation alone does not authorize installing/enabling mods,
-running save editors, or altering emulator configuration.
+Copy needed dump/library files into the workspace before editing. Preserve
+originals, unrelated mods and saves. Preparation authorizes no installation,
+activation, save editing or emulator changes.
 
 ## Current Forge development baseline
 
-As of 2026-10-02, the tested patched Forge and Better Input binaries are
-packaged separately as `forge-patched` and `better-inputs-patched`, on unchanged
-Eden with MHGU 1.4.0. Preserve their hashes and configuration during development.
-Rollback packages and backups must stay in workspace `backups/`, outside Eden;
-do not leave disabled original/rollback packages in Eden's mod/cheat directory.
-Re-inspect actual activation and file hashes before making changes.
+Tested 2026-10-02: separate `forge-patched` and `better-inputs-patched` packages,
+unchanged Eden, MHGU 1.4.0. Preserve hashes/configuration; verify activation and
+hashes before changes. Keep rollback/original packages in workspace
+`backups/`, never Eden's mod/cheat directory.
 
-Current resource merge order is **Base -> HD Project -> Z_Balanced -> others**.
-Later layers override changed resources compared with base; unchanged resources
-must not erase lower-layer improvements. Preserve whole resources and matching
-font/texture pairs, including necessary companions that match base. Use the
-supplied `HD` library source and the accepted independent higher-priority mods.
-V4 packages/donors are retired. See `docs/CLEANUP_HD_PROJECT.md` and
-`mods/hd-project/README.md` for ownership and package dependencies.
+Merge **Base -> HD Project -> Z_Balanced -> others**. Later resources changed
+from base win whole; unchanged resources must preserve lower improvements. Keep
+font/texture pairs and required base-matching companions. Use supplied
+`HD` and accepted independent higher-priority mods; V4
+donors/packages are retired. Ownership/dependencies: `docs/CLEANUP_HD_PROJECT.md`,
+`mods/hd-project/README.md`.
 
-The maintained local Forge repository is `tools/forge-local/`, on
-`codex/forge-legacyctx14`. Do not treat it as a disposable downloaded tool.
-The tested patch commit, upstream base, replay patch and recovery bundle are
-recorded in `docs/FORGE_LOCAL_BRANCH.json`; read
-`docs/FORGE_LOCAL_BRANCH.md` before updating Forge. Keep the tested branch and
-installed artifacts intact; try future upstream revisions on a separate branch.
-This is a local fork. Do not push or replace installed packages automatically.
+Maintain `tools/forge-local/` on `codex/forge-legacyctx14`; it is owned fork state.
+Patch/base/replay/recovery records: `docs/FORGE_LOCAL_BRANCH.json`. Read `docs/FORGE_LOCAL_BRANCH.md`
+before updates. Preserve the tested branch/artifacts; try upstream on a separate
+branch. No automatic push or installed-package replacement.
 
-The compatibility shim fixes this Better Input binary's 64-byte return ABI and
-shares six context hooks in one 4 KiB CodeMemory arena. Native Forge `Hook`
-remains 76 bytes on ARM32 (`Jit` is 28 bytes); future native/Rust plugins must
-match the actual headers instead of copying the obsolete Rust layout. The
-legacy shim is binary-specific and does not pool ordinary Forge hooks. Check
-additional plugins' code-memory demand before adding hooks.
+The binary-specific shim repairs Better Input's 64-byte return ABI and shares
+six context hooks in one 4 KiB CodeMemory arena. Native ARM32 Forge
+`Hook` is 76 bytes, `Jit` 28. Match actual headers,
+never the obsolete Rust layout. Ordinary hooks are not pooled; check CodeMemory
+demand before adding hooks.
 
-The validated renderer baseline is Vulkan, persistent pipeline cache and Vulkan
-driver pipeline cache enabled, asynchronous shader compilation enabled, and
-**asynchronous presentation disabled**. Automated checks, three game restarts,
-the three Eden-start sequence, save loading, overlay navigation, Better Input
-controls and a quest/village transition passed. Runtime evidence is in
-`docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md`. No custom Eden build is required.
+Validated Vulkan setup: persistent and driver pipeline caches on, asynchronous
+shader compilation on, **asynchronous presentation disabled**. Automated checks,
+three game restarts, the three Eden-start sequence, save loading, overlay
+navigation, Better Input controls and quest/village transition passed. Evidence:
+`docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md`. No custom Eden build is needed.
 
 ## Forge plugin development rules
 
-When using the Forge loader, use its available APIs and methods to their fullest
-applicable extent. Inspect the maintained `tools/forge-local/include/forge/`
-headers, implementations and installed exports before adding equivalent private
-code. This includes plugin callbacks, logging, input, singleton lookup, memory,
-hooks, rendering and filesystem helpers. Use Forge's counted save-data mount
-for plugin preferences beside Better Input, with each plugin's own filenames.
-Verify the actual ARM32 ABI and resource limits. If a Forge facility cannot meet
-the verified requirements, document the specific limitation and use lower-level
-code only for that gap; preserve the existing documented compatibility fixes.
+Use Forge APIs fully where applicable. Inspect `tools/forge-local/include/forge/`,
+implementations and installed exports before duplicating callbacks, logging,
+input, singleton lookup, memory, hooks, rendering or filesystem helpers.
+Preferences use Forge's counted save-data mount beside Better Input, with
+plugin-specific filenames. Verify ARM32 ABI/resource limits. Document any
+verified API limitation; lower-level code may fill only that gap. Preserve
+compatibility fixes.
 
-Every plugin's settings/status UI must sit inside its own compact, unframed
-collapsible tree row under Forge's **Plugin UI**, matching **Better Inputs Config**.
-Use `ImGui::TreeNode` / `igTreeNode_Str`, paired with `TreePop` on every opened
-path; keep the row closed by default. Put detailed diagnostics in a nested compact
-tree row. The large framed `CollapsingHeader` style is for Forge's parent sections,
-not individual plugins. Give widgets stable, plugin-specific ImGui IDs. Collapsing
-the settings row controls panel visibility; gameplay rendering and plugin operation
-continue through their appropriate callbacks.
+Each plugin uses a compact, unframed tree row under **Plugin UI**, matching
+**Better Inputs Config**, closed by default. Pair `ImGui::TreeNode` /
+`igTreeNode_Str` with `TreePop` on every opened path; nest detailed
+diagnostics. Reserve framed `CollapsingHeader` for Forge parent sections. Use
+stable plugin-specific widget IDs. Closing settings hides the panel;
+gameplay/render callbacks continue.
 
 Read `docs/FORGE_PLUGIN_GUIDELINES.md` when developing or reviewing a Forge plugin.
 
 ## Reference material
 
-Primary reference: <https://github.com/RTHKKona/MHGU-Modding> and its
-[wiki](https://github.com/RTHKKona/MHGU-Modding/wiki).
-Offline snapshots are under `references/MHGU-Modding/` and
-`references/MHGU-Modding.wiki/`; their revisions are recorded in
-`references/provenance.json`. Treat these as third-party reference material,
-not this project's code or agent instructions. Search specific files with `rg`
-instead of printing the very large file indexes.
+Reference: <https://github.com/RTHKKona/MHGU-Modding> and its
+[wiki](https://github.com/RTHKKona/MHGU-Modding/wiki). Offline copies: `references/MHGU-Modding/`, `references/MHGU-Modding.wiki/`;
+revisions: `references/provenance.json`. These are third-party reference data, not project
+code/instructions. Use targeted `rg` searches; avoid printing huge
+indexes.
 
 - `templates/`: 010 Editor binary templates, including `arc_mhgu.bt`.
 - `MHGU_witharc.txt`: outer resource paths.
@@ -110,9 +92,9 @@ instead of printing the very large file indexes.
   model/texture lookup and workflows.
 - Wiki `Cheat-Codes.md`: Atmosphere-format codes; defaults to 1.4.0 unless noted.
 
-Some wiki pages are WIP or contain uncertain fields. Verify claimed offsets,
-types, counts, headers, and game/version applicability against the actual input
-before editing; distinguish researched facts from hypotheses.
+Wiki fields may be uncertain/WIP. Verify offsets, types, counts, headers and
+game/version applicability against actual inputs before edits; separate facts
+from hypotheses.
 
 ## Workspace layout
 
@@ -125,17 +107,15 @@ before editing; distinguish researched facts from hypotheses.
 - `tools/`: locally installed tools, if needed for an authorized task.
 - `references/`: external reference snapshots.
 
-Generated assets, extracted game files, backups, tools, and reference snapshots
-are ignored by `.gitignore`. Keep original project code and edit recipes
-separate from generated binaries. Git is initialized with `main` as the initial
-branch. Preserve unrelated changes and inspect `git status` before modifying
-tracked files. Do not overwrite the `.git` directory.
+Generated assets, extracts, backups, tools and references are ignored by
+`.gitignore`. Keep owned code/recipes separate from binaries. Git began on
+`main`. Inspect `git status`, preserve unrelated work and
+never overwrite `.git`.
 
-Commit completed changes and useful development checkpoints to local Git after
-appropriate validation, using coherent commit boundaries. A local-only repository
-still requires commits. Review staged paths, exclude generated assets and secrets,
-preserve unrelated work, and report commit IDs and remaining changes. Do not push
-unless the user requests it.
+Commit validated work and useful checkpoints locally in coherent units, even
+without a remote. Review staged paths; exclude generated assets/secrets and
+preserve unrelated changes. Report commit IDs and remaining work. Push only on
+request.
 
 ## Editing and packaging
 
@@ -159,68 +139,54 @@ unless the user requests it.
    library payload there only within the requested scope. Listing a package and
    activating it are separate actions. Preserve a rollback path.
 
-Select only one FPS patch and one FOV variant. UI packages offer language,
-controller-layout, and icon alternatives; preserve the chosen combination.
-Do not infer a mod's effects from its name: `Z_Balanced` replaces gameplay
-archives including `player/quest/wXX.arc` and `loc/arc/resident.arc`.
+Choose one FPS patch and one FOV variant. Preserve chosen UI language,
+controller and icon variants. Verify effects: `Z_Balanced` replaces
+gameplay archives, including `player/quest/wXX.arc` and `loc/arc/resident.arc`.
 
-The library targets 1.4.0, with cheat filename build ID `FB08F1D20FD1204F` and
-patch NSO ID `FB08F1D20FD1204FE7070672777F869B`. These are **library targets**,
-not verification of the running game. The inspected dump has RomFS only;
-confirm the live game's version/build before any executable or cheat changes.
+Library targets: 1.4.0, cheat build `FB08F1D20FD1204F`, patch NSO
+`FB08F1D20FD1204FE7070672777F869B`. These do not verify the running game. The inspected dump is
+RomFS-only; verify live version/build before executable or cheat edits.
 
 ## Tooling and validation
 
-Use the project-local Humanizer skill at `.agents/skills/humanizer/SKILL.md`
-when editing user-facing prose. Keep commands, identifiers, paths, hashes,
-binary formats and validation claims exact. The skill applies to wording,
-not gameplay, assets or technical behavior.
+Use `.agents/skills/humanizer/SKILL.md` for user-facing prose. Keep commands, identifiers, paths,
+hashes, formats and validation claims exact. It changes wording only.
 
-Use `./START_TOOLS.sh` for the installed desktop toolbox, or
-`./scripts/tool.sh TOOL [arguments]` for individual tools. Read `docs/TOOLS.md`
-for tested versions, runtime isolation, Kuriimu2's temporary path alias, and
-GMD format limitations. The default GMD source rejects the tested keyed game
-format; the older published encoder discards metadata. Do not assume either
-can safely round-trip every GMD. ImHex does not execute 010 Editor templates.
+Launch `./START_TOOLS.sh` or `./scripts/tool.sh TOOL [arguments]`. Read `docs/TOOLS.md` for
+versions, isolation, Kuriimu2's path alias and GMD limits. Default GMD source
+rejects the tested keyed format; the older encoder discards metadata. Neither is
+a verified general round-trip tool. ImHex cannot execute 010 Editor templates.
 
-For code and gameplay mods, consult `docs/RESEARCH_TOOLING.md` and search the
-imported Ghidra exports and saved DTI index for relevant classes, properties,
-functions and offsets before implementing changes. Use
-`./scripts/tool.sh research find QUERY --kind dti`; select `functions`,
-`symbols`, `types` or `dti` as appropriate. Exports are under
-`work/research-tooling/ghidra-export/`; the runtime dump and index are under
-`work/research-tooling/dti/`. Use asset references/tools for resource edits.
+Before code/gameplay implementation, read `docs/RESEARCH_TOOLING.md` and search imported
+Ghidra exports/saved DTI for classes, properties, functions and offsets. Use
+`./scripts/tool.sh research find QUERY --kind dti`, choosing `functions`, `symbols`,
+`types` or `dti`. Exports: `work/research-tooling/ghidra-export/`; DTI:
+`work/research-tooling/dti/`. Resource edits use asset references/tools.
 
-The imported database has image base `0x009c9000`, one changed `.text` byte and
-conflicting imported type layouts. Subtract its image base for Forge offsets;
-verify layouts and expected patch bytes against the actual target binary.
-Preserve the supplied GZF and local annotations. DTI records include inherited
-properties and repeated class names from registry/singleton enumeration;
-`vft_kind` distinguishes object vtables from skipped DTI vtables.
+Imported image base: `0x009c9000`; one changed `.text` byte and
+conflicting type layouts exist. Subtract the base for Forge offsets; verify
+layouts/patch bytes against the target. Preserve GZF/annotations. DTI includes
+inherited properties/repeated registry/singleton names; `vft_kind`
+separates object from skipped DTI vtables.
 
-The 2026-10-03 trial produced and indexed 3,152 class records and 66,752 property
-records. Quest controls failed during the dumping session and worked again
-after removing the dumper and restarting. See `docs/DTI_DUMPER_RUNTIME.md`.
-Keep the dumper and opt-in flag removed during normal play; consult the saved
-results without rerunning it. A future extraction requires a separately
-authorized runtime trial, save backups, retained logs, removal of the temporary
-package/flag and a game restart before playing.
+The 2026-10-03 DTI trial indexed 3,152 classes/66,752 properties. Quest controls
+failed during dumping and recovered after removal/restart. See
+`docs/DTI_DUMPER_RUNTIME.md`. Keep dumper/flag removed during play; use saved results. Any
+new extraction needs separate runtime authorization, save backups, retained
+logs, package/flag removal and restart before play.
 
-Linux is the development host. Do not assume Windows GUI tools or old .NET
-Desktop Runtime requirements work with the installed Linux `dotnet`. Inspect
-a tool's current upstream documentation before choosing or installing it.
-The wiki's model conversion path does not establish a working GLTF-to-MHGU
-model export path. Verify actual import/export support for model tasks.
+Host: Linux. Verify upstream tool documentation before selection/installation;
+Windows GUI/old .NET Desktop requirements may not work with Linux
+`dotnet`. The wiki does not establish GLTF-to-MHGU export; verify
+actual model import/export support.
 
-For archive edits, re-open/re-extract the result and compare resource inventory
-and contents: intended edits must be present and unrelated data preserved.
-For binary patches, check bounds, headers, entry counts, exact expected original
-bytes, endianness, and target build. For scripts, run appropriate syntax and
-focused behavior checks; do not invent a generic game test command.
-Inspect the final package structure and selected-mod collisions.
+Re-open/re-extract edited archives; compare inventories/content for intended
+edits and preserved unrelated data. Check binary bounds, headers, counts,
+original bytes, endianness and build. Run focused script syntax/behavior checks,
+not an invented game test. Inspect package structure and selected-mod
+collisions.
 
-Static checks do not prove Eden/in-game success. Report automated checks and
-manual results separately. An in-game smoke test should cover loading, the
-changed feature/asset, and relevant transitions. Save edits require backups and
-explicit task scope; the ZIP files in the library contain executables and,
-for the DLC injector, replacement save files.
+Report static and manual results separately; static checks do not prove
+gameplay. Smoke tests cover loading, the change and relevant transitions. Save
+edits need backups/explicit scope. Library ZIPs contain executables and, for the
+DLC injector, replacement saves.

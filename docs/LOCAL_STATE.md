@@ -2,24 +2,18 @@
 
 ## Current packages: 2026-10-02 cleanup
 
-Patched Forge and Better Input now use separate `forge-patched` and
-`better-inputs-patched` packages. Their tested executable hashes and configuration
-are unchanged. HD Project replaces HD Textures v4 and HD UI v4. The resolved
-HD Project/Z_Balanced/modern-control set follows Base -> HD Project -> Z_Balanced
--> others and includes the accepted weakness markers and authored help/crosshair
-fixes. See [CLEANUP_HD_PROJECT.md](CLEANUP_HD_PROJECT.md).
+Split `forge-patched` / `better-inputs-patched` retain tested
+hashes/configuration. HD Project replaces V4. HD
+Project/Z_Balanced/modern-control follow Base -> HD Project -> Z_Balanced ->
+others, with accepted markers/help/crosshair. [Cleanup](CLEANUP_HD_PROJECT.md).
 
-The effective configured MHGU disabled list was empty before migration; stale
-uncounted entries are removed during deployment. This configured snapshot is
-not proof of a running process's activation. Historical Forge runtime acceptance
-is recorded in [FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md](FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
-The new package split and visual set require a fresh in-game check.
+Configured disabled list was empty before migration; deployment removes stale
+uncounted entries. Configuration does not prove runtime activation.
+[Historical acceptance](FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md). New split/visual set awaits an in-game check.
 
-No rollback packages or backup files belong in Eden's MHGU load directory.
-Recovery copies are retained in workspace backups. Current complete inventory,
-activation snapshot and backup location are recorded in `local-state.json` and
-the deployment report. Source library/dump files, saves and renderer settings
-are preserved. The inventories below are historical preparation snapshots.
+Keep rollback/backups outside Eden. Inventory, activation snapshot and backup
+location: `local-state.json` and deployment report. Source dump/library, saves
+and renderer settings are preserved. Below: historical preparation inventories.
 
 Dump inspected 2026-10-01T15:41:35.466591+07:00; mod inventories refreshed 2026-10-01T16:30:58.286682+07:00 (Asia/Jakarta). Activation status comes from the user; Eden configuration was not inspected.
 
@@ -31,7 +25,7 @@ Dump inspected 2026-10-01T15:41:35.466591+07:00; mod inventories refreshed 2026-
 - ARC files: 14,511; GMD text resources: 11,999; TEX files: 1,778.
 - NativeNX directories include `arc`, `loc`, `table`, `system`, `sound`, `movie`, and language folders `eng`, `fre`, `ger`, `ita`, `spa`, `chS`, `chT`.
 - Observed `loc/arc/resident.arc` begins `41 52 43 00 11 00 c5 00` (ARC magic and an observed version field of 17). This sample does not validate all archive contents.
-- Installed game version/build, update inclusion, and dump completeness have not been established.
+- Installed game version/build, update inclusion, and dump completeness are unverified.
 
 ## Eden's listed mod packages
 
@@ -76,13 +70,19 @@ Selection rules from the local installation tutorial:
 - Choose either 60 FPS or 120 FPS.
 - Choose one FOV: Close, Medium, Far, or Extreme.
 - HD UI v4 offers seven languages. Each has PlayStation, Nintendo Switch, or Xbox layouts and HDI/CI icon alternatives.
-- Pixel Cheats has separate Ryujinx and Yuzu distributions. Eden compatibility has not been tested.
+- Pixel Cheats has separate Ryujinx and Yuzu distributions. Eden compatibility is untested.
 
 The FPS and Pixel cheat filenames use `FB08F1D20FD1204F`. The 4K/2K patch declares title `0100770008DD8000`, version 1.4.0, and NSO ID `FB08F1D20FD1204FE7070672777F869B`. These describe the package targets, not the actual running game.
 
-`Z_Balanced` (renamed from `Z_HD Balanced`) contains 30 replacement ARCs, including player quest/shell resources, `loc/arc/resident.arc`, `eng/arc/title_eng.arc`, and two weapon resources. Its internal edits and provenance are unknown. Its filenames do not establish that it is cosmetic. Check exact replacement paths and internal resources against selected packages before combining mods; runtime interactions still need inspection.
+`Z_Balanced` (renamed from `Z_HD Balanced`) contains 30 replacement ARCs,
+including player quest/shell resources, `loc/arc/resident.arc`,
+`eng/arc/title_eng.arc`, and two weapon resources. Its internal edits and
+provenance are unknown. Its filenames do not prove it is cosmetic. Check exact
+replacement paths and internal resources against selected packages before
+combining mods; runtime interactions still need inspection.
 
-`Weakness Icons English` contains one replacement: `romfs/nativeNX/eng/arc/resident_eng.arc`. Its internal edits have not been inspected.
+`Weakness Icons English` contains one replacement:
+`romfs/nativeNX/eng/arc/resident_eng.arc`. Its internal edits are uninspected.
 
 The DLC injector ZIP contains a Windows executable plus `system`/`system_backup` save files. The save editor ZIP contains a Windows executable. Neither was extracted or run.
 
@@ -91,8 +91,8 @@ The DLC injector ZIP contains a Windows executable plus `system`/`system_backup`
 - Public reference repository and wiki downloaded; revisions in `references/provenance.json`.
 - `python3`, `git`, `dotnet`, `wine`, `ffmpeg`, and `7z` were found on PATH. This does not verify modding-tool compatibility.
 - `blender` and `010editor` were not found on PATH during initialization.
-  Blender is now installed locally; 010 Editor was not installed.
-- The full local toolkit and smoke checks are documented in [TOOLS.md](TOOLS.md).
+  Blender is installed locally; 010 Editor was not installed.
+- The full local toolkit and smoke checks are in [TOOLS.md](TOOLS.md).
 - Initial preparation did not install mods. Later authorized development and
   cleanup installed the selected packages; deployment reports record the changes.
   Saves and unrelated emulator settings remain preserved.

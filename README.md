@@ -1,14 +1,11 @@
 # Monster Hunter Generations Ultimate modding
 
-Prepared on 2026-10-01 for the Switch title `0100770008DD8000`, using Eden on
-Linux. The supplied dump and existing mod library have been inspected read-only.
+MHGU Switch (`0100770008DD8000`) modding on Eden/Linux; prepared 2026-10-01.
+Dump/library inspection was read-only.
 
-**Current runtime baseline, 2026-10-02:** MHGU 1.4.0 uses our tested patched
-Forge and patched Better Input binaries in separate `forge-patched` and
-`better-inputs-patched` packages on unchanged Eden. Keep this baseline for
-future mods. The source is preserved locally on `codex/forge-legacyctx14` in
-`tools/forge-local/`. See [local branch maintenance](docs/FORGE_LOCAL_BRANCH.md)
-and [completed runtime tests](docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
+Tested baseline, 2026-10-02: MHGU 1.4.0, unchanged Eden, `forge-patched` and
+`better-inputs-patched`. Preserve `tools/forge-local/` on `codex/forge-legacyctx14`. See
+[local branch maintenance](docs/FORGE_LOCAL_BRANCH.md) and [completed runtime tests](docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
 
 - HD Project cleanup and merge order: [docs/CLEANUP_HD_PROJECT.md](docs/CLEANUP_HD_PROJECT.md)
 - Agent/project guidance: [AGENTS.md](AGENTS.md)
@@ -19,19 +16,12 @@ and [completed runtime tests](docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
 - Modern weapon controls and English help: [combined package](mods/modern-weapon-controls/BUNDLE.md)
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
-The game dump lives at
-`~/.local/share/eden/dump/0100770008DD8000/`.
-The uninstalled mod/cheat library lives at
-`/mnt/storage2/ROM/Switch/cheats/mhgu/`.
-Eden's listed packages live at
-`~/.local/share/eden/load/0100770008DD8000/`;
-the initial 2026-10-01 report said they were not activated. Current package
-presence, the patched Forge baseline, and activation are
-recorded separately in `docs/LOCAL_STATE.md`.
-Offline copies of the [reference repository](https://github.com/RTHKKona/MHGU-Modding)
-and [wiki](https://github.com/RTHKKona/MHGU-Modding/wiki) are in `references/`.
-These contain community research, binary templates, resource indexes, and ID
-tables; their commits are recorded in `references/provenance.json`.
+Dump: `~/.local/share/eden/dump/0100770008DD8000/`. Uninstalled library: `/mnt/storage2/ROM/Switch/cheats/mhgu/`. Eden
+packages: `~/.local/share/eden/load/0100770008DD8000/`. The 2026-10-01 report said inactive;
+inventory/baseline/activation are separate in `docs/LOCAL_STATE.md`. Offline
+[repository](https://github.com/RTHKKona/MHGU-Modding) and [wiki](https://github.com/RTHKKona/MHGU-Modding/wiki) snapshots in `references/`
+contain research, templates, resource indexes and IDs; revisions:
+`references/provenance.json`.
 
 For the first mod, identify the target archive, copy it into `work/<name>/`,
 record its hash, extract and edit the needed resource, then repack and validate.
@@ -40,8 +30,8 @@ original relative path. Keep a description and reproducible edit recipe in
 `mods/<name>/`.
 
 The toolkit is installed locally. Run `./START_TOOLS.sh` for the desktop
-launcher. Archive, conversion, audio, and startup smoke checks are documented
-in `docs/TOOLS.md`, including tool-specific limits.
+launcher. Archive, conversion, audio, and startup smoke checks are in
+`docs/TOOLS.md`, including tool-specific limits.
 
 Initial workspace preparation did not change original game files, existing
 mods, saves or Eden settings. Subsequent Forge compatibility work passed

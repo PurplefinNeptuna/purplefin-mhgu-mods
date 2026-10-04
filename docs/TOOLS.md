@@ -1,14 +1,12 @@
 # Installed modding toolkit
 
-Installed locally on 2026-10-01. Double-click `START_TOOLS.sh` and choose
-**Execute**, or run `./START_TOOLS.sh` from a terminal. Select a tool and click
-**Launch selected tool**. Startup output appears in the launcher's log.
-Closing the launcher leaves independently opened tool windows available.
+Installed 2026-10-01. Double-click `START_TOOLS.sh` > **Execute**, or run
+`./START_TOOLS.sh`. Select a tool > **Launch selected tool**. Startup output is
+logged; closing the launcher leaves tool windows open.
 
-All downloaded applications, runtimes, Python/Node dependencies, and Wine
-files are under `tools/`. Tool settings use `tools/state/` where supported.
-GIMP, FFmpeg, Wine, Node, and the system compiler/Qt installation were already
-available and are reused. No system packages were installed.
+Downloads, runtimes, Python/Node dependencies and Wine files:
+`tools/`; settings: `tools/state/` where supported. Existing GIMP,
+FFmpeg, Wine, Node, compiler/Qt are reused; no system packages installed.
 
 ## Available tools
 
@@ -32,27 +30,20 @@ available and are reused. No system packages were installed.
 | Wiki model plugins | MHGU MaxScript import/export resources | `./scripts/tool.sh model-plugins` |
 | Wiki binary templates | 010 Editor `.bt` reference files | `./scripts/tool.sh templates` |
 
-Application versions and source commits are recorded in
-[tool-versions.json](tool-versions.json). Download hashes are recorded in
-`tools/downloads/download-manifest.json`. GitHub release digests were checked
-when provided; Blender's official SHA-256 and .NET's official SHA-512 were
-checked. Locally recorded hashes without an upstream digest are inventory
-records, not independent authenticity verification.
+[Versions/commits](tool-versions.json); download hashes: `tools/downloads/download-manifest.json`. Checked supplied GitHub
+digests, official Blender SHA-256 and .NET SHA-512. Local hashes without
+upstream digests establish inventory, not authenticity.
 
-The Ghidra database, searchable code/type indexes and saved DTI results are
-documented in [RESEARCH_TOOLING.md](RESEARCH_TOOLING.md). The supplied database
-has one changed `.text` byte and conflicting imported type definitions; use the
-verified original NSO for patch bytes. Consult the relevant code/type and DTI
-indexes when making code or gameplay mods. The 2026-10-03 dump contains 3,152
-class records and 66,752 property records. The dumper disrupted quest controls;
-controls returned after its removal and a game restart. Keep it removed during
-normal play and use the saved index. See
-[DTI_DUMPER_RUNTIME.md](DTI_DUMPER_RUNTIME.md) for evidence and future extraction
-requirements.
+[RESEARCH_TOOLING.md](RESEARCH_TOOLING.md) covers Ghidra/code/type/DTI indexes; consult them before
+code/gameplay mods. Imported `.text` has one changed byte and
+conflicting types: patch from verified original NSO. Saved DTI: 3,152
+classes/66,752 properties (2026-10-03). Dumping broke quest controls;
+removal/restart restored them. Keep dumper removed; use saved data.
+Evidence/new-trial rules: [DTI_DUMPER_RUNTIME.md](DTI_DUMPER_RUNTIME.md).
 
 ## ARC workflow
 
-Copy the needed original ARC into `work/<mod>/`. For example:
+Copy the needed original ARC into `work/<mod>/`. Example:
 
 ```bash
 ./scripts/tool.sh salad extract work/my-mod/quest.arc
@@ -60,18 +51,15 @@ Copy the needed original ARC into `work/<mod>/`. For example:
 ./scripts/tool.sh salad inject-recursive work/my-mod --move-originals
 ```
 
-The last command scans recursively and rebuilds all matching ARC/extracted-folder
-pairs in the selected directory. Keep that directory scoped to the intended
-mod. `--move-originals` retains originals in `original_data`; do not enable
-automatic backup deletion. Avoid SaladSoftware's scratch `inject` command for
-existing game archives because it uses default archive settings.
+The last command recursively rebuilds matching ARC/folder pairs. Scope its
+directory to the mod. `--move-originals` keeps `original_data`; leave
+automatic backup deletion off. SaladSoftware's scratch `inject` uses
+defaults, so avoid it for existing archives.
 
-Kuriimu2 requires its bundled plugin directory as the working directory; the
-launcher handles this. It also misinterprets paths starting `/mnt/...`.
-The launcher prints a temporary workspace alias under `/tmp/mhgu-kuriimu-.../workspace`.
-Use that address in its Open/Save dialogs. The alias points to the same project
-files and is removed when the tool exits. When a workspace file is passed as a
-launcher argument, its path is rewritten automatically:
+Launcher sets Kuriimu2's required plugin working directory. For misread
+`/mnt/...` paths, use its printed `/tmp/mhgu-kuriimu-.../workspace` alias in Open/Save.
+It points to the workspace and disappears on exit; launcher arguments are
+rewritten automatically:
 
 ```bash
 ./scripts/tool.sh kuriimu work/my-mod/quest.arc
@@ -91,13 +79,11 @@ The archive CLI context uses `back-to-main` before `exit`.
 ./scripts/tool.sh gmd encode --out work/my-mod/text-rebuilt work/my-mod/text-json/text.gmd.json
 ```
 
-Verify the specific GMD format before editing. The published npm package 0.2.0
-dropped 19 metadata fields on the tested keyed `CharMakeMsg_eng.gmd`; the newer
-source rejects that format with `Mobile format not implemented`. The default
-launcher uses the newer source. A non-keyed `spt_act_base_eng.gmd` passed a
-byte-identical decode/encode round trip. Do not use either encoder for keyed
-GMDs without a verified preservation workflow. Metadata-bearing formats that
-the source accepts also need scrutiny: its JSON adapter omits bucket data.
+Verify GMD format first. npm 0.2.0 dropped 19 metadata fields from keyed
+`CharMakeMsg_eng.gmd`; newer/default source rejects it with `Mobile format not implemented`.
+Non-keyed `spt_act_base_eng.gmd` round-tripped byte-identically. Neither safely
+handles keyed GMD without a preservation workflow. Accepted metadata formats
+also need review: JSON omits bucket data.
 
 IFRIT's Windows batch hub uses Windows-specific commands. On Linux, use the
 installed encoder wrappers and the HTML STQR editor:
@@ -109,16 +95,15 @@ installed encoder wrappers and the HTML STQR editor:
 ./scripts/tool.sh stqr
 ```
 
-`nxaenc` and `adpcm-encoder` run the upstream executables through Wine in
-`tools/wine-ifrit`; paths are translated automatically. `adpcm` uses IFRIT's
-Python conversion to generate Capcom ADPCM with the native FFmpeg and the
-Wine encoder. Match the original asset's channel, sample rate, and loop format
-before making a replacement. Music looping/STQR edits remain a separate step.
+`nxaenc`/`adpcm-encoder` use Wine in `tools/wine-ifrit`,
+translating paths. `adpcm` uses IFRIT Python, native FFmpeg and Wine
+to produce Capcom ADPCM. Match channels, sample rate and loop format; music
+looping/STQR needs separate edits.
 
-Blender importing a converted GLTF/GLB does not provide an MHGU `.mod` exporter.
-The supplied MHGU MaxScript plugins require a compatible licensed 3ds Max
-installation. 3ds Max, Photoshop, and 010 Editor were not installed. ImHex cannot
-execute 010 Editor `.bt` templates; those templates remain format references.
+Blender GLTF/GLB import supplies no MHGU `.mod` exporter. MHGU
+MaxScripts need licensed compatible 3ds Max. 3ds Max/Photoshop/010 Editor are
+uninstalled. ImHex cannot run `.bt`; use templates as format
+references.
 
 ## Local compatibility adjustments
 
@@ -162,10 +147,8 @@ music playback/loop test, or model-export round trip has been performed.
 
 ## Cleanup on 2026-10-02
 
-Redundant installer downloads and the npm download cache were removed after
-checking installed counterparts. Release metadata and checksum/provenance records
-remain in `tools/downloads/`; installed tools, runtimes and pinned build dependencies
-remain intact. Smoke-test logs and JSON evidence stay under `work/tool-smoke/`;
-large extracted/round-trip sample trees can be regenerated from the retained inputs.
-Historical visual package/work outputs are compacted into the workspace cleanup
-backup archive, outside Eden. See `docs/CLEANUP_HD_PROJECT.md`.
+Redundant installers/npm cache were removed after checking installed copies.
+`tools/downloads/` retains provenance/checksums; tools/runtimes/pinned
+dependencies remain. Evidence: `work/tool-smoke/`; large sample trees are
+regenerable. Historical visual outputs are archived outside Eden:
+`docs/CLEANUP_HD_PROJECT.md`.
