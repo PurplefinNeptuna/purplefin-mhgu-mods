@@ -112,3 +112,18 @@ this observation verifies its bytes, not current runtime activation. Private
 asset recipes are removed and their payloads archived under workspace backups.
 No installation, emulator change or save write is part of retirement. Current
 commands and provenance: [retirement record](../mods/damage-numbers/RETIREMENT.md).
+
+## 2026-10-05 final damage numbers r15 release
+
+R15 is finished and ready for distribution, with 1.0 = 20px at 720p / 30px at
+1080p. All 324 compiled ARM32 checks and the final host/visual/provenance checks
+passed. NRO SHA-256: `7c112c6bf497207f8bdf475687bab3b0056c0726ac4db1707db8f8adc01e07da`.
+The installed r14 plugin remains preserved; r15 is packaged separately with
+notices and checksums. Current [release notes](../mods/damage-numbers/RELEASE.md).
+No new Eden run, save change or installation is part of final packaging.
+
+Final ZIP SHA-256:
+`7a34efc291135b819d91d795843f3d45b5b54c0d16fd9912da313f2aca25c736`
+(`build/damage-numbers/releases/r15/damage-numbers-r15.zip`). Every member's
+checksum, one-NRO inventory, notices and final-size README were verified after
+reopening the archive. A second packaging run produced identical bytes.
