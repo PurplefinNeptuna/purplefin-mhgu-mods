@@ -2,22 +2,34 @@
 
 ## Purpose and starting points
 
-Monster Hunter Generations Ultimate **Nintendo Switch** modding on Eden/Linux.
+Monster Hunter Generations Ultimate **Nintendo Switch** modding on Eden and
+Ryujinx-based emulators/Linux.
 Title ID: `0100770008DD8000`. Start with `README.md`, `docs/LOCAL_STATE.md`,
 `docs/REFERENCES.md` and `docs/TOOLS.md`. Local launchers exist; there is no
 general mod build system or automated in-game suite.
 
-Local inputs:
+Local inputs and runtime paths:
 
 - Game dump: `~/.local/share/eden/dump/0100770008DD8000/`
 - RomFS: `~/.local/share/eden/dump/0100770008DD8000/romfs/`
 - Uninstalled mod/cheat library: `/mnt/storage2/ROM/Switch/cheats/mhgu/`
+- Eden log: `~/.local/share/eden/log/eden_log.txt`
 - Eden's listed mod packages: `~/.local/share/eden/load/0100770008DD8000/`
+- Ryujinx-Nextendo logs: `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/`
+- Ryujinx-Nextendo MHGU mod packages: `/mnt/storage2/Programs/Ryujinx-nextendo/portable/mods/contents/0100770008dd8000/`
 
-The library holds uninstalled mods; Eden lists its load directory. The user
-reported those packages inactive on 2026-10-01. Re-inspect inventories and
-distinguish library contents, installed packages and activation. Folder presence
-proves no activation; the library is not an installation destination.
+The library holds uninstalled mods; the emulator package directories above are
+installation locations. The user reported Eden's packages inactive on
+2026-10-01. Re-inspect inventories and distinguish library contents, installed
+packages and activation. Folder presence proves no activation; the library is
+not an installation destination.
+
+When the user reports a successful run, failed run or crash, read the latest log
+from the emulator they tested before drawing conclusions. Apply the same
+evidence standard to Eden and Ryujinx: correlate the actual game-launch mod set,
+version/build and exceptions with the user's gameplay report. Inspect logs on
+demand; do not create scheduled monitoring unless the user explicitly requests
+scheduling.
 
 Copy needed dump/library files into the workspace before editing. Preserve
 originals, unrelated mods and saves. Preparation authorizes no installation,
