@@ -123,7 +123,16 @@ notices and checksums. Current [release notes](../mods/damage-numbers/RELEASE.md
 No new Eden run, save change or installation is part of final packaging.
 
 Final ZIP SHA-256:
-`7a34efc291135b819d91d795843f3d45b5b54c0d16fd9912da313f2aca25c736`
-(`build/damage-numbers/releases/r15/damage-numbers-r15.zip`). Every member's
-checksum, one-NRO inventory, notices and final-size README were verified after
-reopening the archive. A second packaging run produced identical bytes.
+`deab7227711afb6f268f5a1c520b85fc027419cf07429a8e9f4be25a09e45828`
+(`build/damage-numbers/releases/r15/damage-numbers-r15.zip`). The one-NRO
+inventory and content were verified after reopening the archive. Adjacent
+notices, final-size README and checksums were verified separately. A second
+packaging run produced identical bytes.
+
+R15 packaging correction: the installable ZIP now contains only
+`damage-number/romfs/nativeNX/plugins/damage_numbers_capture.nro`, matching
+modern-control's runtime-only layout. README, full combined `NOTICES.txt`,
+provenance/audit release manifest and checksums remain adjacent. The original
+document-filled ZIP is preserved in workspace backups. A fresh installed-file
+read now matches r15 (`7c112c6bf497207f8bdf475687bab3b0056c0726ac4db1707db8f8adc01e07da`);
+this packaging correction did not replace installed files.
