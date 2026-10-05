@@ -190,3 +190,36 @@ The installed NRO now matches r16 on a fresh read, without proving activation
 or new gameplay coverage. Cleanup wrote no installed files and changed no
 Forge/Better Input settings or saves. No installation, launch or publication
 was performed by this task.
+
+## 2026-10-06 damage numbers r17 NZCVQ compatibility candidate
+
+R17 applies the eight-site GE-liveness audit by replacing all nine gateway
+`msr APSR_nzcvqg, r2` instructions with `msr APSR_nzcvq, r2`. This removes
+the plugin's unsupported `APSR_g` write on the inspected unmodified Ryujinx
+translator. GE is left as set by helpers; the audited continuations do not
+consume it. NZCVQ, integer/VFP registers, FPSCR, stack arguments and return
+state retain their preservation contract. New hooks require a new audit.
+
+Fresh gateway checks passed 9,287 checks across 2,025 calls, including all
+16 GE patterns with preserving and clobbering helpers. The production capture
+suite passed 347 checks. Host, settings, asset and real-ImGui checks passed.
+Binary comparison proves exactly nine executable instruction changes against
+r16, with other executable bytes, initialized data, imports, BSS and segment
+sizes unchanged. Font, effects and rendered output retain r16's appearance.
+
+Clean package: `build/damage-numbers/releases/r17/damage-numbers-r17.zip`.
+It contains only `damage-number/romfs/nativeNX/plugins/damage_numbers_capture.nro`;
+notices, README, checksums and provenance remain beside the ZIP. Reopening,
+checksums and deterministic repeated packaging passed. NRO: 155,648 bytes
+(152KiB), SHA-256
+`1eb78f3430f6c5c5ce1f60a382fa8bd4fc18ee56cf267649b95a94a462115ea4`.
+ZIP SHA-256:
+`5d6165f8b8b40c4de0e3eafb71cefb5de9a713317b68542b37a5484dbd638fe8`.
+
+Status: validated compatibility candidate, Ryujinx gameplay confirmation pending.
+The brief restart/quest/return check is in
+`mods/damage-numbers/RYUJINX_COMPATIBILITY.md`. Installed Eden and Ryujinx
+plugins still match r16 on fresh reads. R16 artifacts are preserved in
+`backups/damage-numbers/r16-before-r17-ge-20261006/` and its release directory.
+No installed package, emulator, cache, setting or save was changed. The separate
+Forge menu/popups rendering handoff remains open.
