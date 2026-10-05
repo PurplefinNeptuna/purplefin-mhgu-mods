@@ -147,3 +147,28 @@ The prior r15 fixtures did not cover this combined GPU-rendering case.
 Next-session context, baseline hashes, proposed fix and focused validation:
 [renderer handoff](FORGE_IMGUI_DAMAGE_CORRUPTION_HANDOFF.md). No installed files
 or rendering code were changed during documentation.
+
+## 2026-10-05 damage numbers r16 compression candidate
+
+The authorized lossless compression trial passed 338 compiled ARM32 checks,
+919 core/presentation checks, mailbox stress, 23 transaction scenarios,
+ASan/UBSan codec bounds/fuzz checks and the complete open-asset audit.
+The accepted RGBA artwork, font, real-ImGui textures, draw output and preview
+match r15 byte for byte. NRO: 155,648 bytes (152KiB), down from 262,144 (256KiB).
+BSS, imported APIs and steady-state rendering are unchanged. Host decoding is
+about 0.14ms once per ImGui context; no new gameplay or live FPS measurement
+is claimed.
+
+Clean archive: `build/damage-numbers/releases/r16/damage-numbers-r16.zip`.
+Only the runtime NRO belongs in its `damage-number/` folder; README, combined
+notices, checksums and provenance remain beside the ZIP. The smaller NRO's
+ZIP is 79,992 bytes, versus r15's 69,877, because DN-LZ1 compresses less
+well a second time. This affects distribution size, not extracted runtime
+payload size. Source and performance details: `mods/damage-numbers/COMPRESSION.md`.
+
+NRO SHA-256: `5f59506f88d5156ed8db7cffd5747651717b3bab7ecdfd398800a0402fe4f33e`.
+Installed r15 remains `7c112c6bf497207f8bdf475687bab3b0056c0726ac4db1707db8f8adc01e07da`;
+Forge and Better Input fingerprints are unchanged. Nothing was installed or
+launched. R15 rollback/provenance is preserved in
+`backups/damage-numbers/r15-before-compression-20261005/`. The separate Forge
+multi-draw-list visual-corruption handoff remains open.
