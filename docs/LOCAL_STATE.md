@@ -136,3 +136,14 @@ provenance/audit release manifest and checksums remain adjacent. The original
 document-filled ZIP is preserved in workspace backups. A fresh installed-file
 read now matches r15 (`7c112c6bf497207f8bdf475687bab3b0056c0726ac4db1707db8f8adc01e07da`);
 this packaging correction did not replace installed files.
+
+## 2026-10-05 reported overlay corruption
+
+The user reports temporary number/menu corruption when Forge is open while
+damage numbers are alive. Source inspection identified missing cumulative
+draw-list offsets in Forge's NVN renderer. This is a confirmed code defect and
+the leading explanation; no corrected build or runtime confirmation exists yet.
+The prior r15 fixtures did not cover this combined GPU-rendering case.
+Next-session context, baseline hashes, proposed fix and focused validation:
+[renderer handoff](FORGE_IMGUI_DAMAGE_CORRUPTION_HANDOFF.md). No installed files
+or rendering code were changed during documentation.
