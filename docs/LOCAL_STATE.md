@@ -103,3 +103,12 @@ The DLC injector ZIP contains a Windows executable plus `system`/`system_backup`
   game assets, tools, and backups remain ignored.
 
 Machine-readable metadata: [local-state.json](local-state.json). Re-inspect relevant files before editing; counts can change.
+
+## 2026-10-05 damage numbers support update
+
+Open Sans r14 is now the sole supported damage-number edition. A fresh installed
+plugin hash matches `be263fbebf8fe2057514aabda07c12724bb0706aad2592ee1c3761100603f158`;
+this observation verifies its bytes, not current runtime activation. Private
+asset recipes are removed and their payloads archived under workspace backups.
+No installation, emulator change or save write is part of retirement. Current
+commands and provenance: [retirement record](../mods/damage-numbers/RETIREMENT.md).

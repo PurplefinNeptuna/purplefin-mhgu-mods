@@ -14,7 +14,7 @@ Tested baseline, 2026-10-02: MHGU 1.4.0, unchanged Eden, `forge-patched` and
 - Installed tools and launch instructions: [docs/TOOLS.md](docs/TOOLS.md)
 - Ghidra database and DTI dumper: [docs/RESEARCH_TOOLING.md](docs/RESEARCH_TOOLING.md)
 - Modern weapon controls and English help: [combined package](mods/modern-weapon-controls/BUNDLE.md)
-- Completed damage numbers r12: [release and installation](mods/damage-numbers/RELEASE.md)
+- Open-only damage numbers r14: [release and installation](mods/damage-numbers/RELEASE.md)
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
 Dump: `~/.local/share/eden/dump/0100770008DD8000/`. Uninstalled library: `/mnt/storage2/ROM/Switch/cheats/mhgu/`. Eden
