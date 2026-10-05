@@ -13,7 +13,7 @@ Tested baseline, 2026-10-02: MHGU 1.4.0, unchanged Eden, `forge-patched` and
 - Wiki workflow and tool references: [docs/REFERENCES.md](docs/REFERENCES.md)
 - Installed tools and launch instructions: [docs/TOOLS.md](docs/TOOLS.md)
 - Ghidra database and DTI dumper: [docs/RESEARCH_TOOLING.md](docs/RESEARCH_TOOLING.md)
-- Modern weapon controls and English help: [combined package](mods/modern-weapon-controls/BUNDLE.md)
+- Modern weapon controls and English help: [r10 release](mods/modern-weapon-controls/RELEASE.md)
 - Finished open-only damage numbers r15: [release and installation](mods/damage-numbers/RELEASE.md)
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
