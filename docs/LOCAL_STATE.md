@@ -172,3 +172,21 @@ Forge and Better Input fingerprints are unchanged. Nothing was installed or
 launched. R15 rollback/provenance is preserved in
 `backups/damage-numbers/r15-before-compression-20261005/`. The separate Forge
 multi-draw-list visual-corruption handoff remains open.
+
+## 2026-10-05 damage numbers release cleanup
+
+R16 is now the only package under `build/damage-numbers/releases/`. Superseded
+releases, old candidates, historical probe reports and pre-cleanup r16
+provenance were archived with verified hashes at
+`backups/damage-numbers/release-cleanup-20261005/`. No rollback files were
+deleted. The retirement note labels r14 as historical and links to the current
+release. [Cleanup inventory](DAMAGE_NUMBERS_RELEASE_CLEANUP.md) records the paths.
+
+The documentation-only rebuild retained the exact validated 152KiB NRO and
+all 338 ARM results. The clean runtime-only ZIP also retains its previous hash;
+checksums, CRC, inventory and member bytes pass. R16 remains ready to distribute
+with notices beside the ZIP and the known Forge overlay issue documented.
+The installed NRO now matches r16 on a fresh read, without proving activation
+or new gameplay coverage. Cleanup wrote no installed files and changed no
+Forge/Better Input settings or saves. No installation, launch or publication
+was performed by this task.
