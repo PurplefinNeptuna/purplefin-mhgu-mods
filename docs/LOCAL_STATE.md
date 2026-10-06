@@ -238,3 +238,18 @@ results are preserved. No fresh r17 gameplay confirmation is recorded.
 The quest marker ZIP loses its experimental filename without changing its
 bytes. Prior package metadata is preserved under
 `backups/distribution-status-20261006/`.
+
+
+## 2026-10-06: enforced distribution standard
+
+The authoritative record is now `mods/<mod>/DISTRIBUTION.json` for all 15 mods.
+The shared packager and full workspace checker enforce
+[DISTRIBUTION_STANDARD.md](DISTRIBUTION_STANDARD.md). Controls r10, quest markers
+r1 and damage numbers r17 retain distribution approval and recorded coverage.
+Quest markers now delivers under `build/key-quest-markers/releases/r1/` with
+one named `key-quest-markers/` runtime folder inside its ZIP. The NRO is unchanged.
+Only current registered deliveries remain under active `releases/` directories;
+r16 and the old layouts/metadata are preserved with hashes under
+`backups/distribution-standard-20261006/`. The earlier flat quest ZIP path is
+historical. The local pre-commit check is installed. No runtime, emulator, save,
+installation or publication change is part of this standardization.

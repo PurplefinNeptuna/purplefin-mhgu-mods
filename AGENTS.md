@@ -129,6 +129,27 @@ without a remote. Review staged paths; exclude generated assets/secrets and
 preserve unrelated changes. Report commit IDs and remaining work. Push only on
 request.
 
+## Distribution standard
+
+Follow `docs/DISTRIBUTION_STANDARD.md` for every current and future mod.
+`mods/<name>/DISTRIBUTION.json` is the authoritative distribution status.
+Register new mods with `python3 scripts/mod_distribution.py init NAME`.
+Never label a mod ready to distribute without a verified versioned ZIP under
+`build/<name>/releases/<version>/`, its named runtime package, and adjacent
+README, notices, manifest and checksums. Keep publication and gameplay evidence
+separate. Existing mod-specific status records must agree.
+
+After mod-specific validation, use `scripts/mod_distribution.py package NAME`
+for delivery. Run `python3 scripts/mod_distribution.py check` before committing
+distribution work or claiming readiness. It discovers all mods, rejects missing
+records/artifacts, verifies payloads/ZIP/support/checksums, and rejects obsolete
+active release folders. `--source-only` does not establish readiness. Runtime
+changes require a new version; support refreshes require verified backups.
+Keep the tracked pre-commit check installed; preserve existing custom hooks.
+Archive superseded packages outside active releases. Do not install or publish
+as part of preparation. These rules apply equally to plugins, resource mods,
+cheats and loader packages when they become distributions.
+
 ## Editing and packaging
 
 1. Establish the target resource, desired behavior, language, game version, and

@@ -15,6 +15,7 @@ replaced the tested installation.
 - Agent/project guidance: [AGENTS.md](AGENTS.md)
 - Local baseline and package selections: [docs/LOCAL_STATE.md](docs/LOCAL_STATE.md)
 - Wiki workflow and tool references: [docs/REFERENCES.md](docs/REFERENCES.md)
+- Distribution standard and validation: [docs/DISTRIBUTION_STANDARD.md](docs/DISTRIBUTION_STANDARD.md)
 - Installed tools and launch instructions: [docs/TOOLS.md](docs/TOOLS.md)
 - Ghidra database and DTI dumper: [docs/RESEARCH_TOOLING.md](docs/RESEARCH_TOOLING.md)
 - Modern weapon controls and English help: [r10 ready to distribute](mods/modern-weapon-controls/RELEASE.md)
@@ -22,8 +23,10 @@ replaced the tested installation.
 - Open-only damage numbers: [r17 ready to distribute](mods/damage-numbers/RELEASE.md)
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
-“Ready to distribute” means a prepared local package. Public publication is recorded
-separately and requires a download destination.
+“Ready to distribute” requires a verified ZIP and support files under
+`build/<mod>/releases/<version>/`. [Distribution standard](docs/DISTRIBUTION_STANDARD.md)
+and `python3 scripts/mod_distribution.py check` enforce the same rules for all
+current and future mods. Publication requires its own download URL and date.
 
 Dump: `~/.local/share/eden/dump/0100770008DD8000/`. Uninstalled library: `/mnt/storage2/ROM/Switch/cheats/mhgu/`. Eden
 packages: `~/.local/share/eden/load/0100770008DD8000/`. The 2026-10-01 report said inactive;

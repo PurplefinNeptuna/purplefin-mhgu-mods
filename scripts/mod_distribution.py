@@ -1,0 +1,324 @@
+#!/usr/bin/env python3
+"""Create and verify local mod distributions. Never install or publish."""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import io
+import json
+from pathlib import Path, PurePosixPath
+import re
+import shutil
+import stat
+import subprocess
+import sys
+import tempfile
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[1]
+STATES = {'DEVELOPMENT', 'LOCAL_ONLY', 'RETIRED', 'READY_TO_DISTRIBUTE', 'PUBLISHED'}
+READY = {'READY_TO_DISTRIBUTE', 'PUBLISHED'}
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def digest(blob):
+    return hashlib.sha256(blob).hexdigest()
+
+
+def json_bytes(value):
+    return (json.dumps(value, indent=2, sort_keys=True) + '\n').encode()
+
+
+def relative(value):
+    require(isinstance(value, str) and value and '\\' not in value,
+            f'Invalid relative path: {value!r}')
+    path = PurePosixPath(value)
+    require(not path.is_absolute() and all(p not in ('', '.', '..') for p in value.split('/')),
+            f'Unsafe relative path: {value}')
+    return path
+
+
+def local(root, value):
+    path = root / relative(value)
+    require(not root.is_symlink(), f'Symlink root: {root}')
+    for part in [path, *path.parents]:
+        require(not part.is_symlink(), f'Symlink path: {part}')
+        if part == root:
+            break
+    require(path.resolve().is_relative_to(root.resolve()), f'Path escapes workspace: {path}')
+    return path
+
+
+def read(root, value):
+    path = local(root, value)
+    require(path.is_file(), f'Missing file: {path}')
+    return path.read_bytes()
+
+
+def spec_for(mod, root=ROOT):
+    require(re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', mod), f'Invalid mod name: {mod}')
+    spec = json.loads(read(root, f'mods/{mod}/DISTRIBUTION.json'))
+    require(spec.get('schema_version') == 1 and spec.get('mod') == mod, f'Invalid identity: {mod}')
+    require(spec.get('status') in STATES, f'Invalid distribution status: {mod}')
+    require(isinstance(spec.get('reason'), str) and spec['reason'].strip(), f'Missing status reason: {mod}')
+    require(isinstance(spec.get('publication'), dict), f'Missing publication record: {mod}')
+    publication = spec['publication']
+    if spec['status'] == 'PUBLISHED':
+        require(publication.get('published') is True and
+                isinstance(publication.get('url'), str) and
+                publication['url'].startswith('https://') and publication.get('date'),
+                f'Published status requires its download URL and date: {mod}')
+    else:
+        require(publication == {'published': False, 'url': None, 'date': None},
+                f'Unpublished status has publication claims: {mod}')
+    legacy = root / f'mods/{mod}/RELEASE.json'
+    if legacy.is_file():
+        record = json.loads(read(root, str(legacy.relative_to(root))))
+        require(record.get('status') == spec['status'] and
+                record.get('published') == publication['published'], f'Stale RELEASE.json: {mod}')
+    runtime = root / f'mods/{mod}/RUNTIME_RESULTS.json'
+    if runtime.is_file():
+        record = json.loads(read(root, str(runtime.relative_to(root))))
+        if 'release_status' in record:
+            require(record['release_status'] == spec['status'], f'Stale runtime release status: {mod}')
+    if spec['status'] not in READY:
+        return spec
+    for field in ('version', 'package_name'):
+        require(isinstance(spec.get(field), str) and
+                re.fullmatch(r'[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*', spec[field]),
+                f'Invalid {field}: {mod}')
+    archive = spec.get('archive', '')
+    require(isinstance(archive, str) and
+            re.fullmatch(re.escape(f'{mod}-{spec["version"]}') + r'(?:-[a-z0-9]+)*\.zip', archive),
+            f'Invalid archive name: {mod}')
+    require(spec.get('approval', {}).get('date') and spec['approval'].get('basis'),
+            f'Distribution approval missing: {mod}')
+    require(isinstance(spec.get('target'), str) and spec['target'], f'Missing target: {mod}')
+    require(isinstance(spec.get('limitations'), list), f'Missing coverage limits: {mod}')
+    require(isinstance(spec.get('dependencies', []), list), f'Invalid dependencies: {mod}')
+    for field in ('readme',):
+        require(read(root, spec[field]).strip(), f'Empty {field}: {mod}')
+    require(isinstance(spec.get('notices'), list) and spec['notices'], f'Missing notices: {mod}')
+    for path in spec['notices']:
+        require(read(root, path).strip(), f'Empty notice: {path}')
+    for name, source in spec.get('support', {}).items():
+        require('/' not in name and name not in ('README.md', 'NOTICES.txt', 'release-manifest.json', 'SHA256SUMS')
+                and not name.endswith('.zip'), f'Invalid support filename: {name}')
+        relative(name)
+        read(root, source)
+    payloads = spec.get('payloads')
+    require(isinstance(payloads, dict) and payloads, f'No declared payloads: {mod}')
+    for path, record in payloads.items():
+        require(relative(path).parts[0] in ('romfs', 'exefs', 'cheats') and len(relative(path).parts) > 1,
+                f'Runtime files must start at romfs/, exefs/ or cheats/: {path}')
+        require(relative(path).name.lower() not in
+                ('readme.md', 'notices.txt', 'release-manifest.json', 'sha256sums'),
+                f'Support file declared as runtime: {path}')
+        relative(record['source'])
+        require(re.fullmatch(r'[0-9a-f]{64}', record.get('sha256', '')), f'Missing pinned hash: {path}')
+    evidence = spec.get('evidence', {})
+    require(evidence.get('static') and evidence.get('manual_summary'), f'Missing validation evidence: {mod}')
+    for path in evidence['static'] + evidence.get('manual', []):
+        relative(path)
+    return spec
+
+
+def release_dir(spec, root=ROOT):
+    return local(root, f'build/{spec["mod"]}/releases/{spec["version"]}')
+
+
+def make_zip(payloads, package_name):
+    stream = io.BytesIO()
+    with zipfile.ZipFile(stream, 'w') as archive:
+        for name, blob in sorted(payloads.items()):
+            info = zipfile.ZipInfo(f'{package_name}/{name}', (1980, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o100644 << 16
+            archive.writestr(info, blob, compresslevel=9)
+    return stream.getvalue()
+
+
+def expected_files(spec, root=ROOT):
+    payloads = {}
+    for name, record in spec['payloads'].items():
+        blob = read(root, record['source'])
+        require(blob and digest(blob) == record['sha256'], f'Pinned runtime payload changed: {name}')
+        payloads[name] = blob
+    zipped = make_zip(payloads, spec['package_name'])
+    support = {'README.md': read(root, spec['readme']),
+               'NOTICES.txt': b'\n\n'.join(read(root, p).strip() for p in spec['notices']) + b'\n'}
+    support.update({name: read(root, source) for name, source in spec.get('support', {}).items()})
+    evidence = {p: digest(read(root, p)) for p in
+                spec['evidence']['static'] + spec['evidence'].get('manual', [])}
+    files = {f'{spec["package_name"]}/{p}': b for p, b in payloads.items()}
+    manifest = {
+        'schema_version': 1, 'mod': spec['mod'], 'version': spec['version'],
+        'status': spec['status'], 'publication': spec['publication'],
+        'package_name': spec['package_name'], 'target': spec['target'],
+        'dependencies': spec.get('dependencies', []),
+        'approval': spec['approval'], 'limitations': spec['limitations'],
+        'archive': spec['archive'], 'archive_sha256': digest(zipped), 'archive_bytes': len(zipped),
+        'distribution_spec_sha256': digest(read(root, f'mods/{spec["mod"]}/DISTRIBUTION.json')),
+        'payloads': {p: {'sha256': digest(b), 'bytes': len(b)} for p, b in sorted(files.items())},
+        'support_files': {p: {'sha256': digest(b), 'bytes': len(b)} for p, b in sorted(support.items())},
+        'evidence': {**spec['evidence'], 'file_sha256': evidence},
+        'installed_by_recipe': False, 'published_by_recipe': False,
+    }
+    files.update(support)
+    files[spec['archive']] = zipped
+    files['release-manifest.json'] = json_bytes(manifest)
+    files['SHA256SUMS'] = ''.join(f'{digest(b)}  {p}\n' for p, b in sorted(files.items())).encode()
+    return files
+
+
+def inventory(directory):
+    if not directory.exists():
+        return {}
+    require(not directory.is_symlink(), f'Symlink release: {directory}')
+    result = {}
+    for path in directory.rglob('*'):
+        require(not path.is_symlink(), f'Symlink release entry: {path}')
+        if path.is_dir():
+            continue
+        require(path.is_file(), f'Unsupported release entry: {path}')
+        result[str(path.relative_to(directory))] = path.read_bytes()
+    return result
+
+
+def verify_release(spec, root=ROOT):
+    expected = expected_files(spec, root)
+    directory = release_dir(spec, root)
+    actual = inventory(directory)
+    require(actual.keys() == expected.keys(), f'Missing/extra release files: {directory}')
+    for path, blob in expected.items():
+        require(actual[path] == blob, f'Stale or modified release file: {directory / path}')
+    with zipfile.ZipFile(io.BytesIO(actual[spec['archive']])) as archive:
+        require(archive.testzip() is None, 'ZIP CRC failed')
+        payloads = {p: b for p, b in expected.items() if p.startswith(spec['package_name'] + '/')}
+        require(archive.namelist() == sorted(payloads), 'ZIP inventory mismatch')
+        for entry in archive.infolist():
+            relative(entry.filename)
+            require(stat.S_ISREG(entry.external_attr >> 16), 'ZIP entry must be a regular file')
+            require(archive.read(entry) == payloads[entry.filename], 'ZIP payload mismatch')
+    return directory / spec['archive']
+
+
+def package(mod, root=ROOT, refresh_support=False):
+    spec = spec_for(mod, root)
+    require(spec['status'] in READY, f'Mod is not approved for distribution: {mod}')
+    files = expected_files(spec, root)
+    directory = release_dir(spec, root)
+    actual = inventory(directory)
+    if actual and actual != files:
+        # A version's runtime archive and unpacked payload are immutable.
+        runtime = [spec['archive'], *[p for p in files if p.startswith(spec['package_name'] + '/')]]
+        require(all(actual.get(p) == files[p] for p in runtime),
+                'Runtime differs from existing release; use a new version')
+        require(refresh_support, 'Support files changed; use --refresh-support to back up and refresh them')
+        require(actual.keys() == files.keys(), 'Unexpected files in release; preserve/migrate them explicitly')
+        stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
+        backup = local(root, f'backups/{mod}/distribution-support/{stamp}/{spec["version"]}')
+        backup.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(directory, backup)
+        require(inventory(backup) == actual, 'Support backup readback differs')
+        (backup.parent / 'backup-manifest.json').write_bytes(json_bytes(
+            {p: digest(b) for p, b in sorted(actual.items())}))
+    for name, blob in files.items():
+        path = local(root, str((directory / name).relative_to(root)))
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if not path.exists() or path.read_bytes() != blob:
+            path.write_bytes(blob)
+    return verify_release(spec, root)
+
+
+def check(root=ROOT, source_only=False):
+    result = []
+    for directory in sorted((root / 'mods').iterdir()):
+        if not directory.is_dir():
+            continue
+        spec = spec_for(directory.name, root)
+        archive = None
+        if spec['status'] in READY and not source_only:
+            archive = verify_release(spec, root)
+        if not source_only:
+            releases = local(root, f'build/{directory.name}/releases')
+            if releases.exists():
+                allowed = {spec['version']} if spec['status'] in READY else set()
+                require({p.name for p in releases.iterdir()} == allowed,
+                        f'Superseded/unregistered release entries must be archived: {releases}')
+        result.append((directory.name, spec['status'], archive))
+    require(result, 'No mod records found')
+    if not source_only:
+        registered = {mod for mod, _, _ in result}
+        for releases in (root / 'build').glob('*/releases'):
+            require(releases.parent.name in registered,
+                    f'Release directory has no registered mod: {releases}')
+        for archive in (root / 'build').rglob('*.zip'):
+            parts = archive.relative_to(root / 'build').parts
+            require(len(parts) >= 3 and parts[0] in registered and parts[1] in ('releases', 'candidates'),
+                    f'ZIP must be under a registered mod\'s releases/ or candidates/: {archive}')
+    return result
+
+
+def check_staged(root=ROOT):
+    """Reject records/support that were left out of the actual commit."""
+    with tempfile.TemporaryDirectory(prefix='mhgu-distribution-index-') as temporary:
+        staged = Path(temporary)
+        subprocess.run(['git', 'checkout-index', '--all', f'--prefix={staged}/'],
+                       cwd=root, check=True, capture_output=True)
+        records = check(staged, source_only=True)
+        for mod, status, _ in records:
+            spec = spec_for(mod, staged)
+            names = [f'mods/{mod}/DISTRIBUTION.json']
+            if status in READY:
+                names += [spec['readme'], *spec['notices'], *spec.get('support', {}).values()]
+                names += [p for p in spec['evidence'].get('manual', []) if p.startswith('mods/')]
+            for name in names:
+                require(read(staged, name) == read(root, name),
+                        f'Distribution source differs from staged commit: {name}')
+        return records
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest='command', required=True)
+    checker = commands.add_parser('check', help='Check every current mod, including future directories')
+    checker.add_argument('--source-only', action='store_true', help='Validate tracked records without generated artifacts')
+    checker.add_argument('--staged', action='store_true', help='Validate the actual Git index and staged support sources')
+    packager = commands.add_parser('package', help='Package approved, pinned inputs after mod-specific validation')
+    packager.add_argument('mod')
+    packager.add_argument('--refresh-support', action='store_true')
+    initializer = commands.add_parser('init', help='Register a new mod as DEVELOPMENT')
+    initializer.add_argument('mod')
+    args = parser.parse_args()
+    if args.command == 'check':
+        require(not (args.source_only and args.staged), 'Choose --source-only or --staged')
+        records = check_staged() if args.staged else check(source_only=args.source_only)
+        for mod, status, archive in records:
+            print(f'{mod}: {status}' + (f' | {archive.relative_to(ROOT)}' if archive else ''))
+        suffix = ' (staged source records)' if args.staged else (
+            ' (source only; packages not checked)' if args.source_only else '')
+        print(f'PASS: {len(records)} mod records{suffix}')
+    elif args.command == 'package':
+        archive = package(args.mod, refresh_support=args.refresh_support)
+        print(f'Verified: {archive}\nSHA-256: {digest(archive.read_bytes())}')
+    else:
+        require(re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', args.mod), 'Invalid mod name')
+        path = local(ROOT, f'mods/{args.mod}/DISTRIBUTION.json')
+        require(not path.exists(), f'Preserving existing record: {path}')
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(json_bytes({'schema_version': 1, 'mod': args.mod, 'status': 'DEVELOPMENT',
+            'reason': 'New mod; distribution approval and verified package are not recorded.',
+            'publication': {'published': False, 'url': None, 'date': None}}))
+        print(f'Registered: {path}')
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except (ValueError, KeyError, TypeError, OSError, zipfile.BadZipFile, subprocess.CalledProcessError) as error:
+        print(f'Distribution check failed: {error}', file=sys.stderr)
+        sys.exit(1)
