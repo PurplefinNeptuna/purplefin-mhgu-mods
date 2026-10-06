@@ -1,19 +1,21 @@
 # Local baseline
 
-## Current packages: 2026-10-02 cleanup
+## Current workspace: 2026-10-06
 
-Split `forge-patched` / `better-inputs-patched` retain tested
-hashes/configuration. HD Project replaces V4. HD
-Project/Z_Balanced/modern-control follow Base -> HD Project -> Z_Balanced ->
-others, with accepted markers/help/crosshair. [Cleanup](CLEANUP_HD_PROJECT.md).
+Seven maintained mods remain: damage-numbers r17, key-quest-markers r1 and
+modern-weapon-controls r10 are READY_TO_DISTRIBUTE; forge-patched, hd-project,
+wiki-cheats and dti-dumper-support are LOCAL_ONLY. Each current
+`mods/<name>/DISTRIBUTION.json` is authoritative.
 
-Configured disabled list was empty before migration; deployment removes stale
-uncounted entries. Configuration does not prove runtime activation.
-[Historical acceptance](FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md). New split/visual set awaits an in-game check.
+Eden uses adapter-enabled `forge-patched` and base Better Input. The user has
+played damage numbers r17 on Eden and Ryujinx. Current evidence is in
+[the Forge source/runtime record](FORGE_LOCAL_BRANCH.md) and the mods' runtime
+records. Cleanup removes retired workspace trees and preserves current release
+payloads. It performs no installation or emulator change.
 
-Keep rollback/backups outside Eden. Inventory, activation snapshot and backup
-location: `local-state.json` and deployment report. Source dump/library, saves
-and renderer settings are preserved. Below: historical preparation inventories.
+The inventories and observations below are historical dated snapshots.
+Paths in historical snapshots may describe packages outside this workspace or
+artifacts subsequently removed. They do not describe current status or activation.
 
 Dump inspected 2026-10-01T15:41:35.466591+07:00; mod inventories refreshed 2026-10-01T16:30:58.286682+07:00 (Asia/Jakarta). Activation status comes from the user; Eden configuration was not inspected.
 
@@ -289,7 +291,7 @@ shared build dependencies of modern weapon controls r10.
 Fresh Eden fingerprints match the adapter-enabled Forge and base Better Input;
 the latest Eden log confirms in-memory adaptation. Current fingerprints and
 historical source-baseline distinctions are in
-[the adapter record](FORGE_ORIGINAL_BETTER_INPUT.md). Ryujinx's listed old
+[the adapter record](FORGE_LOCAL_BRANCH.md). Ryujinx's listed old
 patched packages are not changed or treated as active by this correction.
 
 Future plugins must avoid requiring APSR_g, with GE-liveness/state-preservation

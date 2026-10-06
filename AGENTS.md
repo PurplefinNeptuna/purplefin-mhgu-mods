@@ -37,10 +37,13 @@ activation, save editing or emulator changes.
 
 ## Current Forge development baseline
 
-Tested 2026-10-02: separate `forge-patched` and `better-inputs-patched` packages,
-unchanged Eden, MHGU 1.4.0. Preserve hashes/configuration; verify activation and
-hashes before changes. Keep rollback/original packages in workspace
-`backups/`, never Eden's mod/cheat directory.
+Current Eden baseline, checked 2026-10-06: `forge-patched` with the integrated
+in-memory adapter and base `better-inputs`, unchanged Eden, MHGU 1.4.0.
+Current fingerprints and preserved source commits: `docs/FORGE_LOCAL_BRANCH.json`.
+Verify activation and hashes before changes. Retired mods and their artifacts
+belong only in Git history; migrate required shared code into maintained paths
+before removal. Do not leave retired trees in `mods/`, `build/`, `work/` or
+`backups/`. Preserve active owned Forge source and required build inputs.
 
 Merge **Base -> HD Project -> Z_Balanced -> others**. Later resources changed
 from base win whole; unchanged resources must preserve lower improvements. Keep
@@ -64,15 +67,7 @@ Validated Vulkan setup: persistent and driver pipeline caches on, asynchronous
 shader compilation on, **asynchronous presentation disabled**. Automated checks,
 three game restarts, the three Eden-start sequence, save loading, overlay
 navigation, Better Input controls and quest/village transition passed. Evidence:
-`docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md`. No custom Eden build is needed.
-
-Current runtime correction, 2026-10-06: Eden `forge-patched` contains the
-original Better Input adapter and uses base `better-inputs`. The latest log
-confirms in-memory adaptation, and the installed hashes match the recorded
-adapter build/original NRO. `better-inputs-patched` and the standalone
-`forge-original-better-input` candidate are retired; their source/recovery
-material remains. Preserve the legacy source branch above as a build/recovery
-baseline. Current runtime evidence: `docs/FORGE_ORIGINAL_BETTER_INPUT.md`.
+`docs/FORGE_RUNTIME_EVIDENCE.md`. No custom Eden build is needed.
 
 ## Forge plugin development rules
 

@@ -25,11 +25,11 @@ def ghidra_environment():
 
 
 def export_analysis(import_database=False):
-    from modern_longsword_controls import main_image
+    from mhgu_binary import main_image
     source = WORK / "inputs/MHGU_1.4.0.gzf"
     if hashlib.file_digest(source.open("rb"), "sha256").hexdigest() != SOURCE_SHA:
         raise ValueError("Supplied GZF fingerprint changed")
-    main = ROOT / "work/modern-longsword-controls/update-exefs/main"
+    main = ROOT / "work/shared/game-exefs/main"
     image, _ = main_image(main.read_bytes())  # Checks exact NSO hash/build/segments.
     image_path = WORK / "inputs/main-memory.bin"
     image_path.write_bytes(image)

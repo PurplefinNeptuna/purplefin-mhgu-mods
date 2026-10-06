@@ -3,13 +3,11 @@
 MHGU Switch (`0100770008DD8000`) modding on Eden/Linux; prepared 2026-10-01.
 Dump/library inspection was read-only.
 
-Historical tested baseline, 2026-10-02: MHGU 1.4.0, unchanged Eden, `forge-patched` and
-`better-inputs-patched`. Preserve `tools/forge-local/` on `codex/forge-legacyctx14`. See
-[local branch maintenance](docs/FORGE_LOCAL_BRANCH.md) and [completed runtime tests](docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
-
 Current Eden `forge-patched` accepts base Better Input through its integrated
-in-memory adapter. The standalone adapter candidate and offline-patched Better
-Input package are retired. [Current evidence and retained source](docs/FORGE_ORIGINAL_BETTER_INPUT.md).
+in-memory adapter. Preserve `tools/forge-local/` on `codex/forge-legacyctx14`.
+[Source, runtime fingerprints and maintained recipes](docs/FORGE_LOCAL_BRANCH.md).
+Retired mod folders, recipes and workspace artifacts have been removed;
+tracked originals remain in Git history.
 
 - HD Project cleanup and merge order: [docs/CLEANUP_HD_PROJECT.md](docs/CLEANUP_HD_PROJECT.md)
 - Agent/project guidance: [AGENTS.md](AGENTS.md)

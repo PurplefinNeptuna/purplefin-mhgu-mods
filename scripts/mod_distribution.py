@@ -240,6 +240,8 @@ def check(root=ROOT, source_only=False):
         if not directory.is_dir():
             continue
         spec = spec_for(directory.name, root)
+        require(spec['status'] != 'RETIRED',
+                f'Retired mod must be removed from the workspace: {directory.name}')
         archive = None
         if spec['status'] in READY and not source_only:
             archive = verify_release(spec, root)

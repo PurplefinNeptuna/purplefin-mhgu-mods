@@ -148,6 +148,12 @@ class DistributionTests(unittest.TestCase):
         (archive.parent.parent / 'r0').mkdir()
         self.rejected(lambda: distribution.check(self.root))
 
+    def test_retired_mod_cannot_remain_in_current_workspace(self):
+        self.spec['status'] = 'RETIRED'
+        self.save_spec()
+        self.rejected(lambda: distribution.check(self.root, source_only=True))
+        self.rejected(lambda: distribution.check(self.root))
+
     def test_unregistered_release_directory_is_rejected(self):
         self.package()
         (self.root / 'build/unknown-mod/releases/r1').mkdir(parents=True)

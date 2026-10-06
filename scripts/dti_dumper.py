@@ -108,15 +108,15 @@ def nso_exports(path):
 
 
 def build():
-    from modern_longsword_controls import main_image
-    from patch_better_inputs_compat import Nro
+    from mhgu_binary import main_image
+    from mhgu_binary import Nro
     recipe = json.loads((RECIPE / "recipe.json").read_text())
     for relative, expected in (("src/lib.rs", recipe["patched_lib_sha256"]), ("Cargo.lock", recipe["cargo_lock_sha256"])):
         if sha(SOURCE / relative) != expected:
             raise ValueError(f"Pinned source changed: {relative}")
     if (SOURCE / "src/json.rs").read_bytes() != (RECIPE / "json.rs").read_bytes():
         raise ValueError("JSON helper differs from recipe")
-    main = ROOT / "work/modern-longsword-controls/update-exefs/main"
+    main = ROOT / "work/shared/game-exefs/main"
     if sha(main) != recipe["main_sha256"]:
         raise ValueError("Copied main executable fingerprint changed")
     image, _ = main_image(main.read_bytes())
@@ -156,7 +156,7 @@ def build():
     live_forge = Path(baseline["installed_packages"]["forge-patched"]) / "exefs/subsdk9"
     if sha(live_forge) != baseline["installed_forge_sha256"]:
         raise ValueError("Installed Forge fingerprint changed")
-    sdk = ROOT / "work/modern-longsword-controls/update-exefs/sdk"
+    sdk = ROOT / "work/shared/game-exefs/sdk"
     if sha(sdk) != recipe["sdk_sha256"]:
         raise ValueError("Copied SDK fingerprint changed")
     available = nso_exports(live_forge) | nso_exports(main) | nso_exports(sdk)
