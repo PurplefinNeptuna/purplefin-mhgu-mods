@@ -2,6 +2,11 @@
 
 ## Current workspace: 2026-10-06
 
+Great Luck plugin research and the next-session implementation prompt are in
+[GREAT_LUCK_FORGE_HANDOFF.md](GREAT_LUCK_FORGE_HANDOFF.md). No plugin has been
+created or installed. The intended conversion reproduces only the existing
+two-site luck cheat; crafting and equipment unlocks are outside scope.
+
 Seven maintained mods remain: damage-numbers r17, key-quest-markers r1 and
 modern-weapon-controls r10 are READY_TO_DISTRIBUTE; forge-patched, hd-project,
 wiki-cheats and dti-dumper-support are LOCAL_ONLY. Each current
