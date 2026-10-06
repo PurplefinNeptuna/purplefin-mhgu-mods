@@ -2,14 +2,17 @@
 
 ## Current workspace: 2026-10-06
 
-Great Luck plugin research and the next-session implementation prompt are in
-[GREAT_LUCK_FORGE_HANDOFF.md](GREAT_LUCK_FORGE_HANDOFF.md). No plugin has been
-created or installed. The intended conversion reproduces only the existing
-two-site luck cheat; crafting and equipment unlocks are outside scope.
+Great Luck plugin research is in
+[GREAT_LUCK_FORGE_HANDOFF.md](GREAT_LUCK_FORGE_HANDOFF.md). Its scoped conversion,
+[Please do Better r1](../mods/please-do-better/README.md), is now a local
+DEVELOPMENT candidate reproducing the two-site cheat's Miraculous Luck branch.
+Host and offline ARM32 validation pass; gameplay and translation freshness are
+unverified. Nothing was installed, activated or launched. Crafting and equipment
+unlocks remain outside scope.
 
-Seven maintained mods remain: damage-numbers r17, key-quest-markers r1 and
+Eight maintained mods remain: damage-numbers r17, key-quest-markers r1 and
 modern-weapon-controls r10 are READY_TO_DISTRIBUTE; forge-patched, hd-project,
-wiki-cheats and dti-dumper-support are LOCAL_ONLY. Each current
+wiki-cheats and dti-dumper-support are LOCAL_ONLY; please-do-better is DEVELOPMENT. Each current
 `mods/<name>/DISTRIBUTION.json` is authoritative.
 
 Eden uses adapter-enabled `forge-patched` and base Better Input. The user has

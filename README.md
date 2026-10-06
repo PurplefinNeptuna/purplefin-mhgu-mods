@@ -18,6 +18,7 @@ tracked originals remain in Git history.
 - Ghidra database and DTI dumper: [docs/RESEARCH_TOOLING.md](docs/RESEARCH_TOOLING.md)
 - Modern weapon controls and English help: [r10 ready to distribute](mods/modern-weapon-controls/RELEASE.md)
 - Progression key quest title markers: [r1 ready to distribute](mods/key-quest-markers/README.md)
+- Please do Better: [r1 local luck-plugin candidate](mods/please-do-better/README.md), gameplay untested
 - Open-only damage numbers: [r17 ready to distribute](mods/damage-numbers/RELEASE.md)
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
