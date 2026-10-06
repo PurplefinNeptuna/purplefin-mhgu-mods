@@ -7,6 +7,10 @@ Tested baseline, 2026-10-02: MHGU 1.4.0, unchanged Eden, `forge-patched` and
 `better-inputs-patched`. Preserve `tools/forge-local/` on `codex/forge-legacyctx14`. See
 [local branch maintenance](docs/FORGE_LOCAL_BRANCH.md) and [completed runtime tests](docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md).
 
+Original Better Input support is prepared on a separate Forge candidate branch;
+[implementation and test status](docs/FORGE_ORIGINAL_BETTER_INPUT.md). It has not
+replaced the tested installation.
+
 - HD Project cleanup and merge order: [docs/CLEANUP_HD_PROJECT.md](docs/CLEANUP_HD_PROJECT.md)
 - Agent/project guidance: [AGENTS.md](AGENTS.md)
 - Local baseline and package selections: [docs/LOCAL_STATE.md](docs/LOCAL_STATE.md)
