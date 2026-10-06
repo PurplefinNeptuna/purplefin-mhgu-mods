@@ -224,6 +224,24 @@ plugins still match r16 on fresh reads. R16 artifacts are preserved in
 No installed package, emulator, cache, setting or save was changed. The separate
 Forge menu/popups rendering handoff remains open.
 
+## 2026-10-06 damage numbers r17 runtime confirmation
+
+The user confirmed r17 working on both Eden and Ryujinx-based emulators.
+Fresh installed-file hashes in both locations match the released r17 NRO.
+The latest logs were reviewed and copied with hashes under
+`backups/damage-numbers/r17-runtime-confirmation-20261006/`. They identify
+MHGU 1.4.0/main build `FB08F1D20FD1204FE7070672777F869B` and contain no
+`APSR_g` failure. Eden logs plugin/capture/ImGui startup; Ryujinx logs the
+enabled `damage-number` and original `forge`/`better-inputs` packages.
+Detailed launch sets and separate emulator diagnostics remain in
+`mods/damage-numbers/RUNTIME.md`; clean shutdown and every fork are not claimed.
+
+The authoritative `DISTRIBUTION.json` remains `READY_TO_DISTRIBUTE`, now with
+fresh user-confirmed gameplay evidence for both emulators. Release metadata
+and adjacent support files are refreshed with a verified prior-delivery backup.
+The r17 NRO and clean ZIP bytes are unchanged. No installed package, emulator,
+setting or save was modified; nothing was launched or published.
+
 ## 2026-10-06: current distribution status
 
 The user directed that all three mods be marked `READY_TO_DISTRIBUTE`:
