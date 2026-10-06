@@ -271,3 +271,24 @@ r16 and the old layouts/metadata are preserved with hashes under
 `backups/distribution-standard-20261006/`. The earlier flat quest ZIP path is
 historical. The local pre-commit check is installed. No runtime, emulator, save,
 installation or publication change is part of this standardization.
+
+
+## 2026-10-06: component retirement correction
+
+Per user instruction, the separate patched Better Input, controls UI, Long Sword
+prototype and Ryujinx APSR GE repair are retired. The original Better Input
+adapter entry is also retired as a standalone mod because its implementation
+is incorporated into current Eden `forge-patched`. Its source/tests/replay patch
+remain maintained. The UI recipe and Long Sword parsers/scaffolding remain
+shared build dependencies of modern weapon controls r10.
+
+Fresh Eden fingerprints match the adapter-enabled Forge and base Better Input;
+the latest Eden log confirms in-memory adaptation. Current fingerprints and
+historical source-baseline distinctions are in
+[the adapter record](FORGE_ORIGINAL_BETTER_INPUT.md). Ryujinx's listed old
+patched packages are not changed or treated as active by this correction.
+
+Future plugins must avoid requiring APSR_g, with GE-liveness/state-preservation
+review required at new hook sites. This retires the emulator patch without
+assuming the old eight-site GE audit applies to new hooks. No source component,
+rollback record, installed package, emulator or save is removed or changed.

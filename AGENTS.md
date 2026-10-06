@@ -66,6 +66,14 @@ three game restarts, the three Eden-start sequence, save loading, overlay
 navigation, Better Input controls and quest/village transition passed. Evidence:
 `docs/FORGE_BETTER_INPUTS_COMPAT_RUNTIME.md`. No custom Eden build is needed.
 
+Current runtime correction, 2026-10-06: Eden `forge-patched` contains the
+original Better Input adapter and uses base `better-inputs`. The latest log
+confirms in-memory adaptation, and the installed hashes match the recorded
+adapter build/original NRO. `better-inputs-patched` and the standalone
+`forge-original-better-input` candidate are retired; their source/recovery
+material remains. Preserve the legacy source branch above as a build/recovery
+baseline. Current runtime evidence: `docs/FORGE_ORIGINAL_BETTER_INPUT.md`.
+
 ## Forge plugin development rules
 
 Use Forge APIs fully where applicable. Inspect `tools/forge-local/include/forge/`,
@@ -82,6 +90,13 @@ Each plugin uses a compact, unframed tree row under **Plugin UI**, matching
 diagnostics. Reserve framed `CollapsingHeader` for Forge parent sections. Use
 stable plugin-specific widget IDs. Closing settings hides the panel;
 gameplay/render callbacks continue.
+
+Future plugins must not require `APSR_g` writes or emit `msr APSR_nzcvqg` /
+`msr APSR_g` as a workaround dependency. Audit GE liveness at every hook and
+continuation before omitting GE restoration; preserve NZCVQ and other live
+state. If GE is live, choose a compatible hook site/implementation instead of
+silently dropping it. The retired Ryujinx emulator repair is not a plugin
+prerequisite. Include this instruction/state audit in release validation.
 
 Read `docs/FORGE_PLUGIN_GUIDELINES.md` when developing or reviewing a Forge plugin.
 
