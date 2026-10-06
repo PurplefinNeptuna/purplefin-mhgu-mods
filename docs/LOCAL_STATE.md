@@ -223,3 +223,18 @@ plugins still match r16 on fresh reads. R16 artifacts are preserved in
 `backups/damage-numbers/r16-before-r17-ge-20261006/` and its release directory.
 No installed package, emulator, cache, setting or save was changed. The separate
 Forge menu/popups rendering handoff remains open.
+
+## 2026-10-06: current distribution status
+
+The user directed that all three mods be marked `READY_TO_DISTRIBUTE`:
+
+- Modern weapon controls r10: `build/modern-weapon-controls/releases/r10/`.
+- Key Quest Markers r1: `build/key-quest-markers/key-quest-markers-r1.zip`.
+- Damage Numbers r17: `build/damage-numbers/releases/r17/`.
+
+These are local packages; none was published by this update. The earlier
+r17 candidate status above is historical. Runtime payloads and recorded test
+results are preserved. No fresh r17 gameplay confirmation is recorded.
+The quest marker ZIP loses its experimental filename without changing its
+bytes. Prior package metadata is preserved under
+`backups/distribution-status-20261006/`.

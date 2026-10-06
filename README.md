@@ -17,10 +17,13 @@ replaced the tested installation.
 - Wiki workflow and tool references: [docs/REFERENCES.md](docs/REFERENCES.md)
 - Installed tools and launch instructions: [docs/TOOLS.md](docs/TOOLS.md)
 - Ghidra database and DTI dumper: [docs/RESEARCH_TOOLING.md](docs/RESEARCH_TOOLING.md)
-- Modern weapon controls and English help: [r10 release](mods/modern-weapon-controls/RELEASE.md)
-- Progression key quest title markers: [r1 ready for release](mods/key-quest-markers/README.md)
-- Finished open-only damage numbers r15: [release and installation](mods/damage-numbers/RELEASE.md)
+- Modern weapon controls and English help: [r10 ready to distribute](mods/modern-weapon-controls/RELEASE.md)
+- Progression key quest title markers: [r1 ready to distribute](mods/key-quest-markers/README.md)
+- Open-only damage numbers: [r17 ready to distribute](mods/damage-numbers/RELEASE.md)
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
+
+“Ready to distribute” means a prepared local package. Public publication is recorded
+separately and requires a download destination.
 
 Dump: `~/.local/share/eden/dump/0100770008DD8000/`. Uninstalled library: `/mnt/storage2/ROM/Switch/cheats/mhgu/`. Eden
 packages: `~/.local/share/eden/load/0100770008DD8000/`. The 2026-10-01 report said inactive;
