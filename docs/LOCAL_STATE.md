@@ -216,7 +216,9 @@ checksums and deterministic repeated packaging passed. NRO: 155,648 bytes
 ZIP SHA-256:
 `5d6165f8b8b40c4de0e3eafb71cefb5de9a713317b68542b37a5484dbd638fe8`.
 
-Status: validated compatibility candidate, Ryujinx gameplay confirmation pending.
+Status at preparation: validated compatibility candidate, with gameplay
+confirmation then pending. The subsequent runtime-confirmation section below
+records the user-confirmed r17 gameplay on both emulators.
 The brief restart/quest/return check is in
 `mods/damage-numbers/RYUJINX_COMPATIBILITY.md`. Installed Eden and Ryujinx
 plugins still match r16 on fresh reads. R16 artifacts are preserved in
@@ -242,7 +244,7 @@ and adjacent support files are refreshed with a verified prior-delivery backup.
 The r17 NRO and clean ZIP bytes are unchanged. No installed package, emulator,
 setting or save was modified; nothing was launched or published.
 
-## 2026-10-06: current distribution status
+## 2026-10-06: initial distribution marking (historical)
 
 The user directed that all three mods be marked `READY_TO_DISTRIBUTE`:
 
@@ -252,7 +254,9 @@ The user directed that all three mods be marked `READY_TO_DISTRIBUTE`:
 
 These are local packages; none was published by this update. The earlier
 r17 candidate status above is historical. Runtime payloads and recorded test
-results are preserved. No fresh r17 gameplay confirmation is recorded.
+results are preserved. R17 gameplay is confirmed on both emulators in the
+runtime-confirmation record above; the distribution-label update itself did
+not run another gameplay test.
 The quest marker ZIP loses its experimental filename without changing its
 bytes. Prior package metadata is preserved under
 `backups/distribution-status-20261006/`.
