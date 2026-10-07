@@ -8,7 +8,7 @@ BINARY={'.arc','.tex','.mod','.lmt','.gmd','.nsp','.xci','.nca','.zip','.7z','.n
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def safe(name):
  p=Path(name)
- if p.is_absolute() or '..' in p.parts or any(x in FORBIDDEN for x in p.parts) or p.suffix.lower() in BINARY or p.name=='build.local.json':raise ValueError('Non-source export path: '+name)
+ if p.is_absolute() or '..' in p.parts or any(x in FORBIDDEN for x in p.parts) or p.suffix.lower() in BINARY or p.name in ('build.local.json','source-export.json'):raise ValueError('Non-source export path: '+name)
  return p
 def refresh(mod):
  folder=ROOT/'mods'/mod
@@ -54,22 +54,26 @@ def export(mod,dest):
 def scaffold(path,name,kind):
  if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*',name):raise ValueError('Invalid mod name')
  if path.exists():raise ValueError('Preserving existing mod folder: '+str(path))
- source=ROOT/'mods/key-quest-markers'
+ source=ROOT/'templates/standalone'
  path.mkdir(parents=True)
  try:
-  for n in ('build.sh','.gitignore','build.local.example.json'):
+  for n in ('build.sh','.gitignore','.gitattributes','build.local.example.json','AGENTS.md','DEVELOPMENT.md'):
    shutil.copy2(source/n,path/n)
-  (path/'scripts').mkdir();(path/'src').mkdir();(path/'tests').mkdir()
-  for n in ('build.py','paths.py','mod_distribution.py','mhgu_binary.py','native_support.py'):
+   if n=='DEVELOPMENT.md':(path/n).write_text((path/n).read_text().replace('key-quest-markers',name))
+  (path/'scripts').mkdir();(path/'src').mkdir();(path/'tests').mkdir();(path/'recipes').mkdir()
+  (path/'tests/README.md').write_text('Add focused behavior, failure and persistence tests here. test --host needs no game inputs.\n')
+  helpers=['build.py','paths.py','mod_distribution.py','export_source.py']
+  if kind=='plugin':helpers+=['mhgu_binary.py','native_support.py']
+  for n in helpers:
    shutil.copy2(source/'scripts'/n,path/'scripts'/n)
   (path/'LICENSE').write_text((ROOT/'scripts/standalone-license.txt').read_text().format(name=name))
   (path/'THIRD_PARTY.md').write_text('Owned code uses MIT. Vendored dependencies retain their included license notices. The plugin scaffold uses the project-owned ARM32 startup and linker scaffold; libnx-derived SVC code is not included.\n')
   cfg={'schema_version':1,'mod':name,'kind':kind,'version':'r1','compiler_image':json.loads((source/'mod.json').read_text())['compiler_image']}
   (path/'mod.json').write_text(json.dumps(cfg,indent=2)+'\n')
   (path/'DISTRIBUTION.json').write_text(json.dumps({'schema_version':1,'mod':name,'status':'DEVELOPMENT','reason':'New mod; distribution approval and verified package are not recorded.','publication':{'published':False,'url':None,'date':None}},indent=2)+'\n')
-  (path/'README.md').write_text(f'# {name}\n\n{kind.capitalize()} source scaffold; DEVELOPMENT, with no gameplay validation.\n\nRun `./build.sh doctor`, `./build.sh prepare`, `./build.sh build`, `./build.sh test --host`, `./build.sh verify`, and `./build.sh package`. Dependencies are fetched only with `./build.sh prepare --fetch`. Copy `build.local.example.json` to ignored `build.local.json` for supplied inputs. Outputs are ignored `build/` and `work/`; the coordinating workspace retains its root output locations.\n\nImplement the mod-specific behavior and focused tests before claiming a working mod. Runtime acceptance and publication require separate evidence.\n')
+  (path/'README.md').write_text(f'# {name}\n\n{kind.capitalize()} source scaffold; DEVELOPMENT, with no gameplay validation.\n\nRun `./build.sh doctor`, `./build.sh prepare`, `./build.sh build`, `./build.sh test --host`, `./build.sh verify`, and `./build.sh package`. Dependencies are fetched only with `./build.sh prepare --fetch`. Copy `build.local.example.json` to ignored `build.local.json` for supplied inputs. Outputs are ignored `build/` and `work/`; the coordinating workspace retains its root output locations.\n\nFor resources, cheats and tools, map owned source or copied ignored inputs to runtime paths in recipe.json payloads. Plugin callbacks begin without settings or hooks. Implement the mod-specific behavior and focused tests before claiming a working mod. Export with ./build.sh export --output DEST; refresh its explicit allowlist with python3 scripts/export_source.py --refresh. Runtime acceptance and publication require separate evidence.\n')
   if kind=='plugin':
-   shutil.copytree(source/'vendor/forge',path/'vendor/forge')
+   shutil.copytree(source/'vendor',path/'vendor')
    for n in ('start.S','plugin.ld','exports.txt'):shutil.copy2(source/'src'/n,path/'src'/n)
    # Export only the lifecycle callbacks; the source starts with no hooks/settings.
    (path/'src/exports.txt').write_text('{ global: init; fini; forge_onLoad; forge_onInit; forge_onUpdate; forge_onImGuiInit; forge_onImGuiRender; forge_onImGuiFreeRender; local: *; };\n')
@@ -84,9 +88,9 @@ extern "C" void forge_onLoad(PluginInitParam* p) {
  if (!p) return;
  auto* b=reinterpret_cast<volatile unsigned char*>(p);
  for(unsigned i=0;i<sizeof(*p);++i)b[i]=0;
- p->required_ver={1,4,1};
+ b[0]=1;b[2]=4;b[4]=1;
  const char* name="'''+name+'''";
- for(unsigned i=0;name[i] && i<63;++i)p->name[i]=name[i];
+ for(unsigned i=0;name[i] && i<63;++i)b[6+i]=name[i];
 }
 extern "C" void forge_onInit() {}
 extern "C" void forge_onUpdate(float) {}

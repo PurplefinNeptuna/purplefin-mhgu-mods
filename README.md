@@ -16,10 +16,10 @@ tracked originals remain in Git history.
 - Distribution standard and validation: [docs/DISTRIBUTION_STANDARD.md](docs/DISTRIBUTION_STANDARD.md)
 - Installed tools and launch instructions: [docs/TOOLS.md](docs/TOOLS.md)
 - Ghidra database and DTI dumper: [docs/RESEARCH_TOOLING.md](docs/RESEARCH_TOOLING.md)
-- Modern weapon controls and English help: [r10 ready to distribute](mods/modern-weapon-controls/RELEASE.md)
-- Progression key quest title markers: [r1 ready to distribute](mods/key-quest-markers/README.md)
-- Please do Better: [r8 reward-initialization repair](mods/please-do-better/README.md), rendering gameplay pending
-- Open-only damage numbers: [r17 ready to distribute](mods/damage-numbers/RELEASE.md)
+- Modern weapon controls and English help: [r11 ready to distribute](mods/modern-weapon-controls/RELEASE.md)
+- Progression key quest title markers: [r2 ready to distribute](mods/key-quest-markers/README.md)
+- Please do Better: [r16 ready to distribute](mods/please-do-better/README.md), with earlier marker confirmation scoped to r14
+- Open-only damage numbers: [r18 ready to distribute](mods/damage-numbers/RELEASE.md)
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
 “Ready to distribute” requires a verified ZIP and support files under
@@ -50,3 +50,5 @@ automated and user-run in-game checks; its exact scope is recorded above.
 The cleanup branch is `codex/cleanup-forge-hd-project`; the local Forge repository
 has its own patch branch and commit. Re-inspect other enabled mods before
 combining packages.
+
+Future mods start as independent source folders. See [standalone development](docs/STANDALONE_MODS.md) for scaffolding, manual builds and export. The current cleanup releases have fresh static/compiled evidence and no new gameplay run.

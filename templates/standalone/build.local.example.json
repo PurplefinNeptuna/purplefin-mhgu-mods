@@ -1,0 +1,4 @@
+{
+  "python": "python3",
+  "container_storage": "tools/forge-container/storage"
+}

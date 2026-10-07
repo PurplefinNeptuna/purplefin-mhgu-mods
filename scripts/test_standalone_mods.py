@@ -21,6 +21,8 @@ with tempfile.TemporaryDirectory() as t:
   if kind!='plugin':
    run([p/'build.sh','build'],1)
    assert not (p/'src/plugin.cpp').exists()
+   assert not (p/'scripts/native_support.py').exists()
+   assert not (p/'scripts/mhgu_binary.py').exists()
  for bad in ('../escape','/absolute','build/foo','work/foo','src/foo.nro','history/old.md','build.local.json'):
   try:s.safe(bad)
   except ValueError:pass

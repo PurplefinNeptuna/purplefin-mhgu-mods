@@ -1,0 +1,4 @@
+{
+    global: forge_on*; kqm_active_v1; init; fini;
+    local: *;
+};

@@ -2,8 +2,8 @@
 /work/
 /build/
 /backups/
-/tools/
-/references/
+/tools
+/references
 __pycache__/
 *.py[cod]
 .venv/

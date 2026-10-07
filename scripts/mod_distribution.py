@@ -42,7 +42,11 @@ def relative(value):
 
 
 def local(root, value):
-    path = root / relative(value)
+    name = relative(value)
+    if (root/'mod.json').is_file() and (root/'DISTRIBUTION.json').is_file():
+        mod=json.loads((root/'mod.json').read_text())['mod'];prefix=f'mods/{mod}/'
+        if value.startswith(prefix):name=relative(value[len(prefix):])
+    path = root/name
     require(not root.is_symlink(), f'Symlink root: {root}')
     for part in [path, *path.parents]:
         require(not part.is_symlink(), f'Symlink path: {part}')
@@ -74,12 +78,12 @@ def spec_for(mod, root=ROOT):
     else:
         require(publication == {'published': False, 'url': None, 'date': None},
                 f'Unpublished status has publication claims: {mod}')
-    legacy = root / f'mods/{mod}/RELEASE.json'
+    legacy = local(root, f'mods/{mod}/RELEASE.json')
     if legacy.is_file():
         record = json.loads(read(root, str(legacy.relative_to(root))))
         require(record.get('status') == spec['status'] and
                 record.get('published') == publication['published'], f'Stale RELEASE.json: {mod}')
-    runtime = root / f'mods/{mod}/RUNTIME_RESULTS.json'
+    runtime = local(root, f'mods/{mod}/RUNTIME_RESULTS.json')
     if runtime.is_file():
         record = json.loads(read(root, str(runtime.relative_to(root))))
         if 'release_status' in record:
@@ -236,22 +240,23 @@ def package(mod, root=ROOT, refresh_support=False):
 
 def check(root=ROOT, source_only=False):
     result = []
-    for directory in sorted((root / 'mods').iterdir()):
+    for directory in ([root] if (root/'mod.json').is_file() else sorted((root/'mods').iterdir())):
         if not directory.is_dir():
             continue
-        spec = spec_for(directory.name, root)
+        mod = json.loads((directory/'mod.json').read_text())['mod'] if directory==root else directory.name
+        spec = spec_for(mod, root)
         require(spec['status'] != 'RETIRED',
                 f'Retired mod must be removed from the workspace: {directory.name}')
         archive = None
         if spec['status'] in READY and not source_only:
             archive = verify_release(spec, root)
         if not source_only:
-            releases = local(root, f'build/{directory.name}/releases')
+            releases = local(root, f'build/{mod}/releases')
             if releases.exists():
                 allowed = {spec['version']} if spec['status'] in READY else set()
                 require({p.name for p in releases.iterdir()} == allowed,
                         f'Superseded/unregistered release entries must be archived: {releases}')
-        result.append((directory.name, spec['status'], archive))
+        result.append((mod, spec['status'], archive))
     require(result, 'No mod records found')
     if not source_only:
         registered = {mod for mod, _, _ in result}
@@ -309,6 +314,7 @@ def main():
         archive = package(args.mod, refresh_support=args.refresh_support)
         print(f'Verified: {archive}\nSHA-256: {digest(archive.read_bytes())}')
     else:
+        require(not (ROOT/'mod.json').exists(), 'This source repo is already registered; initialize new mods from the coordinating workspace')
         from standalone_mods import scaffold
         path = scaffold(ROOT/'mods'/args.mod, args.mod, args.kind)
         print(f'Scaffolded standalone {args.kind}: {path}')

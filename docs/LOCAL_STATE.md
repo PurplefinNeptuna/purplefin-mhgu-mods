@@ -1,3 +1,11 @@
+# Local state
+
+Current work is on `codex/standalone-mods`, based on release commit `7371ddc`. The older primary checkout and accepted packages are preserved. Standalone layout byte parity is recorded in [the migration record](STANDALONE_MIGRATION.json).
+
+Local cleanup deliveries are Damage Numbers r18, Modern Controls r11, Key Quest Markers r2 and Please do Better r16. Fresh host/compiled/static checks cover these payloads; no new gameplay run was performed. Earlier r17/r10/r1 reports and PDB r14's Eden marker confirmation remain scoped to their original payloads. PDB r15 had static cleanup verification without a separate gameplay retest. Forge's renderer issue remains disclosed and unchanged. No installation, activation, publication or push occurred.
+
+The following dated snapshots describe earlier states and may name superseded delivery paths. Current per-mod DISTRIBUTION.json records are authoritative.
+
 # Local baseline
 
 ## Current workspace: 2026-10-07

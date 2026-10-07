@@ -78,10 +78,10 @@ plugin-specific filenames. Verify ARM32 ABI/resource limits. Document any
 verified API limitation; lower-level code may fill only that gap. Preserve
 compatibility fixes.
 
-Each plugin uses a compact, unframed tree row under **Plugin UI**, matching
+Each plugin with settings uses a compact, unframed tree row under **Plugin UI**, matching
 **Better Inputs Config**, closed by default. Pair `ImGui::TreeNode` /
 `igTreeNode_Str` with `TreePop` on every opened path. Plugin panels contain settings only;
-diagnostics go to concise, deduplicated logs. Reserve framed `CollapsingHeader` for Forge parent sections. Use
+diagnostics go to concise, deduplicated logs. Plugins without settings have no panel. Reserve framed `CollapsingHeader` for Forge parent sections. Use
 stable plugin-specific widget IDs. Closing settings hides the panel;
 gameplay/render callbacks continue.
 
@@ -143,8 +143,7 @@ request.
 
 Follow `docs/DISTRIBUTION_STANDARD.md` for every current and future mod.
 `mods/<name>/DISTRIBUTION.json` is the authoritative distribution status.
-Register/scaffold future mods with `python3 scripts/mod_distribution.py init NAME
---kind plugin|resource|cheat|tool` (default: plugin). Existing folders are never
+Register/scaffold future mods with `python3 scripts/mod_distribution.py init NAME --kind plugin` (or `resource`, `cheat`, `tool`) (default: plugin). Existing folders are never
 overwritten. Follow `docs/STANDALONE_MODS.md`; no sibling-mod, personal-path,
 installed-emulator or parent-Git-history dependencies are allowed.
 Never label a mod ready to distribute without a verified versioned ZIP under

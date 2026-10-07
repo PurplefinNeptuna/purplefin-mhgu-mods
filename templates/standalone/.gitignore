@@ -1,0 +1,14 @@
+/build/
+/work/
+/tools/
+/.venv/
+/build.local.json
+__pycache__/
+*.py[cod]
+*.log
+*.nro
+*.elf
+*.o
+*.arc
+*.nso
+*.zip
