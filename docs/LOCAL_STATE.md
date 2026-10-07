@@ -1,3 +1,9 @@
+Damage Numbers r20 is the current local delivery. The user selected 1.5× crit
+stars from the real-renderer preview on 2026-10-07 and requested direct readiness.
+Fresh host/ARM/static checks passed; no new gameplay run was performed. R19 is
+preserved under `backups/damage-numbers/crit-size-r20-20261007/`. No installation,
+activation, publication or push occurred. See [crit-size evidence](../mods/damage-numbers/CRIT_SIZE.md).
+
 Damage Numbers r19 now replaces r18 as the current local delivery. The user
 approved its real-renderer 0.5 px outline preview on 2026-10-07 and requested a
 built release ready to distribute. Fresh host/ARM/static checks passed; no new

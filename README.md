@@ -19,7 +19,7 @@ tracked originals remain in Git history.
 - Modern weapon controls and English help: [r11 ready to distribute](mods/modern-weapon-controls/RELEASE.md)
 - Progression key quest title markers: [r2 ready to distribute](mods/key-quest-markers/README.md)
 - Please do Better: [r16 ready to distribute](mods/please-do-better/README.md), with earlier marker confirmation scoped to r14
-- Open-only damage numbers: [r19 ready to distribute](mods/damage-numbers/RELEASE.md)
+- Open-only damage numbers: [r20 ready to distribute](mods/damage-numbers/RELEASE.md)
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
 “Ready to distribute” requires a verified ZIP and support files under
