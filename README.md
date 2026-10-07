@@ -20,7 +20,7 @@ tracked originals remain in Git history.
 - Progression key quest title markers: [r2 ready to distribute](mods/key-quest-markers/README.md)
 - Please do Better: [r16 ready to distribute](mods/please-do-better/README.md), with earlier marker confirmation scoped to r14
 - Open-only damage numbers: [r20 ready to distribute](mods/damage-numbers/RELEASE.md)
-- Proposed Rise damage-number style: [next-session handoff](mods/damage-numbers/RISE_IMPLEMENTATION_HANDOFF.md), research only
+- Rise damage-number style: [r21-rise1 candidate and renderer previews](mods/damage-numbers/RISE_CANDIDATE.md); accepted release remains r20
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
 “Ready to distribute” requires a verified ZIP and support files under
