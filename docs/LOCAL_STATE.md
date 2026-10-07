@@ -4,19 +4,17 @@
 
 Great Luck plugin research is in
 [GREAT_LUCK_FORGE_HANDOFF.md](GREAT_LUCK_FORGE_HANDOFF.md).
-[Please do Better r14](../mods/please-do-better/README.md) is a local DEVELOPMENT
-candidate drawing independent Forge gold overlays from verified projected slot
-geometry. R13's matching user grid/log show four bound extras, zero highlights,
-6,720 geometry publications and zero downsample hook hits. R14 removes the unused
-copy hooks and texture-equality requirement, retaining exact batch/node/frame,
-full-viewport, clip and lifetime checks. Visible output/alignment remain pending.
-Prior candidates, installed packages and maintained Forge are preserved. No
-installation, launch, existing save/settings edit or publication. Crafting/unlocks
-stay outside scope.
+[Please do Better r15](../mods/please-do-better/DISTRIBUTION_README.md) is approved
+for local distribution after user-confirmed visible r14 gold highlighting on Eden.
+R15 removes verbose render logging only; broader gameplay and Ryujinx remain
+pending. Forge menu/background-overlay corruption is disclosed and unresolved;
+Forge source and installed packages remain unchanged. R14 and prior candidates
+are preserved. No installation, launch, existing save/settings edit or publication.
+Crafting and equipment unlocks remain outside scope.
 
 Eight maintained mods remain: damage-numbers r17, key-quest-markers r1 and
-modern-weapon-controls r10 are READY_TO_DISTRIBUTE; forge-patched, hd-project,
-wiki-cheats and dti-dumper-support are LOCAL_ONLY; please-do-better is DEVELOPMENT. Each current
+modern-weapon-controls r10 and please-do-better r15 are READY_TO_DISTRIBUTE; forge-patched, hd-project,
+wiki-cheats and dti-dumper-support are LOCAL_ONLY. Each current
 `mods/<name>/DISTRIBUTION.json` is authoritative.
 
 Eden uses adapter-enabled `forge-patched` and base Better Input. The user has
