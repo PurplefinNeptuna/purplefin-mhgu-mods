@@ -1,3 +1,10 @@
+Damage Numbers r19 now replaces r18 as the current local delivery. The user
+approved its real-renderer 0.5 px outline preview on 2026-10-07 and requested a
+built release ready to distribute. Fresh host/ARM/static checks passed; no new
+gameplay run was performed. R18 is preserved under
+`backups/damage-numbers/readability-r19-20261007/`. No installation, activation,
+publication or push occurred. See [readability evidence](../mods/damage-numbers/READABILITY.md).
+
 # Local state
 
 Standalone development is merged into `main` at `f8987c8`, from release base `7371ddc`. The four merged project branches were deleted; both linked worktrees remain at their original detached commits. Earlier source commits and accepted packages are preserved. The primary checkout now holds the verified r18/r11/r2/r16 deliveries and source exports. Its previous build/work outputs are retained under `backups/main-standalone-merge-20261007T090445Z/`, with per-file hashes in the merge artifact receipt. Standalone layout byte parity is recorded in [the migration record](STANDALONE_MIGRATION.json).
