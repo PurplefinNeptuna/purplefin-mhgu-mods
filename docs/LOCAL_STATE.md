@@ -4,15 +4,15 @@
 
 Great Luck plugin research is in
 [GREAT_LUCK_FORGE_HANDOFF.md](GREAT_LUCK_FORGE_HANDOFF.md).
-[Please do Better r8](../mods/please-do-better/README.md) is a local DEVELOPMENT
+[Please do Better r9](../mods/please-do-better/README.md) is a local DEVELOPMENT
 candidate implementing gold luck highlights, optional live Miraculous forcing,
-preferences and compact diagnostics. The user's r4 report supports forced reward
-observation. R6/R7 grids showed generated/extra totals but zero markers and one
-mapping fault. R8 fixes state-1's resize-before-generation call order, reproduced
-as one false capture fault against preserved R7. Visible alignment is pending.
-R1-R7 candidates and maintained Forge remain preserved. Preparation installed,
-activated and launched nothing and wrote no real saves/settings. Crafting/unlocks
-remain outside scope.
+preferences and compact diagnostics. R8's user grid confirms one bound extra,
+zero capture/mapping faults and zero visible markers, with a draw-path rejection.
+R9 accepts the verified resolved presentation surface and full alternate native
+viewport/clip bank; precise bounded diagnostics identify any remaining rejected
+path. Visible R9 alignment is pending. R1-R8 candidates and maintained Forge stay
+preserved. Preparation installed/activated/launched nothing and wrote no real
+saves/settings. Crafting/unlocks remain outside scope.
 
 Eight maintained mods remain: damage-numbers r17, key-quest-markers r1 and
 modern-weapon-controls r10 are READY_TO_DISTRIBUTE; forge-patched, hd-project,
