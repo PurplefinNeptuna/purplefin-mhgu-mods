@@ -4,13 +4,13 @@
 
 Great Luck plugin research is in
 [GREAT_LUCK_FORGE_HANDOFF.md](GREAT_LUCK_FORGE_HANDOFF.md).
-[Please do Better r9](../mods/please-do-better/README.md) is a local DEVELOPMENT
+[Please do Better r10](../mods/please-do-better/README.md) is a local DEVELOPMENT
 candidate implementing gold luck highlights, optional live Miraculous forcing,
-preferences and compact diagnostics. R8's user grid confirms one bound extra,
-zero capture/mapping faults and zero visible markers, with a draw-path rejection.
-R9 accepts the verified resolved presentation surface and full alternate native
-viewport/clip bank; precise bounded diagnostics identify any remaining rejected
-path. Visible R9 alignment is pending. R1-R8 candidates and maintained Forge stay
+preferences and compact diagnostics. R9's user grid/log confirm four bound
+extras, zero capture/mapping faults, a supported shader and a target-identity
+rejection. R10 compares native NVN draw textures with exact acquired presentation
+images; first-screen rejection details stay readable across alternating images.
+Visible R10 alignment is pending. R1-R9 candidates and maintained Forge stay
 preserved. Preparation installed/activated/launched nothing and wrote no real
 saves/settings. Crafting/unlocks remain outside scope.
 
