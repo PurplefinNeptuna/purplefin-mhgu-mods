@@ -4,15 +4,14 @@
 
 Great Luck plugin research is in
 [GREAT_LUCK_FORGE_HANDOFF.md](GREAT_LUCK_FORGE_HANDOFF.md).
-[Please do Better r12](../mods/please-do-better/README.md) is a local DEVELOPMENT
-candidate correcting native scissor sentinel handling. R11's matching user
-screenshot/log show ten bound extras, zero highlights and 16,653 captures rejected
-at the clip check. R12 reproduces the original intersection/sentinel/viewport
-substitution and retains bounded emulator logging, optional live forcing,
-preferences and compact diagnostics. Visible alignment remains pending.
-Prior candidates, installed packages and maintained Forge are preserved.
-No installation, launch, real save/settings edit or publication is included.
-Crafting/unlocks stay outside scope.
+[Please do Better r13](../mods/please-do-better/README.md) is a local DEVELOPMENT
+candidate observing the native full-texture downsample into the acquired image.
+The matching r12 user grid/log confirm eight bound extras, zero highlights,
+15,360 geometry publications and a source/presented-image mismatch. R13 requires
+an observed exact-frame, same-size transfer; arbitrary offscreen targets remain
+suppressed. Visible alignment and gameplay remain pending. Prior candidates,
+installed packages and maintained Forge are preserved. No installation, launch,
+real save/settings edit or publication. Crafting/unlocks stay outside scope.
 
 Eight maintained mods remain: damage-numbers r17, key-quest-markers r1 and
 modern-weapon-controls r10 are READY_TO_DISTRIBUTE; forge-patched, hd-project,
