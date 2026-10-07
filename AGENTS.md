@@ -5,8 +5,7 @@
 Monster Hunter Generations Ultimate **Nintendo Switch** modding on Eden and
 Ryujinx-based emulators/Linux.
 Title ID: `0100770008DD8000`. Start with `README.md`, `docs/LOCAL_STATE.md`,
-`docs/REFERENCES.md` and `docs/TOOLS.md`. Local launchers exist; there is no
-general mod build system or automated in-game suite.
+`docs/REFERENCES.md` and `docs/TOOLS.md`. Local launchers exist; mod-local build entry points are the default; there is no automated in-game suite.
 
 Local inputs and runtime paths:
 
@@ -81,8 +80,8 @@ compatibility fixes.
 
 Each plugin uses a compact, unframed tree row under **Plugin UI**, matching
 **Better Inputs Config**, closed by default. Pair `ImGui::TreeNode` /
-`igTreeNode_Str` with `TreePop` on every opened path; nest detailed
-diagnostics. Reserve framed `CollapsingHeader` for Forge parent sections. Use
+`igTreeNode_Str` with `TreePop` on every opened path. Plugin panels contain settings only;
+diagnostics go to concise, deduplicated logs. Reserve framed `CollapsingHeader` for Forge parent sections. Use
 stable plugin-specific widget IDs. Closing settings hides the panel;
 gameplay/render callbacks continue.
 
@@ -121,8 +120,9 @@ from hypotheses.
 ## Workspace layout
 
 - `docs/`: workflow, local observations, and research notes.
-- `scripts/`: project-owned automation added when needed.
-- `mods/<name>/`: mod descriptions, patch recipes, and reproducible sources.
+- `scripts/`: workspace orchestration and compatibility forwarding commands.
+- `mods/<name>/`: self-contained, independently exportable mod source repos,
+  each owning its recipes, tests, build entry point, documentation and licenses.
 - `work/<name>/`: copied archives, extracted resources, and editing intermediates.
 - `build/<name>/`: staged emulator mod packages.
 - `backups/`: originals/backups for a specific operation.
@@ -143,7 +143,10 @@ request.
 
 Follow `docs/DISTRIBUTION_STANDARD.md` for every current and future mod.
 `mods/<name>/DISTRIBUTION.json` is the authoritative distribution status.
-Register new mods with `python3 scripts/mod_distribution.py init NAME`.
+Register/scaffold future mods with `python3 scripts/mod_distribution.py init NAME
+--kind plugin|resource|cheat|tool` (default: plugin). Existing folders are never
+overwritten. Follow `docs/STANDALONE_MODS.md`; no sibling-mod, personal-path,
+installed-emulator or parent-Git-history dependencies are allowed.
 Never label a mod ready to distribute without a verified versioned ZIP under
 `build/<name>/releases/<version>/`, its named runtime package, and adjacent
 README, notices, manifest and checksums. Keep publication and gameplay evidence

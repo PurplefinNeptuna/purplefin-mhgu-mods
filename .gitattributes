@@ -1,0 +1,2 @@
+# Preserve byte-identical upstream snapshots, including their whitespace.
+mods/*/vendor/** -whitespace

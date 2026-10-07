@@ -295,6 +295,7 @@ def main():
     packager.add_argument('--refresh-support', action='store_true')
     initializer = commands.add_parser('init', help='Register a new mod as DEVELOPMENT')
     initializer.add_argument('mod')
+    initializer.add_argument('--kind', choices=('plugin','resource','cheat','tool'), default='plugin')
     args = parser.parse_args()
     if args.command == 'check':
         require(not (args.source_only and args.staged), 'Choose --source-only or --staged')
@@ -308,14 +309,9 @@ def main():
         archive = package(args.mod, refresh_support=args.refresh_support)
         print(f'Verified: {archive}\nSHA-256: {digest(archive.read_bytes())}')
     else:
-        require(re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', args.mod), 'Invalid mod name')
-        path = local(ROOT, f'mods/{args.mod}/DISTRIBUTION.json')
-        require(not path.exists(), f'Preserving existing record: {path}')
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(json_bytes({'schema_version': 1, 'mod': args.mod, 'status': 'DEVELOPMENT',
-            'reason': 'New mod; distribution approval and verified package are not recorded.',
-            'publication': {'published': False, 'url': None, 'date': None}}))
-        print(f'Registered: {path}')
+        from standalone_mods import scaffold
+        path = scaffold(ROOT/'mods'/args.mod, args.mod, args.kind)
+        print(f'Scaffolded standalone {args.kind}: {path}')
 
 
 if __name__ == '__main__':
