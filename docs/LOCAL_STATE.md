@@ -4,14 +4,15 @@
 
 Great Luck plugin research is in
 [GREAT_LUCK_FORGE_HANDOFF.md](GREAT_LUCK_FORGE_HANDOFF.md).
-[Please do Better r13](../mods/please-do-better/README.md) is a local DEVELOPMENT
-candidate observing the native full-texture downsample into the acquired image.
-The matching r12 user grid/log confirm eight bound extras, zero highlights,
-15,360 geometry publications and a source/presented-image mismatch. R13 requires
-an observed exact-frame, same-size transfer; arbitrary offscreen targets remain
-suppressed. Visible alignment and gameplay remain pending. Prior candidates,
-installed packages and maintained Forge are preserved. No installation, launch,
-real save/settings edit or publication. Crafting/unlocks stay outside scope.
+[Please do Better r14](../mods/please-do-better/README.md) is a local DEVELOPMENT
+candidate drawing independent Forge gold overlays from verified projected slot
+geometry. R13's matching user grid/log show four bound extras, zero highlights,
+6,720 geometry publications and zero downsample hook hits. R14 removes the unused
+copy hooks and texture-equality requirement, retaining exact batch/node/frame,
+full-viewport, clip and lifetime checks. Visible output/alignment remain pending.
+Prior candidates, installed packages and maintained Forge are preserved. No
+installation, launch, existing save/settings edit or publication. Crafting/unlocks
+stay outside scope.
 
 Eight maintained mods remain: damage-numbers r17, key-quest-markers r1 and
 modern-weapon-controls r10 are READY_TO_DISTRIBUTE; forge-patched, hd-project,
