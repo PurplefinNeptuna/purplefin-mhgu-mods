@@ -1,3 +1,14 @@
+# Damage Numbers r25 size update, 2026-10-08
+
+Damage Numbers **r25** is the current local delivery. The user approved the
+1080p size preview and requested direct readiness without additional testing.
+Wilds/Classic bases are 24 px and Rise is 20 px at 720p; Rise weak points keep
+the 1.4× boost. At 1080p the weak-point sizes are 36/42/36 px. Build/static/package
+evidence is in [the release record](../mods/damage-numbers/docs/R25_SIZE_CHANGE.json).
+No fresh behavior suite or game run, installation, activation or publication.
+The previous r24 package is preserved under `backups/damage-numbers/base-size-r25-20261008/`.
+The dated snapshots below keep their original scope.
+
 Damage Numbers r20 is the current local delivery. The user selected 1.5× crit
 stars from the real-renderer preview on 2026-10-07 and requested direct readiness.
 Fresh host/ARM/static checks passed; no new gameplay run was performed. R19 is
