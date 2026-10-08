@@ -68,6 +68,8 @@ class DistributionTests(unittest.TestCase):
             self.assertEqual(zipped.read('README.md'), first['README.md'])
             self.assertNotIn('NOTICES.txt', zipped.namelist())
             self.assertNotIn('NOTICES.html', zipped.namelist())
+            self.assertNotIn('README.html', zipped.namelist())
+        self.assertEqual(first['README.html'], b'<p>Install sample-mod alongside Forge.</p>\n')
         distribution.check(self.root)
 
     def test_future_unregistered_mod_is_rejected(self):
@@ -113,6 +115,8 @@ class DistributionTests(unittest.TestCase):
                 with zipfile.ZipFile(archive) as zipped:
                     self.assertEqual(zipped.namelist(), ['README.md', name + '/' + runtime])
                     self.assertEqual(zipped.read('README.md'), (folder / 'README.md').read_bytes())
+                self.assertEqual((archive.parent / 'README.html').read_bytes(),
+                                 distribution.readme_html((folder / 'README.md').read_bytes()))
 
     def test_git_gate_rejects_unstaged_registry_and_support(self):
         def git(*args):
@@ -232,11 +236,67 @@ class DistributionTests(unittest.TestCase):
         archive.write_bytes(distribution.make_zip(runtime, self.mod,
                                                 {'README.md': (archive.parent / 'README.md').read_bytes()}))
         (archive.parent / 'NOTICES.html').unlink()
+        (archive.parent / 'README.html').unlink()
         old = distribution.inventory(archive.parent)
         self.rejected(self.package)
         self.package(refresh_support=True)
         receipt = next((self.root / 'backups/sample-mod/distribution-support').glob('*/backup-manifest.json'))
         self.assertEqual(distribution.inventory(receipt.parent / 'r1'), old)
+        self.assertEqual(archive.read_bytes(), old['sample-mod-r1.zip'])
+        distribution.check(self.root)
+
+    def test_readme_html_preserves_guide_structure_and_escapes_markup(self):
+        markdown = b'''# Fixture Mod
+
+Shows **gold digits** and *markers* with `A > B`.
+
+## Installation
+
+1. Get [Forge](https://example.com/releases?a=1&b=2).
+2. Copy `fixture-mod` into:
+   - Eden: `~/.local/share/eden/load/`
+   - Ryujinx: `mods/contents/`
+3. Enable the mod.
+
+## Settings
+
+```ini
+[Fixture]
+enabled=1
+literal=<script>&
+```
+
+| Setting | Value |
+| --- | --- |
+| `enabled` | `1` or `0` |
+
+<script>alert('literal')</script>
+[Unsafe](javascript:alert) [Local](README.md)
+'''
+        html = distribution.readme_html(markdown)
+        self.assertIn(b'<h2>Installation</h2>', html)
+        self.assertIn(b'<strong>gold digits</strong>', html)
+        self.assertIn(b'<em>markers</em>', html)
+        self.assertIn(b'<code>A &gt; B</code>', html)
+        self.assertIn(b'href="https://example.com/releases?a=1&amp;b=2"', html)
+        self.assertIn(b'<li><p>Copy <code>fixture-mod</code> into:</p>\n<ul>', html)
+        self.assertIn(b'<li><p>Enable the mod.</p></li>\n</ol>', html)
+        self.assertIn(b'<pre><code>[Fixture]\nenabled=1\nliteral=&lt;script&gt;&amp;</code></pre>', html)
+        self.assertIn(b'<th>Setting</th><th>Value</th>', html)
+        self.assertIn(b'<td><code>enabled</code></td><td><code>1</code> or <code>0</code></td>', html)
+        self.assertNotIn(b'<script>', html)
+        self.assertNotIn(b'href="javascript:', html)
+        self.assertNotIn(b'href="README.md"', html)
+
+    def test_readme_html_tampering_is_rejected_and_refresh_preserves_zip(self):
+        archive = self.package()
+        old = archive.read_bytes()
+        (archive.parent / 'README.html').write_bytes(b'<p>Incorrect instructions</p>')
+        self.rejected(lambda: distribution.check(self.root))
+        self.package(refresh_support=True)
+        self.assertEqual(archive.read_bytes(), old)
+        self.assertEqual((archive.parent / 'README.html').read_bytes(),
+                         distribution.readme_html((archive.parent / 'README.md').read_bytes()))
         distribution.check(self.root)
 
     def test_html_fragment_preserves_license_text_and_escapes_markup(self):

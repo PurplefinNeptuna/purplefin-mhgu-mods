@@ -19,7 +19,7 @@ from paths import ROOT
 STATES = {'DEVELOPMENT', 'LOCAL_ONLY', 'RETIRED', 'READY_TO_DISTRIBUTE', 'PUBLISHED'}
 READY = {'READY_TO_DISTRIBUTE', 'PUBLISHED'}
 ARCHIVED_SUPPORT = ('README.md',)
-DELIVERY_DOCUMENTS = ('README.md', 'NOTICES.txt', 'NOTICES.html')
+DELIVERY_DOCUMENTS = ('README.md', 'README.html', 'NOTICES.txt', 'NOTICES.html')
 
 
 def require(condition, message):
@@ -124,7 +124,7 @@ def spec_for(mod, root=ROOT):
         require(relative(path).parts[0] in ('romfs', 'exefs', 'cheats') and len(relative(path).parts) > 1,
                 f'Runtime files must start at romfs/, exefs/ or cheats/: {path}')
         require(relative(path).name.lower() not in
-                ('readme.md', 'notices.txt', 'notices.html', 'release-manifest.json', 'sha256sums'),
+                ('readme.md', 'readme.html', 'notices.txt', 'notices.html', 'release-manifest.json', 'sha256sums'),
                 f'Support file declared as runtime: {path}')
         relative(record['source'])
         require(re.fullmatch(r'[0-9a-f]{64}', record.get('sha256', '')), f'Missing pinned hash: {path}')
@@ -177,6 +177,102 @@ def notices_html(sources):
     return ('\n'.join(blocks) + '\n').encode('ascii', 'xmlcharrefreplace')
 
 
+def readme_inline(text):
+    """Render README inline formatting with escaped text and public links only."""
+    pattern = r'(`[^`\n]+`|\[[^\]\n]+\]\([^\s)]+\)|\*\*[^*\n]+\*\*|\*[^*\n]+\*)'
+    rendered = []
+    for token in re.split(pattern, text):
+        if token.startswith('**') and token.endswith('**'):
+            rendered.append('<strong>' + readme_inline(token[2:-2]) + '</strong>')
+        elif token.startswith('*') and token.endswith('*'):
+            rendered.append('<em>' + readme_inline(token[1:-1]) + '</em>')
+        else:
+            rendered.append(notice_inline(token))
+    return ''.join(rendered)
+
+
+def readme_html(blob):
+    """Render release-guide Markdown as a paste-ready GameBanana HTML fragment."""
+    item_pattern = r'^( *)([-+*]|\d+[.)]) +(.+)$'
+
+    def cells(line):
+        return [cell.strip() for cell in re.split(r'(?<!\\)\|', line.strip().strip('|'))]
+
+    def table_start(lines, index):
+        return (index + 1 < len(lines) and lines[index].strip().startswith('|') and
+                all(re.fullmatch(r':?-{3,}:?', cell) for cell in cells(lines[index + 1])))
+
+    def blocks(lines):
+        output = []
+        index = 0
+        while index < len(lines):
+            line = lines[index]
+            if not line.strip():
+                index += 1
+                continue
+            heading = re.fullmatch(r'(#{1,6}) +(.+)', line)
+            fence = re.fullmatch(r'```[a-zA-Z0-9_-]*\s*', line)
+            item = re.match(item_pattern, line)
+            if heading:
+                level = max(2, len(heading[1]))
+                output.append(f'<h{level}>' + readme_inline(heading[2]) + f'</h{level}>')
+                index += 1
+            elif fence:
+                end = index + 1
+                while end < len(lines) and lines[end].strip() != '```':
+                    end += 1
+                require(end < len(lines), 'Unclosed README code block')
+                output.append('<pre><code>' + escape('\n'.join(lines[index + 1:end])) + '</code></pre>')
+                index = end + 1
+            elif table_start(lines, index):
+                headers = cells(line)
+                output.append('<table>\n<thead><tr>' + ''.join('<th>' + readme_inline(cell) + '</th>'
+                                                               for cell in headers) + '</tr></thead>\n<tbody>')
+                index += 2
+                while index < len(lines) and lines[index].strip().startswith('|'):
+                    row = cells(lines[index])
+                    require(len(row) == len(headers), 'README table row differs from its headers')
+                    output.append('<tr>' + ''.join('<td>' + readme_inline(cell) + '</td>' for cell in row) + '</tr>')
+                    index += 1
+                output.append('</tbody>\n</table>')
+            elif item:
+                indent = len(item[1])
+                ordered = item[2][0].isdigit()
+                tag = 'ol' if ordered else 'ul'
+                start = int(re.match(r'\d+', item[2])[0]) if ordered else 1
+                attribute = f' start="{start}"' if start != 1 else ''
+                output.append(f'<{tag}{attribute}>')
+                while index < len(lines):
+                    current = re.match(item_pattern, lines[index])
+                    if (not current or len(current[1]) != indent or
+                            current[2][0].isdigit() != ordered):
+                        break
+                    content_indent = current.start(3)
+                    body = [current[3]]
+                    index += 1
+                    while index < len(lines):
+                        continuation = lines[index]
+                        if continuation.strip() and len(continuation) - len(continuation.lstrip()) <= indent:
+                            break
+                        body.append(re.sub(r'^ {0,' + str(content_indent) + '}', '', continuation))
+                        index += 1
+                    output.append('<li>' + blocks(body) + '</li>')
+                output.append(f'</{tag}>')
+            else:
+                paragraph = [line.strip()]
+                index += 1
+                while index < len(lines) and lines[index].strip():
+                    if (re.match(r'^#{1,6} |^```', lines[index]) or
+                            re.match(item_pattern, lines[index]) or table_start(lines, index)):
+                        break
+                    paragraph.append(lines[index].strip())
+                    index += 1
+                output.append('<p>' + readme_inline(' '.join(paragraph)) + '</p>')
+        return '\n'.join(output)
+
+    return (blocks(blob.decode('utf-8').splitlines()) + '\n').encode('ascii', 'xmlcharrefreplace')
+
+
 def make_zip(payloads, package_name, support):
     entries = {f'{package_name}/{name}': blob for name, blob in payloads.items()}
     entries.update(support)
@@ -198,6 +294,7 @@ def expected_files(spec, root=ROOT):
         payloads[name] = blob
     notices = [(p, read(root, p)) for p in spec['notices']]
     support = {'README.md': read(root, spec['readme']),
+               'README.html': readme_html(read(root, spec['readme'])),
                'NOTICES.txt': b'\n\n'.join(blob.strip() for _, blob in notices) + b'\n',
                'NOTICES.html': notices_html(notices)}
     zipped = make_zip(payloads, spec['package_name'], {p: support[p] for p in ARCHIVED_SUPPORT})
@@ -277,7 +374,7 @@ def package(mod, root=ROOT, refresh_support=False):
                     make_zip(payloads, spec['package_name'], {})),
                 'Existing ZIP differs from its runtime/documentation; preserve/migrate it explicitly')
         require(refresh_support, 'Support files changed; use --refresh-support to back up and refresh them')
-        require(actual.keys() <= files.keys() and files.keys() - actual.keys() <= {'NOTICES.html'},
+        require(actual.keys() <= files.keys() and files.keys() - actual.keys() <= {'README.html', 'NOTICES.html'},
                 'Missing/unexpected files in release; preserve/migrate them explicitly')
         stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
         backup = local(root, f'backups/{mod}/distribution-support/{stamp}/{spec["version"]}')

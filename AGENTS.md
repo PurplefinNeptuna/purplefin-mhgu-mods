@@ -256,3 +256,10 @@ references and previous-license commentary. Keep development provenance in
 `THIRD_PARTY.md`; use dedicated `DISTRIBUTION_NOTICES.md` for release credits and
 component notices, alongside current license files. Notices must be usable
 without a source checkout.
+
+For every current and future mod, supply `README.html` beside the ZIP as a
+paste-ready GameBanana HTML fragment generated from the release README. Preserve
+its installation/use content, headings, lists, controls/settings tables, public
+links and code examples. Keep HTML alternatives outside the ZIP; archive only
+`README.md` beside the runtime folder. Keep README content user-facing and
+notices limited to current package contents and applicable credits.
