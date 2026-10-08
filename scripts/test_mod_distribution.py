@@ -76,6 +76,16 @@ class DistributionTests(unittest.TestCase):
         self.rejected(lambda: distribution.check(self.root, source_only=True))
         self.rejected(lambda: distribution.check(self.root))
 
+    def test_developer_documents_cannot_be_release_notices(self):
+        for name in ('THIRD_PARTY.md', 'DEVELOPMENT.md', 'README.md'):
+            with self.subTest(name=name):
+                source = 'mods/sample-mod/' + name
+                self.write(source, b'Developer provenance and history.\n')
+                self.spec['notices'] = [source]
+                self.save_spec()
+                self.rejected(self.package)
+        self.assertFalse((self.root / 'build/sample-mod/releases/r1').exists())
+
     def test_future_scaffolds_package_readme_beside_runtime_for_every_kind(self):
         from standalone_mods import scaffold
         for kind in ('plugin', 'resource', 'cheat', 'tool'):

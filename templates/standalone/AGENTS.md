@@ -21,3 +21,11 @@ check; support refreshes preserve runtime bytes and back up the previous ZIP.
 Notices/licenses stay outside the ZIP. Supply combined `NOTICES.txt` and a
 notices-only `NOTICES.html` alternative beside the ZIP, formatted as a paste-ready
 GameBanana fragment. Preserve license wording.
+
+Release notices cover only the package's current code, assets and applicable
+credits, including Forge where used. Preserve required copyright and license
+text. Exclude unrelated mods, development tools, local source paths, Git/history
+references and previous-license commentary. Keep development provenance in
+`THIRD_PARTY.md`; use dedicated `DISTRIBUTION_NOTICES.md` for release credits and
+component notices, alongside current license files. Notices must be usable
+without a source checkout.

@@ -110,6 +110,8 @@ def spec_for(mod, root=ROOT):
         require(read(root, spec[field]).strip(), f'Empty {field}: {mod}')
     require(isinstance(spec.get('notices'), list) and spec['notices'], f'Missing notices: {mod}')
     for path in spec['notices']:
+        require(relative(path).name.lower() not in ('third_party.md', 'development.md', 'readme.md'),
+                f'Developer document used as a release notice: {path}; use dedicated DISTRIBUTION_NOTICES.md')
         require(read(root, path).strip(), f'Empty notice: {path}')
     for name, source in spec.get('support', {}).items():
         require('/' not in name and name not in (*DELIVERY_DOCUMENTS, 'release-manifest.json', 'SHA256SUMS')
@@ -159,7 +161,7 @@ def notice_inline(text):
 def notices_html(sources):
     """GameBanana paste-ready HTML fragment; retain notice text and license terms."""
     labels = {'LICENSE': 'Mod license', 'OFL.txt': 'Font license',
-              'OPEN_ART_LICENSE.txt': 'Artwork license', 'THIRD_PARTY.md': 'Third-party notices'}
+              'OPEN_ART_LICENSE.txt': 'Artwork license', 'DISTRIBUTION_NOTICES.md': 'Credits and component licenses'}
     blocks = ['<h2>Notices and licenses</h2>']
     for name, blob in sources:
         blocks.append(f'<h3>{escape(labels.get(PurePosixPath(name).name, PurePosixPath(name).name))}</h3>')

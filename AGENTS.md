@@ -248,3 +248,11 @@ Validate before writing, flush and verify the primary, then commit through
 Forge's counted save mount. Balance handles and mounts on every failure path.
 Keep session settings on failure; previous disk contents are not guaranteed.
 Missing or invalid primary files use defaults. Save controls remain explicit.
+
+Release notices cover only the package's current code, assets and applicable
+credits, including Forge where used. Preserve required copyright and license
+text. Exclude unrelated mods, development tools, local source paths, Git/history
+references and previous-license commentary. Keep development provenance in
+`THIRD_PARTY.md`; use dedicated `DISTRIBUTION_NOTICES.md` for release credits and
+component notices, alongside current license files. Notices must be usable
+without a source checkout.
