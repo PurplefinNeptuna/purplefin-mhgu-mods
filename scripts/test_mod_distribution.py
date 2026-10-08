@@ -30,6 +30,13 @@ class DistributionTests(unittest.TestCase):
             'approval': {'date': '2026-10-06', 'basis': 'Fixture approval'},
             'target': 'Fixture only', 'limitations': ['No game runtime claim'],
             'readme': 'mods/sample-mod/README.md', 'notices': ['mods/sample-mod/NOTICE.txt'],
+            'gamebanana': {
+                'ai_code': {'used': True, 'scope': 'Assisted with fixture code.',
+                            'software': [{'name': 'Fixture Coding Assistant', 'url': 'https://example.com/assistant'}]},
+                'ai_assets': [],
+                'credits': [{'name': 'Fixture library', 'author': 'Fixture developers',
+                             'url': 'https://example.com/library', 'scope': 'MIT-licensed code.'}],
+            },
             'payloads': {'romfs/nativeNX/plugins/test.nro': {
                 'source': 'build/sample-mod/validated.nro',
                 'sha256': distribution.digest(b'validated-runtime\x00\x01')}},
@@ -69,6 +76,7 @@ class DistributionTests(unittest.TestCase):
             self.assertNotIn('NOTICES.txt', zipped.namelist())
             self.assertNotIn('NOTICES.html', zipped.namelist())
             self.assertNotIn('README.html', zipped.namelist())
+            self.assertNotIn('GAMEBANANA_README.html', zipped.namelist())
         self.assertEqual(first['README.html'], b'<p>Install sample-mod alongside Forge.</p>\n')
         distribution.check(self.root)
 
@@ -117,6 +125,9 @@ class DistributionTests(unittest.TestCase):
                     self.assertEqual(zipped.read('README.md'), (folder / 'README.md').read_bytes())
                 self.assertEqual((archive.parent / 'README.html').read_bytes(),
                                  distribution.readme_html((folder / 'README.md').read_bytes()))
+                self.assertEqual((archive.parent / 'GAMEBANANA_README.html').read_bytes(),
+                                 distribution.gamebanana_readme_html((folder / 'README.md').read_bytes(),
+                                                                      spec['gamebanana']))
 
     def test_git_gate_rejects_unstaged_registry_and_support(self):
         def git(*args):
@@ -237,6 +248,7 @@ class DistributionTests(unittest.TestCase):
                                                 {'README.md': (archive.parent / 'README.md').read_bytes()}))
         (archive.parent / 'NOTICES.html').unlink()
         (archive.parent / 'README.html').unlink()
+        (archive.parent / 'GAMEBANANA_README.html').unlink()
         old = distribution.inventory(archive.parent)
         self.rejected(self.package)
         self.package(refresh_support=True)
@@ -298,6 +310,53 @@ literal=<script>&
         self.assertEqual((archive.parent / 'README.html').read_bytes(),
                          distribution.readme_html((archive.parent / 'README.md').read_bytes()))
         distribution.check(self.root)
+
+    def test_gamebanana_description_discloses_software_and_keeps_guides_separate(self):
+        archive = self.package()
+        guide = (archive.parent / 'README.html').read_bytes()
+        platform = (archive.parent / 'GAMEBANANA_README.html').read_bytes()
+        self.assertTrue(platform.startswith(b'<h2><strong>AI-assisted code</strong></h2>'))
+        self.assertIn(b'Fixture Coding Assistant</a>', platform)
+        self.assertIn(b'href="https://example.com/assistant"', platform)
+        self.assertIn(b'Assisted with fixture code.', platform)
+        self.assertIn(b'Fixture library</a> by Fixture developers. MIT-licensed code.', platform)
+        self.assertIn(guide.strip(), platform)
+        self.assertNotIn(b'AI-assisted', guide)
+        (archive.parent / 'GAMEBANANA_README.html').write_bytes(b'<p>AI was used</p>')
+        self.rejected(lambda: distribution.check(self.root))
+        self.package(refresh_support=True)
+        self.assertEqual((archive.parent / 'GAMEBANANA_README.html').read_bytes(), platform)
+
+    def test_gamebanana_missing_or_vague_disclosures_are_rejected_before_packaging(self):
+        good = copy.deepcopy(self.spec['gamebanana'])
+        broken = [None, {'ai_code': {'used': True}, 'ai_assets': [], 'credits': []}]
+        vague = copy.deepcopy(good)
+        vague['ai_code']['software'][0]['name'] = 'AI'
+        broken.append(vague)
+        unknown_assets = copy.deepcopy(good)
+        unknown_assets['ai_assets'] = [{'description': 'Texture', 'software': [], 'inputs': [], 'datasets': []}]
+        broken.append(unknown_assets)
+        for profile in broken:
+            with self.subTest(profile=profile):
+                self.spec['gamebanana'] = profile
+                self.save_spec()
+                self.rejected(self.package)
+                self.assertFalse((self.root / 'build/sample-mod/releases/r1').exists())
+
+    def test_gamebanana_asset_credits_and_code_only_exceptions(self):
+        profile = copy.deepcopy(self.spec['gamebanana'])
+        profile['ai_code'] = {'used': False}
+        html = distribution.gamebanana_readme_html(b'# Fixture\n', profile)
+        self.assertNotIn(b'AI-assisted', html)
+        self.assertNotIn(b'AI-generated', html)
+        profile['ai_assets'] = [{'description': 'Generated fixture texture',
+            'software': [{'name': 'Fixture generator', 'author': 'Tool maker', 'url': 'https://example.com/tool'}],
+            'inputs': [{'name': 'Input art', 'author': 'Input artist', 'url': 'https://example.com/input'}],
+            'datasets': [{'name': 'Training art', 'author': 'Dataset artist', 'url': 'https://example.com/data'}]}]
+        html = distribution.gamebanana_readme_html(b'# Fixture\n', profile)
+        self.assertTrue(html.startswith(b'<h2><strong>AI-generated assets</strong></h2>'))
+        for text in (b'Input artist', b'Dataset artist', b'Tool maker'):
+            self.assertIn(text, html)
 
     def test_html_fragment_preserves_license_text_and_escapes_markup(self):
         class Parser(HTMLParser):

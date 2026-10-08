@@ -263,3 +263,14 @@ its installation/use content, headings, lists, controls/settings tables, public
 links and code examples. Keep HTML alternatives outside the ZIP; archive only
 `README.md` beside the runtime folder. Keep README content user-facing and
 notices limited to current package contents and applicable credits.
+
+For GameBanana, generate separate `GAMEBANANA_README.html` from the install
+README plus the explicit `gamebanana` record in `DISTRIBUTION.json`. Follow
+https://gamebanana.com/wikis/2175: prominently disclose actual AI code assistance,
+name/link its software and describe its scope. Credit applicable original code
+and asset authors/sources. AI-assisted code needs no training-dataset inventory;
+model-generated artwork/audio still needs known software, input and dataset
+credits. Never infer AI provenance or claim human review that has not occurred.
+Keep this platform description outside the ZIP; retain the install guides and
+notices separately. Apply this to every current and future mod and recheck the
+live policy before publication.

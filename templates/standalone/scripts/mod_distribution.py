@@ -19,7 +19,8 @@ from paths import ROOT
 STATES = {'DEVELOPMENT', 'LOCAL_ONLY', 'RETIRED', 'READY_TO_DISTRIBUTE', 'PUBLISHED'}
 READY = {'READY_TO_DISTRIBUTE', 'PUBLISHED'}
 ARCHIVED_SUPPORT = ('README.md',)
-DELIVERY_DOCUMENTS = ('README.md', 'README.html', 'NOTICES.txt', 'NOTICES.html')
+DELIVERY_DOCUMENTS = ('README.md', 'README.html', 'GAMEBANANA_README.html', 'NOTICES.txt', 'NOTICES.html')
+GAMEBANANA_POLICY = 'https://gamebanana.com/wikis/2175'
 
 
 def require(condition, message):
@@ -113,6 +114,7 @@ def spec_for(mod, root=ROOT):
         require(relative(path).name.lower() not in ('third_party.md', 'development.md', 'readme.md'),
                 f'Developer document used as a release notice: {path}; use dedicated DISTRIBUTION_NOTICES.md')
         require(read(root, path).strip(), f'Empty notice: {path}')
+    validate_gamebanana(spec.get('gamebanana'))
     for name, source in spec.get('support', {}).items():
         require('/' not in name and name not in (*DELIVERY_DOCUMENTS, 'release-manifest.json', 'SHA256SUMS')
                 and not name.endswith('.zip'), f'Invalid support filename: {name}')
@@ -124,7 +126,8 @@ def spec_for(mod, root=ROOT):
         require(relative(path).parts[0] in ('romfs', 'exefs', 'cheats') and len(relative(path).parts) > 1,
                 f'Runtime files must start at romfs/, exefs/ or cheats/: {path}')
         require(relative(path).name.lower() not in
-                ('readme.md', 'readme.html', 'notices.txt', 'notices.html', 'release-manifest.json', 'sha256sums'),
+                ('readme.md', 'readme.html', 'gamebanana_readme.html', 'notices.txt', 'notices.html',
+                 'release-manifest.json', 'sha256sums'),
                 f'Support file declared as runtime: {path}')
         relative(record['source'])
         require(re.fullmatch(r'[0-9a-f]{64}', record.get('sha256', '')), f'Missing pinned hash: {path}')
@@ -273,6 +276,74 @@ def readme_html(blob):
     return (blocks(blob.decode('utf-8').splitlines()) + '\n').encode('ascii', 'xmlcharrefreplace')
 
 
+def validate_gamebanana(profile):
+    """Require explicit AI-use records; never infer asset or code provenance."""
+    require(isinstance(profile, dict), 'Missing GameBanana disclosure/credits record')
+
+    def entries(records, author=False):
+        require(isinstance(records, list), 'GameBanana credits/software must be a list')
+        for record in records:
+            require(isinstance(record, dict), 'Invalid GameBanana credit/software record')
+            fields = ('name', 'author') if author else ('name',)
+            for field in fields:
+                value = record.get(field)
+                require(isinstance(value, str) and value.strip() and
+                        value.lower().strip() not in ('ai', 'unknown', 'tbd'),
+                        f'Missing specific GameBanana {field}')
+            require(isinstance(record.get('url'), str) and record['url'].startswith('https://'),
+                    'GameBanana software/source requires a public HTTPS link')
+
+    code = profile.get('ai_code', {})
+    require(type(code.get('used')) is bool, 'GameBanana AI code use must be explicitly recorded')
+    if code['used']:
+        require(isinstance(code.get('scope'), str) and code['scope'].strip(),
+                'Missing GameBanana AI code assistance scope')
+        require(code.get('software'), 'Name/link the AI coding software used')
+        entries(code['software'])
+    assets = profile.get('ai_assets')
+    require(isinstance(assets, list), 'Record GameBanana AI assets explicitly, including an empty list')
+    for asset in assets:
+        require(isinstance(asset, dict) and isinstance(asset.get('description'), str) and
+                asset['description'].strip(), 'Describe the AI-generated asset')
+        for group in ('software', 'inputs', 'datasets'):
+            require(asset.get(group), f'AI assets require known {group} and their authors/sources')
+            entries(asset[group], author=True)
+    entries(profile.get('credits'), author=True)
+    for credit in profile['credits']:
+        require(isinstance(credit.get('scope'), str) and credit['scope'].strip(),
+                'Describe the applicable GameBanana credit')
+
+
+def gamebanana_readme_html(blob, profile):
+    """Platform description with policy-specific disclosures and current credits."""
+    validate_gamebanana(profile)
+
+    def link(record):
+        return f'<a href="{escape(record["url"], quote=True)}">{escape(record["name"])}</a>'
+
+    output = []
+    code = profile['ai_code']
+    if code['used']:
+        output += ['<h2><strong>AI-assisted code</strong></h2>',
+                   '<p>AI assistance from ' + ', '.join(link(tool) for tool in code['software']) + ': ' +
+                   escape(code['scope']) + '</p>']
+    for asset in profile['ai_assets']:
+        output += ['<h2><strong>AI-generated assets</strong></h2>', '<p>' + escape(asset['description']) + '</p>']
+        for group, heading in (('software', 'AI software'), ('inputs', 'Input credits'),
+                               ('datasets', 'Dataset credits')):
+            output += ['<h3>' + heading + '</h3>', '<ul>']
+            output += ['<li>' + link(record) + ' by ' + escape(record['author']) + '</li>'
+                       for record in asset[group]]
+            output.append('</ul>')
+    output.append(readme_html(blob).decode('ascii').strip())
+    if profile['credits']:
+        output += ['<h2>Credits</h2>', '<ul>']
+        output += ['<li>' + link(credit) + ' by ' + escape(credit['author']) + '. ' +
+                   escape(credit['scope']) + '</li>' for credit in profile['credits']]
+        output.append('</ul>')
+    return ('\n'.join(output) + '\n').encode('ascii', 'xmlcharrefreplace')
+
+
 def make_zip(payloads, package_name, support):
     entries = {f'{package_name}/{name}': blob for name, blob in payloads.items()}
     entries.update(support)
@@ -295,6 +366,7 @@ def expected_files(spec, root=ROOT):
     notices = [(p, read(root, p)) for p in spec['notices']]
     support = {'README.md': read(root, spec['readme']),
                'README.html': readme_html(read(root, spec['readme'])),
+               'GAMEBANANA_README.html': gamebanana_readme_html(read(root, spec['readme']), spec['gamebanana']),
                'NOTICES.txt': b'\n\n'.join(blob.strip() for _, blob in notices) + b'\n',
                'NOTICES.html': notices_html(notices)}
     zipped = make_zip(payloads, spec['package_name'], {p: support[p] for p in ARCHIVED_SUPPORT})
@@ -374,7 +446,8 @@ def package(mod, root=ROOT, refresh_support=False):
                     make_zip(payloads, spec['package_name'], {})),
                 'Existing ZIP differs from its runtime/documentation; preserve/migrate it explicitly')
         require(refresh_support, 'Support files changed; use --refresh-support to back up and refresh them')
-        require(actual.keys() <= files.keys() and files.keys() - actual.keys() <= {'README.html', 'NOTICES.html'},
+        require(actual.keys() <= files.keys() and files.keys() - actual.keys() <=
+                {'README.html', 'GAMEBANANA_README.html', 'NOTICES.html'},
                 'Missing/unexpected files in release; preserve/migrate them explicitly')
         stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
         backup = local(root, f'backups/{mod}/distribution-support/{stamp}/{spec["version"]}')
