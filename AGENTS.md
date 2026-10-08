@@ -149,8 +149,11 @@ installed-emulator or parent-Git-history dependencies are allowed.
 Never label a mod ready to distribute without a verified versioned ZIP under
 `build/<name>/releases/<version>/`, its named runtime package, and adjacent
 README, notices, manifest and checksums. Include the same README at the ZIP root
-beside the named mod folder; keep the mod folder runtime-only. Keep publication
-and gameplay evidence separate. Existing mod-specific status records must agree.
+beside the named mod folder; keep the mod folder runtime-only. Notices/licenses
+stay outside the ZIP. Supply combined `NOTICES.txt` and a notices-only
+`NOTICES.html` alternative beside the ZIP, formatted for GameBanana. Keep
+publication and gameplay evidence separate. Existing mod-specific status records
+must agree.
 
 After mod-specific validation, use `scripts/mod_distribution.py package NAME`
 for delivery. Run `python3 scripts/mod_distribution.py check` before committing

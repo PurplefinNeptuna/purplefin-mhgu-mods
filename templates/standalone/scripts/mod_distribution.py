@@ -3,6 +3,7 @@
 import argparse
 from datetime import datetime, timezone
 import hashlib
+from html import escape
 import io
 import json
 from pathlib import Path, PurePosixPath
@@ -17,6 +18,8 @@ import zipfile
 from paths import ROOT
 STATES = {'DEVELOPMENT', 'LOCAL_ONLY', 'RETIRED', 'READY_TO_DISTRIBUTE', 'PUBLISHED'}
 READY = {'READY_TO_DISTRIBUTE', 'PUBLISHED'}
+ARCHIVED_SUPPORT = ('README.md',)
+DELIVERY_DOCUMENTS = ('README.md', 'NOTICES.txt', 'NOTICES.html')
 
 
 def require(condition, message):
@@ -109,7 +112,7 @@ def spec_for(mod, root=ROOT):
     for path in spec['notices']:
         require(read(root, path).strip(), f'Empty notice: {path}')
     for name, source in spec.get('support', {}).items():
-        require('/' not in name and name not in ('README.md', 'NOTICES.txt', 'release-manifest.json', 'SHA256SUMS')
+        require('/' not in name and name not in (*DELIVERY_DOCUMENTS, 'release-manifest.json', 'SHA256SUMS')
                 and not name.endswith('.zip'), f'Invalid support filename: {name}')
         relative(name)
         read(root, source)
@@ -119,7 +122,7 @@ def spec_for(mod, root=ROOT):
         require(relative(path).parts[0] in ('romfs', 'exefs', 'cheats') and len(relative(path).parts) > 1,
                 f'Runtime files must start at romfs/, exefs/ or cheats/: {path}')
         require(relative(path).name.lower() not in
-                ('readme.md', 'notices.txt', 'release-manifest.json', 'sha256sums'),
+                ('readme.md', 'notices.txt', 'notices.html', 'release-manifest.json', 'sha256sums'),
                 f'Support file declared as runtime: {path}')
         relative(record['source'])
         require(re.fullmatch(r'[0-9a-f]{64}', record.get('sha256', '')), f'Missing pinned hash: {path}')
@@ -134,11 +137,47 @@ def release_dir(spec, root=ROOT):
     return local(root, f'build/{spec["mod"]}/releases/{spec["version"]}')
 
 
-def make_zip(payloads, package_name, readme):
+def notice_inline(text):
+    """Render notice Markdown's code and links without enabling embedded HTML."""
+    tokens = re.split(r'(`[^`\n]+`|\[[^\]\n]+\]\([^\s)]+\))', text)
+    rendered = []
+    for token in tokens:
+        link = re.fullmatch(r'\[([^\]\n]+)\]\(([^\s)]+)\)', token)
+        if token.startswith('`') and token.endswith('`'):
+            rendered.append('<code>' + escape(token[1:-1]) + '</code>')
+        elif link:
+            label, url = link.groups()
+            if url.startswith(('https://', 'http://')):
+                rendered.append(f'<a href="{escape(url, quote=True)}">{escape(label)}</a>')
+            else:
+                rendered.append(f'{escape(label)} (<code>{escape(url)}</code>)')
+        else:
+            rendered.append(escape(token))
+    return ''.join(rendered)
+
+
+def notices_html(sources):
+    """GameBanana paste-ready HTML fragment; retain notice text and license terms."""
+    labels = {'LICENSE': 'Mod license', 'OFL.txt': 'Font license',
+              'OPEN_ART_LICENSE.txt': 'Artwork license', 'THIRD_PARTY.md': 'Third-party notices'}
+    blocks = ['<h2>Notices and licenses</h2>']
+    for name, blob in sources:
+        blocks.append(f'<h3>{escape(labels.get(PurePosixPath(name).name, PurePosixPath(name).name))}</h3>')
+        # Keep line breaks and all original wording, including legal capitalization.
+        for paragraph in re.split(r'\n\s*\n', blob.decode('utf-8').strip()):
+            heading = re.fullmatch(r'#{1,6} (.+)', paragraph) if name.endswith('.md') else None
+            if heading:
+                blocks.append('<h4>' + escape(heading[1]) + '</h4>')
+            else:
+                body = notice_inline(paragraph) if name.endswith('.md') else escape(paragraph)
+                blocks.append('<p>' + body.replace('\n', '<br>\n') + '</p>')
+    # Character references keep names readable without a document charset header.
+    return ('\n'.join(blocks) + '\n').encode('ascii', 'xmlcharrefreplace')
+
+
+def make_zip(payloads, package_name, support):
     entries = {f'{package_name}/{name}': blob for name, blob in payloads.items()}
-    # None is used only to recognize the old runtime-only layout during refresh.
-    if readme is not None:
-        entries['README.md'] = readme
+    entries.update(support)
     stream = io.BytesIO()
     with zipfile.ZipFile(stream, 'w') as archive:
         for name, blob in sorted(entries.items()):
@@ -155,9 +194,11 @@ def expected_files(spec, root=ROOT):
         blob = read(root, record['source'])
         require(blob and digest(blob) == record['sha256'], f'Pinned runtime payload changed: {name}')
         payloads[name] = blob
+    notices = [(p, read(root, p)) for p in spec['notices']]
     support = {'README.md': read(root, spec['readme']),
-               'NOTICES.txt': b'\n\n'.join(read(root, p).strip() for p in spec['notices']) + b'\n'}
-    zipped = make_zip(payloads, spec['package_name'], support['README.md'])
+               'NOTICES.txt': b'\n\n'.join(blob.strip() for _, blob in notices) + b'\n',
+               'NOTICES.html': notices_html(notices)}
+    zipped = make_zip(payloads, spec['package_name'], {p: support[p] for p in ARCHIVED_SUPPORT})
     support.update({name: read(root, source) for name, source in spec.get('support', {}).items()})
     evidence = {p: digest(read(root, p)) for p in
                 spec['evidence']['static'] + spec['evidence'].get('manual', [])}
@@ -206,7 +247,7 @@ def verify_release(spec, root=ROOT):
     with zipfile.ZipFile(io.BytesIO(actual[spec['archive']])) as archive:
         require(archive.testzip() is None, 'ZIP CRC failed')
         members = {p: b for p, b in expected.items() if p.startswith(spec['package_name'] + '/')}
-        members['README.md'] = expected['README.md']
+        members.update({name: expected[name] for name in ARCHIVED_SUPPORT})
         require(archive.namelist() == sorted(members), 'ZIP inventory mismatch')
         for entry in archive.infolist():
             relative(entry.filename)
@@ -222,18 +263,20 @@ def package(mod, root=ROOT, refresh_support=False):
     directory = release_dir(spec, root)
     actual = inventory(directory)
     if actual and actual != files:
-        # Runtime stays immutable; the root README can change with support refresh.
+        # Runtime stays immutable; the archived README can change with support refresh.
         runtime = [p for p in files if p.startswith(spec['package_name'] + '/')]
         require(all(actual.get(p) == files[p] for p in runtime),
                 'Runtime differs from existing release; use a new version')
         prefix = spec['package_name'] + '/'
         payloads = {p[len(prefix):]: files[p] for p in runtime}
         require(actual.get(spec['archive']) in (
-                    make_zip(payloads, spec['package_name'], actual.get('README.md')),
-                    make_zip(payloads, spec['package_name'], None)),
-                'Existing ZIP differs from its runtime/README; preserve/migrate it explicitly')
+                    make_zip(payloads, spec['package_name'],
+                             {p: actual[p] for p in ARCHIVED_SUPPORT if p in actual}),
+                    make_zip(payloads, spec['package_name'], {})),
+                'Existing ZIP differs from its runtime/documentation; preserve/migrate it explicitly')
         require(refresh_support, 'Support files changed; use --refresh-support to back up and refresh them')
-        require(actual.keys() == files.keys(), 'Unexpected files in release; preserve/migrate them explicitly')
+        require(actual.keys() <= files.keys() and files.keys() - actual.keys() <= {'NOTICES.html'},
+                'Missing/unexpected files in release; preserve/migrate them explicitly')
         stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
         backup = local(root, f'backups/{mod}/distribution-support/{stamp}/{spec["version"]}')
         backup.parent.mkdir(parents=True, exist_ok=True)

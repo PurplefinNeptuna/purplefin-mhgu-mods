@@ -17,3 +17,7 @@ Ready and published ZIPs include `README.md` at the archive root beside the name
 mod folder. Keep only runtime files inside the mod folder. The archived README
 must match the adjacent release README. Use the distribution packager and full
 check; support refreshes preserve runtime bytes and back up the previous ZIP.
+
+Notices/licenses stay outside the ZIP. Supply combined `NOTICES.txt` and a
+notices-only `NOTICES.html` alternative beside the ZIP, formatted as a paste-ready
+GameBanana fragment. Preserve license wording.

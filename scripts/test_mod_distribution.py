@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Exercise distribution gates with isolated temporary inputs, never game data."""
 import copy
+from html.parser import HTMLParser
 import json
 from pathlib import Path
 import tempfile
@@ -65,6 +66,8 @@ class DistributionTests(unittest.TestCase):
         with zipfile.ZipFile(archive) as zipped:
             self.assertEqual(zipped.namelist(), ['README.md', 'sample-mod/romfs/nativeNX/plugins/test.nro'])
             self.assertEqual(zipped.read('README.md'), first['README.md'])
+            self.assertNotIn('NOTICES.txt', zipped.namelist())
+            self.assertNotIn('NOTICES.html', zipped.namelist())
         distribution.check(self.root)
 
     def test_future_unregistered_mod_is_rejected(self):
@@ -115,7 +118,7 @@ class DistributionTests(unittest.TestCase):
         distribution.check_staged(self.root)
 
     def test_missing_support_and_corrupt_zip_are_rejected(self):
-        for name in ('NOTICES.txt', 'README.md', 'release-manifest.json', 'SHA256SUMS', 'sample-mod-r1.zip'):
+        for name in ('NOTICES.html', 'NOTICES.txt', 'README.md', 'release-manifest.json', 'SHA256SUMS', 'sample-mod-r1.zip'):
             with self.subTest(name=name):
                 archive = self.package()
                 path = archive.parent / name
@@ -174,7 +177,7 @@ class DistributionTests(unittest.TestCase):
     def test_legacy_zip_refresh_adds_readme_and_preserves_backup(self):
         archive = self.package()
         runtime = {'romfs/nativeNX/plugins/test.nro': b'validated-runtime\x00\x01'}
-        archive.write_bytes(distribution.make_zip(runtime, self.mod, None))
+        archive.write_bytes(distribution.make_zip(runtime, self.mod, {}))
         old = distribution.inventory(archive.parent)
         self.rejected(lambda: distribution.check(self.root))
         self.rejected(self.package)
@@ -193,6 +196,68 @@ class DistributionTests(unittest.TestCase):
         self.package(refresh_support=True)
         self.assertEqual(old, archive.read_bytes())
         distribution.check(self.root)
+
+    def test_notice_refresh_updates_adjacent_formats_and_preserves_zip(self):
+        archive = self.package()
+        old = distribution.inventory(archive.parent)
+        notice = b'Copyright (c) Fixture contributors\n\nPermission & conditions remain intact.\n'
+        self.write('mods/sample-mod/NOTICE.txt', notice)
+        self.rejected(self.package)
+        self.package(refresh_support=True)
+        with zipfile.ZipFile(archive) as zipped:
+            self.assertEqual(old['sample-mod-r1.zip'], archive.read_bytes())
+            self.assertEqual((archive.parent / 'NOTICES.txt').read_bytes(), notice)
+            self.assertIn(b'Permission &amp; conditions remain intact.', (archive.parent / 'NOTICES.html').read_bytes())
+            self.assertNotIn('NOTICES.txt', zipped.namelist())
+            self.assertNotIn('NOTICES.html', zipped.namelist())
+            self.assertEqual(zipped.read('sample-mod/romfs/nativeNX/plugins/test.nro'),
+                             old['sample-mod/romfs/nativeNX/plugins/test.nro'])
+        receipt = next((self.root / 'backups/sample-mod/distribution-support').glob('*/backup-manifest.json'))
+        self.assertEqual(distribution.inventory(receipt.parent / 'r1'), old)
+        distribution.check(self.root)
+
+    def test_older_delivery_adds_adjacent_html_without_changing_zip(self):
+        archive = self.package()
+        runtime = {'romfs/nativeNX/plugins/test.nro': b'validated-runtime\x00\x01'}
+        archive.write_bytes(distribution.make_zip(runtime, self.mod,
+                                                {'README.md': (archive.parent / 'README.md').read_bytes()}))
+        (archive.parent / 'NOTICES.html').unlink()
+        old = distribution.inventory(archive.parent)
+        self.rejected(self.package)
+        self.package(refresh_support=True)
+        receipt = next((self.root / 'backups/sample-mod/distribution-support').glob('*/backup-manifest.json'))
+        self.assertEqual(distribution.inventory(receipt.parent / 'r1'), old)
+        distribution.check(self.root)
+
+    def test_html_fragment_preserves_license_text_and_escapes_markup(self):
+        class Parser(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.tags = []
+                self.text = []
+                self.attrs = []
+
+            def handle_starttag(self, tag, attrs):
+                self.tags.append(tag)
+                self.attrs.extend(attrs)
+
+            def handle_data(self, data):
+                self.text.append(data)
+
+        terms = 'Copyright © Fixture\n\nPermission & "AS IS" terms. <script>literal</script>\n'
+        html = distribution.notices_html([('LICENSE', terms.encode('utf-8'))])
+        parser = Parser()
+        parser.feed(html.decode('utf-8'))
+        self.assertTrue(set(parser.tags) <= {'h2', 'h3', 'p', 'br'})
+        self.assertFalse(parser.attrs)
+        self.assertIn(' '.join(terms.split()), ' '.join(''.join(parser.text).split()))
+        markdown = distribution.notices_html([('NOTICE.md',
+            b'# Credits\n\n`src/test.S` [Upstream](https://example.com/license?a=1&b=2)\n\n[Local notice](fonts/OFL.txt)\n')])
+        self.assertIn(b'<h4>Credits</h4>', markdown)
+        self.assertIn(b'<code>src/test.S</code>', markdown)
+        self.assertIn(b'href="https://example.com/license?a=1&amp;b=2"', markdown)
+        self.assertIn(b'Local notice (<code>fonts/OFL.txt</code>)', markdown)
+        self.assertNotIn(b'href="fonts/OFL.txt"', markdown)
 
     def test_refresh_rejects_modified_zip_members_without_writes(self):
         archive = self.package()
