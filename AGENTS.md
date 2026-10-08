@@ -235,3 +235,12 @@ Report static and manual results separately; static checks do not prove
 gameplay. Smoke tests cover loading, the change and relevant transitions. Save
 edits need backups/explicit scope. Library ZIPs contain executables and, for the
 DLC injector, replacement saves.
+
+## Primary-only plugin configs
+
+Configs use one plugin-specific primary INI only. Do not create, read, recover
+from or delete `_backup` configs, and do not imitate the game's save backups.
+Validate before writing, flush and verify the primary, then commit through
+Forge's counted save mount. Balance handles and mounts on every failure path.
+Keep session settings on failure; previous disk contents are not guaranteed.
+Missing or invalid primary files use defaults. Save controls remain explicit.

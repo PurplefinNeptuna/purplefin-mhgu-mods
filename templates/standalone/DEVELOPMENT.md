@@ -11,3 +11,12 @@ Use the configured Python environment for the exact `requirements.txt` versions.
 Use settings-only panels. Format logs in Forge callbacks, outside native hooks. Keep one startup summary, meaningful committed preference changes and readable actionable failures. Never reset failure reason masks; unchanged frames stay silent. Overlays and background work run with settings panels closed.
 
 Export only `EXPORT.json` entries. `source-export.json` records the parent commit and source/export hashes. Exports omit game assets, outputs, caches, backups, private configurations, historical asset editions and Git metadata. Initialize remotes and publish separately.
+
+## Primary-only plugin configs
+
+Configs use one plugin-specific primary INI only. Do not create, read, recover
+from or delete `_backup` configs, and do not imitate the game's save backups.
+Validate before writing, flush and verify the primary, then commit through
+Forge's counted save mount. Balance handles and mounts on every failure path.
+Keep session settings on failure; previous disk contents are not guaranteed.
+Missing or invalid primary files use defaults. Save controls remain explicit.

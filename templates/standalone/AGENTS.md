@@ -1,3 +1,12 @@
 # Standalone mod development
 
 Read README.md, DEVELOPMENT.md, DISTRIBUTION.json and dependencies.lock.json. This folder owns its source, tests, recipes, notices and snapshots. Do not import sibling mod folders, installed emulator packages, personal paths or parent Git history. Configure supplied inputs in ignored build.local.json. Use build.sh; downloads require explicit prepare --fetch. Preserve inputs and immutable accepted releases. Panels contain settings only, with concise lifetime-deduplicated Forge logs outside hot hooks. Preserve background callbacks, ARM32 ABI, NZCVQ and all live GE state; unsupported APSR_g writes are forbidden. Static fixtures do not establish gameplay acceptance. Commit validated changes locally; never install, activate, publish or push without a user request.
+
+## Primary-only plugin configs
+
+Configs use one plugin-specific primary INI only. Do not create, read, recover
+from or delete `_backup` configs, and do not imitate the game's save backups.
+Validate before writing, flush and verify the primary, then commit through
+Forge's counted save mount. Balance handles and mounts on every failure path.
+Keep session settings on failure; previous disk contents are not guaranteed.
+Missing or invalid primary files use defaults. Save controls remain explicit.
