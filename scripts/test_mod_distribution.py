@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import subprocess
+import sys
 import unittest
 import zipfile
 
@@ -62,7 +63,8 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual(first, distribution.inventory(archive.parent))
         self.assertEqual(original, archive.read_bytes())
         with zipfile.ZipFile(archive) as zipped:
-            self.assertEqual(zipped.namelist(), ['sample-mod/romfs/nativeNX/plugins/test.nro'])
+            self.assertEqual(zipped.namelist(), ['README.md', 'sample-mod/romfs/nativeNX/plugins/test.nro'])
+            self.assertEqual(zipped.read('README.md'), first['README.md'])
         distribution.check(self.root)
 
     def test_future_unregistered_mod_is_rejected(self):
@@ -70,6 +72,34 @@ class DistributionTests(unittest.TestCase):
         (self.root / 'mods/new-mod').mkdir()
         self.rejected(lambda: distribution.check(self.root, source_only=True))
         self.rejected(lambda: distribution.check(self.root))
+
+    def test_future_scaffolds_package_readme_beside_runtime_for_every_kind(self):
+        from standalone_mods import scaffold
+        for kind in ('plugin', 'resource', 'cheat', 'tool'):
+            with self.subTest(kind=kind):
+                name = 'future-' + kind
+                folder = scaffold(self.root / name, name, kind)
+                spec = copy.deepcopy(self.spec)
+                spec.update(mod=name, package_name=name, archive=name + '-r1.zip',
+                            readme='README.md', notices=['LICENSE'])
+                runtime = ('cheats/0000000000000000.txt' if kind == 'cheat' else
+                           'exefs/example.txt' if kind == 'tool' else
+                           'romfs/nativeNX/plugins/test.nro' if kind == 'plugin' else
+                           'romfs/nativeNX/example.txt')
+                spec['payloads'] = {runtime: {'source': 'build/validated.bin',
+                                            'sha256': distribution.digest(b'fixture-runtime')}}
+                spec['evidence']['static'] = ['build/tests.json']
+                (folder / 'DISTRIBUTION.json').write_bytes(distribution.json_bytes(spec))
+                (folder / 'build').mkdir()
+                (folder / 'build/validated.bin').write_bytes(b'fixture-runtime')
+                (folder / 'build/tests.json').write_bytes(b'{"status":"PASSED"}\n')
+                for args in (['package', name], ['check']):
+                    subprocess.run([sys.executable, str(folder / 'scripts/mod_distribution.py'), *args],
+                                   cwd=folder, check=True, capture_output=True)
+                archive = folder / 'build' / name / 'releases/r1' / spec['archive']
+                with zipfile.ZipFile(archive) as zipped:
+                    self.assertEqual(zipped.namelist(), ['README.md', name + '/' + runtime])
+                    self.assertEqual(zipped.read('README.md'), (folder / 'README.md').read_bytes())
 
     def test_git_gate_rejects_unstaged_registry_and_support(self):
         def git(*args):
@@ -129,13 +159,58 @@ class DistributionTests(unittest.TestCase):
         self.write('mods/sample-mod/README.md', b'Updated install instructions.\n')
         self.rejected(self.package)
         self.package(refresh_support=True)
-        self.assertEqual(old['sample-mod-r1.zip'], archive.read_bytes())
+        self.assertNotEqual(old['sample-mod-r1.zip'], archive.read_bytes())
+        with zipfile.ZipFile(archive) as zipped:
+            self.assertEqual(zipped.read('README.md'), b'Updated install instructions.\n')
+            self.assertEqual(zipped.read('sample-mod/romfs/nativeNX/plugins/test.nro'),
+                             old['sample-mod/romfs/nativeNX/plugins/test.nro'])
         receipts = list((self.root / 'backups/sample-mod/distribution-support').glob('*/backup-manifest.json'))
         self.assertEqual(len(receipts), 1)
         self.assertEqual(distribution.inventory(receipts[0].parent / 'r1'), old)
         self.assertEqual(json.loads(receipts[0].read_text()),
                          {p: distribution.digest(b) for p, b in old.items()})
         distribution.check(self.root)
+
+    def test_legacy_zip_refresh_adds_readme_and_preserves_backup(self):
+        archive = self.package()
+        runtime = {'romfs/nativeNX/plugins/test.nro': b'validated-runtime\x00\x01'}
+        archive.write_bytes(distribution.make_zip(runtime, self.mod, None))
+        old = distribution.inventory(archive.parent)
+        self.rejected(lambda: distribution.check(self.root))
+        self.rejected(self.package)
+        self.package(refresh_support=True)
+        receipt = next((self.root / 'backups/sample-mod/distribution-support').glob('*/backup-manifest.json'))
+        self.assertEqual(distribution.inventory(receipt.parent / 'r1'), old)
+        with zipfile.ZipFile(archive) as zipped:
+            self.assertEqual(zipped.namelist(), ['README.md', self.mod + '/romfs/nativeNX/plugins/test.nro'])
+        distribution.check(self.root)
+
+    def test_support_metadata_refresh_preserves_zip(self):
+        archive = self.package()
+        old = archive.read_bytes()
+        self.spec['limitations'].append('Another coverage limit')
+        self.save_spec()
+        self.package(refresh_support=True)
+        self.assertEqual(old, archive.read_bytes())
+        distribution.check(self.root)
+
+    def test_refresh_rejects_modified_zip_members_without_writes(self):
+        archive = self.package()
+        original = archive.read_bytes()
+        for name, blob in [('sample-mod/README.md', b'Wrong location'),
+                           ('README.md', b'Stale instructions'),
+                           ('sample-mod/romfs/nativeNX/plugins/test.nro', b'changed-runtime')]:
+            with self.subTest(name=name):
+                with zipfile.ZipFile(archive, 'w') as zipped:
+                    members = {'README.md': b'Install sample-mod alongside Forge.\n',
+                               'sample-mod/romfs/nativeNX/plugins/test.nro': b'validated-runtime\x00\x01'}
+                    members[name] = blob
+                    for member, data in members.items():
+                        zipped.writestr(member, data)
+                old = distribution.inventory(archive.parent)
+                self.rejected(lambda: self.package(refresh_support=True))
+                self.assertEqual(old, distribution.inventory(archive.parent))
+        archive.write_bytes(original)
 
     def test_extra_files_symlinks_and_old_versions_are_rejected(self):
         archive = self.package()

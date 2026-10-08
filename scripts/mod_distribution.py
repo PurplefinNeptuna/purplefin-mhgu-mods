@@ -134,11 +134,15 @@ def release_dir(spec, root=ROOT):
     return local(root, f'build/{spec["mod"]}/releases/{spec["version"]}')
 
 
-def make_zip(payloads, package_name):
+def make_zip(payloads, package_name, readme):
+    entries = {f'{package_name}/{name}': blob for name, blob in payloads.items()}
+    # None is used only to recognize the old runtime-only layout during refresh.
+    if readme is not None:
+        entries['README.md'] = readme
     stream = io.BytesIO()
     with zipfile.ZipFile(stream, 'w') as archive:
-        for name, blob in sorted(payloads.items()):
-            info = zipfile.ZipInfo(f'{package_name}/{name}', (1980, 1, 1, 0, 0, 0))
+        for name, blob in sorted(entries.items()):
+            info = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, blob, compresslevel=9)
@@ -151,9 +155,9 @@ def expected_files(spec, root=ROOT):
         blob = read(root, record['source'])
         require(blob and digest(blob) == record['sha256'], f'Pinned runtime payload changed: {name}')
         payloads[name] = blob
-    zipped = make_zip(payloads, spec['package_name'])
     support = {'README.md': read(root, spec['readme']),
                'NOTICES.txt': b'\n\n'.join(read(root, p).strip() for p in spec['notices']) + b'\n'}
+    zipped = make_zip(payloads, spec['package_name'], support['README.md'])
     support.update({name: read(root, source) for name, source in spec.get('support', {}).items()})
     evidence = {p: digest(read(root, p)) for p in
                 spec['evidence']['static'] + spec['evidence'].get('manual', [])}
@@ -201,12 +205,13 @@ def verify_release(spec, root=ROOT):
         require(actual[path] == blob, f'Stale or modified release file: {directory / path}')
     with zipfile.ZipFile(io.BytesIO(actual[spec['archive']])) as archive:
         require(archive.testzip() is None, 'ZIP CRC failed')
-        payloads = {p: b for p, b in expected.items() if p.startswith(spec['package_name'] + '/')}
-        require(archive.namelist() == sorted(payloads), 'ZIP inventory mismatch')
+        members = {p: b for p, b in expected.items() if p.startswith(spec['package_name'] + '/')}
+        members['README.md'] = expected['README.md']
+        require(archive.namelist() == sorted(members), 'ZIP inventory mismatch')
         for entry in archive.infolist():
             relative(entry.filename)
             require(stat.S_ISREG(entry.external_attr >> 16), 'ZIP entry must be a regular file')
-            require(archive.read(entry) == payloads[entry.filename], 'ZIP payload mismatch')
+            require(archive.read(entry) == members[entry.filename], 'ZIP member mismatch')
     return directory / spec['archive']
 
 
@@ -217,10 +222,16 @@ def package(mod, root=ROOT, refresh_support=False):
     directory = release_dir(spec, root)
     actual = inventory(directory)
     if actual and actual != files:
-        # A version's runtime archive and unpacked payload are immutable.
-        runtime = [spec['archive'], *[p for p in files if p.startswith(spec['package_name'] + '/')]]
+        # Runtime stays immutable; the root README can change with support refresh.
+        runtime = [p for p in files if p.startswith(spec['package_name'] + '/')]
         require(all(actual.get(p) == files[p] for p in runtime),
                 'Runtime differs from existing release; use a new version')
+        prefix = spec['package_name'] + '/'
+        payloads = {p[len(prefix):]: files[p] for p in runtime}
+        require(actual.get(spec['archive']) in (
+                    make_zip(payloads, spec['package_name'], actual.get('README.md')),
+                    make_zip(payloads, spec['package_name'], None)),
+                'Existing ZIP differs from its runtime/README; preserve/migrate it explicitly')
         require(refresh_support, 'Support files changed; use --refresh-support to back up and refresh them')
         require(actual.keys() == files.keys(), 'Unexpected files in release; preserve/migrate them explicitly')
         stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')

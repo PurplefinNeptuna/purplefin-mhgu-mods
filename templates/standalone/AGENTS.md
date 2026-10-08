@@ -10,3 +10,10 @@ Validate before writing, flush and verify the primary, then commit through
 Forge's counted save mount. Balance handles and mounts on every failure path.
 Keep session settings on failure; previous disk contents are not guaranteed.
 Missing or invalid primary files use defaults. Save controls remain explicit.
+
+## Release ZIP layout
+
+Ready and published ZIPs include `README.md` at the archive root beside the named
+mod folder. Keep only runtime files inside the mod folder. The archived README
+must match the adjacent release README. Use the distribution packager and full
+check; support refreshes preserve runtime bytes and back up the previous ZIP.
