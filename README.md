@@ -18,9 +18,9 @@ tracked originals remain in Git history.
 - Ghidra database and DTI dumper: [docs/RESEARCH_TOOLING.md](docs/RESEARCH_TOOLING.md)
 - Modern weapon controls and English help: [r11 ready to distribute](mods/modern-weapon-controls/RELEASE.md)
 - Progression key quest title markers: [r2 ready to distribute](mods/key-quest-markers/README.md)
-- Please do Better: [r16 ready to distribute](mods/please-do-better/README.md), with earlier marker confirmation scoped to r14
-- Open-only damage numbers: [r20 ready to distribute](mods/damage-numbers/RELEASE.md)
-- Rise damage-number style: [r21-rise1 candidate and renderer previews](mods/damage-numbers/RISE_CANDIDATE.md); accepted release remains r20
+- Please do Better: [r17-config1 ready to distribute](mods/please-do-better/R17_RELEASE.md)
+- Open-only damage numbers: [r22-config1 ready to distribute](mods/damage-numbers/RELEASE.md)
+- Rise damage-number style: [r21-rise1 candidate and renderer previews](mods/damage-numbers/RISE_CANDIDATE.md); r22-config1 includes this style
 - Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
 
 “Ready to distribute” requires a verified ZIP and support files under

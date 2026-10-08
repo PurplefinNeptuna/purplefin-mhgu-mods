@@ -13,6 +13,19 @@ publication or push occurred. See [readability evidence](../mods/damage-numbers/
 
 # Local state
 
+Current deliveries: Damage Numbers **r22-config1**, Please do Better **r17-config1**,
+Modern Controls **r11** and Key Quest Markers **r2**, all READY_TO_DISTRIBUTE.
+The user confirmed the new config plugins on the tested Eden setup on 2026-10-08.
+Their installed NRO hashes match the preserved candidates. Forge **1.4.1-render1**
+remains LOCAL_ONLY at the user's direction.
+
+[Runtime evidence](CONFIG_RELEASE_RUNTIME.json) records log/screenshot hashes and
+limits. The latest Ryujinx log used older plugin payloads and does not establish
+fresh compatibility of the promoted bytes. Previous DN r20 and PDB r16 releases
+are archived under `backups/release-promotion-20261008/` with verified hashes.
+Promotion rebuilds no binaries and performs no installation, settings change,
+publication or push. The dated text below describes earlier snapshots.
+
 Standalone development is merged into `main` at `f8987c8`, from release base `7371ddc`. The four merged project branches were deleted; both linked worktrees remain at their original detached commits. Earlier source commits and accepted packages are preserved. The primary checkout now holds the verified r18/r11/r2/r16 deliveries and source exports. Its previous build/work outputs are retained under `backups/main-standalone-merge-20261007T090445Z/`, with per-file hashes in the merge artifact receipt. Standalone layout byte parity is recorded in [the migration record](STANDALONE_MIGRATION.json).
 
 Local cleanup deliveries are Damage Numbers r18, Modern Controls r11, Key Quest Markers r2 and Please do Better r16. Fresh host/compiled/static checks cover these payloads; no new gameplay run was performed. Earlier r17/r10/r1 reports and PDB r14's Eden marker confirmation remain scoped to their original payloads. PDB r15 had static cleanup verification without a separate gameplay retest. Forge's renderer issue remains disclosed and unchanged. No installation, activation, publication or push occurred.
