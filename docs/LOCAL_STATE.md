@@ -1,6 +1,6 @@
 # Local state
 
-Documentation refreshed 2026-10-09 from the tracked distribution and evidence
+Documentation refreshed 2026-10-10 from the tracked distribution and evidence
 records. Emulator activation and installed packages were not re-inspected for
 this documentation cleanup.
 
@@ -8,11 +8,14 @@ this documentation cleanup.
 
 | Mod | Version | Status | Runtime evidence |
 | --- | --- | --- | --- |
+| Damage Numbers (Rust) | r1 | DEVELOPMENT | Host/config/rollback, r25 oracle, real ImGui and ARM checks passed; no gameplay run or installation. |
 | Damage Numbers | r25 | READY_TO_DISTRIBUTE | User-approved 1080p size preview; no r25 game run or behavior-suite rerun. Prior r22-config1 Eden confirmation remains scoped to those bytes. |
 | Please do Better | r19-savehint | READY_TO_DISTRIBUTE | Host/ARM checks for save feedback; no new game run. Prior r17-config1 Eden confirmation remains scoped to those bytes. |
 | Modern Weapon Controls | r11 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r10 controls/help/bowgun acceptance, without exhaustive style/ammo coverage. |
 | Key Quest Markers | r2 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r1 Eden Village 1/2-star and Hub 1-star acceptance, plus Ryujinx full-rank coverage. |
 | Forge, HD Project, wiki cheats, DTI dumper support | See each record | LOCAL_ONLY | Loader and resource evidence retain their recorded scope. |
+
+The Rust r1 candidate is under `build/damage-numbers-rs/candidates/r1/delivery/`; it uses stock forge-rs configuration and eight ordinary native Forge hooks. [Source and workflow](../mods/damage-numbers-rs/README.md).
 
 Each `mods/<name>/DISTRIBUTION.json` is authoritative. Verified delivery folders
 are under `build/<name>/releases/<version>/`; the full distribution check verifies

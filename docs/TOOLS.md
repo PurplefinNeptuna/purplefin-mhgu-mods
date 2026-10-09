@@ -42,6 +42,8 @@ classes/66,752 properties (2026-10-03). Dumping broke quest controls;
 removal/restart restored them. Keep dumper removed; use saved data.
 Evidence/new-trial rules: [DTI_DUMPER_RUNTIME.md](DTI_DUMPER_RUNTIME.md).
 
+[Damage Numbers Rust workflow](../mods/damage-numbers-rs/DEVELOPMENT.md) uses a self-contained pinned forge-rs snapshot with corrected ARM32 Hook layout.
+
 [forge-rs setup and commands](FORGE_RS_TOOLING.md) covers the pinned source,
 existing private Rust runtime and ARM32 build checks. Read the
 [Damage Numbers migration assessment](FORGE_RS_DAMAGE_NUMBERS.md) before using
