@@ -1,55 +1,33 @@
 # Monster Hunter Generations Ultimate modding
 
-MHGU Switch (`0100770008DD8000`) modding on Eden/Linux; prepared 2026-10-01.
-Dump/library inspection was read-only.
+MHGU Switch (`0100770008DD8000`) modding on Eden and Ryujinx/Linux.
 
-Current Eden `forge-patched` accepts base Better Input through its integrated
-in-memory adapter. Preserve `tools/forge-local/` on `codex/forge-legacyctx14`.
-[Source, runtime fingerprints and maintained recipes](docs/FORGE_LOCAL_BRANCH.md).
-Retired mod folders, recipes and workspace artifacts have been removed;
-tracked originals remain in Git history.
+## Mods
 
-- HD Project cleanup and merge order: [docs/CLEANUP_HD_PROJECT.md](docs/CLEANUP_HD_PROJECT.md)
-- Agent/project guidance: [AGENTS.md](AGENTS.md)
-- Local baseline and package selections: [docs/LOCAL_STATE.md](docs/LOCAL_STATE.md)
-- Wiki workflow and tool references: [docs/REFERENCES.md](docs/REFERENCES.md)
-- Distribution standard and validation: [docs/DISTRIBUTION_STANDARD.md](docs/DISTRIBUTION_STANDARD.md)
-- Installed tools and launch instructions: [docs/TOOLS.md](docs/TOOLS.md)
-- Ghidra database and DTI dumper: [docs/RESEARCH_TOOLING.md](docs/RESEARCH_TOOLING.md)
-- Modern weapon controls and English help: [r11 ready to distribute](mods/modern-weapon-controls/RELEASE.md)
-- Progression key quest title markers: [r2 ready to distribute](mods/key-quest-markers/README.md)
-- Please do Better: [r17-config1 ready to distribute](mods/please-do-better/R17_RELEASE.md)
-- Open-only damage numbers: [r25 ready to distribute](mods/damage-numbers/RELEASE.md)
-- Rise damage-number style: [r21-rise1 candidate and renderer previews](mods/damage-numbers/RISE_CANDIDATE.md); r25 includes this style
-- Controls recheck against saved DTI/Ghidra evidence: [review](docs/MODERN_CONTROLS_RECHECK.md)
+| Mod | Local release | Source and documentation |
+| --- | --- | --- |
+| Damage Numbers | r25 | [Guide and development](mods/damage-numbers/README.md) |
+| Modern Weapon Controls | r11 | [Guide and development](mods/modern-weapon-controls/README.md) |
+| Key Quest Markers | r2 | [Guide and development](mods/key-quest-markers/README.md) |
+| Please do Better | r19-savehint | [Guide and development](mods/please-do-better/README.md) |
 
-“Ready to distribute” requires a verified ZIP and support files under
-`build/<mod>/releases/<version>/`. [Distribution standard](docs/DISTRIBUTION_STANDARD.md)
-and `python3 scripts/mod_distribution.py check` enforce the same rules for all
-current and future mods. Publication requires its own download URL and date.
+These releases are locally packaged and unpublished. Each mod's
+`DISTRIBUTION.json` controls its status and payload hashes. Forge, HD Project,
+wiki cheats and DTI dumper support remain LOCAL_ONLY. Verify all eight records
+with `python3 scripts/mod_distribution.py check`.
 
-Dump: `~/.local/share/eden/dump/0100770008DD8000/`. Uninstalled library: `/mnt/storage2/ROM/Switch/cheats/mhgu/`. Eden
-packages: `~/.local/share/eden/load/0100770008DD8000/`. The 2026-10-01 report said inactive;
-inventory/baseline/activation are separate in `docs/LOCAL_STATE.md`. Offline
-[repository](https://github.com/RTHKKona/MHGU-Modding) and [wiki](https://github.com/RTHKKona/MHGU-Modding/wiki) snapshots in `references/`
-contain research, templates, resource indexes and IDs; revisions:
-`references/provenance.json`.
+## Workspace
 
-For the first mod, identify the target archive, copy it into `work/<name>/`,
-record its hash, extract and edit the needed resource, then repack and validate.
-Stage the resulting package in `build/<name>/romfs/nativeNX/...` with the
-original relative path. Keep a description and reproducible edit recipe in
-`mods/<name>/`.
+- [Project instructions](AGENTS.md) and [local state](docs/LOCAL_STATE.md)
+- [Tools and launchers](docs/TOOLS.md), [reference map](docs/REFERENCES.md) and [code research](docs/RESEARCH_TOOLING.md)
+- [Maintained Forge source](docs/FORGE_LOCAL_BRANCH.md), [runtime evidence](docs/FORGE_RUNTIME_EVIDENCE.md) and [plugin rules](docs/FORGE_PLUGIN_GUIDELINES.md)
+- [HD Project ownership and merge order](docs/CLEANUP_HD_PROJECT.md)
+- [Distribution rules](docs/DISTRIBUTION_STANDARD.md) and [standalone development](docs/STANDALONE_MODS.md)
 
-The toolkit is installed locally. Run `./START_TOOLS.sh` for the desktop
-launcher. Archive, conversion, audio, and startup smoke checks are in
-`docs/TOOLS.md`, including tool-specific limits.
+Start a mod with its local `build.sh`; copy and hash game inputs before editing.
+Stage replacements under `build/<name>/romfs/nativeNX/` using original relative
+paths. The dump, uninstalled library and emulator installation directories are
+listed in local state. Preparation and packaging do not install or publish.
 
-Initial workspace preparation did not change original game files, existing
-mods, saves or Eden settings. Subsequent Forge compatibility work passed
-automated and user-run in-game checks; its exact scope is recorded above.
-The cleanup branch is `codex/cleanup-forge-hd-project`; the local Forge repository
-has its own patch branch and commit. Re-inspect other enabled mods before
-combining packages.
-
-Future mods start as independent source folders. See [standalone development](docs/STANDALONE_MODS.md) for scaffolding, manual builds and export. The current cleanup releases have fresh static/compiled evidence and no new gameplay run.
+Current technical decisions and validation limits live with each mod.
+Superseded experiment/release notes remain recoverable from Git history.
