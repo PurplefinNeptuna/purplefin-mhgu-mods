@@ -46,6 +46,8 @@ def launch(name, args):
         "research": [sys.executable, str(ROOT / "scripts/research_tools.py")],
         "dti-dumper": [sys.executable, str(ROOT / "scripts/dti_dumper.py")],
         "dti-resources": ["xdg-open", str(ROOT / "mods/dti-dumper-support/README.md")],
+        "forge-rs": [sys.executable, str(ROOT / "scripts/forge_rs.py")],
+        "forge-rs-resources": ["xdg-open", str(ROOT / "docs/FORGE_RS_TOOLING.md")],
     }
     if name == "ghidra" and not args:
         args = [str(ROOT / "work/research-tooling/ghidra-projects/MHGU_1.4.0.gpr")]
@@ -121,8 +123,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
         print("Usage: scripts/tool.sh TOOL [arguments]")
         print("GUI: salad, pax, kuriimu, imhex, blender, audacity, gimp, titanbreak, quest, ghidra")
-        print("CLI: salad, kuriimu-cli, gmd, revil, nxaenc, adpcm-encoder, adpcm, ffmpeg, ghidra-headless, research, dti-dumper")
-        print("Resources: stqr, templates, model-plugins, dti-resources")
+        print("CLI: salad, kuriimu-cli, gmd, revil, nxaenc, adpcm-encoder, adpcm, ffmpeg, ghidra-headless, research, dti-dumper, forge-rs")
+        print("Resources: stqr, templates, model-plugins, dti-resources, forge-rs-resources")
         sys.exit(0)
     try:
         sys.exit(launch(sys.argv[1], sys.argv[2:]))

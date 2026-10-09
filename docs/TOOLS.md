@@ -27,6 +27,7 @@ FFmpeg, Wine, Node, compiler/Qt are reused; no system packages installed.
 | [GMD](https://github.com/beeequeue/gmd) | Text decoding/encoding; current upstream source build | `./scripts/tool.sh gmd --help` |
 | [Ghidra](https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.1.4_build) 12.1.4 | Imported MHGU 1.4.0 code database, disassembly and decompilation | `./scripts/tool.sh ghidra` |
 | [MHGU DTI dumper](https://github.com/Fexty12573/mhgu-dti-dumper) | Runtime reflection results indexed; extraction plugin removed after trial | `./scripts/tool.sh research find QUERY --kind dti` |
+| [forge-rs](https://github.com/Fexty12573/forge-rs) 1.4.1 | Rust Forge plugin crates and Cargo scaffold/build command; isolated runtime | `./scripts/tool.sh forge-rs status` |
 | Wiki model plugins | MHGU MaxScript import/export resources | `./scripts/tool.sh model-plugins` |
 | Wiki binary templates | 010 Editor `.bt` reference files | `./scripts/tool.sh templates` |
 
@@ -40,6 +41,11 @@ conflicting types: patch from verified original NSO. Saved DTI: 3,152
 classes/66,752 properties (2026-10-03). Dumping broke quest controls;
 removal/restart restored them. Keep dumper removed; use saved data.
 Evidence/new-trial rules: [DTI_DUMPER_RUNTIME.md](DTI_DUMPER_RUNTIME.md).
+
+[forge-rs setup and commands](FORGE_RS_TOOLING.md) covers the pinned source,
+existing private Rust runtime and ARM32 build checks. Read the
+[Damage Numbers migration assessment](FORGE_RS_DAMAGE_NUMBERS.md) before using
+its hook/config wrappers with the maintained Forge fork.
 
 ## ARC workflow
 

@@ -22,6 +22,7 @@ CHOICES = {
     "MHGUQuestEditor — quest data": "quest",
     "Ghidra — MHGU 1.4.0 code research": "ghidra",
     "DTI dumper — build and runtime-trial instructions": "dti-resources",
+    "forge-rs — Rust plugin build instructions": "forge-rs-resources",
     "STQR editor — audio metadata in browser": "stqr",
     "010 Editor templates — open folder": "templates",
     "MHGU model plugins — open folder": "model-plugins",
