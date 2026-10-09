@@ -94,6 +94,30 @@ prerequisite. Include this instruction/state audit in release validation.
 
 Read `docs/FORGE_PLUGIN_GUIDELINES.md` when developing or reviewing a Forge plugin.
 
+## Code readability and comments
+
+Write owned code so the user can follow its behavior from the source. Include
+explanatory comments when implementing or changing code. Explain each substantial
+function's role and the steps in complex blocks beside the relevant code;
+separate walkthrough documents supplement these comments.
+
+- Describe the data flow from input to output, including intermediate records,
+  filtering, queues and rendering. Explain field meanings when a record's fields
+  change meaning by event kind.
+- Explain native offsets, register indices, bit masks, units, thresholds and
+  formulas: what they represent, where they come from and why the code uses them.
+  Describe animation phases and coordinate conversions near their calculations.
+- Explain ownership, resource lifetimes, nested hooks, thread-local borrows,
+  atomic publication and rollback where they affect correctness. Document the
+  caller requirements at each unsafe or native boundary.
+- Explain unfamiliar language constructs where they carry behavior, such as
+  Rust wrappers, derives, closures, guards and `Drop`. Use plain, specific
+  language and small flow examples when they help. Avoid comments that only
+  repeat an obvious statement; do not use a comment-count quota.
+- Keep comments accurate as code changes. For a comments-only request, preserve
+  executable code and verify source equivalence. Keep pinned assembly,
+  third-party snapshots and existing runtime/release artifacts unchanged.
+
 ## Reference material
 
 Reference: <https://github.com/RTHKKona/MHGU-Modding> and its
