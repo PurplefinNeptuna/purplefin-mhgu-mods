@@ -85,3 +85,7 @@ and export lists. [STANDALONE_MIGRATION.json](STANDALONE_MIGRATION.json) records
 the migration; [STANDALONE_MODS.md](STANDALONE_MODS.md) describes the workflow.
 There is no automated in-game suite. Keep the DTI dumper and flag removed during
 play; its [runtime record](DTI_DUMPER_RUNTIME.md) documents failure and recovery.
+
+Modern Weapon Controls PC r1 is a dual-platform DEVELOPMENT candidate with
+English help, packaged locally without installation or gameplay acceptance.
+See [its source and validation](../mods/modern-weapon-controls-pc/README.md).

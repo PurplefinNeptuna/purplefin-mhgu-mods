@@ -127,9 +127,12 @@ def spec_for(mod, root=ROOT):
     for path, record in payloads.items():
         parts = relative(path).parts
         if platform == 'forge-pc':
-            require(len(parts) == 2 and parts[0] == 'plugins' and
-                    PurePosixPath(path).suffix in ('.so', '.dll'),
-                    f'Forge PC runtime files must be plugins/*.so or plugins/*.dll: {path}')
+            # PC plugins may ship the same LayeredFS data as their Switch
+            # counterparts, but ARM/executable payloads must never travel here.
+            library = len(parts) == 2 and parts[0] == 'plugins' and PurePosixPath(path).suffix in ('.so', '.dll')
+            resource = len(parts) > 1 and parts[0] == 'romfs' and PurePosixPath(path).suffix.lower() not in ('.nro', '.nso', '.so', '.dll', '.exe')
+            require(library or resource,
+                    f'Forge PC runtime files must be native plugins or romfs resources: {path}')
         else:
             require(parts[0] in ('romfs', 'exefs', 'cheats') and len(parts) > 1,
                     f'Runtime files must start at romfs/, exefs/ or cheats/: {path}')
@@ -140,10 +143,11 @@ def spec_for(mod, root=ROOT):
         relative(record['source'])
         require(re.fullmatch(r'[0-9a-f]{64}', record.get('sha256', '')), f'Missing pinned hash: {path}')
     if platform == 'forge-pc':
-        libraries = {PurePosixPath(p).stem: set() for p in payloads}
+        libraries = {PurePosixPath(p).stem: set() for p in payloads if PurePosixPath(p).parts[0] == 'plugins'}
         for path in payloads:
-            libraries[PurePosixPath(path).stem].add(PurePosixPath(path).suffix)
-        require(all(exts == {'.so', '.dll'} for exts in libraries.values()),
+            if PurePosixPath(path).parts[0] == 'plugins':
+                libraries[PurePosixPath(path).stem].add(PurePosixPath(path).suffix)
+        require(libraries and all(exts == {'.so', '.dll'} for exts in libraries.values()),
                 f'Forge PC delivery requires Linux and Windows builds of every plugin: {mod}')
     evidence = spec.get('evidence', {})
     require(evidence.get('static') and evidence.get('manual_summary'), f'Missing validation evidence: {mod}')
