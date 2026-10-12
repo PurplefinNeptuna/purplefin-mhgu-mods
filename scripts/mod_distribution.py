@@ -71,6 +71,8 @@ def spec_for(mod, root=ROOT):
     spec = json.loads(read(root, f'mods/{mod}/DISTRIBUTION.json'))
     require(spec.get('schema_version') == 1 and spec.get('mod') == mod, f'Invalid identity: {mod}')
     require(spec.get('status') in STATES, f'Invalid distribution status: {mod}')
+    platform = spec.get('runtime_platform', 'switch')
+    require(platform in ('switch', 'forge-pc'), f'Invalid runtime platform: {mod}')
     require(isinstance(spec.get('reason'), str) and spec['reason'].strip(), f'Missing status reason: {mod}')
     require(isinstance(spec.get('publication'), dict), f'Missing publication record: {mod}')
     publication = spec['publication']
@@ -123,14 +125,26 @@ def spec_for(mod, root=ROOT):
     payloads = spec.get('payloads')
     require(isinstance(payloads, dict) and payloads, f'No declared payloads: {mod}')
     for path, record in payloads.items():
-        require(relative(path).parts[0] in ('romfs', 'exefs', 'cheats') and len(relative(path).parts) > 1,
-                f'Runtime files must start at romfs/, exefs/ or cheats/: {path}')
+        parts = relative(path).parts
+        if platform == 'forge-pc':
+            require(len(parts) == 2 and parts[0] == 'plugins' and
+                    PurePosixPath(path).suffix in ('.so', '.dll'),
+                    f'Forge PC runtime files must be plugins/*.so or plugins/*.dll: {path}')
+        else:
+            require(parts[0] in ('romfs', 'exefs', 'cheats') and len(parts) > 1,
+                    f'Runtime files must start at romfs/, exefs/ or cheats/: {path}')
         require(relative(path).name.lower() not in
                 ('readme.md', 'readme.html', 'gamebanana_readme.html', 'notices.txt', 'notices.html',
                  'release-manifest.json', 'sha256sums'),
                 f'Support file declared as runtime: {path}')
         relative(record['source'])
         require(re.fullmatch(r'[0-9a-f]{64}', record.get('sha256', '')), f'Missing pinned hash: {path}')
+    if platform == 'forge-pc':
+        libraries = {PurePosixPath(p).stem: set() for p in payloads}
+        for path in payloads:
+            libraries[PurePosixPath(path).stem].add(PurePosixPath(path).suffix)
+        require(all(exts == {'.so', '.dll'} for exts in libraries.values()),
+                f'Forge PC delivery requires Linux and Windows builds of every plugin: {mod}')
     evidence = spec.get('evidence', {})
     require(evidence.get('static') and evidence.get('manual_summary'), f'Missing validation evidence: {mod}')
     for path in evidence['static'] + evidence.get('manual', []):
@@ -387,6 +401,8 @@ def expected_files(spec, root=ROOT):
         'evidence': {**spec['evidence'], 'file_sha256': evidence},
         'installed_by_recipe': False, 'published_by_recipe': False,
     }
+    if 'runtime_platform' in spec:
+        manifest['runtime_platform'] = spec['runtime_platform']
     files.update(support)
     files[spec['archive']] = zipped
     files['release-manifest.json'] = json_bytes(manifest)
@@ -527,6 +543,7 @@ def main():
     initializer = commands.add_parser('init', help='Register a new mod as DEVELOPMENT')
     initializer.add_argument('mod')
     initializer.add_argument('--kind', choices=('plugin','resource','cheat','tool'), default='plugin')
+    initializer.add_argument('--platform', choices=('switch', 'forge-pc'), default='switch')
     args = parser.parse_args()
     if args.command == 'check':
         require(not (args.source_only and args.staged), 'Choose --source-only or --staged')
@@ -542,7 +559,7 @@ def main():
     else:
         require(not (ROOT/'mod.json').exists(), 'This source repo is already registered; initialize new mods from the coordinating workspace')
         from standalone_mods import scaffold
-        path = scaffold(ROOT/'mods'/args.mod, args.mod, args.kind)
+        path = scaffold(ROOT/'mods'/args.mod, args.mod, args.kind, args.platform)
         print(f'Scaffolded standalone {args.kind}: {path}')
 
 

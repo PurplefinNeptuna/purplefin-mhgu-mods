@@ -95,6 +95,14 @@ navigation, Better Input controls and quest/village transition passed. Evidence:
 
 ## Forge plugin development rules
 
+Forge PC conversions use separate self-contained `mods/<name>-pc/` folders.
+Scaffold them with `python3 scripts/mod_distribution.py init NAME --kind plugin --platform forge-pc`.
+Every default PC build, verification and package must include Linux x64 `.so`
+and Windows x64 `.dll` outputs. Single-target builds are development-only.
+Preserve accepted Switch backends/releases. Native builds and host fixtures
+do not establish Linux or Windows gameplay acceptance. See
+`docs/GURECOMP_MOD_PORTABILITY.md` for the port workflow and hook/lifetime limits.
+
 Use Forge APIs fully where applicable. Inspect `tools/forge-local/include/forge/`,
 implementations and installed exports before duplicating callbacks, logging,
 input, singleton lookup, memory, hooks, rendering or filesystem helpers.

@@ -57,7 +57,8 @@ inventories remain in [local-state.json](local-state.json) as dated snapshots.
 The user confirmed the MHGU 1.4.0 export runs with the process-local SDL3
 override, then confirmed Forge PC 0.2.1 runs. Fresh logs corroborate the F10
 menu, loader attachment/overlay readiness and resource loading for FOV (Medium),
-HD Project and Z_Balanced. No owned gameplay plugin has been ported. Local
+HD Project and Z_Balanced. Key Quest Markers PC now has a staged Linux/Windows
+native candidate, with gameplay acceptance pending and no installation. Local
 paths, export behavior, the exact launch command and evidence limits are in
 [GURECOMP_LOCAL_SETUP.md](GURECOMP_LOCAL_SETUP.md); the
 [runtime receipt](GURECOMP_LOCAL_RUNTIME.json) preserves hashes and log extracts.
