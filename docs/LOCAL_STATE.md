@@ -86,6 +86,8 @@ the migration; [STANDALONE_MODS.md](STANDALONE_MODS.md) describes the workflow.
 There is no automated in-game suite. Keep the DTI dumper and flag removed during
 play; its [runtime record](DTI_DUMPER_RUNTIME.md) documents failure and recovery.
 
-Modern Weapon Controls PC r1 is a dual-platform DEVELOPMENT candidate with
-English help, packaged locally without installation or gameplay acceptance.
-See [its source and validation](../mods/modern-weapon-controls-pc/README.md).
+Modern Weapon Controls PC r1 is READY_TO_DISTRIBUTE with matching Linux/Windows
+payloads and English help. The user confirmed Linux use; fresh logs and hashes
+confirm registration, activation and both help ARC reads. Individual cases were
+not enumerated, and Windows gameplay remains untested. See
+[its runtime receipt](../mods/modern-weapon-controls-pc/RUNTIME_RESULTS.json).
