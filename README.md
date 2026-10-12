@@ -23,6 +23,7 @@ with `python3 scripts/mod_distribution.py check`.
 - [Tools and launchers](docs/TOOLS.md), [reference map](docs/REFERENCES.md) and [code research](docs/RESEARCH_TOOLING.md)
 - [Maintained Forge source](docs/FORGE_LOCAL_BRANCH.md), [runtime evidence](docs/FORGE_RUNTIME_EVIDENCE.md) and [plugin rules](docs/FORGE_PLUGIN_GUIDELINES.md)
 - [HD Project ownership and merge order](docs/CLEANUP_HD_PROJECT.md)
+- [GURecomp Linux setup and runtime](docs/GURECOMP_LOCAL_SETUP.md), [evidence receipt](docs/GURECOMP_LOCAL_RUNTIME.json) and [plugin port research](docs/GURECOMP_MOD_PORTABILITY.md)
 - [Distribution rules](docs/DISTRIBUTION_STANDARD.md) and [standalone development](docs/STANDALONE_MODS.md)
 
 Start a mod with its local `build.sh`; copy and hash game inputs before editing.

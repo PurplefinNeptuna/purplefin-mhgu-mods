@@ -1,8 +1,9 @@
 # Local state
 
-Documentation refreshed 2026-10-10 from the tracked distribution and evidence
-records. Emulator activation and installed packages were not re-inspected for
-this documentation cleanup.
+Switch delivery documentation refreshed 2026-10-10 from the tracked distribution
+and evidence records; Eden/Ryujinx activation was not re-inspected for that
+cleanup. GURecomp's exported Linux game, resource packages and Forge PC loader
+were separately inspected on 2026-10-12.
 
 ## Local deliveries
 
@@ -50,6 +51,16 @@ do not verify the running game. Folder presence establishes no activation.
 Re-inspect packages/configuration and the tested emulator's latest log when
 doing installation or diagnosing a user-run result. Initial counts and library
 inventories remain in [local-state.json](local-state.json) as dated snapshots.
+
+## GURecomp Linux runtime
+
+The user confirmed the MHGU 1.4.0 export runs with the process-local SDL3
+override, then confirmed Forge PC 0.2.1 runs. Fresh logs corroborate the F10
+menu, loader attachment/overlay readiness and resource loading for FOV (Medium),
+HD Project and Z_Balanced. No owned gameplay plugin has been ported. Local
+paths, export behavior, the exact launch command and evidence limits are in
+[GURECOMP_LOCAL_SETUP.md](GURECOMP_LOCAL_SETUP.md); the
+[runtime receipt](GURECOMP_LOCAL_RUNTIME.json) preserves hashes and log extracts.
 
 ## Maintained source and recovery
 

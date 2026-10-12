@@ -34,6 +34,31 @@ Copy needed dump/library files into the workspace before editing. Preserve
 originals, unrelated mods and saves. Preparation authorizes no installation,
 activation, save editing or emulator changes.
 
+## GURecomp local runtime
+
+Use [docs/GURECOMP_LOCAL_SETUP.md](docs/GURECOMP_LOCAL_SETUP.md) for the current
+Linux export, launch command, export options and runtime evidence. Keep this
+knowledge in the workspace. Consult the local SUYU source at
+`references/upstream/SUYU-GURecomp/` first; the recorded `8334375` revision matches
+the downloaded 0.3.1-test release. Preserve the older research pins.
+
+The installation is under `/mnt/storage/Games/GURecomp/`: `Exporter/` is SUYU;
+`Game/MONSTER HUNTER GENERATIONS ULTIMATE/` is the exported game. Read that game's
+`user/log/suyu_log.txt`, `user/recomp_report.txt` and, for Forge PC,
+`mods/0100770008DD8000/Forge/forge.log` when the user reports a run.
+
+For the verified 0.3.1-test SDL menu failure, use the process-local
+`SDL3_DYNAMIC_API=/usr/lib/libSDL3.so.0` launch override documented there before
+proposing a rebuild. Changing export format to Source alone does not repair the
+bundled SDL. Verify the current system library and fresh log if it regresses.
+
+The user confirmed the exported game and Forge PC 0.2.1 loader run on Linux.
+This is no proof of a gameplay plugin port or exhaustive gameplay coverage.
+Preserve the accepted Switch backends; PC plugins require native `.so`/`.dll`
+adapters. Follow [docs/GURECOMP_MOD_PORTABILITY.md](docs/GURECOMP_MOD_PORTABILITY.md)
+and verify hooks against the actual export. Preparation authorizes no further
+installation, launches, settings changes or save transfers.
+
 ## Current Forge development baseline
 
 Current Eden baseline, checked 2026-10-06: `forge-patched` with the integrated
