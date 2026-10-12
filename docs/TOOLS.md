@@ -35,6 +35,12 @@ FFmpeg, Wine, Node, compiler/Qt are reused; no system packages installed.
 digests, official Blender SHA-256 and .NET SHA-512. Local hashes without
 upstream digests establish inventory, not authenticity.
 
+Upstream checked 2026-10-12: the installed release/source tracks match upstream,
+including Blender's 4.5 LTS track. Available GitHub asset digests match the
+recorded downloads. [Check record](TOOL_REFERENCE_UPDATE.json) lists revisions,
+release links and digest comparisons. The private compatibility runtimes,
+accepted Forge container and host system packages retain their existing versions.
+
 [RESEARCH_TOOLING.md](RESEARCH_TOOLING.md) covers Ghidra/code/type/DTI indexes; consult them before
 code/gameplay mods. Imported `.text` has one changed byte and
 conflicting types: patch from verified original NSO. Saved DTI: 3,152
