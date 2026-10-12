@@ -14,6 +14,7 @@ were separately inspected on 2026-10-12.
 | Please do Better | r19-savehint | READY_TO_DISTRIBUTE | Host/ARM checks for save feedback; no new game run. Prior r17-config1 Eden confirmation remains scoped to those bytes. |
 | Modern Weapon Controls | r11 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r10 controls/help/bowgun acceptance, without exhaustive style/ammo coverage. |
 | Key Quest Markers | r2 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r1 Eden Village 1/2-star and Hub 1-star acceptance, plus Ryujinx full-rank coverage. |
+| Key Quest Markers PC | r1 | READY_TO_DISTRIBUTE | User-confirmed successful Linux use; matching installed/loaded-copy hashes and fresh activation logs. Windows build/static checks only; gameplay untested. |
 | Forge, HD Project, wiki cheats, DTI dumper support | See each record | LOCAL_ONLY | Loader and resource evidence retain their recorded scope. |
 
 The Rust r1 candidate is under `build/damage-numbers-rs/candidates/r1/delivery/`; it uses stock forge-rs configuration and eight ordinary native Forge hooks. [Source and workflow](../mods/damage-numbers-rs/README.md).
@@ -57,8 +58,10 @@ inventories remain in [local-state.json](local-state.json) as dated snapshots.
 The user confirmed the MHGU 1.4.0 export runs with the process-local SDL3
 override, then confirmed Forge PC 0.2.1 runs. Fresh logs corroborate the F10
 menu, loader attachment/overlay readiness and resource loading for FOV (Medium),
-HD Project and Z_Balanced. Key Quest Markers PC now has a staged Linux/Windows
-native candidate, with gameplay acceptance pending and no installation. Local
+HD Project and Z_Balanced. Key Quest Markers PC r1 has a verified Linux/Windows
+local release and matching installed Linux payload. The user confirmed it worked
+well; individual ranks/languages/screens were not enumerated, and Windows gameplay
+is untested. Local
 paths, export behavior, the exact launch command and evidence limits are in
 [GURECOMP_LOCAL_SETUP.md](GURECOMP_LOCAL_SETUP.md); the
 [runtime receipt](GURECOMP_LOCAL_RUNTIME.json) preserves hashes and log extracts.
