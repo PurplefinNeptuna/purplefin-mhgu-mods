@@ -15,6 +15,7 @@ Native Forge PC conversions target GURecomp on Linux x64 and Windows x64.
 | Modern Weapon Controls PC | r1 | [Guide and development](mods/modern-weapon-controls-pc/README.md) |
 | Key Quest Markers PC | r1 | [Guide and development](mods/key-quest-markers-pc/README.md) |
 | Please do Better | r19-savehint | [Guide and development](mods/please-do-better/README.md) |
+| Please do Better PC | r1 DEVELOPMENT candidate | [Guide and development](mods/please-do-better-pc/README.md) |
 
 The ready releases and Rust development candidate are locally packaged and unpublished. Each mod's
 `DISTRIBUTION.json` controls its status and payload hashes. Forge, HD Project,
