@@ -41,6 +41,10 @@ recorded downloads. [Check record](TOOL_REFERENCE_UPDATE.json) lists revisions,
 release links and digest comparisons. The private compatibility runtimes,
 accepted Forge container and host system packages retain their existing versions.
 
+Forge and forge-rs v1.5.0 source snapshots were added under `references/upstream/`
+on 2026-10-13. [Compatibility comparison](FORGE_UPSTREAM_COMPARISON.md) covers
+their changed Hook ABI. The installed cargo-forge tool remains pinned at 1.4.1.
+
 [RESEARCH_TOOLING.md](RESEARCH_TOOLING.md) covers Ghidra/code/type/DTI indexes; consult them before
 code/gameplay mods. Imported `.text` has one changed byte and
 conflicting types: patch from verified original NSO. Saved DTI: 3,152
