@@ -97,8 +97,13 @@ def spec_for(mod, root=ROOT):
     if spec['status'] not in READY:
         return spec
     for field in ('version', 'package_name'):
+        # Runtime folders may use the mod's public name ("Please do Better PC").
+        # Allow single spaces between name segments, while version identifiers
+        # retain their original grammar. Neither permits separators, traversal,
+        # leading/trailing spaces or filesystem-special characters.
+        pattern = r'[a-zA-Z0-9]+(?:[. -][a-zA-Z0-9]+)*' if field == 'package_name' else r'[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*'
         require(isinstance(spec.get(field), str) and
-                re.fullmatch(r'[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*', spec[field]),
+                re.fullmatch(pattern, spec[field]),
                 f'Invalid {field}: {mod}')
     archive = spec.get('archive', '')
     require(isinstance(archive, str) and

@@ -12,7 +12,7 @@ were separately inspected on 2026-10-12.
 | Damage Numbers PC | r3 | READY_TO_DISTRIBUTE | User accepted Linux r3; logs/hashes confirm eight hooks and two settings saves. Windows gameplay remains untested. |
 | Damage Numbers (Rust) | r1 | DEVELOPMENT | Host/config/rollback, r25 oracle, real ImGui and ARM checks passed; no gameplay run or installation. |
 | Damage Numbers | r25 | READY_TO_DISTRIBUTE | User-approved 1080p size preview; no r25 game run or behavior-suite rerun. Prior r22-config1 Eden confirmation remains scoped to those bytes. |
-| Please do Better PC | r1 | DEVELOPMENT | Native Linux/Windows candidate; static evidence in its validation record. Both platforms need gameplay acceptance. |
+| Please do Better PC | r1 | READY_TO_DISTRIBUTE | Unchanged paired binaries; Linux user acceptance and exact runtime evidence recorded. Windows gameplay remains untested. |
 | Please do Better | r19-savehint | READY_TO_DISTRIBUTE | Host/ARM checks for save feedback; no new game run. Prior r17-config1 Eden confirmation remains scoped to those bytes. |
 | Modern Weapon Controls | r11 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r10 controls/help/bowgun acceptance, without exhaustive style/ammo coverage. |
 | Key Quest Markers | r2 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r1 Eden Village 1/2-star and Hub 1-star acceptance, plus Ryujinx full-rank coverage. |

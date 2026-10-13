@@ -86,6 +86,28 @@ class DistributionTests(unittest.TestCase):
         self.rejected(lambda: distribution.check(self.root, source_only=True))
         self.rejected(lambda: distribution.check(self.root))
 
+    def test_public_folder_name_with_spaces_is_preserved_in_zip(self):
+        self.spec['package_name'] = 'Please do Better PC'
+        self.save_spec()
+        archive = self.package()
+        with zipfile.ZipFile(archive) as zipped:
+            self.assertEqual(zipped.namelist(), [
+                'Please do Better PC/romfs/nativeNX/plugins/test.nro', 'README.md'])
+        distribution.check(self.root)
+
+    def test_public_folder_names_cannot_escape_or_loosen_version_rules(self):
+        for name in ('../Please do Better PC', 'Please/Better', 'Please\\Better',
+                     ' Please do Better PC', 'Please do Better PC ',
+                     'Please  do Better PC', 'Please:Better', '.'):
+            with self.subTest(name=name):
+                self.spec['package_name'] = name
+                self.save_spec()
+                self.rejected(self.package)
+        self.spec['package_name'] = 'Please do Better PC'
+        self.spec['version'] = 'r1 with spaces'
+        self.save_spec()
+        self.rejected(self.package)
+
     def test_developer_documents_cannot_be_release_notices(self):
         for name in ('THIRD_PARTY.md', 'DEVELOPMENT.md', 'README.md'):
             with self.subTest(name=name):
