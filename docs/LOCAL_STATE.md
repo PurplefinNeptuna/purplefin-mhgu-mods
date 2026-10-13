@@ -9,7 +9,7 @@ were separately inspected on 2026-10-12.
 
 | Mod | Version | Status | Runtime evidence |
 | --- | --- | --- | --- |
-| Damage Numbers PC | r3 | DEVELOPMENT | Paired native candidate using stock Forge PC 0.2.1; host/ARM/ImGui validation is separate from untested Linux/Windows gameplay. |
+| Damage Numbers PC | r3 | READY_TO_DISTRIBUTE | User accepted Linux r3; logs/hashes confirm eight hooks and two settings saves. Windows gameplay remains untested. |
 | Damage Numbers (Rust) | r1 | DEVELOPMENT | Host/config/rollback, r25 oracle, real ImGui and ARM checks passed; no gameplay run or installation. |
 | Damage Numbers | r25 | READY_TO_DISTRIBUTE | User-approved 1080p size preview; no r25 game run or behavior-suite rerun. Prior r22-config1 Eden confirmation remains scoped to those bytes. |
 | Please do Better | r19-savehint | READY_TO_DISTRIBUTE | Host/ARM checks for save feedback; no new game run. Prior r17-config1 Eden confirmation remains scoped to those bytes. |
@@ -93,9 +93,11 @@ confirm registration, activation and both help ARC reads. Individual cases were
 not enumerated, and Windows gameplay remains untested. See
 [its runtime receipt](../mods/modern-weapon-controls-pc/RUNTIME_RESULTS.json).
 
-Damage Numbers PC r3 is the third native conversion candidate.
+Damage Numbers PC r3 is the third native release, approved on 2026-10-13.
 Stock Forge PC 0.2.1 guest calls supply SDK thread identity without a loader patch.
 The current export supplies the alternate `0x16dd4c` HZV block, avoiding re-export.
-The candidate is uninstalled and unpublished. See
+The user accepted Linux use; installed and loaded hashes match the released SO.
+Specific cases were not enumerated, and Windows gameplay remains untested.
+The release is unpublished. See
 [its development guide](../mods/damage-numbers-pc/DEVELOPMENT.md) and
 [stock-loader integration](../mods/damage-numbers-pc/STOCK_FORGE.md).
