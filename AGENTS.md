@@ -23,6 +23,11 @@ installation locations. The user reported Eden's packages inactive on
 packages and activation. Folder presence proves no activation; the library is
 not an installation destination.
 
+The user does not co-activate a base mod and its RS/PC alternative. Trust this;
+do not routinely check or suggest alternative-mod co-activation during debugging.
+Investigate it only when fresh, specific evidence directly implicates it, and
+explain that evidence first.
+
 When the user reports a successful run, failed run or crash, read the latest log
 from the emulator they tested before drawing conclusions. Apply the same
 evidence standard to Eden and Ryujinx: correlate the actual game-launch mod set,
