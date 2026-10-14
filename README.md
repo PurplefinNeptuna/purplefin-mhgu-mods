@@ -9,7 +9,7 @@ Native Forge PC conversions target GURecomp on Linux x64 and Windows x64.
 | --- | --- | --- |
 | Damage Numbers | r25 | [Guide and development](mods/damage-numbers/README.md) |
 | Damage Numbers PC | r2 DEVELOPMENT candidate | [Guide and development](mods/damage-numbers-pc/README.md) |
-| Damage Numbers (Rust) | r2 DEVELOPMENT candidate | [Guide and development](mods/damage-numbers-rs/README.md) |
+| Damage Numbers (Rust) | r3 DEVELOPMENT candidate | [Guide and development](mods/damage-numbers-rs/README.md) |
 | Modern Weapon Controls | r11 | [Guide and development](mods/modern-weapon-controls/README.md) |
 | Key Quest Markers | r2 | [Guide and development](mods/key-quest-markers/README.md) |
 | Modern Weapon Controls PC | r1 | [Guide and development](mods/modern-weapon-controls-pc/README.md) |

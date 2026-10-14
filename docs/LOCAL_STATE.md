@@ -10,7 +10,7 @@ were separately inspected on 2026-10-12.
 | Mod | Version | Status | Runtime evidence |
 | --- | --- | --- | --- |
 | Damage Numbers PC | r3 | READY_TO_DISTRIBUTE | User accepted Linux r3; logs/hashes confirm eight hooks and two settings saves. Windows gameplay remains untested. |
-| Damage Numbers (Rust) | r2 | DEVELOPMENT | Forge 1.5.0 bindings, pooled-hook/rollback fixtures, r25 oracle, real ImGui and ARM checks; no gameplay acceptance. |
+| Damage Numbers (Rust) | r3 | DEVELOPMENT | External OpenSans/RGBA assets, 24 exact r2 visual scenes, file/lifecycle failures, host and ARM checks passed; no gameplay acceptance. |
 | Damage Numbers | r25 | READY_TO_DISTRIBUTE | User-approved 1080p size preview; no r25 game run or behavior-suite rerun. Prior r22-config1 Eden confirmation remains scoped to those bytes. |
 | Please do Better PC | r1 | READY_TO_DISTRIBUTE | Unchanged paired binaries; Linux user acceptance and exact runtime evidence recorded. Windows gameplay remains untested. |
 | Please do Better | r23-reward-pages | READY_TO_DISTRIBUTE | User approved the unchanged candidate. Fresh Eden log/installed hash confirm r23 loading; individual reward-page, Palico, appraisal/collection, persistence and consecutive-quest checks were not enumerated. Ryujinx/native Switch remain untested. |
@@ -19,7 +19,7 @@ were separately inspected on 2026-10-12.
 | Key Quest Markers PC | r1 | READY_TO_DISTRIBUTE | User-confirmed successful Linux use; matching installed/loaded-copy hashes and fresh activation logs. Windows build/static checks only; gameplay untested. |
 | Forge, HD Project, wiki cheats, DTI dumper support | See each record | LOCAL_ONLY | Loader and resource evidence retain their recorded scope. |
 
-The Rust r2 candidate is under `build/damage-numbers-rs/candidates/r2/delivery/`; it uses stock forge-rs configuration and eight ordinary native Forge 1.5.0 hooks. Loader-version gating is disabled. The previous r1 delivery remains preserved. [Source and workflow](../mods/damage-numbers-rs/README.md).
+The Rust r3 candidate is under `build/damage-numbers-rs/candidates/r3/delivery/`; it uses stock forge-rs configuration and eight ordinary native Forge 1.5.0 hooks. Loader-version gating is disabled. The previous r1 and r2 deliveries remain preserved. [Source and workflow](../mods/damage-numbers-rs/README.md).
 
 Each `mods/<name>/DISTRIBUTION.json` is authoritative. Verified delivery folders
 are under `build/<name>/releases/<version>/`; the full distribution check verifies
