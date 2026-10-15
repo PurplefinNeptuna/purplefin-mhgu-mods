@@ -37,7 +37,7 @@ class ProvenanceTests(unittest.TestCase):
         self.save()
 
     def save(self):
-        (self.root / 'docs/WORKSPACE_SOURCE_MIGRATION.json').write_text(json.dumps({'sources': [self.record]}))
+        (self.root / 'docs/WORKSPACE_EVIDENCE.json').write_text(json.dumps({'historical': {'WORKSPACE_SOURCE_MIGRATION.json': {'sources': [self.record]}}}))
 
     def test_removed_helper_resolves_to_exact_original_git_blob(self):
         verify(self.name, sha(self.old), self.root)

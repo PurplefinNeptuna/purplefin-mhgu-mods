@@ -1,6 +1,3 @@
 # Preserve byte-identical upstream snapshots, including their whitespace.
 mods/*/vendor/** -whitespace
-templates/forge-pc/vendor/** -whitespace
-
-# Unified patches need space-prefixed blank context lines.
-mods/forge-patched/compat/patches/*.patch whitespace=-blank-at-eol
+templates/*/vendor/** -whitespace

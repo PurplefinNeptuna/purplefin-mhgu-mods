@@ -61,7 +61,7 @@ def prepare(fetch=False):
   main_image(input_path('main').read_bytes())
   if digest(input_path('sdk'))!='9a9b7035266637ee693a32da6b0fde54bda00e897bef05b1c8d8cda30f8ac8b0':raise ValueError('SDK fingerprint differs')
   from native_support import nso_exports
-  if digest(input_path('forge'))!='9d472d56f81f834f366171426dbd0131af19c7697e132c731c3fd3f335af53d0':raise ValueError('Forge fingerprint differs; explicit dependency update and revalidation required')
+  if digest(input_path('forge'))!='469f425dd02a37b7a5d84ddde5f769922bc5e0d5fbc8adb0ca270e2c0773cd7d':raise ValueError('Forge fingerprint differs; explicit dependency update and revalidation required')
   nso_exports(input_path('forge'))
   if NAME=='key-quest-markers':
    if not CONFIG.get('romfs'):raise ValueError('Quest inventory requires romfs in build.local.json')

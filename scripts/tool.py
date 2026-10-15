@@ -47,7 +47,7 @@ def launch(name, args):
         "dti-dumper": [sys.executable, str(ROOT / "scripts/dti_dumper.py")],
         "dti-resources": ["xdg-open", str(ROOT / "mods/dti-dumper-support/README.md")],
         "forge-rs": [sys.executable, str(ROOT / "scripts/forge_rs.py")],
-        "forge-rs-resources": ["xdg-open", str(ROOT / "docs/FORGE_RS_TOOLING.md")],
+        "forge-rs-resources": ["xdg-open", str(ROOT / "docs/TOOLS.md")],
     }
     if name == "ghidra" and not args:
         args = [str(ROOT / "work/research-tooling/ghidra-projects/MHGU_1.4.0.gpr")]

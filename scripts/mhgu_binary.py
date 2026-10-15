@@ -7,20 +7,9 @@ import struct
 import subprocess
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
-FORGE = ROOT / "tools/forge-local"
-DEPS = ROOT / "work/shared/forge-sdk"
-REVISION = "b8921fa3bbe35bbbafb11ccc489d5f1c6aa24a2d"
 MAIN_SHA = "b3935415499549adaf4c0e89822831daa175cfd456a7990791c79be3997645ef"
 BUILD_ID = "fb08f1d20fd1204fe7070672777f869b00000000000000000000000000000000"
 IMAGE = "docker.io/devkitpro/devkita64@sha256:1fc388c3a0d34bd2045a6dadcb1020e069d5f876a187fd705de14b4440c00282"
-HOOKS = [0x3de064, 0x3af5b4, 0x388ee8, 0x5e8130, 0x3850b0, 0x7a3480]
-WINDOWS = {
-    "joy_update_BETTER_INPUT_OCCUPIED": 0x3de064,
-    "joy_digital_converter_shared": 0x3de4b0,
-    "player_quest_input_candidate": 0x2a79cc,
-    "player_command_classifier_shared_candidate": 0x27ca28,
-    "long_sword_new_instance": 0x2b489c,
-}
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()

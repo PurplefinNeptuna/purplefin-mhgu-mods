@@ -12,6 +12,8 @@ def safe(name):
  return p
 def refresh(mod):
  folder=ROOT/'mods'/mod
+ if (folder/'Cargo.toml').exists():
+  subprocess.run(['python3',folder/'scripts/export_source.py','--refresh'],check=True);return
  names=[]
  for p in sorted(folder.rglob('*')):
   name=str(p.relative_to(folder))
@@ -21,7 +23,11 @@ def refresh(mod):
   if p.is_file() and p.name!='EXPORT.json':names.append(name)
  (folder/'EXPORT.json').write_text(json.dumps({'schema_version':1,'mod':mod,'files':names},indent=2)+'\n')
 def export(mod,dest):
- folder=ROOT/'mods'/mod;record=json.loads((folder/'EXPORT.json').read_text())
+ folder=ROOT/'mods'/mod
+ if dest.exists():raise ValueError('Preserving existing export destination: '+str(dest))
+ if (folder/'Cargo.toml').exists():
+  subprocess.run(['python3',folder/'scripts/export_source.py','--output',dest],check=True);return dest
+ record=json.loads((folder/'EXPORT.json').read_text())
  if record['mod']!=mod:raise ValueError('Export identity differs')
  if dest.exists():raise ValueError('Preserving existing export destination: '+str(dest))
  files=record['files']+['EXPORT.json']
@@ -92,7 +98,7 @@ extern "C" void forge_onLoad(PluginInitParam* p) {
  if (!p) return;
  auto* b=reinterpret_cast<volatile unsigned char*>(p);
  for(unsigned i=0;i<sizeof(*p);++i)b[i]=0;
- b[0]=1;b[2]=4;b[4]=1;
+ b[0]=1;b[2]=5;b[4]=1;
  const char* name="'''+name+'''";
  for(unsigned i=0;name[i] && i<63;++i)b[6+i]=name[i];
 }

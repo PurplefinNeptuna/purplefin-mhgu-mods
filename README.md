@@ -1,41 +1,34 @@
-# Monster Hunter Generations Ultimate modding
+# MHGU modding
 
-MHGU Switch (`0100770008DD8000`) modding on Eden and Ryujinx/Linux.
-Native Forge PC conversions target GURecomp on Linux x64 and Windows x64.
+Monster Hunter Generations Ultimate 1.4.0 for Switch (Eden/Ryujinx) and native
+GURecomp PC ports. Switch development uses upstream Forge **1.5.1**; PC uses
+stock Forge PC **0.2.1**.
 
-## Mods
-
-| Mod | Local release | Source and documentation |
+| Mod | Release | Guide |
 | --- | --- | --- |
-| Damage Numbers | r25 | [Guide and development](mods/damage-numbers/README.md) |
-| Damage Numbers PC | r2 DEVELOPMENT candidate | [Guide and development](mods/damage-numbers-pc/README.md) |
-| Damage Numbers (Rust) | r3 READY_TO_DISTRIBUTE | [Guide and development](mods/damage-numbers-rs/README.md) |
-| Modern Weapon Controls | r11 | [Guide and development](mods/modern-weapon-controls/README.md) |
-| Key Quest Markers | r2 | [Guide and development](mods/key-quest-markers/README.md) |
-| Native Quest Badges (Rust) | r14 READY_TO_DISTRIBUTE (original emblem) | [Guide and development](mods/key-quest-markers-rs/README.md) |
-| Modern Weapon Controls PC | r1 | [Guide and development](mods/modern-weapon-controls-pc/README.md) |
-| Key Quest Markers PC | r1 | [Guide and development](mods/key-quest-markers-pc/README.md) |
-| Please do Better | r23-reward-pages | [Guide and development](mods/please-do-better/README.md) |
-| Please do Better PC | r1 READY_TO_DISTRIBUTE (Linux accepted; Windows untested) | [Guide and development](mods/please-do-better-pc/README.md) |
+| Damage Numbers | r26, Rust | [Install](mods/damage-numbers/README.md) |
+| Key Quest Markers | r15, native GUI/Rust | [Install](mods/key-quest-markers/README.md) |
+| Modern Weapon Controls | r12 | [Install](mods/modern-weapon-controls/README.md) |
+| Please do Better | r24-forge151 | [Install](mods/please-do-better/README.md) |
+| Damage Numbers PC | r3 | [Install](mods/damage-numbers-pc/README.md) |
+| Key Quest Markers PC | r1 | [Install](mods/key-quest-markers-pc/README.md) |
+| Modern Weapon Controls PC | r1 | [Install](mods/modern-weapon-controls-pc/README.md) |
+| Please do Better PC | r1 | [Install](mods/please-do-better-pc/README.md) |
 
-The ready releases are locally packaged and unpublished. Each mod's
-`DISTRIBUTION.json` controls its status and payload hashes. Forge, HD Project,
-wiki cheats and DTI dumper support remain LOCAL_ONLY. Verify all current records
-with `python3 scripts/mod_distribution.py check`.
+Each mod's DISTRIBUTION.json controls delivery status and hashes. New Switch
+builds are approved for local distribution after static validation; gameplay
+acceptance of earlier binaries remains separate. PC runtime bytes are preserved.
+HD Project, wiki cheats and DTI extraction support are local integrations.
 
-## Workspace
+- [Instructions](AGENTS.md), [local paths/state](docs/LOCAL_STATE.md)
+- [Development and distribution](docs/DEVELOPMENT.md)
+- [Tools and references](docs/TOOLS.md)
+- [Code, DTI and native GUI research](docs/RESEARCH.md)
+- [GURecomp setup and ports](docs/GURECOMP.md)
+- [HD ownership and merge order](docs/CLEANUP_HD_PROJECT.md)
+- [Compaction and preserved-artifact receipt](docs/COMPACTION.json)
 
-- [Project instructions](AGENTS.md) and [local state](docs/LOCAL_STATE.md)
-- [Tools and launchers](docs/TOOLS.md), [reference map](docs/REFERENCES.md) and [code research](docs/RESEARCH_TOOLING.md)
-- [Maintained Forge source](docs/FORGE_LOCAL_BRANCH.md), [runtime evidence](docs/FORGE_RUNTIME_EVIDENCE.md) and [plugin rules](docs/FORGE_PLUGIN_GUIDELINES.md)
-- [HD Project ownership and merge order](docs/CLEANUP_HD_PROJECT.md)
-- [GURecomp Linux setup and runtime](docs/GURECOMP_LOCAL_SETUP.md), [evidence receipt](docs/GURECOMP_LOCAL_RUNTIME.json) and [plugin port research](docs/GURECOMP_MOD_PORTABILITY.md)
-- [Distribution rules](docs/DISTRIBUTION_STANDARD.md) and [standalone development](docs/STANDALONE_MODS.md)
-
-Start a mod with its local `build.sh`; copy and hash game inputs before editing.
-Stage replacements under `build/<name>/romfs/nativeNX/` using original relative
-paths. The dump, uninstalled library and emulator installation directories are
-listed in local state. Preparation and packaging do not install or publish.
-
-Current technical decisions and validation limits live with each mod.
-Superseded experiment/release notes remain recoverable from Git history.
+Use mod-local build.sh commands. Inspect all deliveries with
+`python3 scripts/mod_distribution.py check`. Builds and packaging do not install,
+activate or publish. Superseded source remains in Git; accepted deliveries are
+preserved under backups/accepted/. Update upstream repositories in place.

@@ -125,12 +125,12 @@ def build():
         expected = bytes.fromhex(signature["bytes"])
         if image[offset:offset+len(expected)] != expected:
             raise ValueError("Dumper target signature differs from the original executable")
-    baseline = json.loads((ROOT / "docs/FORGE_LOCAL_BRANCH.json").read_text())
+    # Source and import validation use the copied official loader, never the
+    # currently installed emulator package or a retired custom fork.
+    baseline = json.loads((ROOT / "docs/COMPACTION.json").read_text())["forge"]
     forge = ROOT / "tools/forge-local"
     if subprocess.check_output(["git", "-C", str(forge), "rev-parse", "HEAD"], text=True).strip() != baseline["commit"]:
-        raise ValueError("Maintained Forge baseline changed")
-    if subprocess.check_output(["git", "-C", str(forge), "status", "--porcelain"], text=True).strip():
-        raise ValueError("Maintained Forge baseline has local edits")
+        raise ValueError("Upstream Forge 1.5.1 source changed")
     env = os.environ.copy()
     env.update(RUSTUP_HOME=str(TOOLS / "rustup"), CARGO_HOME=str(TOOLS / "cargo"),
                RUSTUP_TOOLCHAIN=recipe["toolchain"], CARGO_NET_OFFLINE="true")
@@ -153,9 +153,9 @@ def build():
     imports = [(entry[0].decode("ascii"), entry[1][3] >> 4) for entry in nro.symbols if entry[0] and entry[1][5] == 0]
     if any(name.startswith(("forge_hook", "jit", "svc")) for name, _ in imports):
         raise ValueError("Dumper unexpectedly imports a hook/JIT/CodeMemory API")
-    live_forge = Path(baseline["installed_packages"]["forge-patched"]) / "exefs/subsdk9"
-    if sha(live_forge) != baseline["installed_forge_sha256"]:
-        raise ValueError("Installed Forge fingerprint changed")
+    live_forge = ROOT / "work/shared/game-exefs/forge"
+    if sha(live_forge) != baseline["nso_sha256"]:
+        raise ValueError("Copied official Forge 1.5.1 fingerprint changed")
     sdk = ROOT / "work/shared/game-exefs/sdk"
     if sha(sdk) != recipe["sdk_sha256"]:
         raise ValueError("Copied SDK fingerprint changed")

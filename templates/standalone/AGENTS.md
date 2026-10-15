@@ -1,49 +1,33 @@
 # Standalone mod development
 
-Read README.md, DEVELOPMENT.md, DISTRIBUTION.json and dependencies.lock.json. This folder owns its source, tests, recipes, notices and snapshots. Do not import sibling mod folders, installed emulator packages, personal paths or parent Git history. Configure supplied inputs in ignored build.local.json. Use build.sh; downloads require explicit prepare --fetch. Preserve inputs and immutable accepted releases. Panels contain settings only, with concise lifetime-deduplicated Forge logs outside hot hooks. Preserve background callbacks, ARM32 ABI, NZCVQ and all live GE state; unsupported APSR_g writes are forbidden. Static fixtures do not establish gameplay acceptance. Commit validated changes locally; never install, activate, publish or push without a user request.
+Read README.md, DEVELOPMENT.md, DISTRIBUTION.json and dependencies.lock.json.
+This folder owns source, recipes, tests, dependency snapshots and export lists.
+No sibling mod, personal path, installed game/emulator or parent history is a
+build dependency. Use build.sh and copied inputs from build.local.json; fetch
+only explicitly. Validate dependency/input fingerprints and preserve originals.
 
-## Primary-only plugin configs
+Explain substantial functions, native offsets/units, data flow, lifetimes and
+unsafe caller contracts beside code. Preserve NZCVQ and all live state; audit
+GE and never require APSR_g/APSR_nzcvqg writes. Keep native ownership/rollback.
+Use Forge facilities before private substitutes; document any verified gap.
 
-Configs use one plugin-specific primary INI only. Do not create, read, recover
-from or delete `_backup` configs, and do not imitate the game's save backups.
-Validate before writing, flush and verify the primary, then commit through
-Forge's counted save mount. Balance handles and mounts on every failure path.
-Keep session settings on failure; previous disk contents are not guaranteed.
-Missing or invalid primary files use defaults. Save controls remain explicit.
+Settings use closed compact unframed Plugin UI tree rows, stable IDs and paired
+TreePop. No settings means no panel. Background callbacks continue with rows
+closed. Diagnostics use concise process-deduplicated logs outside hot hooks.
+Primary-only INIs use explicit saves and balanced counted mount/handle cleanup;
+never create/read/recover/delete `_backup` configs. Keep session state on errors.
 
-## Release ZIP layout
+Runtime changes require new versions. DISTRIBUTION.json is authoritative.
+After relevant host/native tests, package and run the full distribution check.
+Ready ZIPs contain only README.md beside the named runtime folder; the same
+README stays adjacent. Keep README.html, GAMEBANANA_README.html, NOTICES.txt,
+NOTICES.html, manifests and checksums outside ZIPs. Include current component
+licenses/credits; development provenance is separate in THIRD_PARTY.md.
+GameBanana descriptions disclose actual AI assistance/software/scope and
+applicable authors. Never infer provenance; recheck policy before publishing.
+Static/host/build results are separate from exact binary gameplay acceptance.
+Commit validated work locally; never install, activate, launch, edit saves,
+publish or push implicitly. Preserve accepted artifacts and unrelated edits.
 
-Ready and published ZIPs include `README.md` at the archive root beside the named
-mod folder. Keep only runtime files inside the mod folder. The archived README
-must match the adjacent release README. Use the distribution packager and full
-check; support refreshes preserve runtime bytes and back up the previous ZIP.
-
-Notices/licenses stay outside the ZIP. Supply combined `NOTICES.txt` and a
-notices-only `NOTICES.html` alternative beside the ZIP, formatted as a paste-ready
-GameBanana fragment. Preserve license wording.
-
-Release notices cover only the package's current code, assets and applicable
-credits, including Forge where used. Preserve required copyright and license
-text. Exclude unrelated mods, development tools, local source paths, Git/history
-references and previous-license commentary. Keep development provenance in
-`THIRD_PARTY.md`; use dedicated `DISTRIBUTION_NOTICES.md` for release credits and
-component notices, alongside current license files. Notices must be usable
-without a source checkout.
-
-For every current and future mod, supply `README.html` beside the ZIP as a
-paste-ready GameBanana HTML fragment generated from the release README. Preserve
-its installation/use content, headings, lists, controls/settings tables, public
-links and code examples. Keep HTML alternatives outside the ZIP; archive only
-`README.md` beside the runtime folder. Keep README content user-facing and
-notices limited to current package contents and applicable credits.
-
-For GameBanana, generate separate `GAMEBANANA_README.html` from the install
-README plus the explicit `gamebanana` record in `DISTRIBUTION.json`. Follow
-https://gamebanana.com/wikis/2175: prominently disclose actual AI code assistance,
-name/link its software and describe its scope. Credit applicable original code
-and asset authors/sources. AI-assisted code needs no training-dataset inventory;
-model-generated artwork/audio still needs known software, input and dataset
-credits. Never infer AI provenance or claim human review that has not occurred.
-Keep this platform description outside the ZIP; retain the install guides and
-notices separately. Apply this to every current and future mod and recheck the
-live policy before publication.
+Target upstream Forge 1.5.1, native ARM32 Hook 24 and the actual 70-byte metadata
+record. Do not restore retired custom loader shims or patches.

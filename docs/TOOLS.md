@@ -27,37 +27,46 @@ FFmpeg, Wine, Node, compiler/Qt are reused; no system packages installed.
 | [GMD](https://github.com/beeequeue/gmd) | Text decoding/encoding; current upstream source build | `./scripts/tool.sh gmd --help` |
 | [Ghidra](https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.1.4_build) 12.1.4 | Imported MHGU 1.4.0 code database, disassembly and decompilation | `./scripts/tool.sh ghidra` |
 | [MHGU DTI dumper](https://github.com/Fexty12573/mhgu-dti-dumper) | Runtime reflection results indexed; extraction plugin removed after trial | `./scripts/tool.sh research find QUERY --kind dti` |
-| [forge-rs](https://github.com/Fexty12573/forge-rs) 1.4.1 | Rust Forge plugin crates and Cargo scaffold/build command; isolated runtime | `./scripts/tool.sh forge-rs status` |
+| [forge-rs](https://github.com/Fexty12573/forge-rs) 1.5.0 | Rust Forge plugin crates and Cargo scaffold/build command; isolated runtime | `./scripts/tool.sh forge-rs status` |
 | Wiki model plugins | MHGU MaxScript import/export resources | `./scripts/tool.sh model-plugins` |
 | Wiki binary templates | 010 Editor `.bt` reference files | `./scripts/tool.sh templates` |
 
-[Versions/commits](tool-versions.json); download hashes: `tools/downloads/download-manifest.json`. Checked supplied GitHub
+[Versions/commits](WORKSPACE_EVIDENCE.json); download hashes: `tools/downloads/download-manifest.json`. Checked supplied GitHub
 digests, official Blender SHA-256 and .NET SHA-512. Local hashes without
 upstream digests establish inventory, not authenticity.
 
 Upstream checked 2026-10-12: the installed release/source tracks match upstream,
 including Blender's 4.5 LTS track. Available GitHub asset digests match the
-recorded downloads. [Check record](TOOL_REFERENCE_UPDATE.json) lists revisions,
+recorded downloads. [Check record](WORKSPACE_EVIDENCE.json) lists revisions,
 release links and digest comparisons. The private compatibility runtimes,
 accepted Forge container and host system packages retain their existing versions.
 
-Forge and forge-rs v1.5.0 source snapshots were added under `references/upstream/`
-on 2026-10-13. [Compatibility comparison](FORGE_UPSTREAM_COMPARISON.md) covers
-their changed Hook ABI. The installed cargo-forge tool remains pinned at 1.4.1.
+## Current source checkouts
 
-[RESEARCH_TOOLING.md](RESEARCH_TOOLING.md) covers Ghidra/code/type/DTI indexes; consult them before
-code/gameplay mods. Imported `.text` has one changed byte and
-conflicting types: patch from verified original NSO. Saved DTI: 3,152
-classes/66,752 properties (2026-10-03). Dumping broke quest controls;
-removal/restart restored them. Keep dumper removed; use saved data.
-Evidence/new-trial rules: [DTI_DUMPER_RUNTIME.md](DTI_DUMPER_RUNTIME.md).
+One checkout per upstream repository is retained. Update it directly; do not
+create an additional upstream directory. Revisions/remotes and historical pins
+are recorded in COMPACTION.json and WORKSPACE_EVIDENCE.json.
 
-[Damage Numbers Rust workflow](../mods/damage-numbers-rs/DEVELOPMENT.md) uses a self-contained forge-rs 1.5.0 snapshot with the native 24-byte ARM32 Hook layout; the converter remains pinned separately.
+| Source | Checkout |
+| --- | --- |
+| Forge 1.5.1 | `tools/forge-local/` |
+| forge-rs 1.5.0 | `tools/forge-rs/` |
+| Forge PC 0.2.1 | `tools/forge-pc-local/` |
+| Eden | `references/eden/` |
+| Ryujinx-Nextendo | `references/ryujinx-nextendo/` |
+| SUYU-GURecomp | `references/gurecomp-research/SUYU-GURecomp/` |
 
-[forge-rs setup and commands](FORGE_RS_TOOLING.md) covers the pinned source,
-existing private Rust runtime and ARM32 build checks. Read the
-[Damage Numbers migration assessment](FORGE_RS_DAMAGE_NUMBERS.md) before using
-its hook/config wrappers with the maintained Forge fork.
+`./scripts/tool.sh forge-rs status` checks source and converter fingerprints.
+The pinned cargo-forge converter remains 1.4.1; it builds the self-contained
+1.5.0 Rust bindings used by the mods. Source updates do not install loaders.
+
+Offline MHGU references/wiki are `references/MHGU-Modding/` and
+`references/MHGU-Modding.wiki/`; their source revisions are in
+`references/provenance.json`. Use targeted rg searches in template/hash/resource
+indexes and weapon motion-value indexes. Some fields are WIP/MHXX-specific;
+verify game/version, offsets, types, counts and bytes against the actual input.
+Model tutorials establish extraction/conversion, not a complete import workflow.
+See [research](RESEARCH.md) for Ghidra/DTI searches and native GUI ownership.
 
 ## ARC workflow
 

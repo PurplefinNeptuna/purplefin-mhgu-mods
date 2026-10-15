@@ -15,7 +15,7 @@ SOURCE = ROOT / "tools/forge-rs"
 
 
 def status():
-    record = json.loads((ROOT / "docs/FORGE_RS_TOOLING.json").read_text())
+    record = json.loads((ROOT / "docs/WORKSPACE_EVIDENCE.json").read_text())["tooling"]["forge_rs"]
     print(f"forge-rs {record['version']}; source: {SOURCE}")
     if SOURCE.exists():
         revision = subprocess.check_output(
@@ -25,16 +25,16 @@ def status():
         if revision != record["source_revision"]:
             raise ValueError("Source revision differs from the tooling record")
     else:
-        print("Source checkout absent; restore it using docs/FORGE_RS_TOOLING.md")
+        print("Source checkout absent; restore it using docs/TOOLS.md")
     if not CARGO_FORGE.is_file() or not (TOOLCHAIN / "rustc").is_file():
-        raise ValueError("Isolated runtime absent; see docs/FORGE_RS_TOOLING.md")
+        raise ValueError("Isolated runtime absent; see docs/TOOLS.md")
     digest = hashlib.sha256(CARGO_FORGE.read_bytes()).hexdigest()
     if digest != record["cargo_forge_sha256"]:
         raise ValueError("cargo-forge fingerprint differs from the tooling record")
     print(subprocess.check_output([str(TOOLCHAIN / "rustc"), "--version"], text=True).strip())
     print("Commands: forge-rs new NAME --path work/my-trial; forge-rs build --release")
     print("Build runs in the caller's plugin directory; Cargo defaults to offline mode.")
-    print("Damage Numbers migration assessment: docs/FORGE_RS_DAMAGE_NUMBERS.md")
+    print("Supported Switch baseline: upstream Forge 1.5.1; docs/DEVELOPMENT.md")
 
 
 def run(args):
@@ -42,7 +42,7 @@ def run(args):
         status()
         return 0
     if not CARGO_FORGE.is_file() or not (TOOLCHAIN / "cargo").is_file():
-        raise ValueError("Isolated runtime absent; see docs/FORGE_RS_TOOLING.md")
+        raise ValueError("Isolated runtime absent; see docs/TOOLS.md")
     env = os.environ.copy()
     env.update(CARGO_HOME=str(RUNTIME / "cargo"),
                RUSTUP_HOME=str(RUNTIME / "rustup"), RUSTUP_TOOLCHAIN="nightly")
