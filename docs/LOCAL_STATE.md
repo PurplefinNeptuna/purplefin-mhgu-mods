@@ -17,7 +17,7 @@ were separately inspected on 2026-10-12.
 | Modern Weapon Controls | r11 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r10 controls/help/bowgun acceptance, without exhaustive style/ammo coverage. |
 | Key Quest Markers | r2 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r1 Eden Village 1/2-star and Hub 1-star acceptance, plus Ryujinx full-rank coverage. |
 | Key Quest Markers PC | r1 | READY_TO_DISTRIBUTE | User-confirmed successful Linux use; matching installed/loaded-copy hashes and fresh activation logs. Windows build/static checks only; gameplay untested. |
-| Native Quest Badges (Rust) | r11 | DEVELOPMENT | Corrects r10's Message/Text title-class rejection; r11 manual acceptance pending. Preceding r9 is user-confirmed working on Eden/Linux on 2026-10-15 and remains preserved. |
+| Native Quest Badges (Rust) | r12 | DEVELOPMENT | 32px badge raised within the request slot; r12 manual acceptance pending. Preceding r11 is user-confirmed working on Eden/Linux with screenshot and matching installed NRO/log; its bytes remain preserved. |
 | Forge, HD Project, wiki cheats, DTI dumper support | See each record | LOCAL_ONLY | Loader and resource evidence retain their recorded scope. |
 
 The Rust r3 candidate is under `build/damage-numbers-rs/candidates/r3/delivery/`; it uses stock forge-rs configuration and eight ordinary native Forge 1.5.0 hooks. Loader-version gating is disabled. The previous r1 and r2 deliveries remain preserved. [Source and workflow](../mods/damage-numbers-rs/README.md).
@@ -32,8 +32,8 @@ colour drawing. Preserve the accepted r9 payload; see the
 The r11 candidate moves badges into the request slot, or four pixels left of a
 visible bubble, and fits long titles with native AutoScale. r10 rejected every
 row because its title class was wrong; r11 uses the verified Message class and
-resource-derived fixture identity. It has separate manual
-acceptance pending; r9 confirmation does not apply to the new placement.
+resource-derived fixture identity. The user confirmed r11 working, including the
+request-slot placement; r12 geometry has separate manual acceptance pending.
 Future native menu work should start with the reusable
 [native GUI modding guide](NATIVE_GUI_MODDING.md).
 
@@ -118,3 +118,5 @@ Specific cases were not enumerated, and Windows gameplay remains untested.
 The release is unpublished. See
 [its development guide](../mods/damage-numbers-pc/DEVELOPMENT.md) and
 [stock-loader integration](../mods/damage-numbers-pc/STOCK_FORGE.md).
+
+Native badge r11 acceptance is recorded in [RUNTIME_R11.json](../mods/key-quest-markers-rs/docs/RUNTIME_R11.json). r12 enlarges the badge to32×32 at Y=3, X365/329, and title width299/263; its new geometry needs separate manual acceptance.

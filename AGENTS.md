@@ -153,6 +153,11 @@ by requiring the wrong exact type; r11 corrects it. Derive fixture classes from
 actual GUI resource records and execute the matching native getDTI; shared
 property setter addresses alone do not establish an object's class.
 
+r11 request-slot badges were user-confirmed working on Eden/Linux; evidence is
+`mods/key-quest-markers-rs/docs/RUNTIME_R11.json`. Preserve its accepted payload.
+r12 changes only geometry to32×32, Y3, X365/329 and title width299/263; its size
+and clipping need a new manual check. Native row height is40, request slot32.
+
 ## Code readability and comments
 
 Write owned code so the user can follow its behavior from the source. Include
