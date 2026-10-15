@@ -335,6 +335,23 @@ literal=<script>&
                 if b'<pre>' in html:
                     self.assertIn('[DamageNumbers]\nstyle = wilds', unescape(html.decode('ascii')))
 
+    def test_html_keeps_unicode_literal_in_guides_credits_and_licenses(self):
+        text = 'Copyright © Unicode, Inc. 花花花花花椰菜 <script> & "terms"'
+        markdown = text.encode('utf-8')
+        profile = copy.deepcopy(self.spec['gamebanana'])
+        profile['credits'][0]['author'] = '花花花花花椰菜'
+        for html in (distribution.readme_html(markdown),
+                     distribution.gamebanana_readme_html(markdown, profile),
+                     distribution.notices_html([('LICENSE', markdown)])):
+            with self.subTest(html=html):
+                rendered = html.decode('utf-8')
+                self.assertIn('©', rendered)
+                self.assertIn('花花花花花椰菜', rendered)
+                self.assertNotRegex(html, rb'&#(?:[0-9]+|[xX][0-9a-fA-F]+);')
+                self.assertNotIn(b'<script>', html)
+                self.assertIn(b'&lt;script&gt; &amp; &quot;terms&quot;', html)
+                self.assertIn(text, unescape(rendered))
+
     def test_html_apostrophes_stay_literal_without_unescaping_markup_or_attributes(self):
         markdown = b'''Fexty's guide: <script>alert('literal')</script>
 

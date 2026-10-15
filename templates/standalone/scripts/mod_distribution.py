@@ -177,9 +177,9 @@ def notices_html(sources):
             else:
                 body = notice_inline(paragraph) if name.endswith('.md') else escape(paragraph)
                 blocks.append('<p>' + body.replace('\n', '<br>\n') + '</p>')
-    # Character references keep names readable without a document charset header.
+    # GameBanana rejects numeric references for Unicode text, so keep UTF-8.
     # Generated attributes are double-quoted, so apostrophes can stay literal.
-    return ('\n'.join(blocks) + '\n').replace('&#x27;', "'").encode('ascii', 'xmlcharrefreplace')
+    return ('\n'.join(blocks) + '\n').replace('&#x27;', "'").encode('utf-8')
 
 
 def readme_inline(text):
@@ -275,7 +275,7 @@ def readme_html(blob):
                 output.append('<p>' + readme_inline(' '.join(paragraph)) + '</p>')
         return '\n'.join(output)
 
-    return (blocks(blob.decode('utf-8').splitlines()) + '\n').replace('&#x27;', "'").encode('ascii', 'xmlcharrefreplace')
+    return (blocks(blob.decode('utf-8').splitlines()) + '\n').replace('&#x27;', "'").encode('utf-8')
 
 
 def validate_gamebanana(profile):
@@ -337,13 +337,13 @@ def gamebanana_readme_html(blob, profile):
             output += ['<li>' + link(record) + ' by ' + escape(record['author']) + '</li>'
                        for record in asset[group]]
             output.append('</ul>')
-    output.append(readme_html(blob).decode('ascii').strip())
+    output.append(readme_html(blob).decode('utf-8').strip())
     if profile['credits']:
         output += ['<h2>Credits</h2>', '<ul>']
         output += ['<li>' + link(credit) + ' by ' + escape(credit['author']) + '</li>'
                    for credit in profile['credits']]
         output.append('</ul>')
-    return ('\n'.join(output) + '\n').replace('&#x27;', "'").encode('ascii', 'xmlcharrefreplace')
+    return ('\n'.join(output) + '\n').replace('&#x27;', "'").encode('utf-8')
 
 
 def make_zip(payloads, package_name, support):

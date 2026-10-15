@@ -117,6 +117,8 @@ inline styling. HTML code examples encode equals signs as `&#61;` so displayed
 and copied INI text stays correct. Keep the Markdown and actual config unchanged.
 Use literal apostrophes in HTML output. GameBanana rejects `&#x27;`. Generated
 attributes use double quotes, which remain escaped along with HTML markup.
+Keep copyright symbols and author names as literal UTF-8 text. GameBanana
+rejects numeric references such as `&#169;`. Preserve original license wording.
 
 ### Release README standard
 
