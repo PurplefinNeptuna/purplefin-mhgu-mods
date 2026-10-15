@@ -4,6 +4,10 @@ Workspace baseline updated 2026-10-15: stock Switch Forge 1.5.1, forge-rs 1.5.0,
 and stock Forge PC 0.2.1. This cleanup changes workspace sources and deliveries;
 it does not inspect or change current emulator activation.
 
+The workspace now uses `main`. Merged task branches, obsolete local source
+forks and the old release worktree are removed. Historical commits remain
+reachable through main or archive tags; the cleanup receipt records their tips.
+
 ## Deliveries and acceptance
 
 DISTRIBUTION.json in each mod is authoritative. Damage Numbers r26 and Key Quest
