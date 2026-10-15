@@ -17,7 +17,7 @@ were separately inspected on 2026-10-12.
 | Modern Weapon Controls | r11 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r10 controls/help/bowgun acceptance, without exhaustive style/ammo coverage. |
 | Key Quest Markers | r2 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r1 Eden Village 1/2-star and Hub 1-star acceptance, plus Ryujinx full-rank coverage. |
 | Key Quest Markers PC | r1 | READY_TO_DISTRIBUTE | User-confirmed successful Linux use; matching installed/loaded-copy hashes and fresh activation logs. Windows build/static checks only; gameplay untested. |
-| Native Quest Badges (Rust) | r9 | DEVELOPMENT | User-confirmed working on Eden/Linux on 2026-10-15; installed NRO matches r9 and fresh logs show both hooks. Individual state/transition coverage and Ryujinx/native Switch gameplay remain unconfirmed. |
+| Native Quest Badges (Rust) | r10 | DEVELOPMENT | Request-slot placement and native title auto-fit; r10 manual acceptance pending. Preceding r9 is user-confirmed working on Eden/Linux on 2026-10-15 and remains preserved. |
 | Forge, HD Project, wiki cheats, DTI dumper support | See each record | LOCAL_ONLY | Loader and resource evidence retain their recorded scope. |
 
 The Rust r3 candidate is under `build/damage-numbers-rs/candidates/r3/delivery/`; it uses stock forge-rs configuration and eight ordinary native Forge 1.5.0 hooks. Loader-version gating is disabled. The previous r1 and r2 deliveries remain preserved. [Source and workflow](../mods/damage-numbers-rs/README.md).
@@ -29,6 +29,9 @@ working fix decodes GUI immediate kinds17/18 directly and uses Mask0 for normal
 colour drawing. Preserve the accepted r9 payload; see the
 [native audit](../mods/key-quest-markers-rs/docs/NATIVE_AUDIT.md) and
 [runtime evidence](../mods/key-quest-markers-rs/docs/RUNTIME_RESULTS.json).
+The r10 candidate moves badges into the request slot, or four pixels left of a
+visible bubble, and fits long titles with native AutoScale. It has separate manual
+acceptance pending; r9 confirmation does not apply to the new placement.
 Future native menu work should start with the reusable
 [native GUI modding guide](NATIVE_GUI_MODDING.md).
 
