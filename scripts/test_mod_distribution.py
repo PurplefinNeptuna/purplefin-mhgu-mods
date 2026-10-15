@@ -335,6 +335,28 @@ literal=<script>&
                 if b'<pre>' in html:
                     self.assertIn('[DamageNumbers]\nstyle = wilds', unescape(html.decode('ascii')))
 
+    def test_html_apostrophes_stay_literal_without_unescaping_markup_or_attributes(self):
+        markdown = b'''Fexty's guide: <script>alert('literal')</script>
+
+[Author's page](https://example.com/author's?x="quoted"&y=1)
+
+`don't <script>`
+'''
+        profile = copy.deepcopy(self.spec['gamebanana'])
+        profile['ai_code']['scope'] = "Author's code."
+        profile['credits'][0]['author'] = "Author's team"
+        for html in (distribution.readme_html(markdown),
+                     distribution.gamebanana_readme_html(markdown, profile),
+                     distribution.notices_html([('NOTICE.md', markdown),
+                                               ('LICENSE', b"Author's terms: <script>literal</script>")])):
+            with self.subTest(html=html):
+                self.assertNotIn(b'&#x27', html)
+                self.assertNotIn(b'&amp;#x27', html)
+                self.assertIn(b"Fexty's guide", html)
+                self.assertIn(b"<code>don't &lt;script&gt;</code>", html)
+                self.assertNotIn(b'<script>', html)
+                self.assertIn(b'''href="https://example.com/author's?x=&quot;quoted&quot;&amp;y=1"''', html)
+
     def test_readme_html_tampering_is_rejected_and_refresh_preserves_zip(self):
         archive = self.package()
         old = archive.read_bytes()

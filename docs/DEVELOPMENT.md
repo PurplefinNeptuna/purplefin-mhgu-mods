@@ -107,6 +107,8 @@ publication. Packaging does not publish or establish moderation approval.
 GameBanana can reject literal INI text such as `style = wilds` as forbidden
 inline styling. HTML code examples encode equals signs as `&#61;` so displayed
 and copied INI text stays correct. Keep the Markdown and actual config unchanged.
+Use literal apostrophes in HTML output. GameBanana rejects `&#x27;`. Generated
+attributes use double quotes, which remain escaped along with HTML markup.
 
 ### Release README standard
 

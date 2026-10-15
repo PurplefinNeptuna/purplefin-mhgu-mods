@@ -178,7 +178,8 @@ def notices_html(sources):
                 body = notice_inline(paragraph) if name.endswith('.md') else escape(paragraph)
                 blocks.append('<p>' + body.replace('\n', '<br>\n') + '</p>')
     # Character references keep names readable without a document charset header.
-    return ('\n'.join(blocks) + '\n').encode('ascii', 'xmlcharrefreplace')
+    # Generated attributes are double-quoted, so apostrophes can stay literal.
+    return ('\n'.join(blocks) + '\n').replace('&#x27;', "'").encode('ascii', 'xmlcharrefreplace')
 
 
 def readme_inline(text):
@@ -274,7 +275,7 @@ def readme_html(blob):
                 output.append('<p>' + readme_inline(' '.join(paragraph)) + '</p>')
         return '\n'.join(output)
 
-    return (blocks(blob.decode('utf-8').splitlines()) + '\n').encode('ascii', 'xmlcharrefreplace')
+    return (blocks(blob.decode('utf-8').splitlines()) + '\n').replace('&#x27;', "'").encode('ascii', 'xmlcharrefreplace')
 
 
 def validate_gamebanana(profile):
@@ -342,7 +343,7 @@ def gamebanana_readme_html(blob, profile):
         output += ['<li>' + link(credit) + ' by ' + escape(credit['author']) + '</li>'
                    for credit in profile['credits']]
         output.append('</ul>')
-    return ('\n'.join(output) + '\n').encode('ascii', 'xmlcharrefreplace')
+    return ('\n'.join(output) + '\n').replace('&#x27;', "'").encode('ascii', 'xmlcharrefreplace')
 
 
 def make_zip(payloads, package_name, support):
