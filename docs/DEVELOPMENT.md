@@ -95,6 +95,14 @@ Archive superseded releases outside active releases.
 applicable authors, retaining copyright/license wording and Forge credits.
 Notices must work without a checkout and exclude local paths/history and
 unrelated development tools.
+Use `PurplefinNeptuna` for project-owned copyright and author credits. Preserve
+third-party holders and license text exactly. Copy licenses from the pinned
+upstream source and record their origin in `THIRD_PARTY.md`. Never fill a
+third-party template with guessed names or dates. Examples inside an upstream
+license's application appendix remain unchanged. A programming language alone
+does not add a license requirement. Include notices for linked library code and
+shipped assets, keeping compiler tools and host-only fixtures in development
+provenance.
 
 GAMEBANANA_README.html combines the install guide with the explicit `gamebanana`
 record. Disclose actual AI code assistance prominently, name/link its software

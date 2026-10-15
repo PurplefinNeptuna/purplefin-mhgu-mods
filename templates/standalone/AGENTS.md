@@ -23,6 +23,10 @@ Ready ZIPs contain only README.md beside the named runtime folder; the same
 README stays adjacent. Keep README.html, GAMEBANANA_README.html, NOTICES.txt,
 NOTICES.html, manifests and checksums outside ZIPs. Include current component
 licenses/credits; development provenance is separate in THIRD_PARTY.md.
+Use PurplefinNeptuna for project-owned copyright. Preserve upstream holders and
+legal text, with exact source provenance. Include linked libraries and shipped
+assets in release notices. Keep compiler tools and host-only fixtures in
+development provenance.
 GameBanana descriptions disclose actual AI assistance/software/scope and
 applicable authors. Never infer provenance; recheck policy before publishing.
 Static/host/build results are separate from exact binary gameplay acceptance.

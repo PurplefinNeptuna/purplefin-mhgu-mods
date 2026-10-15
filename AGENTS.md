@@ -126,6 +126,10 @@ Usage, with consistent tables and complete platform installation paths.
 README credits use only linked Component by Author. End each entry there.
 Credit forks/original projects separately. Keep explanations in provenance
 records and preserve separate AI disclosures and legal notices.
+Project-owned copyright is PurplefinNeptuna. Preserve upstream holders and legal
+text, with exact source provenance. Never invent license names, dates or terms.
+Release notices cover shipped or linked code/assets and applicable credits, not
+programming languages, compiler tools or host-only fixtures.
 Toolbox/CLI: START_TOOLS.sh and
 scripts/tool.sh. See docs/TOOLS.md for private runtimes, GMD limitations, Kuriimu2
 path aliases and model-export limits. There is no verified general keyed-GMD
