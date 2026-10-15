@@ -90,13 +90,6 @@ runtime folders contain no guides/notices/manifests. Keep notices and HTML outsi
 ZIPs. Support refreshes back up the prior release and preserve runtime bytes.
 Archive superseded releases outside active releases.
 
-Install guides contain features, requirements, installation, controls/settings
-and actionable limitations. Keep implementation details and test receipts in
-development documentation. Apply the full Humanizer process to the prose,
-including its audience, repeated instructions and awkward sentence structure.
-Avoid semicolon-heavy writing and em/en dashes. Use plain user-facing terms:
-Green and Red for badge colours. Gathering/objective are research source labels.
-Build fixtures and co-installed mods do not establish runtime dependencies.
 `THIRD_PARTY.md` records development provenance;
 `DISTRIBUTION_NOTICES.md` and current licenses cover only shipped components and
 applicable authors, retaining copyright/license wording and Forge credits.
@@ -114,6 +107,42 @@ publication. Packaging does not publish or establish moderation approval.
 GameBanana can reject literal INI text such as `style = wilds` as forbidden
 inline styling. HTML code examples encode equals signs as `&#61;` so displayed
 and copied INI text stays correct. Keep the Markdown and actual config unchanged.
+
+### Release README standard
+
+Every READY_TO_DISTRIBUTE or PUBLISHED guide starts with the mod's name and a
+short description of what it does. Use these sections in this order:
+
+| Heading | Content |
+| --- | --- |
+| Requirements | Bullet list of the game/version, platform, linked loader and other actual requirements. |
+| Installation | Numbered steps to close the game, extract the named ZIP, copy the whole named folder, and enable/start it. Include the destination paths and any required loader configuration. |
+| Usage | What the user does and sees. Put controls, badges, settings and INI examples here as needed. |
+| Update and removal | Close the game, explain which files/folder to replace or remove, and preserve settings stored inside a PC mod folder. |
+| Compatibility and known issues | Relevant conflicts, visible limitations and steps the user can take. Omit this section when there is nothing useful to say. |
+
+Use `### Settings` and `### INI settings` below Usage when applicable. Settings
+tables use `Setting | Default | Effect`. Control tables use `Action | Input`.
+Write overlay paths as **Plugin UI > Plugin name**, keeping the actual UI name
+and button labels exact. Use colour/grey consistently, with plain colour names
+such as Green and Red. Gathering/objective labels belong in research records.
+
+Switch installation steps give both Eden and Ryujinx destinations. PC steps
+give the exported game's `mods/0100770008DD8000/` destination and retain both
+platform libraries. Include hot-reload restrictions only where required by
+that mod. Link Fexty's Forge fork for Switch and GURecomp's Forge PC for PC.
+Build fixtures and co-installed mods do not establish runtime dependencies.
+
+Apply the full local Humanizer process: read the whole guide, rewrite awkward
+passages, then check the result for lost facts and remaining writing patterns.
+Avoid semicolon-heavy prose, em/en dashes, repeated instructions and empty
+sections. Keep code examples, config values and technical claims accurate.
+Keep implementation, research, testing, approval and release history in
+developer records. Do not add advice about unrelated or retired mods.
+
+The source README, adjacent release README, archived README and both HTML
+descriptions must agree. Refresh them through the distribution packager and
+run its full check. Preserve runtime bytes and back up the previous delivery.
 
 Commit coherent validated work locally after reviewing staged paths. Never
 install, activate, launch, edit saves, publish or push implicitly.

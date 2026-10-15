@@ -119,6 +119,10 @@ users and cover installation/use. Follow the full Humanizer review and rewrite
 process, including audience and sentence structure. Avoid semicolon-heavy prose
 and em/en dashes. Use plain colour names such as Green and Red in user guides,
 leaving internal source labels such as Gathering/objective in research records.
+Follow the release README standard in docs/DEVELOPMENT.md for every ready or
+published mod: Requirements, Installation, Usage, Update and removal, then
+Compatibility and known issues when relevant. Keep settings/INI sections under
+Usage, with consistent tables and complete platform installation paths.
 Toolbox/CLI: START_TOOLS.sh and
 scripts/tool.sh. See docs/TOOLS.md for private runtimes, GMD limitations, Kuriimu2
 path aliases and model-export limits. There is no verified general keyed-GMD

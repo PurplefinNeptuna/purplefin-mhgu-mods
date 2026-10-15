@@ -31,3 +31,10 @@ publish or push implicitly. Preserve accepted artifacts and unrelated edits.
 
 Target upstream Forge 1.5.1, native ARM32 Hook 24 and the actual 70-byte metadata
 record. Do not restore retired custom loader shims or patches.
+
+Release READMEs address mod users. Use Requirements, Installation, Usage,
+Update and removal, then Compatibility and known issues when relevant.
+Put Settings/INI subsections under Usage. Settings tables use Setting/Default/Effect,
+controls use Action/Input, and installation includes exact platform paths.
+Apply the full Humanizer process, use plain colour names, and omit maintainer
+history/testing/approval material and unrelated-mod advice.
