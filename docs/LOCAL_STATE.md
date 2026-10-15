@@ -21,11 +21,12 @@ All four PC mods retain their accepted Linux/Windows payloads. Linux user
 acceptance is scoped to the recorded binaries; Windows gameplay remains untested.
 See README.md in each source folder for installation/use, DEVELOPMENT.md for
 implementation/manual scenarios, and its distribution/runtime records for evidence.
-Damage Numbers r27 is a DEVELOPMENT candidate following investigation of the
-r3 placement report at 900p/1.25×. Failed impact copies no longer masquerade as
-world origin. Unavailable or clipped projections use screen centre, as requested
-by the user. The report remains unreproduced in gameplay. The approved r26
-delivery is preserved in `backups/accepted/damage-numbers/r26-before-centre-fallback/`.
+Damage Numbers r27 is READY_TO_DISTRIBUTE after the user reported it working
+well and approved promotion on 2026-10-15. The tested NRO and assets were promoted
+unchanged. Current installed Eden hashes match that candidate. The original
+third-party placement report remains unreproduced; individual fallback cases
+and other platforms were not separately confirmed. The accepted r26 delivery
+and tested r27 candidate remain under `backups/accepted/damage-numbers/`.
 
 Key Quest Markers r17 is READY_TO_DISTRIBUTE following user-confirmed Eden/Linux
 testing of the unchanged candidate. Other platforms remain unconfirmed. It uses

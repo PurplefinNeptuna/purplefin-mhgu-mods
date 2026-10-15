@@ -6,7 +6,7 @@ stock Forge PC **0.2.1**.
 
 | Mod | Release | Guide |
 | --- | --- | --- |
-| Damage Numbers | r27 candidate, Rust | [Install](mods/damage-numbers/README.md) |
+| Damage Numbers | r27, Rust | [Install](mods/damage-numbers/README.md) |
 | Key Quest Markers | r17, native GUI/Rust | [Install](mods/key-quest-markers/README.md) |
 | Modern Weapon Controls | r12 | [Install](mods/modern-weapon-controls/README.md) |
 | Please do Better | r24-forge151 | [Install](mods/please-do-better/README.md) |
