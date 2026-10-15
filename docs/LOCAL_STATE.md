@@ -24,8 +24,9 @@ implementation/manual scenarios, and its distribution/runtime records for eviden
 The Damage Numbers r3 third-party placement report at 900p/1.25× was deferred by
 the user, unreproduced locally; this maintenance task does not investigate it.
 
-Key Quest Markers r17 is a DEVELOPMENT candidate using the game UI colours
-for the existing three saved colour controls. It preserves the original 32×32
+Key Quest Markers r17 is READY_TO_DISTRIBUTE following user-confirmed Eden/Linux
+testing of the unchanged candidate. Other platforms remain unconfirmed. It uses
+the game UI colours for the existing three saved colour controls. It preserves the original 32×32
 emblem, Y3, X365/329 and title widths299/263. Defaults are Gathering green
 #006305 for keys, objective red #A30000 for urgents and grey for completed/old
 quests. Edits require Save & apply. The r15 release is
