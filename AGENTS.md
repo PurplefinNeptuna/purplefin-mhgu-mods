@@ -147,6 +147,12 @@ the quest icon uses Mask0 for colour drawing. Preserve the expanded 13-object
 map and 168-byte draw cache with native ownership. Individual state/transition
 coverage and Ryujinx/native Switch gameplay remain unconfirmed.
 
+Native counter title binding4/ID6 is `cGUIObjMessage` (CRC `0x2fb82eae`,
+352 bytes), not its `cGUIObjText` subclass (384 bytes). r10 rejected every title
+by requiring the wrong exact type; r11 corrects it. Derive fixture classes from
+actual GUI resource records and execute the matching native getDTI; shared
+property setter addresses alone do not establish an object's class.
+
 ## Code readability and comments
 
 Write owned code so the user can follow its behavior from the source. Include
