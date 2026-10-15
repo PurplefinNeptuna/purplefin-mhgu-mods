@@ -38,3 +38,6 @@ Put Settings/INI subsections under Usage. Settings tables use Setting/Default/Ef
 controls use Action/Input, and installation includes exact platform paths.
 Apply the full Humanizer process, use plain colour names, and omit maintainer
 history/testing/approval material and unrelated-mod advice.
+README credits use only linked Component by Author, ending after the name.
+List forks/original projects separately. Keep explanations in provenance
+records and preserve separate AI disclosures and legal notices.

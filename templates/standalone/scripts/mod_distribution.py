@@ -339,8 +339,8 @@ def gamebanana_readme_html(blob, profile):
     output.append(readme_html(blob).decode('ascii').strip())
     if profile['credits']:
         output += ['<h2>Credits</h2>', '<ul>']
-        output += ['<li>' + link(credit) + ' by ' + escape(credit['author']) + '. ' +
-                   escape(credit['scope']) + '</li>' for credit in profile['credits']]
+        output += ['<li>' + link(credit) + ' by ' + escape(credit['author']) + '</li>'
+                   for credit in profile['credits']]
         output.append('</ul>')
     return ('\n'.join(output) + '\n').encode('ascii', 'xmlcharrefreplace')
 

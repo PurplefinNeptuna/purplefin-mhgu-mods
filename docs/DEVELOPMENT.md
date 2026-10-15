@@ -140,6 +140,12 @@ sections. Keep code examples, config values and technical claims accurate.
 Keep implementation, research, testing, approval and release history in
 developer records. Do not add advice about unrelated or retired mods.
 
+Credits use only `[Component](public URL) by Author`, one entry per item.
+End each entry after the author's name. Keep purpose, contribution details,
+provenance and license explanations out of README credit lists. Credit a fork
+and its original project as separate entries. Keep scope metadata, AI
+disclosures and complete legal notices in their respective records/sections.
+
 The source README, adjacent release README, archived README and both HTML
 descriptions must agree. Refresh them through the distribution packager and
 run its full check. Preserve runtime bytes and back up the previous delivery.
