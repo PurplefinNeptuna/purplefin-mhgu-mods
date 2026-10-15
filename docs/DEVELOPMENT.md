@@ -2,7 +2,8 @@
 
 ## Supported loaders and source updates
 
-Switch development uses unmodified upstream Forge 1.5.1 at
+Switch development uses unmodified [Fexty's Forge fork](https://github.com/Fexty12573/forge)
+1.5.1, based on Jeffi's original Forge, at
 `tools/forge-local/` (`b23e114a23f41c9a8e2fd34b2f4df2a2102d0ee1`).
 Native ARM32 Hook is 24 bytes: target/detour/original/context pointers at
 0/4/8/12, ctx_cell at16 and has_ctx at20. Forge pools ordinary/context

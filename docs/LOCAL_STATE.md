@@ -33,8 +33,8 @@ quests. Edits require Save & apply. The r15 release is
 preserved under backups/accepted/key-quest-markers/r15-before-colours/. The game
 owns native children and draw-cache/map allocations.
 r17 also removes the old success/row ERROR diagnostics; startup is one INFO
-line and genuine failures remain deduplicated. English HD resources remain an
-external dependency.
+line and genuine failures remain deduplicated. The user also confirmed it works
+without the HD Project on 2026-10-15. HD is optional.
 
 ## Inputs and runtime paths
 
