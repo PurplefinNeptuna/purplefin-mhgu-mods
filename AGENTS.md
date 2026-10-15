@@ -9,6 +9,9 @@ MHGU Switch title ID is 0100770008DD8000, game 1.4.0. No automated in-game suite
 - Switch: **unmodified upstream Forge 1.5.1**, `tools/forge-local/`, commit
   `b23e114a23f41c9a8e2fd34b2f4df2a2102d0ee1`. Native ARM32 Hook is 24 bytes,
   Jit 28; use actual headers and compiler-derived ABI checks.
+  This is Fexty's fork at https://github.com/Fexty12573/forge, based on Jeffi's
+  original Forge. Link the fork for current requirements and dependencies,
+  credit both, and preserve the Skyline Project/Jeffi license text.
 - Rust: forge-rs 1.5.0 at `tools/forge-rs/`, commit
   `d1865b68e9b194eb3eacc8bd71bbf601a5fac63e`; converter 1.4.1 is a separate tool.
 - PC: **stock Forge PC 0.2.1**, `tools/forge-pc-local/`. All `<name>-pc` mods stay
@@ -86,6 +89,9 @@ kinds17/18 are immediate bool/u32; colour textures use Mask0. Counter title
 binding4/ID6 is cGUIObjMessage (CRC 0x2fb82eae, 352 bytes), not cGUIObjText 384.
 Derive fixture classes/getDTI from actual resources. Keep the accepted 32×32
 original-emblem geometry and progression behavior during unrelated edits.
+Key Quest Markers r17 works with the base game and optional MHGU HD Project,
+as confirmed by the user on 2026-10-15. The copied English HD build fixture is
+not a runtime requirement. Keep compatibility claims tied to actual evidence.
 
 ## Resources and distribution
 
@@ -108,7 +114,12 @@ retains original hashes/claims in owner EVIDENCE.json and WORKSPACE_EVIDENCE.jso
 Recheck the live GameBanana policy before publication; never invent AI provenance.
 
 Use .agents/skills/humanizer/SKILL.md for user-facing prose; keep technical names,
-paths, hashes, code and validation claims exact. Toolbox/CLI: START_TOOLS.sh and
+paths, hashes, code and validation claims exact. Release READMEs address mod
+users and cover installation/use. Follow the full Humanizer review and rewrite
+process, including audience and sentence structure. Avoid semicolon-heavy prose
+and em/en dashes. Use plain colour names such as Green and Red in user guides,
+leaving internal source labels such as Gathering/objective in research records.
+Toolbox/CLI: START_TOOLS.sh and
 scripts/tool.sh. See docs/TOOLS.md for private runtimes, GMD limitations, Kuriimu2
 path aliases and model-export limits. There is no verified general keyed-GMD
 round trip or GLTF-to-MHGU exporter.

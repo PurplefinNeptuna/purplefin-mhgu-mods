@@ -92,7 +92,12 @@ Archive superseded releases outside active releases.
 
 Install guides contain features, requirements, installation, controls/settings
 and actionable limitations. Keep implementation details and test receipts in
-development documentation. `THIRD_PARTY.md` records development provenance;
+development documentation. Apply the full Humanizer process to the prose,
+including its audience, repeated instructions and awkward sentence structure.
+Avoid semicolon-heavy writing and em/en dashes. Use plain user-facing terms:
+Green and Red for badge colours. Gathering/objective are research source labels.
+Build fixtures and co-installed mods do not establish runtime dependencies.
+`THIRD_PARTY.md` records development provenance;
 `DISTRIBUTION_NOTICES.md` and current licenses cover only shipped components and
 applicable authors, retaining copyright/license wording and Forge credits.
 Notices must work without a checkout and exclude local paths/history and
