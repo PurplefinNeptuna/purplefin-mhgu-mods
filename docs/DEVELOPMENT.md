@@ -111,5 +111,9 @@ software/input/dataset credits; never invent provenance or claim unperformed
 human review. Recheck [the live policy](https://gamebanana.com/wikis/2175) before
 publication. Packaging does not publish or establish moderation approval.
 
+GameBanana can reject literal INI text such as `style = wilds` as forbidden
+inline styling. HTML code examples encode equals signs as `&#61;` so displayed
+and copied INI text stays correct. Keep the Markdown and actual config unchanged.
+
 Commit coherent validated work locally after reviewing staged paths. Never
 install, activate, launch, edit saves, publish or push implicitly.

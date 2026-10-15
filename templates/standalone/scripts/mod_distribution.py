@@ -149,7 +149,8 @@ def notice_inline(text):
     for token in tokens:
         link = re.fullmatch(r'\[([^\]\n]+)\]\(([^\s)]+)\)', token)
         if token.startswith('`') and token.endswith('`'):
-            rendered.append('<code>' + escape(token[1:-1]) + '</code>')
+            # GameBanana can mistake literal INI assignments for HTML attributes.
+            rendered.append('<code>' + escape(token[1:-1]).replace('=', '&#61;') + '</code>')
         elif link:
             label, url = link.groups()
             if url.startswith(('https://', 'http://')):
@@ -225,7 +226,7 @@ def readme_html(blob):
                 while end < len(lines) and lines[end].strip() != '```':
                     end += 1
                 require(end < len(lines), 'Unclosed README code block')
-                output.append('<pre><code>' + escape('\n'.join(lines[index + 1:end])) + '</code></pre>')
+                output.append('<pre><code>' + escape('\n'.join(lines[index + 1:end])).replace('=', '&#61;') + '</code></pre>')
                 index = end + 1
             elif table_start(lines, index):
                 headers = cells(line)

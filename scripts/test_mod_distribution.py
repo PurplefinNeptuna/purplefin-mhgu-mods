@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Exercise distribution gates with isolated temporary inputs, never game data."""
 import copy
+from html import unescape
 from html.parser import HTMLParser
 import json
 from pathlib import Path
@@ -315,12 +316,24 @@ literal=<script>&
         self.assertIn(b'href="https://example.com/releases?a=1&amp;b=2"', html)
         self.assertIn(b'<li><p>Copy <code>fixture-mod</code> into:</p>\n<ul>', html)
         self.assertIn(b'<li><p>Enable the mod.</p></li>\n</ol>', html)
-        self.assertIn(b'<pre><code>[Fixture]\nenabled=1\nliteral=&lt;script&gt;&amp;</code></pre>', html)
+        self.assertIn(b'<pre><code>[Fixture]\nenabled&#61;1\nliteral&#61;&lt;script&gt;&amp;</code></pre>', html)
         self.assertIn(b'<th>Setting</th><th>Value</th>', html)
         self.assertIn(b'<td><code>enabled</code></td><td><code>1</code> or <code>0</code></td>', html)
         self.assertNotIn(b'<script>', html)
         self.assertNotIn(b'href="javascript:', html)
         self.assertNotIn(b'href="README.md"', html)
+
+    def test_html_code_assignments_keep_copyable_text_without_raw_style_assignment(self):
+        markdown = b'Use `style=rise`.\n\n```ini\n[DamageNumbers]\nstyle = wilds\n```\n'
+        for html in (distribution.readme_html(markdown),
+                     distribution.gamebanana_readme_html(markdown, self.spec['gamebanana']),
+                     distribution.notices_html([('NOTICE.md', b'Use `style=rise`.\n')])):
+            with self.subTest(html=html):
+                self.assertNotRegex(html, rb'(?i)\bstyle\s*=')
+                self.assertIn(b'<code>style&#61;rise</code>', html)
+                self.assertIn('<code>style=rise</code>', unescape(html.decode('ascii')))
+                if b'<pre>' in html:
+                    self.assertIn('[DamageNumbers]\nstyle = wilds', unescape(html.decode('ascii')))
 
     def test_readme_html_tampering_is_rejected_and_refresh_preserves_zip(self):
         archive = self.package()
