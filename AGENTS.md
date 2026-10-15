@@ -132,6 +132,21 @@ prerequisite. Include this instruction/state audit in release validation.
 
 Read `docs/FORGE_PLUGIN_GUIDELINES.md` when developing or reviewing a Forge plugin.
 
+For future native in-game GUI changes, start with
+[docs/NATIVE_GUI_MODDING.md](docs/NATIVE_GUI_MODDING.md). It covers resource
+decoding, object construction, ownership, animations, maps/caches, textures and
+render validation using the working badge implementation.
+
+Native quest badges r9 (`mods/key-quest-markers-rs/`) were user-confirmed working
+on Eden/Linux on 2026-10-15. They use MHGU's native `cGUIObjTexture` row children
+and loaded HD atlas, not ImGui/free-render or ARC replacement. Preserve the
+accepted bytes and consult [the native audit](mods/key-quest-markers-rs/docs/NATIVE_AUDIT.md)
+and [runtime evidence](mods/key-quest-markers-rs/docs/RUNTIME_RESULTS.json).
+GUI INIT_PARAM kinds17/18 are immediate bool/u32 values, not byte-table offsets;
+the quest icon uses Mask0 for colour drawing. Preserve the expanded 13-object
+map and 168-byte draw cache with native ownership. Individual state/transition
+coverage and Ryujinx/native Switch gameplay remain unconfirmed.
+
 ## Code readability and comments
 
 Write owned code so the user can follow its behavior from the source. Include
