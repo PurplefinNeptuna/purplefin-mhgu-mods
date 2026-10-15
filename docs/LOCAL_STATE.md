@@ -24,12 +24,16 @@ implementation/manual scenarios, and its distribution/runtime records for eviden
 The Damage Numbers r3 third-party placement report at 900p/1.25× was deferred by
 the user, unreproduced locally; this maintenance task does not investigate it.
 
-Key Quest Markers r16 is a DEVELOPMENT candidate adding three saved colour
-controls. It preserves the original 32×32 emblem, Y3, X365/329 and title widths
-299/263. Defaults are forest green for keys, warm red for active urgents and
-grey for completed/old quests. Edits require Save & apply. The r15 release is
-preserved under backups/accepted/key-quest-markers/r15-before-colours/. The game owns native children and draw-cache/map allocations.
-English HD resources remain an external dependency.
+Key Quest Markers r17 is a DEVELOPMENT candidate using the game UI colours
+for the existing three saved colour controls. It preserves the original 32×32
+emblem, Y3, X365/329 and title widths299/263. Defaults are Gathering green
+#006305 for keys, objective red #A30000 for urgents and grey for completed/old
+quests. Edits require Save & apply. The r15 release is
+preserved under backups/accepted/key-quest-markers/r15-before-colours/. The game
+owns native children and draw-cache/map allocations.
+r17 also removes the old success/row ERROR diagnostics; startup is one INFO
+line and genuine failures remain deduplicated. English HD resources remain an
+external dependency.
 
 ## Inputs and runtime paths
 
