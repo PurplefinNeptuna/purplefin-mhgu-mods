@@ -4,6 +4,8 @@ Switch delivery documentation refreshed 2026-10-10 from the tracked distribution
 and evidence records; Eden/Ryujinx activation was not re-inspected for that
 cleanup. GURecomp's exported Linux game, resource packages and Forge PC loader
 were separately inspected on 2026-10-12.
+Native Quest Badges r14 promotion and its fresh Eden evidence were checked on
+2026-10-15; other entries retain their recorded evidence dates.
 
 ## Local deliveries
 
@@ -17,7 +19,7 @@ were separately inspected on 2026-10-12.
 | Modern Weapon Controls | r11 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r10 controls/help/bowgun acceptance, without exhaustive style/ammo coverage. |
 | Key Quest Markers | r2 | READY_TO_DISTRIBUTE | Static cleanup checks; prior r1 Eden Village 1/2-star and Hub 1-star acceptance, plus Ryujinx full-rank coverage. |
 | Key Quest Markers PC | r1 | READY_TO_DISTRIBUTE | User-confirmed successful Linux use; matching installed/loaded-copy hashes and fresh activation logs. Windows build/static checks only; gameplay untested. |
-| Native Quest Badges (Rust) | r12 | DEVELOPMENT | 32px badge raised within the request slot; r12 manual acceptance pending. Preceding r11 is user-confirmed working on Eden/Linux with screenshot and matching installed NRO/log; its bytes remain preserved. |
+| Native Quest Badges (Rust) | r14 | READY_TO_DISTRIBUTE | User accepted the unchanged original-emblem NRO on Eden/Linux. Fresh log and installed hash match r14, including special urgent308 purple classification. Small-emblem comparisons archived; Ryujinx/native Switch unconfirmed. |
 | Forge, HD Project, wiki cheats, DTI dumper support | See each record | LOCAL_ONLY | Loader and resource evidence retain their recorded scope. |
 
 The Rust r3 candidate is under `build/damage-numbers-rs/candidates/r3/delivery/`; it uses stock forge-rs configuration and eight ordinary native Forge 1.5.0 hooks. Loader-version gating is disabled. The previous r1 and r2 deliveries remain preserved. [Source and workflow](../mods/damage-numbers-rs/README.md).
@@ -119,4 +121,4 @@ The release is unpublished. See
 [its development guide](../mods/damage-numbers-pc/DEVELOPMENT.md) and
 [stock-loader integration](../mods/damage-numbers-pc/STOCK_FORGE.md).
 
-Native badge r11 acceptance is recorded in [RUNTIME_R11.json](../mods/key-quest-markers-rs/docs/RUNTIME_R11.json). r12 enlarges the badge to32×32 at Y=3, X365/329, and title width299/263; its new geometry needs separate manual acceptance.
+Native Quest Badges r14 is ready to distribute with the original 32×32 emblem at Y3, X365/329, and title width299/263. Active urgents are purple, keys orange-red and completed/inactive badges grey. The user accepted r14 on Eden/Linux; see [runtime evidence](../mods/key-quest-markers-rs/docs/RUNTIME_R14.json) and [promotion/archive receipt](../mods/key-quest-markers-rs/docs/PROMOTION_R14.json). The tested NRO is unchanged; small-emblem comparisons are archived.
