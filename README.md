@@ -9,7 +9,7 @@ Native Forge PC conversions target GURecomp on Linux x64 and Windows x64.
 | --- | --- | --- |
 | Damage Numbers | r25 | [Guide and development](mods/damage-numbers/README.md) |
 | Damage Numbers PC | r2 DEVELOPMENT candidate | [Guide and development](mods/damage-numbers-pc/README.md) |
-| Damage Numbers (Rust) | r3 DEVELOPMENT candidate | [Guide and development](mods/damage-numbers-rs/README.md) |
+| Damage Numbers (Rust) | r3 READY_TO_DISTRIBUTE | [Guide and development](mods/damage-numbers-rs/README.md) |
 | Modern Weapon Controls | r11 | [Guide and development](mods/modern-weapon-controls/README.md) |
 | Key Quest Markers | r2 | [Guide and development](mods/key-quest-markers/README.md) |
 | Native Quest Badges (Rust) | r14 READY_TO_DISTRIBUTE (original emblem) | [Guide and development](mods/key-quest-markers-rs/README.md) |
@@ -18,7 +18,7 @@ Native Forge PC conversions target GURecomp on Linux x64 and Windows x64.
 | Please do Better | r23-reward-pages | [Guide and development](mods/please-do-better/README.md) |
 | Please do Better PC | r1 READY_TO_DISTRIBUTE (Linux accepted; Windows untested) | [Guide and development](mods/please-do-better-pc/README.md) |
 
-The ready releases and Rust development candidate are locally packaged and unpublished. Each mod's
+The ready releases are locally packaged and unpublished. Each mod's
 `DISTRIBUTION.json` controls its status and payload hashes. Forge, HD Project,
 wiki cheats and DTI dumper support remain LOCAL_ONLY. Verify all current records
 with `python3 scripts/mod_distribution.py check`.

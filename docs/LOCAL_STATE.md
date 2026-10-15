@@ -12,7 +12,7 @@ Native Quest Badges r14 promotion and its fresh Eden evidence were checked on
 | Mod | Version | Status | Runtime evidence |
 | --- | --- | --- | --- |
 | Damage Numbers PC | r3 | READY_TO_DISTRIBUTE | User accepted Linux r3; logs/hashes confirm eight hooks and two settings saves. Windows gameplay remains untested. |
-| Damage Numbers (Rust) | r3 | DEVELOPMENT | External OpenSans/RGBA assets, 24 exact r2 visual scenes, file/lifecycle failures, host and ARM checks passed; no gameplay acceptance. |
+| Damage Numbers (Rust) | r3 | READY_TO_DISTRIBUTE | User accepted the unchanged r3 NRO and external assets. Installed Eden bytes match; the latest log confirms MHGU 1.4.0/Forge 1.5.0 but has no plugin startup line and ends with a host SIGSEGV after forced stop. Individual gameplay cases, clean shutdown and Ryujinx/native Switch remain unconfirmed. |
 | Damage Numbers | r25 | READY_TO_DISTRIBUTE | User-approved 1080p size preview; no r25 game run or behavior-suite rerun. Prior r22-config1 Eden confirmation remains scoped to those bytes. |
 | Please do Better PC | r1 | READY_TO_DISTRIBUTE | Unchanged paired binaries; Linux user acceptance and exact runtime evidence recorded. Windows gameplay remains untested. |
 | Please do Better | r23-reward-pages | READY_TO_DISTRIBUTE | User approved the unchanged candidate. Fresh Eden log/installed hash confirm r23 loading; individual reward-page, Palico, appraisal/collection, persistence and consecutive-quest checks were not enumerated. Ryujinx/native Switch remain untested. |
@@ -22,7 +22,7 @@ Native Quest Badges r14 promotion and its fresh Eden evidence were checked on
 | Native Quest Badges (Rust) | r14 | READY_TO_DISTRIBUTE | User accepted the unchanged original-emblem NRO on Eden/Linux. Fresh log and installed hash match r14, including special urgent308 purple classification. Small-emblem comparisons archived; Ryujinx/native Switch unconfirmed. |
 | Forge, HD Project, wiki cheats, DTI dumper support | See each record | LOCAL_ONLY | Loader and resource evidence retain their recorded scope. |
 
-The Rust r3 candidate is under `build/damage-numbers-rs/candidates/r3/delivery/`; it uses stock forge-rs configuration and eight ordinary native Forge 1.5.0 hooks. Loader-version gating is disabled. The previous r1 and r2 deliveries remain preserved. [Source and workflow](../mods/damage-numbers-rs/README.md).
+The accepted Rust r3 release is under `build/damage-numbers-rs/releases/r3/`; it uses stock forge-rs configuration and eight ordinary native Forge 1.5.0 hooks. Loader-version gating is disabled. The r1/r2/r3 candidate deliveries remain preserved. [Source and workflow](../mods/damage-numbers-rs/README.md).
 
 Native Quest Badges r9 uses MHGU's in-game GUI, with native texture children
 reusing the loaded HD emblem. Forge provides the supporting APIs; drawing uses
