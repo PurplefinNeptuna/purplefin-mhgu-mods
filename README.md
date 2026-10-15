@@ -7,7 +7,7 @@ stock Forge PC **0.2.1**.
 | Mod | Release | Guide |
 | --- | --- | --- |
 | Damage Numbers | r26, Rust | [Install](mods/damage-numbers/README.md) |
-| Key Quest Markers | r15, native GUI/Rust | [Install](mods/key-quest-markers/README.md) |
+| Key Quest Markers | r16 DEVELOPMENT, native GUI/Rust | [Install](mods/key-quest-markers/README.md) |
 | Modern Weapon Controls | r12 | [Install](mods/modern-weapon-controls/README.md) |
 | Please do Better | r24-forge151 | [Install](mods/please-do-better/README.md) |
 | Damage Numbers PC | r3 | [Install](mods/damage-numbers-pc/README.md) |
@@ -15,9 +15,10 @@ stock Forge PC **0.2.1**.
 | Modern Weapon Controls PC | r1 | [Install](mods/modern-weapon-controls-pc/README.md) |
 | Please do Better PC | r1 | [Install](mods/please-do-better-pc/README.md) |
 
-Each mod's DISTRIBUTION.json controls delivery status and hashes. New Switch
-builds are approved for local distribution after static validation; gameplay
-acceptance of earlier binaries remains separate. PC runtime bytes are preserved.
+Each mod's DISTRIBUTION.json controls delivery status and hashes. Key Quest
+Markers r16 remains a development candidate. Approved maintenance builds retain
+their recorded scope; gameplay acceptance of earlier binaries remains separate.
+PC runtime bytes are preserved.
 HD Project, wiki cheats and DTI extraction support are local integrations.
 
 - [Instructions](AGENTS.md), [local paths/state](docs/LOCAL_STATE.md)
