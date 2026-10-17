@@ -6,7 +6,7 @@ stock Forge PC **0.2.1**.
 
 | Mod | Release | Guide |
 | --- | --- | --- |
-| Damage Numbers | r29-diagnostics, projection-log candidate | [Install](mods/damage-numbers/README.md) |
+| Damage Numbers | r30, visible-crop correction candidate | [Install](mods/damage-numbers/README.md) |
 | Key Quest Markers | r18, hardware-test candidate | [Install](mods/key-quest-markers/README.md) |
 | Modern Weapon Controls | r12 | [Install](mods/modern-weapon-controls/README.md) |
 | Please do Better | r24-forge151 | [Install](mods/please-do-better/README.md) |
@@ -16,7 +16,7 @@ stock Forge PC **0.2.1**.
 | Please do Better PC | r1 | [Install](mods/please-do-better-pc/README.md) |
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Key Quest
-Markers r18 and Damage Numbers r29-diagnostics are DEVELOPMENT candidates.
+Markers r18 and Damage Numbers r30 are DEVELOPMENT candidates.
 Their accepted r17/r27 releases are preserved under backups/accepted/.
 Other platform and maintenance-build acceptance retains its recorded scope.
 PC runtime bytes are preserved.

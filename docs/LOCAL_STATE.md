@@ -10,7 +10,15 @@ reachable through main or archive tags; the cleanup receipt records their tips.
 
 ## Deliveries and acceptance
 
-Damage Numbers r29-diagnostics is a temporary DEVELOPMENT candidate for the
+Damage Numbers r30 is a DEVELOPMENT visible-crop correction candidate. It reads
+sFestaRender.mDisplaySize for projection, layout and fallback, rechecking the
+applied size each render callback. No additional hooks or Forge changes are used.
+The user reports that the prior rebuilt payload works docked and misplaces
+numbers in handheld mode on Switch and Android. r29 diagnostics was not run.
+The correction has no new device acceptance. r28/r29 deliveries remain intact;
+records and hashes are in backups/accepted/damage-numbers/r29-before-visible-crop/.
+
+Damage Numbers r29-diagnostics was a temporary DEVELOPMENT candidate for the
 reported Switch/Android placement issue. The user reports r28 displays damage
 on real Switch and a phone emulator, with correct-looking values and misplaced
 positions. Exact tester loader/plugin hashes were not supplied. The diagnostic
