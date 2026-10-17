@@ -6,8 +6,8 @@ stock Forge PC **0.2.1**.
 
 | Mod | Release | Guide |
 | --- | --- | --- |
-| Damage Numbers | r27, Rust | [Install](mods/damage-numbers/README.md) |
-| Key Quest Markers | r17, native GUI/Rust | [Install](mods/key-quest-markers/README.md) |
+| Damage Numbers | r28, hardware-test candidate | [Install](mods/damage-numbers/README.md) |
+| Key Quest Markers | r18, hardware-test candidate | [Install](mods/key-quest-markers/README.md) |
 | Modern Weapon Controls | r12 | [Install](mods/modern-weapon-controls/README.md) |
 | Please do Better | r24-forge151 | [Install](mods/please-do-better/README.md) |
 | Damage Numbers PC | r3 | [Install](mods/damage-numbers-pc/README.md) |
@@ -16,7 +16,8 @@ stock Forge PC **0.2.1**.
 | Please do Better PC | r1 | [Install](mods/please-do-better-pc/README.md) |
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Key Quest
-Markers r17 is ready to distribute following user-confirmed Eden/Linux testing.
+Markers r18 and Damage Numbers r28 are DEVELOPMENT hardware-test rebuilds.
+Their accepted r17/r27 releases are preserved under backups/accepted/.
 Other platform and maintenance-build acceptance retains its recorded scope.
 PC runtime bytes are preserved.
 HD Project, wiki cheats and DTI extraction support are local integrations.

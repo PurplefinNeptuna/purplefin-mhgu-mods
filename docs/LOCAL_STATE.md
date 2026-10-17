@@ -10,6 +10,14 @@ reachable through main or archive tags; the cleanup receipt records their tips.
 
 ## Deliveries and acceptance
 
+On 2026-10-18, Key Quest Markers r18 and Damage Numbers r28 became DEVELOPMENT
+hardware-test candidates. Both retain PIC and add `-nostartfiles` / `-Wl,-z,text`.
+Their accepted r17/r27 releases and records are preserved under
+`backups/accepted/NAME/VERSION-before-hardware-link/`; original candidate trees
+remain intact. Gameplay and assets are unchanged apart from build identification.
+No runtime test of these rebuilds has occurred. The updated loader is not bundled
+or verified. The r17/r27 acceptance statements below describe the prior builds.
+
 DISTRIBUTION.json in each mod is authoritative. Damage Numbers r26 and Key Quest
 Markers r15 replace the C++ Switch projects with fully renamed Rust implementations.
 Modern Weapon Controls r12 and Please do Better r24-forge151 target stock Forge.
