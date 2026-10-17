@@ -1,0 +1,53 @@
+# Validate and deliver a Switch mod
+
+These are the original workspace's release conventions. In another project, use its explicit delivery contract while retaining exact-byte provenance and honest validation scope.
+
+## Evidence that reaches the behavior
+
+| Check | Establishes | Does not establish |
+| --- | --- | --- |
+| Host unit/policy tests | Parsers, classifications, bounds, state decisions | Native calls or game output |
+| Original ARM execution with doubles | Selected native instructions, argument/state preservation, rollback | Real GPU, scheduling, all gameplay |
+| Target build / import / layout checks | Artifact architecture, export resolution, pinned ABI/signatures | Activation or runtime compatibility |
+| Package/full distribution check | Delivery inventory, support records, hashes and release rules | Installation or user acceptance |
+| Fresh log + exact installed hash | Particular launch/load and recorded behavior | Every feature or platform |
+| User gameplay acceptance | Reported behavior for the identified payload/session | Exhaustive scenario coverage |
+
+Use relevant mod-local tests and `verify`. Prefer existing native fixtures over assertions that only mirror source wording. Exercise allocation, short read/write, mapping, partial publication, foreign patch, nested entry, teardown, and fallback failures where changed. Existing damages tests cover mailbox concurrency and thread exit, native pool failure, ARM state, projection scaling, and actual ImGui pixel scenes. GUI fixtures execute native materials/destruction. Input fixtures execute classifiers/evaluator. Reward fixtures execute count bodies and ownership/quantity preflight.
+
+No automated in-game suite exists. After a reported run, read that emulator's latest log and match game/version, loader, mod set, NRO/assets, exceptions, and user observation. Preserve logs before another launch. A build recipe's `runtime_test: NOT RUN` is compatible with a separate dated accepted runtime record. Do not rewrite either into broader evidence.
+
+## Versioning and packaging
+
+Each `mods/NAME/DISTRIBUTION.json` is authoritative. DEVELOPMENT is unapproved work, LOCAL_ONLY is local tooling/dependency, READY_TO_DISTRIBUTE is approved verified local delivery, and PUBLISHED additionally records URL/date. Distribution approval and exact-binary gameplay acceptance remain distinct.
+
+Runtime changes require a new version. Promote accepted candidate bytes without rebuilding. Preserve the previous accepted release under `backups/accepted/`. Support-only refreshes back up the prior delivery and keep runtime hashes unchanged. Do not rebuild into a candidate/output directory whose receipts an immutable release still references.
+
+From the workspace root:
+
+```sh
+python3 scripts/mod_distribution.py package NAME
+python3 scripts/mod_distribution.py check
+```
+
+The full `check` is required before readiness or commit. `--source-only` is not a readiness check. Use mod-local packaging when building an independent export. Follow the current command's help for support refresh options.
+
+A release under `build/NAME/releases/VERSION/` has versioned ZIP, named runtime folder, README.md/HTML/GameBanana HTML, notices text/HTML, manifest, and SHA256SUMS. The ZIP contains README.md beside the named runtime folder. That README matches its adjacent copy. Runtime folders contain payloads only, with `romfs/nativeNX/...`, `exefs/`, or `cheats/<build-id>.txt` directly inside. HTML, legal notices, receipts, and checksums stay outside the ZIP.
+
+## Player guides and legal records
+
+Release README order: Requirements, Installation, Usage, Update and removal, then Compatibility and known issues when useful. Put settings/INI subsections under Usage. Tables use `Setting | Default | Effect` or `Action | Input`. Give complete Eden and Ryujinx installation destinations, actual loader requirements, and relevant conflicts. A co-installed plugin or build fixture alone does not establish a dependency. Modern Weapon Controls does not require Better Input merely because both appeared in an accepted run.
+
+Keep research, testing history, backups, approval, and build instructions in developer records. Use plain Green/Red/Grey and the complete Humanizer review. Credits are linked `Component by Author`, one entry ending at the author. Credit Fexty's fork and the original Forge separately. Preserve Skyline Project/Jeffi and other holders' legal text. Project-owned copyright is PurplefinNeptuna.
+
+`THIRD_PARTY.md` records source provenance. `DISTRIBUTION_NOTICES.md` and shipped license files cover linked/shipped code/assets and applicable credits. Programming languages, compiler tools, and host-only fixtures alone do not belong in runtime notices. Never invent license terms, dates, authors, AI provenance, or human-review claims.
+
+Publication requires a fresh check of the applicable GameBanana policy. The saved packaging rules require actual AI assistance/software/scope disclosures and applicable source credits. Known HTML acceptance pitfalls: encode equals signs in code examples as `&#61;`, keep apostrophes literal instead of `&#x27;`, and preserve copyright/international names as literal UTF-8 instead of numeric references. Keep real INI and Markdown values unchanged. Packaging is not publication/moderation approval.
+
+## Export and commit
+
+Refresh `EXPORT.json` deliberately. Export source and approved dependency snapshots, excluding private configs, original game/runtime binaries, ignored output trees, and unsafe paths. Validate outside the parent workspace with explicitly supplied copied inputs. Missing private inputs must remain an explicit verification limit.
+
+Inspect status and staged paths, run `git diff --check` and the full distribution check, preserve custom Git hooks, and commit coherent authorized changes locally. Installation, activation, launch, save/settings changes, publication, and push need their own task authorization.
+
+Sources: `docs/DEVELOPMENT.md`, `scripts/mod_distribution.py`, `templates/standalone/AGENTS.md`, maintained mod `build.sh`, `EXPORT.json`, `DISTRIBUTION.json`, `EVIDENCE.json`, tests, notices, and source/release READMEs.

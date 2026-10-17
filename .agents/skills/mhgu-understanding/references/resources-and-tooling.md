@@ -1,0 +1,82 @@
+# Find and edit resources without losing data
+
+## Locate the input
+
+Use `rg --files` on a dump or copied extraction and targeted `rg -n` on indexes. The offline `CFileIndex.md` maps ARC containers and internal resources. Search a basename, internal path, extension/type hash, and language variant. Its Windows separators are index notation; Linux paths and case must match actual files.
+
+```sh
+rg -n -m 8 'itemData|weapon07BaseData' references/MHGU-Modding.wiki/CFileIndex.md
+rg --files references/MHGU-Modding/templates references/MHGU-Modding/weapon_MV_Index
+```
+
+| Target | Search location / reference lead |
+| --- | --- |
+| Monster files | `nativeNX/arc/enemy/em*.arc`, Monster-IDs, Monster-Modding, templates |
+| Weapons/actions | `nativeNX/arc/player/quest/wXX.arc/player/param`, weapon ID lists, `weapon_MV_Index/`, command/attack templates |
+| Armor models | `nativeNX/arc/player/com/m` or `/f`, piece-specific ARC files |
+| Item/armor tables | MHGU `nativeNX/loc/arc/resident.arc/table`; MHXX wiki examples may use a different root |
+| Quest groups/counter | Exact common ARC variant and internal QSG/GUI entry, Quest-IDs, native quest readers |
+| Text | GMD messages, language-specific entries, localized resident archives |
+| Fonts | `nativeNX/<language>/GUI/02_common/font/font_festa.gfd` plus matching resident TEX pages |
+| Audio | Audio-Index and Audio-Files-And-Extensions, STQR metadata and actual encoded stream |
+
+Wiki table claims are leads, not all locally validated formats. Examples: itemData has a described 44-byte record and itemPreData combinations 24 bytes; combination inputs refer to table positions, not necessarily item IDs. Weapon base records vary 32/33/34 bytes by family. Preserve header counts and unknown fields and verify against the actual resource/native consumer before editing. The wiki documents some weapon durations in 60-Hz units despite 30fps rendering, while other values are seconds. Determine each field's units rather than scaling all parameters alike.
+
+## ARC copy/edit/repack
+
+Copy and SHA-256 the original before editing. Keep the containing archive, entry inventory, payload hashes, and original repack baseline. Never edit the only dump/library copy.
+
+```sh
+./scripts/tool.sh salad extract work/my-mod/quest.arc
+# Edit the intended copied entry.
+./scripts/tool.sh salad inject-recursive work/my-mod --move-originals
+```
+
+Scope recursive inject to the mod's work directory. `--move-originals` keeps `original_data`; leave automatic backup deletion off. Scratch `inject` uses defaults unsuitable for preserving an existing archive. Re-extract the rebuilt ARC and compare entry names/types/counts, changed data, and every unrelated payload. A successful tool exit is insufficient.
+
+SaladSoftware 2.4.2 no-edit smoke repacks of copied Barioth/localized quests were byte-identical, with 468/328 resources; a changed-entry check preserved unrelated payloads. Those results apply to those inputs. Large shader root ARC resource length required a 30-bit field; an ordinary 24-bit helper cannot silently handle every archive.
+
+Kuriimu2 uses MT Framework / MT ARC, plugin ID `5a2dfcb6-60d6-4783-acd1-bc7fb4a65f38`. Launch through `./scripts/tool.sh kuriimu PATH` or `kuriimu-cli` for the correct working directory/private runtime. If its GUI misreads a Linux absolute path, use the printed temporary workspace alias. CLI archive context needs `back-to-main` before `exit`.
+
+## Merge ownership and companions
+
+Resource priority is Base -> HD Project -> Z_Balanced -> others. Later changed resources win whole; unchanged resources retain lower improvements. Same-path ARC conflicts need internal resource merging, not choosing one archive wholesale. Preserve language/controller/icon selections, matching font/texture pairs, and base companions. Choose one FPS/FOV variant. V4 donors are retired.
+
+The HD cleanup's 7,931-file reproduction and 407-resource comparisons are static/deployment evidence from that operation. They do not establish current activation or every visual improvement. Historical paths to retired loader reports are not present-day baseline instructions. Read actual ownership/manifests before touching shared resources.
+
+## Text, fonts, and textures
+
+```sh
+./scripts/tool.sh gmd decode --out work/my-mod/text-json work/my-mod/text.gmd
+./scripts/tool.sh gmd encode --out work/my-mod/text-rebuilt work/my-mod/text-json/text.gmd.json
+./scripts/tool.sh revil mtf_tex_to_dds --platform NSW work/my-mod/texture.tex
+```
+
+Classify GMD format before conversion. npm gmd 0.2.0 dropped 19 metadata fields from keyed `CharMakeMsg_eng.gmd`. The newer/default build rejects it with `Mobile format not implemented`. Non-keyed `spt_act_base_eng.gmd` round-tripped byte-identically. General keyed-GMD editing remains unverified; JSON export can omit bucket data. A few purpose-built bounded text changes do not establish a general encoder.
+
+Native fonts pair GFD glyph mapping/metrics with TEX atlas pages. Altering page images without updating Unicode/page/position/advance/size data breaks text. The offline font tutorial describes packed glyph fields and layout adjustments. Validate the real header and entry stride before editing. Larger glyphs can require companion line/window textures. Preserve language and controller prompts while merging font assets.
+
+Logical GUI atlas coordinates need not equal physical HD pixels. Preserve texture descriptors, format, dimensions, mip/swizzle/platform requirements and alpha. DDS/PNG export alone does not prove a valid reinjected TEX. Compare unchanged roundtrip and then verify the edited in-game consumer.
+
+## Models, gameplay tables, and audio
+
+Revil `mod_to_gltf` converts a copied MOD for inspection; a smoke test produced GLB imported by Blender as 18 meshes. Blender GLTF/GLB import provides no general MHGU MOD exporter. Wiki MaxScripts require compatible licensed 3ds Max. No verified GLTF-to-MHGU exporter is available. Do not promise a roundtrip from a successful preview.
+
+Titanbreak targets known monster HP/rage/loot/stagger/resident data; MHGUQuestEditor targets supported quest data. The wiki lists monster size, AI, new-monster and speed questions with incomplete knowledge. A tool name or visible field does not prove support for every version/resource.
+
+IFRIT wrappers handle Opus/DSP/Capcom ADPCM encoding. Match channel count, sample rate, format, and loop metadata:
+
+```sh
+./scripts/tool.sh ffmpeg -i work/my-mod/music.wav -ar 48000 -ac 2 -f s16le work/my-mod/music.raw
+./scripts/tool.sh nxaenc -r 48000 -c 2 -i work/my-mod/music.raw -o work/my-mod/music.opus
+./scripts/tool.sh adpcm work/my-mod/effect.wav work/my-mod/effect.adpcm
+./scripts/tool.sh stqr
+```
+
+An encoded tone/header check establishes encoding, not music-loop/STQR correctness. The Windows batch hub is not the Linux entrypoint. Existing wrappers use private Wine paths and explicit path translation.
+
+## Tool limits and evidence
+
+`START_TOOLS.sh` and `scripts/tool.sh` own launcher commands. Pax browses ARC/textures, ImHex edits bytes, Revil converts supported formats, GIMP edits imagery, Blender inspects models, and Audacity edits audio. 010Editor `.bt` files are format references for ImHex, not executable ImHex templates. Private runtimes avoid changing host packages: Kuriimu2's matching .NET 3.1.32 starts its GUI, while a .NET 9 substitution crashed it; ImHex requires its private 0700 runtime path; Pax uses private LLVM 19 libraries. In another environment re-establish prerequisites rather than copying absolute paths.
+
+Sources: `docs/TOOLS.md`, `docs/CLEANUP_HD_PROJECT.md`, `mods/hd-project/README.md`, shared ARC/GMD tests and build receipts; offline wiki CFileIndex, Weapon-Parameter-Modding, Item-Editing, Font-Editing, Model-and-Texture-Extract, audio pages; `references/MHGU-Modding/templates/` and `weapon_MV_Index/`. Wiki claims not verified locally retain lead status.
