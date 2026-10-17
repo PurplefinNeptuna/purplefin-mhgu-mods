@@ -10,13 +10,23 @@ reachable through main or archive tags; the cleanup receipt records their tips.
 
 ## Deliveries and acceptance
 
+Damage Numbers r29-diagnostics is a temporary DEVELOPMENT candidate for the
+reported Switch/Android placement issue. The user reports r28 displays damage
+on real Switch and a phone emulator, with correct-looking values and misplaced
+positions. Exact tester loader/plugin hashes were not supplied. The diagnostic
+build adds bounded copied camera/hit logs and screen markers without changing
+camera admission, damage, animation or placement rules. It has no runtime
+acceptance. r28 output remains intact, with record copies and delivery hashes in
+`backups/accepted/damage-numbers/r28-before-projection-diagnostics/`.
+
 On 2026-10-18, Key Quest Markers r18 and Damage Numbers r28 became DEVELOPMENT
 hardware-test candidates. Both retain PIC and add `-nostartfiles` / `-Wl,-z,text`.
 Their accepted r17/r27 releases and records are preserved under
 `backups/accepted/NAME/VERSION-before-hardware-link/`; original candidate trees
 remain intact. Gameplay and assets are unchanged apart from build identification.
-No runtime test of these rebuilds has occurred. The updated loader is not bundled
-or verified. The r17/r27 acceptance statements below describe the prior builds.
+At candidate creation, neither rebuild had a runtime test. The later r28
+report is recorded above. The updated loader is not bundled or verified.
+The r17/r27 acceptance statements below describe the prior builds.
 
 DISTRIBUTION.json in each mod is authoritative. Damage Numbers r26 and Key Quest
 Markers r15 replace the C++ Switch projects with fully renamed Rust implementations.
