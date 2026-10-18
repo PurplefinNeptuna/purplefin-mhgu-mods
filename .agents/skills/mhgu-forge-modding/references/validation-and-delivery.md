@@ -13,6 +13,8 @@ These are the original workspace's release conventions. In another project, use 
 | Fresh log + exact installed hash | Particular launch/load and recorded behavior | Every feature or platform |
 | User gameplay acceptance | Reported behavior for the identified payload/session | Exhaustive scenario coverage |
 
+For Switch Rust/GCC NROs, verify the [target flags and final relocation destinations](api-and-builds.md#rust-nro-relocation-requirements) before packaging. Retain the ELF/NRO hashes and any linker errors; a clean `-z text` link and absent TEXTREL flags complement the destination scan. Treat hardware-test rebuilds as new DEVELOPMENT candidates, preserving accepted artifacts and their original runtime scope.
+
 Use relevant mod-local tests and `verify`. Prefer existing native fixtures over assertions that only mirror source wording. Exercise allocation, short read/write, mapping, partial publication, foreign patch, nested entry, teardown, and fallback failures where changed. Existing damages tests cover mailbox concurrency and thread exit, native pool failure, ARM state, projection scaling, and actual ImGui pixel scenes. GUI fixtures execute native materials/destruction. Input fixtures execute classifiers/evaluator. Reward fixtures execute count bodies and ownership/quantity preflight.
 
 No automated in-game suite exists. After a reported run, read that emulator's latest log and match game/version, loader, mod set, NRO/assets, exceptions, and user observation. Preserve logs before another launch. A build recipe's `runtime_test: NOT RUN` is compatible with a separate dated accepted runtime record. Do not rewrite either into broader evidence.

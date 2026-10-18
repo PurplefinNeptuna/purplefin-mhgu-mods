@@ -18,6 +18,15 @@ mutex or PC support patches. Source updates never replace installed packages.
 
 ## Independent mod builds
 
+Switch Rust/GCC NRO targets retain `"relocation-model": "pic"` and GCC pre-link
+arguments `-nostartfiles` and `-Wl,-z,text`. Add these to newly generated mod
+targets before their first build, preserving other required arguments. Forge's
+Rust runtime supplies startup metadata and init/fini. Reject DT_TEXTREL/DF_TEXTREL
+and verify that final ELF/NRO dynamic relocation writes target writable data/BSS.
+Keep linker errors and exact artifact hashes. See the modding skill's
+[build requirements](../.agents/skills/mhgu-forge-modding/references/api-and-builds.md#rust-nro-relocation-requirements)
+for the reviewed Lawrence hardware-test fork and its separate validation scope.
+
 Each `mods/NAME/` owns its source, recipes, tests, dependency locks, licenses,
 export list and build entry point. No sibling mod, installed emulator, personal
 path or parent Git history may be required. Minimal vendored dependencies are

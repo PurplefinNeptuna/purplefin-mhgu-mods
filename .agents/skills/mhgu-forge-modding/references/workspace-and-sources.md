@@ -20,6 +20,7 @@ The supplied dump is RomFS-only. Original main/SDK/loader inputs must come from 
 | Topic / skill reference | Workspace sources and evidence |
 | --- | --- |
 | API, ABI, lifecycle, build | `tools/forge-local/`, `tools/forge-rs/`, `references/provenance.json`; mod dependency locks, `src/lib.rs`, ABI records, mod-local `scripts/verify.py` |
+| NRO relocation rules / hardware-test fork | [Build requirements](api-and-builds.md#rust-nro-relocation-requirements); per-mod target JSON, `scripts/verify.py`, `research/hardware-link.json`; [Lawrence fork](api-and-builds.md#lawrences-hardware-test-loader) |
 | Hook pool / state / rollback | Forge `source/forge/hook.c`; Damage Numbers hook/gateway/mailbox source and tests; Key Quest Markers hooks/offers/ARM fixture; Modern Controls and Please do Better transaction/platform source |
 | Native GUI extension | `mods/key-quest-markers/DEVELOPMENT.md`, `src/gui.rs`, `src/native.rs`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/native_adapter.py`, `research/theme-colours.json` |
 | Rendering / storage | Damage Numbers `src/render.rs`, `src/config.rs`, runtime/context tests; Key Quest Markers settings/config; Please do Better settings/preferences and overlay gates |

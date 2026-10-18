@@ -10,6 +10,7 @@ Follow the failing stage: module load/imports, metadata/init, signature checks, 
 
 | Symptom / historical baseline | Cause or strongest finding | Response |
 | --- | --- | --- |
+| NRO load crashes while applying dynamic relocations | r17/r27 Rust NROs each had six executable-text relocation targets from GCC startup routines despite PIC | Follow [NRO relocation requirements](api-and-builds.md#rust-nro-relocation-requirements): exclude GCC startup objects, enforce `-z text`, inspect final destinations and preserve linker output |
 | Hook failure after other plugins allocated JIT | Old per-hook CodeMemory pressure, including a recorded Rust Damage Numbers rollback retaining allocations | Verify actual Forge version and allocations. Current 1.5.1 pools at most two chunks; do not restore old loader patches |
 | Crashes near Hook/metadata crossing | Historical binding/layout drift | Check compiled ARM32 Hook 24/Jit 28/metadata 70, exports, and callback ABI |
 | Native badge constructor failure | Generic DTI placement slot was null | Checked MT allocation plus verified class constructor |
@@ -37,6 +38,8 @@ The loader is already native ARM32, so no PC-style port is needed. Its upstream 
 A conceptual CFW per-title arrangement is `sd:/atmosphere/contents/0100770008DD8000/exefs/subsdk1`, `exefs/main.npdm`, and `romfs/nativeNX/plugins/NAME.nro`. This is a feasibility layout, not a validated install recipe. The exact Atmosphère/package environment needs separate verification before deployment.
 
 The concrete open issue is JIT permission/availability. Pinned libnx selects `JitType_CodeMemory` when syscall hints `0x4B` and `0x4C` are usable. Forge explicitly rejects its permission-transition fallback because concurrent slots need RW/RX aliases. The inspected Forge `config.json` omits those two syscalls. Inspect the final shipped `main.npdm`, actual hints, CFW/kernel behavior, and logs before proposing source changes. Editing the JSON alone proves no hardware fix.
+
+That permission concern describes the pinned stock loader. The separately reviewed [Lawrence hardware-test fork](api-and-builds.md#lawrences-hardware-test-loader) adds CodeMemory permissions and protected-code-write/startup fixes. Its source documents `sd:/forge-loader.log`; collect that file and the exact loader/NRO hashes after an authorized trial. The source comparison supports expected 1.5.1 API compatibility, while hardware acceptance remains unconfirmed. Both the loader and NRO must satisfy their own relocation requirements.
 
 An authorized console trial should establish Forge alone, then one NRO at a time, checking boot/load, graphics, controls, settings persistence, transitions, and performance. Retain rollback material and exact hashes. Compilation, import verification, emulator success, and generic CFW loader support do not establish physical compatibility.
 

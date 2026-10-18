@@ -14,6 +14,9 @@ MHGU Switch title ID is 0100770008DD8000, game 1.4.0. No automated in-game suite
   credit both, and preserve the Skyline Project/Jeffi license text.
 - Rust: forge-rs 1.5.0 at `tools/forge-rs/`, commit
   `d1865b68e9b194eb3eacc8bd71bbf601a5fac63e`; converter 1.4.1 is a separate tool.
+  Future Rust/GCC NRO builds retain PIC and `-nostartfiles` / `-Wl,-z,text`,
+  including new mod targets. Check final relocation destinations before packaging;
+  see docs/DEVELOPMENT.md and the mhgu-forge-modding skill.
 - PC: **stock Forge PC 0.2.1**, `tools/forge-pc-local/`. All `<name>-pc` mods stay
   separate and default build/verify/package requires Linux SO and Windows DLL.
 - Update existing checkouts directly from their official remotes. Do not create

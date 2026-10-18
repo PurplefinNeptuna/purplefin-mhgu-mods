@@ -48,6 +48,33 @@ forge-rs layers `mhgu-forge-sys` FFI, `mhgu-forge` wrappers, procedural macros, 
 
 Headers can declare functions unavailable to an NRO. `forge_mem_queryMemory` has a header/source definition but lacks the needed export in the inspected release. Check strong imports against the actual Forge, main, and SDK binaries. Existing mods use narrow checked SVC/native adapters for verified missing memory-query, program-ID, cache, SDK file, or GUI operations. Reuse that pattern only when the same gap and ABI are verified.
 
+## Rust NRO relocation requirements
+
+For every future Switch Rust/GCC NRO build, retain these settings in the mod-owned custom target JSON. Merge the arguments with any existing `gcc` pre-link arguments:
+
+```json
+{
+    "relocation-model": "pic",
+    "pre-link-args": {
+        "gcc": ["-nostartfiles", "-Wl,-z,text"]
+    }
+}
+```
+
+Forge's Rust runtime supplies its own startup metadata and `init`/`fini`. `-nostartfiles` excludes GCC startup objects, which introduced six relocations into executable text in each accepted Key Quest Markers r17 and Damage Numbers r27 NRO. PIC in Rust code alone did not prevent this. `-Wl,-z,text` makes remaining read-only dynamic relocations a link error; it does not repair them. Preserve the linker output and resolve the contributing object/section before delivering a build.
+
+After `cargo forge new NAME`, add these settings to the generated mod target before the first build. The pinned upstream and vendored cargo-forge templates predate this rule; they remain provenance snapshots. Maintained builds use their mod-local `./build.sh build`, which invokes `cargo forge build --release` with pinned tools and separate output paths.
+
+Validate the final ELF and converted NRO: reject `DT_TEXTREL` and `DF_TEXTREL`, and check that every dynamic relocation write targets writable data/BSS. A relocation table stored in read-only memory is normal; the destination of each write determines safety. Keep the NRO checks in the mod's verifier and record exact hashes. C/C++ NRO builds need the same writable-destination invariant; `-nostdlib` already excludes default startup objects when that is their existing recipe.
+
+The 2026-10-18 r18/r28 rebuilds removed all six executable-text relocations from each NRO, passed their existing host/ARM fixtures and full distribution checks, and retained gameplay/assets apart from build identification. These are static/build results, not physical Switch acceptance. Evidence: `mods/key-quest-markers/research/hardware-link.json` and `mods/damage-numbers/research/hardware-link.json`.
+
+## Lawrence's hardware-test loader
+
+[Lawrence-al/forge](https://github.com/Lawrence-al/forge) at [`bbc540f4b831881f4980a4939a049cc14c31b9e4`](https://github.com/Lawrence-al/forge/commit/bbc540f4b831881f4980a4939a049cc14c31b9e4) is one commit ahead of the pinned Forge 1.5.1 base. The reviewed diff retains the public Hook header and adds hardware startup/loading fixes. Its [hardware document](https://github.com/Lawrence-al/forge/blob/bbc540f4b831881f4980a4939a049cc14c31b9e4/docs/hardware-compatibility.md) specifies the same Rust flags and says loader fixes do not rewrite plugin relocations.
+
+Plugins built against the pinned 1.5.1 SDK are expected to work with that reviewed fork when their imports and ABI match. Confirm the tester's exact loader revision/binary, strong imports and runtime results before claiming compatibility. The fork is an optional hardware-test loader; it does not replace the workspace's stock SDK/source baseline or become a required dependency merely because a test uses it. The reviewed source and the r18/r28 candidates were not tested together on physical hardware here.
+
 ## Standalone workflow
 
 From a maintained mod's directory:
