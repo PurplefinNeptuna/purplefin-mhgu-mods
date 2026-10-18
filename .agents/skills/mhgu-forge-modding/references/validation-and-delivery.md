@@ -25,6 +25,8 @@ Each `mods/NAME/DISTRIBUTION.json` is authoritative. DEVELOPMENT is unapproved w
 
 Runtime changes require a new version. Promote accepted candidate bytes without rebuilding. Preserve the previous accepted release under `backups/accepted/`. Support-only refreshes back up the prior delivery and keep runtime hashes unchanged. Do not rebuild into a candidate/output directory whose receipts an immutable release still references.
 
+Version diagnostic/prototype candidates before manual testing too. Set DEVELOPMENT, run relevant tests/build/verify, package and run the full distribution check, then record source/loader revisions and NRO/assets/ZIP hashes before supplying bytes for an authorized run. Follow-up runtime changes get another version. Record observations against those exact hashes and promote unchanged accepted bytes only with release approval. Do not put the first version/distribution record after the acceptance loop.
+
 From the workspace root:
 
 ```sh

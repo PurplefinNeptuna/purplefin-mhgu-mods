@@ -5,7 +5,7 @@ description: Develop, review, build, package, and diagnose native ARM32 Forge pl
 
 # MHGU Forge Modding
 
-Target MHGU Switch 1.4.0, title `0100770008DD8000`. The compiled knowledge snapshot is dated 2026-10-17, with NRO build/hardware guidance updated 2026-10-18. Source baseline: stock Forge 1.5.1 and forge-rs 1.5.0. Read only the topic references needed for the task.
+Target MHGU Switch 1.4.0, title `0100770008DD8000`. The compiled knowledge snapshot is dated 2026-10-17, with NRO build/hardware and HUD planning guidance updated 2026-10-18. Source baseline: stock Forge 1.5.1 and forge-rs 1.5.0. Read only the topic references needed for the task.
 
 ## Start the task
 
@@ -14,6 +14,8 @@ Target MHGU Switch 1.4.0, title `0100770008DD8000`. The compiled knowledge snaps
 3. Match every native boundary to actual target headers, instructions, exports, and calling conventions. Imported annotations and a successful build do not establish a valid runtime contract.
 4. For every Switch Rust/GCC NRO build, retain PIC and the `-nostartfiles` / `-Wl,-z,text` linker settings. Apply them to new mod targets before the first build. Follow [NRO relocation requirements](references/api-and-builds.md#rust-nro-relocation-requirements), including final ELF/NRO checks.
 5. Validate the changed behavior, package where required, and report exact evidence limits. Preparation does not authorize installation, activation, game launch, settings/save edits, publication, or push.
+
+For GUI plans and reviews, read [Native GUI extensions](references/native-gui-extensions.md) before treating the quest-row recipe as a solution for another menu. Require the target's ownership/map/cache audit and a complete rendering path. Version and package diagnostic candidates before manual tests using [Validation and delivery](references/validation-and-delivery.md).
 
 ## Choose a reference
 

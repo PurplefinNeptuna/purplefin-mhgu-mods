@@ -5,7 +5,7 @@ description: Find and interpret Monster Hunter Generations Ultimate Switch game 
 
 # MHGU Understanding
 
-Research MHGU Switch 1.4.0, title `0100770008DD8000`. This knowledge snapshot is dated 2026-10-17. Native offsets below belong to the verified update main, not every game version. Read only the references relevant to the question.
+Research MHGU Switch 1.4.0, title `0100770008DD8000`. This knowledge snapshot is dated 2026-10-17, with HUD identity and clipping guidance updated 2026-10-18. Native offsets below belong to the verified update main, not every game version. Read only the references relevant to the question.
 
 ## Research workflow
 
@@ -13,6 +13,8 @@ Research MHGU Switch 1.4.0, title `0100770008DD8000`. This knowledge snapshot is
 2. Search saved indexes and existing research before extracting again. Follow the native reader/writer, consumers, and destructor to establish meaning and ownership.
 3. Verify against copied, hash-identified originals. An annotation, wiki field, matching name, or fixture alone cannot establish game/version compatibility or visible behavior.
 4. Report the finding with its source, offset base, units/types, verification method, and remaining uncertainty. Keep original dumps, libraries, saves, and annotations intact.
+
+For native GUI plans as well as implementation, read [Native GUI](references/native-gui.md). Establish instance-to-animation-to-object ownership and distinguish resource IDs from table rows before proposing reuse. File presence, suggestive names and setter lookup do not establish unused objects or a working rendering mechanism. Keep unresolved feasibility separate from the user's chosen visual design.
 
 ## Choose a reference
 
