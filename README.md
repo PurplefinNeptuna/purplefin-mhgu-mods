@@ -7,7 +7,7 @@ stock Forge PC **0.2.1**.
 | Mod | Release | Guide |
 | --- | --- | --- |
 | Damage Numbers | r30 | [Install](mods/damage-numbers/README.md) |
-| Key Quest Markers | r18, hardware-test candidate | [Install](mods/key-quest-markers/README.md) |
+| Key Quest Markers | r18 | [Install](mods/key-quest-markers/README.md) |
 | Modern Weapon Controls | r12 | [Install](mods/modern-weapon-controls/README.md) |
 | Please do Better | r24-forge151 | [Install](mods/please-do-better/README.md) |
 | Damage Numbers PC | r3 | [Install](mods/damage-numbers-pc/README.md) |
@@ -17,7 +17,8 @@ stock Forge PC **0.2.1**.
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Damage Numbers
 r30 is READY_TO_DISTRIBUTE following user approval, with device testing unconfirmed.
-Key Quest Markers r18 remains a DEVELOPMENT candidate.
+Key Quest Markers r18 is READY_TO_DISTRIBUTE following user approval of its
+unchanged validated NRO; hardware compatibility remains unconfirmed.
 Earlier accepted releases are preserved under backups/accepted/.
 Other platform and maintenance-build acceptance retains its recorded scope.
 PC runtime bytes are preserved.
