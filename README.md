@@ -16,7 +16,7 @@ stock Forge PC **0.2.1**.
 | Please do Better PC | r1 | [Install](mods/please-do-better-pc/README.md) |
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Damage Numbers
-r34 is an untested DEVELOPMENT candidate; the approved r30 release is archived under
+r35 is an untested DEVELOPMENT candidate; the approved r30 release is archived under
 backups/accepted/damage-numbers/r30-before-status-damage/, with device testing unconfirmed.
 Key Quest Markers r18 is READY_TO_DISTRIBUTE following user approval of its
 unchanged validated NRO; hardware compatibility remains unconfirmed.

@@ -17,12 +17,13 @@ This approval adds no runtime test result; r18 hardware compatibility remains
 unconfirmed. The candidate and original records are preserved under
 `backups/accepted/key-quest-markers/r18-distribution-approved/`.
 
-Damage Numbers r34 is a DEVELOPMENT candidate (2026-10-20) for the reported
+Damage Numbers r35 is a DEVELOPMENT candidate (2026-10-20) for the reported
 missing kinsect, poison, blast and mount numbers, plus an opt-in "Show other
 damage" setting. Poison is gray; blast and the mount knockdown use the weak-point colour.
-The unrun r31 to r33 candidates are superseded. It adds three hooks found by static research; gameplay is NOT
+Map-fired siege shells show as object damage. The unrun r31 to r34 candidates
+are superseded. It adds three hooks found by static research; gameplay is NOT
 RUN. The candidate is
-`build/damage-numbers/candidates/r34/delivery/damage-numbers-r34-candidate.zip`.
+`build/damage-numbers/candidates/r35/delivery/damage-numbers-r35-candidate.zip`.
 The approved r30 release and its records were archived unchanged to
 `backups/accepted/damage-numbers/r30-before-status-damage/`.
 
