@@ -39,6 +39,7 @@ Configure copied native/resource inputs with `build.local.json`; never edit
 original dumps, libraries or saves. Preserve unknown binary fields and unrelated
 resources. Record source paths and SHA-256; re-extract changed archives and
 compare inventories. Same-path ARC changes require an internal-resource merge.
+Repack ARCs only with supported MHGU tools against an original repacking baseline.
 
 Scaffold with `python3 scripts/mod_distribution.py init NAME --kind plugin`
 (or resource, cheat, tool). PC plugins add `--platform forge-pc` and live in
@@ -48,6 +49,31 @@ Refresh `EXPORT.json` deliberately; exports exclude runtime/game binaries,
 private configurations, ignored trees and unsafe paths. Validate exported source
 outside this workspace using explicitly supplied copied inputs.
 
+Scaffolded C++ plugins compile with the shipped mods' ARMv8 flags
+(`-march=armv8-a+crc+crypto -mfloat-abi=softfp -mfpu=crypto-neon-fp-armv8`),
+so Forge and libnx headers work. Include them; do not hand-declare Forge
+symbols. Packages stage `romfs/nativeNX/...`, `exefs/` or
+`cheats/<build-id>.txt` directly inside the named runtime folder.
+
+### New plugin: definition of done
+
+A new plugin task is complete when all of these hold, unless the user scoped
+the task to one phase:
+
+1. The scaffold builds, and it includes Forge headers instead of re-declaring them.
+2. Research findings (offsets, ABI, register/GE audit) are recorded in the mod's
+   DEVELOPMENT.md or `work/NAME/`, with their sources.
+3. The code implements the requested behavior, not only a diagnostic. Verified
+   API gaps are documented beside the workaround.
+4. Focused host tests cover the pure logic, and `./build.sh test` passes.
+5. The README follows the release README standard below, since candidate ZIPs ship it.
+6. A registered DEVELOPMENT candidate is packaged and the full `check` passes.
+7. The report gives the candidate hashes and the runtime checks still needed.
+
+Stop earlier only when a missing input or an unresolved native contract blocks
+the next step. Name the blocker and what would remove it. When a tool refuses,
+read the error and the code that raised it before treating it as a rule.
+
 ## Native implementation rules
 
 Search saved Ghidra/DTI before gameplay work; see [research](RESEARCH.md).
@@ -56,6 +82,8 @@ render APIs where applicable. Document a verified API gap before using a lower
 level path. Validate pointers, signatures, allocation failures and rollback.
 Explain native offsets, units, data flow, ownership, nested hooks, TLS borrows
 and unsafe caller requirements beside substantial code. Preserve audited assembly.
+Comments-only work keeps pinned assembly and third-party bytes unchanged. Skip
+comments that only repeat the code.
 
 Preserve NZCVQ and all live registers. Audit GE liveness at every hook and
 continuation; never require `msr APSR_g` or `msr APSR_nzcvqg`. Choose another hook
@@ -91,6 +119,16 @@ then `python3 scripts/mod_distribution.py check` before committing or claiming
 readiness. Source-only checks do not establish readiness. Preserve the tracked
 pre-commit check and other hooks.
 
+DEVELOPMENT candidates package only after registration. Set the candidate
+version in `mod.json`, then add these fields to `DISTRIBUTION.json`:
+`version`, `package_name`, `archive` (`NAME-VERSION-candidate.zip`), `candidate`
+(`build/NAME/candidates/VERSION/delivery`), `candidate_builder`
+(`scripts/build.py` for scaffolded mods) and the `gamebanana` record. Optional
+`notices` lists shipped license files; otherwise the mod's `LICENSE` and vendor
+licenses are used. Then run `./build.sh build`, `./build.sh test` and
+`python3 scripts/mod_distribution.py package NAME`. Without `candidate_builder`
+the packager refuses DEVELOPMENT mods. Status stays DEVELOPMENT.
+
 A release lives at `build/NAME/releases/VERSION/`, with versioned ZIP, named
 runtime folder, README.md, README.html, GAMEBANANA_README.html, NOTICES.txt,
 NOTICES.html, release manifest and SHA256SUMS. The ZIP contains only README.md
@@ -101,7 +139,8 @@ Archive superseded releases outside active releases.
 
 `THIRD_PARTY.md` records development provenance;
 `DISTRIBUTION_NOTICES.md` and current licenses cover only shipped components and
-applicable authors, retaining copyright/license wording and Forge credits.
+applicable authors, retaining copyright/license wording and Forge credits,
+including the Skyline Project/Jeffi license text.
 Notices must work without a checkout and exclude local paths/history and
 unrelated development tools.
 Use `PurplefinNeptuna` for project-owned copyright and author credits. Preserve

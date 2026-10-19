@@ -27,6 +27,8 @@ Runtime changes require a new version. Promote accepted candidate bytes without 
 
 Version diagnostic/prototype candidates before manual testing too. Set DEVELOPMENT, run relevant tests/build/verify, package and run the full distribution check, then record source/loader revisions and NRO/assets/ZIP hashes before supplying bytes for an authorized run. Follow-up runtime changes get another version. Record observations against those exact hashes and promote unchanged accepted bytes only with release approval. Do not put the first version/distribution record after the acceptance loop.
 
+The packager accepts a DEVELOPMENT mod only when `DISTRIBUTION.json` registers `version`, `package_name`, `archive` (`NAME-VERSION-candidate.zip`), `candidate` (`build/NAME/candidates/VERSION/delivery`), `candidate_builder` (`scripts/build.py` for scaffolded mods) and `gamebanana`. The builder writes the delivery, and `verify_candidate` in `scripts/mod_distribution.py` checks it. Without `candidate_builder` the refusal is a missing registration, not a ban on candidates.
+
 From the workspace root:
 
 ```sh

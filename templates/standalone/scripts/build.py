@@ -180,23 +180,25 @@ def package(release=False):
  p=payload();pkg=config().get('package_name',{'damage-numbers':'damage-number','modern-weapon-controls':'modern-control'}.get(NAME,NAME))
  files={('romfs/nativeNX/plugins/'+p.name):p} if p.is_file() else {str(x.relative_to(p)):x for x in p.rglob('*') if x.is_file()}
  if not files:raise ValueError('No runtime payloads; implement the recipe first')
- dest=out/'candidates'/('diagnostics' if build_record.get('diagnostics') else 'standalone')
- dest.mkdir(parents=True,exist_ok=True);target=dest/(NAME+'-'+config()['version']+'-candidate.zip')
- import io
- stream=io.BytesIO()
- with zipfile.ZipFile(stream,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
-  for n,f in sorted(files.items()):
-   i=zipfile.ZipInfo(pkg+'/'+n,(1980,1,1,0,0,0));i.external_attr=0o100644<<16;i.compress_type=zipfile.ZIP_DEFLATED;z.writestr(i,f.read_bytes())
- data=stream.getvalue()
- if target.exists() and target.read_bytes()!=data:raise ValueError('Preserving differing candidate; use a new version or output')
- target.write_bytes(data)
- with zipfile.ZipFile(target) as z:
-  if z.testzip():raise ValueError('ZIP CRC failed')
- shutil.copy2(MOD/'README.md',dest/'README.md')
- notices='\n\n'.join(p.read_text() for p in [MOD/'LICENSE',MOD/'THIRD_PARTY.md',*sorted((MOD/'vendor').rglob('LICENSE*')),*sorted((MOD/'fonts').glob('*OFL.txt'))] if p.exists());(dest/'NOTICES.txt').write_text(notices)
- (dest/'manifest.json').write_text(json.dumps({'mod':NAME,'version':config()['version'],'status':'DEVELOPMENT','payloads':{n:digest(p) for n,p in files.items()},'runtime_test':'NOT RUN'},indent=2)+'\n')
- (dest/'SHA256SUMS').write_text(''.join(digest(p)+'  '+p.name+'\n' for p in sorted(dest.iterdir()) if p.is_file() and p.name!='SHA256SUMS'))
- print(target)
+ # DEVELOPMENT candidate delivery in the layout mod_distribution.verify_candidate checks.
+ # DISTRIBUTION.json registers version/package_name/archive/candidate/candidate_builder/gamebanana.
+ spec=json.loads((MOD/'DISTRIBUTION.json').read_text());version=config()['version']
+ if spec.get('status')!='DEVELOPMENT' or spec.get('version')!=version or spec.get('package_name')!=pkg or not spec.get('archive'):raise ValueError('Register this DEVELOPMENT candidate version, package_name and archive in DISTRIBUTION.json first')
+ tests=out/'standalone-tests.json'
+ if not tests.exists() or json.loads(tests.read_text()).get('build_record_sha256')!=digest(out/'standalone-build.json'):raise ValueError('Run ./build.sh test for this exact build before packaging')
+ import mod_distribution as distribution
+ guide=(MOD/'README.md').read_bytes();payloads={n:f.read_bytes() for n,f in sorted(files.items())}
+ notices=[(n,(MOD/n).read_bytes()) for n in spec.get('notices') or [str(x.relative_to(MOD)) for x in [MOD/'LICENSE',*sorted((MOD/'vendor').rglob('LICENSE*'))] if x.exists()]]
+ archive=distribution.make_zip(payloads,pkg,{'README.md':guide})
+ delivery={**{pkg+'/'+n:b for n,b in payloads.items()},spec['archive']:archive,'README.md':guide,'README.html':distribution.readme_html(guide),'GAMEBANANA_README.html':distribution.gamebanana_readme_html(guide,spec.get('gamebanana')),'NOTICES.txt':b'\n\n'.join(b for _,b in notices),'NOTICES.html':distribution.notices_html(notices)}
+ delivery['manifest.json']=(json.dumps({'mod':NAME,'version':version,'status':'DEVELOPMENT','package_name':pkg,'diagnostics':build_record.get('diagnostics',False),'payloads':{n:hashlib.sha256(b).hexdigest() for n,b in payloads.items()},'archive_sha256':hashlib.sha256(archive).hexdigest(),'runtime_test':'NOT RUN'},indent=2)+'\n').encode()
+ delivery['SHA256SUMS']=''.join(hashlib.sha256(b).hexdigest()+'  '+n+'\n' for n,b in sorted(delivery.items())).encode()
+ dest=out/'candidates'/version/'delivery'
+ existing={str(x.relative_to(dest)):x.read_bytes() for x in dest.rglob('*') if x.is_file()} if dest.exists() else {}
+ if existing and existing!=delivery:raise ValueError('Preserving differing candidate; use a new version')
+ for n,b in delivery.items():
+  q=dest/n;q.parent.mkdir(parents=True,exist_ok=True);q.write_bytes(b)
+ print(dest/spec['archive'])
 def help_assets():
  if NAME!='modern-weapon-controls':raise ValueError('help is only available for Modern Weapon Controls')
  from stage_hd_project import stage
@@ -211,7 +213,7 @@ def scaffold_build(cfg):
  if cfg['kind']=='plugin':
   from mhgu_binary import elf_to_nro
   native=ROOT/'work'/NAME/'native';native.mkdir(parents=True,exist_ok=True)
-  args=['podman','--root',CONTAINER_STORAGE,'--runroot',f'/tmp/mhgu-forge-container-{os.getuid()}','--storage-driver','vfs','run','--pull=never','--rm','--network=none','-v',f'{MOD}:/mod:ro','-v',f'{native}:/output:rw',cfg['compiler_image'],'bash','-lc',"set -eu; export PATH=/opt/devkitpro/devkitARM/bin:$PATH; arm-none-eabi-g++ -std=c++17 -O2 -fPIC -marm -fno-exceptions -fno-rtti -I/mod/vendor/forge/include -isystem /mod/vendor/sdk/libs/libnx/nx/include -isystem /mod/vendor/sdk/libs/cimgui -include /mod/vendor/forge/include/compat.h -c /mod/src/plugin.cpp -o /output/plugin.o; arm-none-eabi-gcc -fPIC -marm -c /mod/src/start.S -o /output/start.o; arm-none-eabi-g++ -shared -nostdlib -Wl,--hash-style=sysv,-z,max-page-size=4096,-init=init,-fini=fini -Wl,-T,/mod/src/plugin.ld -Wl,--version-script=/mod/src/exports.txt /output/start.o /output/plugin.o -o /output/plugin.elf"]
+  args=['podman','--root',CONTAINER_STORAGE,'--runroot',f'/tmp/mhgu-forge-container-{os.getuid()}','--storage-driver','vfs','run','--pull=never','--rm','--network=none','-v',f'{MOD}:/mod:ro','-v',f'{native}:/output:rw',cfg['compiler_image'],'bash','-lc',"set -eu; export PATH=/opt/devkitpro/devkitARM/bin:$PATH; arm-none-eabi-g++ -std=c++17 -Wall -Wextra -Werror -O2 -fPIC -marm -march=armv8-a+crc+crypto -mfloat-abi=softfp -mfpu=crypto-neon-fp-armv8 -fno-exceptions -fno-rtti -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-threadsafe-statics -fno-builtin -fno-tree-loop-distribute-patterns -I/mod/vendor/forge/include -isystem /mod/vendor/sdk/libs/libnx/nx/include -isystem /mod/vendor/sdk/libs/cimgui -include /mod/vendor/forge/include/compat.h -c /mod/src/plugin.cpp -o /output/plugin.o; arm-none-eabi-gcc -fPIC -marm -c /mod/src/start.S -o /output/start.o; arm-none-eabi-g++ -shared -nostdlib -Wl,--hash-style=sysv,-z,max-page-size=4096,-z,text,-init=init,-fini=fini -Wl,-T,/mod/src/plugin.ld -Wl,--version-script=/mod/src/exports.txt /output/start.o /output/plugin.o -o /output/plugin.elf"]
   args[-1]=args[-1].replace('-std=c++17','-std=c++17 -DMHGU_DIAGNOSTICS='+('1' if os.environ.get('MHGU_DIAGNOSTICS')=='1' else '0'))
   run(args);p=ROOT/'build'/NAME/'package/romfs/nativeNX/plugins'/('plugin.nro');p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(elf_to_nro((native/'plugin.elf').read_bytes()))
  else:
