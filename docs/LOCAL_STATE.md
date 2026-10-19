@@ -17,11 +17,12 @@ This approval adds no runtime test result; r18 hardware compatibility remains
 unconfirmed. The candidate and original records are preserved under
 `backups/accepted/key-quest-markers/r18-distribution-approved/`.
 
-Damage Numbers r31 is a DEVELOPMENT candidate (2026-10-19) for the reported
+Damage Numbers r32 is a DEVELOPMENT candidate (2026-10-20) for the reported
 missing kinsect, poison, blast and mount numbers, plus an opt-in "Show other
-damage" setting. It adds three hooks found by static research; gameplay is NOT
+damage" setting. Poison is gray and blast uses the weak-point colour; the unrun
+r31 candidate is superseded. It adds three hooks found by static research; gameplay is NOT
 RUN. The candidate is
-`build/damage-numbers/candidates/r31/delivery/damage-numbers-r31-candidate.zip`.
+`build/damage-numbers/candidates/r32/delivery/damage-numbers-r32-candidate.zip`.
 The approved r30 release and its records were archived unchanged to
 `backups/accepted/damage-numbers/r30-before-status-damage/`.
 
