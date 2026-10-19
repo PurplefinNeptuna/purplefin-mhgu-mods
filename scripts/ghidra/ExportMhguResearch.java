@@ -24,10 +24,19 @@ public class ExportMhguResearch extends GhidraScript {
     private String hex(byte[] value) { return HexFormat.of().formatHex(value); }
     @Override public void run() throws Exception {
         String[] args = getScriptArgs();
-        if (args.length != 2) throw new IllegalArgumentException("Expected output directory and verified main memory image");
+        if (args.length < 2 || args.length > 3) throw new IllegalArgumentException("Expected output directory, verified main memory image and optional targets file");
         Path out = Path.of(args[0]); Files.createDirectories(out);
         byte[] expected = Files.readAllBytes(Path.of(args[1]));
         long base = currentProgram.getImageBase().getOffset();
+        // Baseline targets; task-specific offsets come from the targets file so this list never grows per task.
+        List<Long> offsets = new ArrayList<>(List.of(0x2b489cL, 0x2a79ccL, 0x7aef68L, 0x1177f68L, 0x18a5d7cL, 0x177e9a0L, 0x283710L));
+        if (args.length == 3) for (String line : Files.readAllLines(Path.of(args[2]))) {
+            String value = line.replaceFirst("#.*", "").strip();
+            if (value.isEmpty()) continue;
+            if (!value.matches("0x[0-9a-fA-F]+")) throw new IllegalArgumentException("Bad target line (want main-relative 0x offset): " + line);
+            long offset = Long.parseLong(value.substring(2), 16);
+            if (!offsets.contains(offset)) offsets.add(offset);
+        }
         List<Object> blocks = new ArrayList<>();
         for (MemoryBlock block : currentProgram.getMemory().getBlocks()) {
             monitor.checkCancelled();
@@ -84,10 +93,12 @@ public class ExportMhguResearch extends GhidraScript {
                 writer.write(gson.toJson(row)); writer.newLine();
             }
         }
+        // Drop decompiles left by earlier target lists so every file matches this run's summary.
+        try (DirectoryStream<Path> stale = Files.newDirectoryStream(out, "function_*.c")) { for (Path path : stale) Files.delete(path); }
         List<Object> targets = new ArrayList<>();
         DecompInterface decompiler = new DecompInterface(); decompiler.openProgram(currentProgram);
         try {
-            for (long offset : new long[]{0x2b489cL, 0x2a79ccL, 0x7aef68L, 0x1177f68L, 0x18a5d7cL, 0x177e9a0L, 0x283710L}) {
+            for (long offset : offsets) {
                 Address address = currentProgram.getImageBase().add(offset);
                 Function function = getFunctionAt(address);
                 List<String> names = new ArrayList<>();

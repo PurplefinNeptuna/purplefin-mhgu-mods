@@ -34,6 +34,8 @@ The imported `.text` differs from original main at offset `0x00283710` (database
 
 Open analysis with `./scripts/tool.sh ghidra`. The preserved GZF is `work/research-tooling/inputs/MHGU_1.4.0.gzf`; editable project is `ghidra-projects/MHGU_1.4.0.gpr`. To refresh indexes, close that GUI project and run `./scripts/tool.sh research export`. Export uses read-only/noanalysis mode and copied-main verification. `research import` creates a fresh project and refuses to overwrite an existing one. Preserve annotations and original GZF.
 
+To decompile or cross-reference specific addresses, write your own targets file in the task's work folder (for example `work/<mod>/ghidra-targets.txt`): one main-relative `0x` offset per line, with `#` comments saying why each is there. Then run `./scripts/tool.sh research export --targets work/<mod>/ghidra-targets.txt`. Read each target's symbols, containing function and references in `summary.json` `research_targets`, and function starts' C in `ghidra-export/function_<offset>.c`. Each run replaces the previous target output. Never add task offsets to `scripts/ghidra/ExportMhguResearch.java`; its list holds only the shared baseline.
+
 ## Understand DTI records
 
 DTI is class metadata: name, inheritance, size, constructors, properties, and virtual methods. `MtDti::find("cGUIObjTexture")` finds a class descriptor, not a drawable instance. Singleton lookup such as `sMhGUI` locates an existing object. A class descriptor does not guarantee that its generic construction path is valid for every subclass.

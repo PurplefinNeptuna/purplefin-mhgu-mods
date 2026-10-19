@@ -24,7 +24,7 @@ def ghidra_environment():
     return env
 
 
-def export_analysis(import_database=False):
+def export_analysis(import_database=False, targets=None):
     from mhgu_binary import main_image
     source = WORK / "inputs/MHGU_1.4.0.gzf"
     if hashlib.file_digest(source.open("rb"), "sha256").hexdigest() != SOURCE_SHA:
@@ -42,7 +42,7 @@ def export_analysis(import_database=False):
     mode = ["-import", str(source)] if import_database else ["-process", "MHGU_1.4.0", "-readOnly"]
     args = [str(GHIDRA / "support/analyzeHeadless"), str(PROJECTS), "MHGU_1.4.0", *mode,
             "-noanalysis", "-scriptPath", str(ROOT / "scripts/ghidra"), "-postScript", "ExportMhguResearch.java",
-            str(EXPORT), str(image_path), "-log", str(WORK / "ghidra-export.log"),
+            str(EXPORT), str(image_path), *([str(Path(targets).resolve(strict=True))] if targets else []), "-log", str(WORK / "ghidra-export.log"),
             "-scriptlog", str(WORK / "ghidra-script.log")]
     summary_path = EXPORT / "summary.json"
     previous_time = summary_path.stat().st_mtime_ns if summary_path.exists() else None
@@ -81,8 +81,8 @@ def find(query, kind, limit):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("import")
-    commands.add_parser("export")
+    for name in ("import", "export"):
+        commands.add_parser(name).add_argument("--targets", help="file of main-relative 0x offsets to decompile, one per line, # comments")
     commands.add_parser("status")
     search = commands.add_parser("find")
     search.add_argument("query")
@@ -90,7 +90,7 @@ def main():
     search.add_argument("--limit", type=int, default=30)
     args = parser.parse_args()
     if args.command in ("import", "export"):
-        export_analysis(args.command == "import")
+        export_analysis(args.command == "import", args.targets)
     elif args.command == "find":
         if args.limit < 1:
             parser.error("--limit must be positive")
