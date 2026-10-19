@@ -17,10 +17,18 @@ This approval adds no runtime test result; r18 hardware compatibility remains
 unconfirmed. The candidate and original records are preserved under
 `backups/accepted/key-quest-markers/r18-distribution-approved/`.
 
-Damage Numbers r30 is READY_TO_DISTRIBUTE following user approval on 2026-10-18.
+Damage Numbers r31 is a DEVELOPMENT candidate (2026-10-19) for the reported
+missing kinsect, poison, blast and mount numbers, plus an opt-in "Show other
+damage" setting. It adds three hooks found by static research; gameplay is NOT
+RUN. The candidate is
+`build/damage-numbers/candidates/r31/delivery/damage-numbers-r31-candidate.zip`.
+The approved r30 release and its records were archived unchanged to
+`backups/accepted/damage-numbers/r30-before-status-damage/`.
+
+Damage Numbers r30 was READY_TO_DISTRIBUTE following user approval on 2026-10-18.
 The NRO and three assets were promoted unchanged from the validated candidate.
-The local, unpublished ZIP is
-`build/damage-numbers/releases/r30/damage-numbers-r30.zip`.
+The local, unpublished ZIP is now
+`backups/accepted/damage-numbers/r30-before-status-damage/release/damage-numbers-r30.zip`.
 It reads
 sFestaRender.mDisplaySize for projection, layout and fallback, rechecking the
 applied size each render callback. No additional hooks or Forge changes are used.
