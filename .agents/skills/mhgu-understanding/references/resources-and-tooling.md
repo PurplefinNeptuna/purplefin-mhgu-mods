@@ -20,7 +20,27 @@ rg --files references/MHGU-Modding/templates references/MHGU-Modding/weapon_MV_I
 | Fonts | `nativeNX/<language>/GUI/02_common/font/font_festa.gfd` plus matching resident TEX pages |
 | Audio | Audio-Index and Audio-Files-And-Extensions, STQR metadata and actual encoded stream |
 
-Wiki table claims are leads, not all locally validated formats. Examples: itemData has a described 44-byte record and itemPreData combinations 24 bytes; combination inputs refer to table positions, not necessarily item IDs. Weapon base records vary 32/33/34 bytes by family. Preserve header counts and unknown fields and verify against the actual resource/native consumer before editing. The wiki documents some weapon durations in 60-Hz units despite 30fps rendering, while other values are seconds. Determine each field's units rather than scaling all parameters alike.
+Wiki table claims are leads, not all locally validated formats. itemPreData combination inputs refer to table positions, not necessarily item IDs. Preserve header counts and unknown fields and verify against the actual resource/native consumer before editing. The wiki documents some weapon durations in 60-Hz units despite 30fps rendering, while other values are seconds. Determine each field's units rather than scaling all parameters alike.
+
+## Wiki `.bt` templates checked against 1.4.0
+
+`python3 scripts/check_wiki_templates.py [ROMFS]` tests 27 of the 66 templates in `references/MHGU-Modding/templates/` against the RomFS dump: header plus count times packed record size must equal the file size (run 2026-10-20). A fit proves record size only, not field names or meanings. The other 39 (variable or nested layouts such as `stqr`, `mfx`, `xfs`, otomo skill files, audio) are untested.
+
+| Status | Templates |
+| --- | --- |
+| Fit every file | `arc` (same layout as `mhgu_assets.read_arc`), `wpd`, `wcd`, `wXXm`, `itemData` (44), `itemPreData` (24), `alchemyData`, `amlt`, `amskl`, `amslt`, `sem`, `slt`, `ssjje`, `sup`, `tril`, `skd`, `emsizetbl`; `gui` magic/version only on all 1,972 files, body unverified |
+| Fit some files | Weapon templates, below. `gmd` fits 11,514 unkeyed files, but misses all 485 keyed files and reads the file name as entry 0; use `tools/gmd` instead. `rem` fits 6,553 files; `guestRemData` shares the type with a 67-byte record |
+| Wrong | `apd` armor recipes: template 38 bytes, all five `armorCreateA0x` files use 42. `ot_lvl` record fits, but real files start with `00 00 80 3F`, not the listed ID bytes |
+| No file found | `itemPreTypeData` hash `63D62424` is absent from the dump |
+
+Weapon tables in `loc/arc/resident.arc/table`, real record size per family:
+
+| Table | Template fits | No template (real size) |
+| --- | --- | --- |
+| `weaponXXBaseData` | `w00d` (33): GS, SnS, Hammer, Lance, LS, Bow, HH; `w04d` (32): HBG, LBG | SA, GL, DB, IG, CB (34) |
+| `weaponXXLevelData` | `w00d_lvl` (15): GS, SnS, Hammer, Lance, LS, IG; `w04d_lvl` (100): HBG, LBG | GL, HH (16); SA, DB, CB (17); Bow (31) |
+
+Never apply a template to a family it misses. Derive missing fields from Ghidra/DTI first, then add the family to the script.
 
 ## ARC copy/edit/repack
 
@@ -79,4 +99,4 @@ An encoded tone/header check establishes encoding, not music-loop/STQR correctne
 
 `START_TOOLS.sh` and `scripts/tool.sh` own launcher commands. Pax browses ARC/textures, ImHex edits bytes, Revil converts supported formats, GIMP edits imagery, Blender inspects models, and Audacity edits audio. 010Editor `.bt` files are format references for ImHex, not executable ImHex templates. Private runtimes avoid changing host packages: Kuriimu2's matching .NET 3.1.32 starts its GUI, while a .NET 9 substitution crashed it; ImHex requires its private 0700 runtime path; Pax uses private LLVM 19 libraries. In another environment re-establish prerequisites rather than copying absolute paths.
 
-Sources: `docs/TOOLS.md`, `docs/CLEANUP_HD_PROJECT.md`, `mods/hd-project/README.md`, shared ARC/GMD tests and build receipts; offline wiki CFileIndex, Weapon-Parameter-Modding, Item-Editing, Font-Editing, Model-and-Texture-Extract, audio pages; `references/MHGU-Modding/templates/` and `weapon_MV_Index/`. Wiki claims not verified locally retain lead status.
+Sources: `docs/TOOLS.md`, `docs/CLEANUP_HD_PROJECT.md`, `mods/hd-project/README.md`, shared ARC/GMD tests and build receipts; offline wiki CFileIndex, Weapon-Parameter-Modding, Item-Editing, Font-Editing, Model-and-Texture-Extract, audio pages; `references/MHGU-Modding/templates/` (checked by `scripts/check_wiki_templates.py`) and `weapon_MV_Index/`. Wiki claims not verified locally retain lead status.

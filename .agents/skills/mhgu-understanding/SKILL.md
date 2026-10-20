@@ -26,7 +26,7 @@ For native GUI plans as well as implementation, read [Native GUI](references/nat
 | Which input representation/player/state is this? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
 | Where do damage, ownership, hitzones, and camera matrices come from? | [Damage and cameras](references/damage-and-cameras.md) |
 | How do Luck, reward pages, quantities, and appraisal work? | [Rewards and Luck](references/rewards-and-luck.md) |
-| Which tools/formats can edit a resource, and what is unverified? | [Resources and tooling](references/resources-and-tooling.md) |
+| Which tools/formats can edit a resource, which wiki `.bt` templates match real files, and what is unverified? | [Resources and tooling](references/resources-and-tooling.md) |
 | Original local paths and topic-to-source coverage | [Workspace and sources](references/workspace-and-sources.md) |
 
 ## Portable use
