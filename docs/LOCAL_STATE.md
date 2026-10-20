@@ -1,94 +1,40 @@
 # Local state
 
 Workspace baseline updated 2026-10-15: stock Switch Forge 1.5.1, forge-rs 1.5.0,
-and stock Forge PC 0.2.1. This cleanup changes workspace sources and deliveries;
-it does not inspect or change current emulator activation.
+and stock Forge PC 0.2.1, on branch `main`. Merged task branches, obsolete
+source forks and the old release worktree are removed; their tips are recorded
+in [COMPACTION.json](COMPACTION.json) and remain reachable through main or archive
+tags. This file describes workspace sources and deliveries, not current
+emulator activation.
 
-The workspace now uses `main`. Merged task branches, obsolete local source
-forks and the old release worktree are removed. Historical commits remain
-reachable through main or archive tags; the cleanup receipt records their tips.
+## Deliveries
 
-## Deliveries and acceptance
+Each mod's DISTRIBUTION.json is authoritative. "Packaged" means a local,
+unpublished ZIP; approval is not a gameplay result. Release history, design and
+manual checks are in each mod's DEVELOPMENT.md; exact validation and runtime
+records are in its EVIDENCE.json (Switch) or RUNTIME_RESULTS.json (PC).
 
-Key Quest Markers r18 is READY_TO_DISTRIBUTE following user approval on 2026-10-18.
-The validated NRO was promoted without rebuilding. The local, unpublished ZIP is
-`build/key-quest-markers/releases/r18/key-quest-markers-r18.zip`.
-This approval adds no runtime test result; r18 hardware compatibility remains
-unconfirmed. The candidate and original records are preserved under
-`backups/accepted/key-quest-markers/r18-distribution-approved/`.
+| Mod | Current | Acceptance scope |
+| --- | --- | --- |
+| Damage Numbers | r35 DEVELOPMENT candidate (2026-10-20), gameplay NOT RUN | Last release r30 (approved 2026-10-18), archived at `backups/accepted/damage-numbers/r30-before-status-damage/`. Its handheld correction has no affected-device result. r27 was the last user-tested build. |
+| Key Quest Markers | r18 READY_TO_DISTRIBUTE (2026-10-18) | Link rebuild of the Eden/Linux-accepted r17. HD is optional. Ryujinx and Switch hardware unconfirmed. |
+| Modern Weapon Controls | r12 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
+| Please do Better | r24-forge151 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
+| Damage Numbers PC | r3 READY_TO_DISTRIBUTE | Linux user acceptance of the exact binaries; Windows gameplay untested. |
+| Key Quest Markers PC | r1 READY_TO_DISTRIBUTE | Same as above. |
+| Modern Weapon Controls PC | r1 READY_TO_DISTRIBUTE | Same as above. |
+| Please do Better PC | r1 READY_TO_DISTRIBUTE | Same as above. |
+| HD Project, wiki cheats, DTI dumper support | LOCAL_ONLY | Local integrations. |
 
-Damage Numbers r35 is a DEVELOPMENT candidate (2026-10-20) for the reported
-missing kinsect, poison, blast and mount numbers, plus an opt-in "Show other
-damage" setting. Poison is gray; blast and the mount knockdown use the weak-point colour.
-Map-fired siege shells show as object damage. The unrun r31 to r34 candidates
-are superseded. It adds three hooks found by static research; gameplay is NOT
-RUN. The candidate is
-`build/damage-numbers/candidates/r35/delivery/damage-numbers-r35-candidate.zip`.
-The approved r30 release and its records were archived unchanged to
-`backups/accepted/damage-numbers/r30-before-status-damage/`.
+Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
+`build/NAME/releases/VERSION/`. Superseded and accepted deliveries are preserved
+unchanged under `backups/accepted/NAME/`, named after the change that replaced
+them (for example `r30-before-status-damage/`).
 
-Damage Numbers r30 was READY_TO_DISTRIBUTE following user approval on 2026-10-18.
-The NRO and three assets were promoted unchanged from the validated candidate.
-The local, unpublished ZIP is now
-`backups/accepted/damage-numbers/r30-before-status-damage/release/damage-numbers-r30.zip`.
-It reads
-sFestaRender.mDisplaySize for projection, layout and fallback, rechecking the
-applied size each render callback. No additional hooks or Forge changes are used.
-The user reports that the prior rebuilt payload works docked and misplaces
-numbers in handheld mode on Switch and Android. r29 diagnostics was not run.
-The correction has no new device acceptance. Approval does not establish a
-gameplay result. The r30 candidate and pre-promotion records are preserved at
-`backups/accepted/damage-numbers/r30-distribution-approved/`.
-r28/r29 deliveries remain intact; records and hashes are in
-backups/accepted/damage-numbers/r29-before-visible-crop/.
-
-Damage Numbers r29-diagnostics was a temporary DEVELOPMENT candidate for the
-reported Switch/Android placement issue. The user reports r28 displays damage
-on real Switch and a phone emulator, with correct-looking values and misplaced
-positions. Exact tester loader/plugin hashes were not supplied. The diagnostic
-build adds bounded copied camera/hit logs and screen markers without changing
-camera admission, damage, animation or placement rules. It has no runtime
-acceptance. r28 output remains intact, with record copies and delivery hashes in
-`backups/accepted/damage-numbers/r28-before-projection-diagnostics/`.
-
-On 2026-10-18, Key Quest Markers r18 and Damage Numbers r28 became DEVELOPMENT
-hardware-test candidates. Both retain PIC and add `-nostartfiles` / `-Wl,-z,text`.
-Their accepted r17/r27 releases and records are preserved under
-`backups/accepted/NAME/VERSION-before-hardware-link/`; original candidate trees
-remain intact. Gameplay and assets are unchanged apart from build identification.
-At candidate creation, neither rebuild had a runtime test. The later r28
-report is recorded above. The updated loader is not bundled or verified.
-The r17/r27 acceptance statements below describe the prior builds.
-
-DISTRIBUTION.json in each mod is authoritative. Damage Numbers r26 and Key Quest
-Markers r15 replace the C++ Switch projects with fully renamed Rust implementations.
-Modern Weapon Controls r12 and Please do Better r24-forge151 target stock Forge.
-The user approved distribution of these maintenance builds after validation;
-there is no new gameplay run. Earlier accepted payloads and their evidence remain
-under backups/accepted/ and the per-mod EVIDENCE.json collections.
-
-All four PC mods retain their accepted Linux/Windows payloads. Linux user
-acceptance is scoped to the recorded binaries; Windows gameplay remains untested.
-See README.md in each source folder for installation/use, DEVELOPMENT.md for
-implementation/manual scenarios, and its distribution/runtime records for evidence.
-Damage Numbers r27 is READY_TO_DISTRIBUTE after the user reported it working
-well and approved promotion on 2026-10-15. The tested NRO and assets were promoted
-unchanged. Current installed Eden hashes match that candidate. The original
-third-party placement report remains unreproduced; individual fallback cases
-and other platforms were not separately confirmed. The accepted r26 delivery
-and tested r27 candidate remain under `backups/accepted/damage-numbers/`.
-
-Key Quest Markers r17 is READY_TO_DISTRIBUTE following user-confirmed Eden/Linux
-testing of the unchanged candidate. Other platforms remain unconfirmed. It uses
-the game UI colours for the existing three saved colour controls. It preserves the original 32×32
-emblem, Y3, X365/329 and title widths299/263. Defaults are green
-#006305 for keys, red #A30000 for urgents and grey for completed/old
-quests. Edits require Save & apply. The r15 release is
-preserved under backups/accepted/key-quest-markers/r15-before-colours/. The game
-owns native children and draw-cache/map allocations.
-r17 also removes the old success/row ERROR diagnostics; startup is one INFO
-line and genuine failures remain deduplicated. The user also confirmed it works
-without the HD Project on 2026-10-15. HD is optional.
+Open device reports: Damage Numbers placement on real Switch and Android in
+handheld mode (reported against r28; testers' exact loader/plugin hashes were
+not supplied). Neither r29-diagnostics nor r30 was run on an affected device.
+The r28 and r18 rebuilds do not bundle or verify the updated loader.
 
 ## Inputs and runtime paths
 
@@ -118,9 +64,9 @@ for gameplay. There is no automated in-game suite.
 
 ## Evidence and recovery
 
-[COMPACTION.json](WORKSPACE_EVIDENCE.json) records source revisions, archive/payload
-hashes, removed paths, validation and space measurements.
-[WORKSPACE_EVIDENCE.json](WORKSPACE_EVIDENCE.json) preserves dated workspace
-research and original migration receipts. Historical installed hashes and
-settings are dated evidence, not a statement about current activation.
+[COMPACTION.json](COMPACTION.json) records source revisions, archive/payload
+hashes, removed paths, validation and space measurements for the 2026-10-15
+cleanup. [WORKSPACE_EVIDENCE.json](WORKSPACE_EVIDENCE.json) preserves dated
+workspace research and original migration receipts. Historical installed hashes
+and settings are dated evidence, not a statement about current activation.
 The recovery tag is `cleanup/before-stock-forge-20261015`; Git history is intact.
