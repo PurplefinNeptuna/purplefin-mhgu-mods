@@ -26,7 +26,7 @@ Follow ownership from the selected animation's object range and verified hierarc
 
 ### Corrected hud0 sharpness example
 
-The inspected copy `work/sharp-gauge-research/hud0.gui` has SHA-256 `5966122d6a28b1ba57007d06adb9927f5328c37637e7c6b04c67d76c40298fb9`. Its original ARC/entry and base/HD provenance remain unrecorded. These are fixture findings, not proof of every installed HUD or game variant:
+The inspected file is the English base `hud0.gui`, SHA-256 `5966122d6a28b1ba57007d06adb9927f5328c37637e7c6b04c67d76c40298fb9`: the loose dump file `nativeNX/eng/GUI/01_quest/hud/hud0.gui` and the `quest_eng.arc` entry `eng\GUI\01_quest\hud\hud0`. HD Project variants are unrecorded. These are fixture findings, not proof of every installed HUD or game variant:
 
 | Animation name | ID | Zero-based row | Object rows | Objects relevant to reuse |
 | --- | --- | --- | --- | --- |
@@ -38,7 +38,7 @@ The inspected copy `work/sharp-gauge-research/hud0.gui` has SHA-256 `5966122d6a2
 
 `Anm_sharp` selects ID 4, not ID 7. The sharp resource counts are four objects, fifteen sequences and three drawables. The stamina tiling texture is `Txt_sgauge1` at 960×16. `Txt_sgauge0` is 24×16, and `Pol_sgauge` is 960×4. The `Txt_mask` objects belong to `h_hand`, not the sharpness animation, and their names do not establish 5% steps. Do not expose or repurpose these objects as dormant sharpness machinery.
 
-Reproduce identity checks using `mods/key-quest-markers/scripts/gui_layout.py:Gui`: animation records use table `(40,164,24)`, ID at +0, counts as three little-endian 16-bit fields at +4, first object at +12, name offset at +16 and first sequence at +20. Objects use table `(48,172,36)`, ID at +0, name offset at +16 and properties at +24/count byte +4. Instances use `(68,188,36)`, name at +20 and properties at +28/count +16. Decode the instance's `AnimationId` property and match the animation's ID explicitly. Keep serialized tree-link offsets distinct from runtime object links. The scratch `parse_hud0.py`, `parse2.py` and `decode.txt` are exploratory output, not an independent native audit.
+Reproduce identity checks using `mods/key-quest-markers/scripts/gui_layout.py:Gui`: animation records use table `(40,164,24)`, ID at +0, counts as three little-endian 16-bit fields at +4, first object at +12, name offset at +16 and first sequence at +20. Objects use table `(48,172,36)`, ID at +0, name offset at +16 and properties at +24/count byte +4. Instances use `(68,188,36)`, name at +20 and properties at +28/count +16. Decode the instance's `AnimationId` property and match the animation's ID explicitly. Keep serialized tree-link offsets distinct from runtime object links.
 
 ## Classes and identities
 
@@ -93,6 +93,6 @@ For a fill/clipping proposal, trace mask production, the consuming draw/material
 
 Player-field names are also research leads. For a current/max display, verify signedness, units, maximum semantics, recovery/buff paths, local-player selection and HUD absence/recreation. Specify positive-denominator and floating-point division rules before clamping. Unsupported data should preserve or restore native visuals within valid object lifetimes.
 
-HUD correction sources: hash-identified `work/sharp-gauge-research/hud0.gui`, decoded with the counter parser; saved `work/research-tooling/dti/dti.jsonl` object-vtable Texture properties. Private fixture paths are optional verification inputs when this skill is copied elsewhere.
+HUD correction sources: hash-identified dump `nativeNX/eng/GUI/01_quest/hud/hud0.gui`, decoded with the counter parser; saved `work/research-tooling/dti/dti.jsonl` object-vtable Texture properties. Private fixture paths are optional verification inputs when this skill is copied elsewhere.
 
 Sources: `docs/RESEARCH.md`; `mods/key-quest-markers/{DEVELOPMENT.md,EVIDENCE.json}`, `src/gui.rs`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py}`, `research/theme-colours.json`; `mods/please-do-better/DEVELOPMENT.md` native geometry/shader findings.
