@@ -14,8 +14,11 @@ The maintained Damage Numbers plugin observes finalized native outcomes and copi
 | `0x16dd7c` | Interior melee HZV tap before register restoration |
 | `0x16dc6c` | Melee HZV entry, monster association |
 | `0x178660` | Shot HZV calculation, copied after return |
+| `0x0a2664` | Poison tick (hook 8): reads pending `work+0x5d66` after return |
+| `0x0aac54` | Blast detonation (hook 9): reads the blast table s16 +0xc at entry |
+| `0x09978c` | Mount finisher inside monster update (hook 10): r4 amount, `[sp+60]` work block |
 
-Typical nesting is collision 0, melee 6/tap 5, final damage 1. Join final damage to the closest matching collision/monster scope, then pop only the returning scope. Camera viewport 3/tap 4 is a separate route. The Forge skill owns the assembly/TLS lifetime procedure.
+Typical nesting is collision 0, melee 6/tap 5, final damage 1. All five hit handlers are reached from the collision function, so its scope encloses every hit. Join final damage to the closest matching collision/monster scope, then pop only the returning scope. Camera viewport 3/tap 4 is a separate route. The Forge skill owns the assembly/TLS lifetime procedure.
 
 ## Interpret outcome and owner
 
@@ -28,6 +31,26 @@ Local hunter identity uses session+0x30 and the four-player table from [Input an
 Bounce feedback copies both player attack entries and associates the one active entry with finalized damage using attack identity/counter and the captured scope. Do not recolour all simultaneous hits because one feedback slot says bounce. Epoch+serial+target+producer identity support duplicate suppression. Reset display epoch when player/camera context changes.
 
 Current fixed capacities are 64 capture scopes, 16 producer mailboxes×256 records, 256 pending events, 128 visible numbers, 512 recent identities. Pool exhaustion/overflow is bounded; queued data remains independent of thread-local object teardown. These are implementation limits, not native game counts.
+
+## How monster HP actually falls
+
+HP lives at `work+0x370` (max `+0x374`), where `work = *(monster+0x1428)`. Hits do
+not subtract HP directly: main+`0x9d6f8` adds each hit to a part counter
+`work+0x488+part*2`, and the per-frame monster update main+`0x97ddc` subtracts the
+sum, then subtracts and clears the s16 pending amount `work+0x5d66`. So damage
+that never passes through the hit handler needs its own observation site:
+
+| Damage | Route | How it is observed |
+| --- | --- | --- |
+| Kinsect | Shell hit with tags (6, 1, 0), owner hunter at entry +0x70 | Collision path; accepted as Attack |
+| Poison | Poison tick writes `work+0x5d66` | Hook 8 |
+| Blast | Detonation adds directly to a part counter | Hook 9 |
+| Mount finisher | Monster update subtracts monster data +0x8c (x1.5 in one case) at 0x9979c, sets action 0x2b | Hook 10 (label is an inference) |
+| Map-fired shells (rail cannon) | Shell owner `*(*(shell+0x136c)+0xc)` has character type 9 (uStageShellOwner) | Tags (2, any, 2) with Stage owner become Object damage |
+
+Cannon, huge cannon and Dragonator projectiles are not traced. The opt-in "Show
+other damage" setting compares HP between frames (sEnemy main+`0x1851fe0`, ten
+slots at +0x1c) and shows loss that no captured record explains after 0.15 s.
 
 ## Camera snapshot and projection
 
@@ -42,6 +65,8 @@ clip = world_to_clip * [world_x, world_y, world_z, 1]
 
 Require finite values, positive display dimensions, and w>0.00001. Native clip bounds are x/y in[-w, w], z in[0, w]. Map pixels as `x0+(x/w+1)*width/2`, `y0+(1-y/w)*height/2`; screen Y points down.
 
+Use the applied visible size, not Forge's ImGui DisplaySize. MHGU can present a smaller crop of an unchanged swapchain (handheld mode), so DisplaySize can say 1920x1080 while 1280x720 is visible. Read sFestaRender (exact-type ID `0x300a6cd8`) inherited mDisplaySize at +0xb8/+0xbc each frame; +0xb0/+0xb4 are requested values that may still be pending. Native main+`0xbc0874` calls SetCrop main+`0x86a24c` and then updates that pair. r30 implements this; affected devices have not confirmed it.
+
 The native rectangle must be origin-aligned, positive, and within 2% of display aspect. Native width/height can differ from display under resolution scaling. Requiring equal dimensions incorrectly rejects valid scaling. Conversely, a same-aspect offscreen view can pass this guard, so it does not prove presentation-target ownership.
 
 r27 represents failed/nonfinite impact capture as unavailable position while retaining scope/return-chain integrity. A genuine captured `(0,0,0)` remains valid. Missing/stale/invalid camera and clipped/behind-camera projection use centre fallback with ordinary animation/overlap. Invalid display dimensions still suppress drawing. Do not replace a failed read with world origin.
@@ -52,6 +77,6 @@ Styles Wilds, Rise, Classic share ownership/tint rules and stable stored IDs. Ri
 
 Host tests cover nesting, missing positions, real origin, matrices, clipping, 720p/900p/1080p/1440p, styles, concurrency, and context lifetime. ARM fixtures exercise compiled gateways with clobbering helpers; renderer fixtures compare actual ImGui commands/pixels. Neither identifies a live reporter's camera or proves GPU/game behavior.
 
-The user accepted r27 on Eden/Linux 2026-10-15; exact candidate bytes were promoted. A third-party r3 placement report remains unreproduced. For an authorized reproduction, compare a stationary hit/camera at 1.0× and 1.25×, then camera rotation and each style, preserving video, fresh log, and matched loader/plugin/assets. Do not claim every fallback branch was manually accepted.
+The user accepted r27 on Eden/Linux 2026-10-15; exact candidate bytes were promoted. r28 to r35 add the crop and the non-hit damage sources above without a new gameplay run. A third-party r3 placement report remains unreproduced. For an authorized reproduction, compare a stationary hit/camera at 1.0× and 1.25×, then camera rotation and each style, preserving video, fresh log, and matched loader/plugin/assets. Do not claim every fallback branch was manually accepted.
 
 Sources: `mods/damage-numbers/src/{signatures.rs,gateway.S,runtime.rs,render.rs}`, `core/src/{capture.rs,mailbox.rs,lib.rs,presentation.rs}`, tests, `DEVELOPMENT.md`, `EVIDENCE.json`; read-only projection research under `work/damage-numbers/projection-r27/native/` when present.

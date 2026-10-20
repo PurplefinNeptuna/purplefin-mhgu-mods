@@ -1,6 +1,6 @@
 # Original workspace and coverage index
 
-This appendix describes `/mnt/storage2/Programs/MHGU_Modding` on 2026-10-17. Paths and installed state can drift. All other source pointers in this skill are relative to that root. Outside this workspace, provide equivalent source/private inputs explicitly. The skill's Markdown remains usable without them.
+This appendix describes `/mnt/storage2/Programs/MHGU_Modding` on 2026-10-20. Paths and installed state can drift. All other source pointers in this skill are relative to that root. Outside this workspace, provide equivalent source/private inputs explicitly. The skill's Markdown remains usable without them.
 
 ## Machine-specific paths
 
@@ -35,10 +35,10 @@ Useful evidence locations: `work/shared/game-exefs/`, `work/shared/forge-1.5.1/`
 
 Forge 1.5.1 commit `b23e114a23f41c9a8e2fd34b2f4df2a2102d0ee1`; forge-rs 1.5.0 commit `d1865b68e9b194eb3eacc8bd71bbf601a5fac63e`. Native offsets target main SHA-256 `b3935415499549adaf4c0e89822831daa175cfd456a7990791c79be3997645ef`, build `FB08F1D20FD1204FE7070672777F869B`.
 
-| Maintained Switch mod | Snapshot / evidence boundary |
+| Maintained Switch mod | Snapshot / evidence boundary (2026-10-20) |
 | --- | --- |
-| Damage Numbers | r27, accepted Eden/Linux 2026-10-15, unchanged candidate promotion; original third-party placement report unreproduced |
-| Key Quest Markers | r17, accepted Eden/Linux 2026-10-15 with and without optional HD; individual state/settings cases not separately enumerated |
+| Damage Numbers | r35 DEVELOPMENT candidate, gameplay NOT RUN; last release r30 (approval only, no affected-device run); r27 last user-tested on Eden/Linux |
+| Key Quest Markers | r18 READY_TO_DISTRIBUTE, link rebuild of r17; r17 accepted Eden/Linux 2026-10-15 with and without optional HD |
 | Modern Weapon Controls | r12 stock-loader maintenance, earlier r10 acceptance retained at its exact-byte scope |
 | Please do Better | r24-forge151 maintenance; earlier reward-page/overlay evidence retains its own runtime limits |
 

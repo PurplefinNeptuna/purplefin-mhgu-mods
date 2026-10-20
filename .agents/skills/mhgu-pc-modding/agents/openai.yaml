@@ -1,0 +1,3 @@
+interface:
+  display_name: "MHGU PC Modding"
+  short_description: "Port and build MHGU Forge PC plugins for GURecomp"

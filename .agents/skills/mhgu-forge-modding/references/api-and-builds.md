@@ -27,7 +27,9 @@ Forge scans `app:/nativeNX/plugins` for `.nro`, registers module hashes, loads m
 
 Use C linkage and exported unmangled names. Forge's native metadata is **70 bytes**, alignment 2: three `u16` version fields at 0/2/4 and a 64-byte name at 6. The pinned Rust `PluginInitParams` declares only the six-byte version prefix. A name needs a checked native-compatible output view and a bounded NUL-terminated label. Native `forge_onInit` takes no argument. The pinned `#[forge::entry]` macro generates an init function with an unused pointer parameter; maintained explicit callbacks use the actual zero-argument ABI. Inspect generated exports before copying a macro recipe.
 
-Version satisfaction compares major/minor ordering and ignores patch. Requesting 1.5.1 is not a strict runtime equality guard. Verify actual ABI/signatures separately. Current Damage Numbers `src/lib.rs` writes explicit 1.5.1/name metadata; older development paragraphs describing a no-op load callback are superseded by that source.
+Version satisfaction compares major/minor ordering and ignores patch. Requesting 1.5.1 is not a strict runtime equality guard. Verify actual ABI/signatures separately. Maintained mods write explicit 1.5.1/name metadata in `forge_onLoad` (Damage Numbers `src/lib.rs`, Please do Better `src/plugin.cpp`).
+
+`PluginInitParam` is defined only in Forge's private `source/forge/plugin.cpp`, not in a public header. C++ mods therefore declare `struct ForgeVersion { uint16_t major, minor, patch; }; struct PluginInitParam { ForgeVersion required_ver; char name[64]; };` locally with `static_assert(sizeof(PluginInitParam) == 70 && offsetof(PluginInitParam, name) == 6)`. This is the only accepted local re-declaration; include `<forge/log.h>`, `<forge/hook.h>`, `<forge/mem.h>`, `<forge/singleton.h>`, `<forge/fs.h>` and others for everything else. `<forge/mem.h>` lacks a C++ linkage guard, so include it inside `extern "C" { }`.
 
 ## Compiler-derived layouts
 

@@ -14,7 +14,7 @@ Forge returns a `Hook` record even when creation fails; nonzero target/detour fi
 
 ## Pool and publication behavior
 
-At pinned Forge 1.5.1, `hook.c` owns at most two 16 KiB CodeMemory chunks. Slots align to eight bytes and are never reused. A normal eight-byte ARM displacement needs a 16-byte trampoline. Eight Damage Numbers hooks use 128 bytes; the two quest-badge hooks use 32 bytes. Context hooks also allocate a 44-byte stub, rounded to 48, in addition to any original trampoline.
+At pinned Forge 1.5.1, `hook.c` owns at most two 16 KiB CodeMemory chunks. Slots align to eight bytes and are never reused. A normal eight-byte ARM displacement needs a 16-byte trampoline. Damage Numbers' eleven hooks use 176 bytes; the two quest-badge hooks use 32 bytes. Context hooks also allocate a 44-byte stub, rounded to 48, in addition to any original trampoline.
 
 Forge requires simultaneous RW/RX aliases and rejects the permission-transition JIT fallback. Slots remain Forge-owned for process lifetime, including after a later plugin installation failure. Dropping a Rust `Hook` record does not release them. Repeated installation/retry is not a harmless cleanup strategy.
 
@@ -28,7 +28,7 @@ Prepare originals before branch publication. In a checked private ARM transactio
 
 Preserve NZCVQ and all state live at the chosen boundary. Interior capture gateways may need all GPRs, LR, SP, d0 through d31, and FPSCR even where an ordinary function call permits clobbering. Retain original stack arguments and eight-byte call alignment. Never require `MSR APSR_g` or `MSR APSR_nzcvqg` in this workspace.
 
-Audit GE producers/consumers through every displaced span, hook helper, native call, and continuation. `SEL` may consume GE. `MSR APSR_nzcvq` preserves NZCVQ without restoring GE; it neither clears GE nor proves it is dead. Existing eight-site damage and quest-hook audits are site/build-specific. If GE cannot remain correct without unsupported writes, choose another site.
+Audit GE producers/consumers through every displaced span, hook helper, native call, and continuation. `SEL` may consume GE. `MSR APSR_nzcvq` preserves NZCVQ without restoring GE; it neither clears GE nor proves it is dead. Existing eleven-site damage and quest-hook audits are site/build-specific. If GE cannot remain correct without unsupported writes, choose another site.
 
 Hard-VFP native setters can take floats in s-registers. An `extern "C"` integer/pointer signature does not substitute for that contract. Use an audited ABI shim or verified field writes plus native dirty flags. Verify branch-with-link LR effects as well as general registers when replacing call sites.
 
