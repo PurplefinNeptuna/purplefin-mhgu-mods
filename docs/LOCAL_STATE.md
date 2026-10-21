@@ -20,6 +20,7 @@ records are in its EVIDENCE.json (Switch) or RUNTIME_RESULTS.json (PC).
 | Key Quest Markers | r18 READY_TO_DISTRIBUTE (2026-10-18) | Link rebuild of the Eden/Linux-accepted r17. HD is optional. Ryujinx and Switch hardware unconfirmed. |
 | Modern Weapon Controls | r12 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
 | Please do Better | r24-forge151 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
+| Shared Urgent Quests | r1 DEVELOPMENT candidate (2026-10-21), gameplay NOT RUN | Records a rank-up urgent clear for an online client when the urgent is on that client's own board. Needs a two-instance session test. |
 | Damage Numbers PC | r3 READY_TO_DISTRIBUTE | Linux user acceptance of the exact binaries; Windows gameplay untested. |
 | Key Quest Markers PC | r1 READY_TO_DISTRIBUTE | Same as above. |
 | Modern Weapon Controls PC | r1 READY_TO_DISTRIBUTE | Same as above. |
