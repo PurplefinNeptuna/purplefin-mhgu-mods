@@ -14,6 +14,8 @@ The source workspace is `/mnt/storage2/Programs/MHGU_Modding`, Linux, user shell
 | Current Eden log | `~/.local/share/eden/log/eden_log.txt` |
 | Ryujinx logs | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` |
 
+What each input holds and when to use it: the Game data section of this skill's SKILL.md.
+
 Library material is not an installed mod. A RomFS-only dump cannot supply executable bytes. Folder presence is not activation. For runtime diagnosis, correlate a fresh launch log with the exact relevant installed payload hashes and game/emulator versions. Do not inspect unrelated saves or alter settings to answer a data lookup.
 
 ## Source coverage

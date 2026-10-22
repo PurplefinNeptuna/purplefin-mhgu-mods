@@ -13,6 +13,8 @@ This appendix describes `/mnt/storage2/Programs/MHGU_Modding` on 2026-10-20. Pat
 | Ryujinx packages | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/mods/contents/0100770008dd8000/` |
 | Ryujinx logs | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` |
 
+What each input holds and when to use it: the Game data section of this skill's SKILL.md.
+
 The supplied dump is RomFS-only. Original main/SDK/loader inputs must come from verified copied executable material. Historical installed hashes in docs are dated evidence. Do not infer today's enabled packages from these paths. The user's interactive shell is fish; shell examples avoid Bash-only variable syntax.
 
 ## Coverage and source authority

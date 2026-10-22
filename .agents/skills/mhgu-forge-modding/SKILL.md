@@ -19,6 +19,24 @@ forge-rs 1.5.0. Knowledge dated 2026-10-20.
 3. Open a topic reference below only when a step needs it.
 4. Finish with the playbook's commit steps and report template.
 
+## Game data
+
+These are read-only originals. Copy a file into the scratchpad or `work/NAME/`
+before extracting, unpacking or editing it.
+
+| Location | What it holds | Use it for |
+| --- | --- | --- |
+| `~/.local/share/eden/dump/0100770008DD8000/romfs/` | Every game resource (ARC archives in `nativeNX/arc/`, GUI, tables, per-language text), 12 GB, no code. Eden dumped it on 2026-10-01 with the 1.4.0 update loaded, so it should be base and update merged; no file has been compared against the base yet. | Finding and reading resources: `rg --files DUMP/romfs \| rg NAME` |
+| `work/shared/game-exefs/` | The 1.4.0 code only: `main` (the game), `sdk`, `subsdk0`, `rtld`, `main.npdm`. `forge` is Forge 1.5.1's `subsdk9`, not game code. | Instruction bytes and signatures. Read `main` with `scripts/mhgu_binary.py` `main_image()`, which refuses any other version. |
+| `work/research-tooling/` | Saved Ghidra project/export and DTI index built from that `main` | Search first: `./scripts/tool.sh research find QUERY --kind functions` |
+| `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` | Sealed base game (v0) | Rarely needed: an original the dump lacks |
+| `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` | Sealed 1.4.0 update, about 193 MiB (v262144; Eden logs it as "v0.4.0"). Mostly a RomFS patch: a binary delta that only works applied onto the base RomFS, not a folder of files. | Rarely needed. Its resource changes are in the dump and its code is in `game-exefs/`; nothing else is missing. |
+| `/mnt/storage2/ROM/Switch/keys+firmware/` | Keys needed to open the XCI/NSP | Only with the two files above |
+| `/mnt/storage2/ROM/Switch/cheats/mhgu/` | Uninstalled mod/cheat library | Not the game, and not installed mods |
+
+Opening the XCI/NSP needs hactool. Only its source is in `tools/hactool-source/`;
+build it and extract into the scratchpad.
+
 ## Words used in this skill
 
 | Term | Meaning |

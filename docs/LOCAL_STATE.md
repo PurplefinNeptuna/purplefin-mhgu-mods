@@ -42,6 +42,9 @@ The r28 and r18 rebuilds do not bundle or verify the updated loader.
 | Purpose | Path |
 | --- | --- |
 | Game dump/RomFS | `~/.local/share/eden/dump/0100770008DD8000/` |
+| Sealed base game (v0) | `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` |
+| Sealed 1.4.0 update (v262144) | `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` |
+| Keys for the XCI/NSP | `/mnt/storage2/ROM/Switch/keys+firmware/` |
 | Uninstalled library | `/mnt/storage2/ROM/Switch/cheats/mhgu/` |
 | Eden packages | `~/.local/share/eden/load/0100770008DD8000/` |
 | Eden log | `~/.local/share/eden/log/eden_log.txt` |
@@ -51,7 +54,10 @@ The r28 and r18 rebuilds do not bundle or verify the updated loader.
 | Official Forge package/input | `work/shared/forge-1.5.1/` |
 | Ghidra and saved DTI | `work/research-tooling/` |
 
-The supplied dump is RomFS-only. Library target is game 1.4.0, cheat build
+The supplied dump is RomFS-only. Eden made it on 2026-10-01 while loading the
+update from its external content folder (`Update+DLC/`), so it should hold base
+and 1.4.0 merged; no file has been compared against the base yet. The update's
+code is the copy in `work/shared/game-exefs/`. Library target is game 1.4.0, cheat build
 FB08F1D20FD1204F, NSO FB08F1D20FD1204FE7070672777F869B. Verify actual launch
 version/build before executable work. Folder presence proves no activation.
 Trust the user's alternative-mod activation choices; investigate overlap only
