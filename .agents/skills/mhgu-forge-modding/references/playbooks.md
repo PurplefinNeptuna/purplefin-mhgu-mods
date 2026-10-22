@@ -108,8 +108,9 @@ Do not change code until step 5.
 2. **Read the newest log**, not an old one:
    Eden `~/.local/share/eden/log/eden_log.txt`; Ryujinx
    `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` (newest file);
-   GURecomp see docs/GURECOMP.md. Copy it into `work/NAME/<topic>/` before
-   anything else, because the next launch overwrites it.
+   GURecomp see docs/GURECOMP.md. Copy it to
+   `work/NAME/runs/rN-<emulator>-<YYYY-MM-DD>.txt` before anything else,
+   because the next launch overwrites it.
 3. **Match the bytes.** `sha256sum` the installed NRO/assets (read-only) and
    compare with `DISTRIBUTION.json` payload hashes and the candidate folder.
    If they differ, the report is about a different build; say so.
@@ -119,6 +120,20 @@ Do not change code until step 5.
    decision -> object or draw created -> visible on screen -> survives menu and
    scene changes -> settings persist after restart. Compare with the known
    failures table in diagnostics.md.
+   - **Check the gate against the log.** When a validation gate fails, open
+     its code and list every assumption it makes (which node is whose parent,
+     child or sibling; field meanings; sizes). For each one, find the logged
+     value that confirms or refutes it. Write refuted assumptions into the
+     research notes as refuted *before* changing code. The mod's own tree and
+     sample lines often already answer the question.
+   - **Same build, new gate later in the run** (for example after a quest
+     ends) means a stale pointer, not a new layout. Find where the object is
+     destroyed and clear the capture there.
+   - **Two candidates in a row failed on validation gates?** Stop building
+     candidates. Never relax, delete or redefine a gate so the next build gets
+     further: a gate that fails on live data means the model behind it is
+     wrong. Go back to static research (decompiled code, original bytes), and
+     report the blocker if that research cannot settle it.
 5. **Reproduce statically.** Write a host or ARM fixture that fails the same
    way with the old build (the KQM history in its DEVELOPMENT.md shows this
    for r3 to r11). Then fix with [P2](#p2-change-a-mods-behaviour).

@@ -47,6 +47,9 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 - Phased plans (`work/*/PLAN.md`): finish the current phase completely,
   including its exit evidence and any candidate packaging it asks for. Then
   report what the next phase needs.
+- A failed validation gate is evidence that your model is wrong. Check it
+  against the logged values, and never loosen it to get further. After two
+  gate failures in a row, go back to static research (forge-modding P3 step 4).
 - When a tool refuses, read its error and the code that raised it before
   treating the refusal as a rule. Missing registration is not a prohibition.
 - Record unknowns and keep going on the parts that don't depend on them. Never

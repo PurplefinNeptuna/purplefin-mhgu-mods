@@ -99,6 +99,10 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Fixing `check` failures by editing release folders by hand | Use `package NAME --refresh-support` for doc-only changes. |
 | Concluding from an old log or a folder listing | Read the newest log and match installed hashes first (playbook P3). |
 | Assuming a test double proves pixels | GPU commands are doubles. Visible output needs a user run. |
+| Shipping one candidate per failed gate, adjusting the gate each time | Check each gate assumption against the logged values (playbook P3 step 4). After two gate failures in a row, return to static research. |
+| Reading tree shape from a `.gui` file's child index | The runtime links (+0x68 child, +0x6c sibling, +0x70 parent) are authoritative. In hud0 `sharp`, the three textures are siblings directly under the controller. |
+| Copying another row's or mod's layout (cache size, flag bits, map aliases) and calling it "proven" | Only native code that reads the field for this class proves it. Label everything else as inference in code comments too. |
+| Keeping a captured instance after a quest or scene ends | Clear it at the destruction path. An unchanged address does not prove the object is still alive. |
 
 ## Topic references
 
