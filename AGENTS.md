@@ -30,6 +30,11 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   `python3 scripts/mod_distribution.py check` first and keep the custom hooks.
 - **Preserve** unrelated work, original dumps, library inputs, saves, accepted
   artifacts in `backups/accepted/` and research inputs in `work/`.
+- **Scripted edits.** Prefer the edit tool. Append with `open(p, 'a')` or
+  `cat >>`. Never write `open(p, 'w').write(open(p).read() + x)`: the `'w'`
+  empties the file before the read runs. `work/` is gitignored, so nothing can
+  undo a lost note there. Run `wc -l` before and after any scripted rewrite,
+  and stop if the count dropped when it should have grown.
 - **Evidence.** Keep source, build, package, installation, activation, user
   acceptance and runtime evidence separate. Never present one as another.
 - **Research first.** Search saved Ghidra/DTI before gameplay code:
@@ -46,7 +51,10 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   work through "New plugin: definition of done" in docs/DEVELOPMENT.md.
 - Phased plans (`work/*/PLAN.md`): finish the current phase completely,
   including its exit evidence and any candidate packaging it asks for. Then
-  report what the next phase needs.
+  report what the next phase needs. Do a plan's numbered steps in order, as
+  written. Never swap one for something weaker (a timer for a destruction
+  hook, a copied constant for a derived size). If a step can't be done, leave
+  out the code that depends on it and report that step as the blocker.
 - A failed validation gate is evidence that your model is wrong. Check it
   against the logged values, and never loosen it to get further. After two
   gate failures in a row, go back to static research (forge-modding P3 step 4).

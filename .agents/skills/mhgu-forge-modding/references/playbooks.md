@@ -92,6 +92,18 @@ user explicitly asks for that exact action in this task.
    and EVIDENCE.json alone.
 5. Make the change. If it needs a new hook, use [P4](#p4-add-a-native-hook).
    Add or update a host test that fails without your change.
+   - **One structural change per candidate.** If you have two fixes, ship the
+     one the last run proved and hold the other. Don't stack a new candidate
+     on one the user hasn't run. Replace that candidate instead, and tell the
+     user which one to run.
+   - **Test the state after your writes.** When the change writes game state
+     (links, flags, cache pointers), build the fixture's tree, run your write
+     on it, and then run two things over the result: a port of the native
+     consumer (for GUI trees, the decompiled walker) and your own code that
+     runs on later frames (per-frame readers, apply, restore). Assert what
+     they produce: for a walker, every node visited exactly once, every enter
+     entry matched by its exit, and the exact cache length. A fixture that
+     only checks the state before your writes proves nothing about them.
 6. From the mod folder: `./build.sh build`, `./build.sh test`, `./build.sh verify`.
 7. Update `DISTRIBUTION.json` `reason` and evidence summary, `DEVELOPMENT.md`
    (current state at the top, one new row in the release history table),
@@ -124,8 +136,10 @@ Do not change code until step 5.
      its code and list every assumption it makes (which node is whose parent,
      child or sibling; field meanings; sizes). For each one, find the logged
      value that confirms or refutes it. Write refuted assumptions into the
-     research notes as refuted *before* changing code. The mod's own tree and
-     sample lines often already answer the question.
+     research notes as refuted *before* changing code. Then grep the mod's
+     code comments, DEVELOPMENT.md and README for the refuted claim and fix
+     them in the same change. The mod's own tree and sample lines often
+     already answer the question.
    - **Same build, new gate later in the run** (for example after a quest
      ends) means a stale pointer, not a new layout. Find where the object is
      destroyed and clear the capture there.

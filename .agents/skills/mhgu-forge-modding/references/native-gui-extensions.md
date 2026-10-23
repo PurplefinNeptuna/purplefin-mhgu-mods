@@ -24,6 +24,8 @@ Validate native GUI identity, root/object class, IDs, owners, descriptor, map al
 
 Initialize geometry, material, texture, visibility, parent/owner/resource links before publication. Object +`0x74` is the owning `cGUI`, obtained from instance+`0x6c`; it is not the instance. Object +`0x78` borrows the `rGUI` resource. Scoped guards destroy/free unpublished objects if any allocation or validation fails. Native helper `0xa4844c` links siblings and parent.
 
+When a new node becomes the parent of existing nodes, the draw walker main+`0xa494a0` decides the result. It descends +0x68, moves along +0x6c, and when a sibling is 0 it pops to that node's +0x70. It writes a node's exit entry only when a pop lands on that node. So a moved node's old sibling link and its parent link both decide whether the new parent's exit entry is ever written. Run a walker port over the tree after your writes before you trust it (playbook P2 step 5). An enter entry with no matching exit leaves masks and other state active for every draw that follows.
+
 Appending a child requires both storage expansions:
 
 | Storage | Original | Extended | Contract |
