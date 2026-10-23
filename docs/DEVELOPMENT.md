@@ -137,6 +137,32 @@ runtime folders contain no guides/notices/manifests. Keep notices and HTML outsi
 ZIPs. Support refreshes back up the prior release and preserve runtime bytes.
 Archive superseded releases outside active releases.
 
+### Starting a new version
+
+1. Search the mod for the old version (`grep -rnw OLD mods/NAME`) and update
+   every copy: `mod.json` and any build/path scripts, plugin labels and test
+   expectations that repeat it. Ignore unrelated hits such as register names.
+2. If the old version is READY_TO_DISTRIBUTE or PUBLISHED, copy
+   `build/NAME/releases/OLD/` to `backups/accepted/NAME/OLD-before-CHANGE/release/`.
+   Beside it, put the committed `DEVELOPMENT.md`, `DISTRIBUTION.json`,
+   `EVIDENCE.json` and `README.md`, and a `preservation.json` with `version`,
+   `release_sha256` (one entry per release file), `"runtime": "UNCHANGED"` and
+   `reason`. Confirm the copy with `diff -r`, then remove the build copy and
+   any empty `releases/`. `check` allows only a READY version there.
+3. In `DISTRIBUTION.json`, set `status` to DEVELOPMENT and update `version`,
+   `reason`, `archive`, `candidate`, `candidate_builder`, payload sources and
+   hashes, `limitations` and the evidence summaries. Delete `approval`; it
+   belonged to the old version. While the status is still READY,
+   `./build.sh package` re-verifies the old release instead of packaging the
+   candidate.
+4. Run `./build.sh build`, `test` and `verify`, in that order. Use only the
+   wrapper: a plain `cargo` run inside the mod leaves a `target/` that blocks
+   the next build. Update READMEs before `package`, because the ZIP includes
+   README.md.
+5. Update the mod's DEVELOPMENT.md (current state and release table) and
+   `docs/LOCAL_STATE.md`. The root README table lists the approved release,
+   not the candidate.
+
 `THIRD_PARTY.md` records development provenance;
 `DISTRIBUTION_NOTICES.md` and current licenses cover only shipped components and
 applicable authors, retaining copyright/license wording and Forge credits,
