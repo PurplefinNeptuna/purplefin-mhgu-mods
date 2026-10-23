@@ -16,7 +16,7 @@ records are in its EVIDENCE.json (Switch) or RUNTIME_RESULTS.json (PC).
 
 | Mod | Current | Acceptance scope |
 | --- | --- | --- |
-| Damage Numbers | r35 READY_TO_DISTRIBUTE (approved 2026-10-21), gameplay NOT RUN | Candidate promoted unchanged; records in `backups/accepted/damage-numbers/r35-distribution-approved/`. Previous release r30 is archived at `r30-before-status-damage/`. Its handheld correction has no affected-device result. r27 was the last user-tested build. |
+| Damage Numbers | r36 DEVELOPMENT candidate (2026-10-23), gameplay NOT RUN | Hits outside the camera view stay hidden until the camera turns to them instead of showing at screen centre. Candidate `build/damage-numbers/candidates/r36/delivery/damage-numbers-r36-candidate.zip`. The approved r35 release (2026-10-21, gameplay NOT RUN) is archived at `backups/accepted/damage-numbers/r35-before-hidden-offscreen/`, its candidate records in `r35-distribution-approved/`. Release r30 is archived at `r30-before-status-damage/`. Its handheld correction has no affected-device result. r27 was the last user-tested build. |
 | Key Quest Markers | r18 READY_TO_DISTRIBUTE (2026-10-18) | Link rebuild of the Eden/Linux-accepted r17. HD is optional. Ryujinx and Switch hardware unconfirmed. |
 | Modern Weapon Controls | r12 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
 | Please do Better | r24-forge151 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
