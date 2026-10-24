@@ -55,6 +55,15 @@ build it and extract into the scratchpad.
 - Do not run DTI extraction, launch the game, edit saves or touch original dumps.
   Reuse the saved indexes. New runtime evidence needs the user to run something.
 - Say "inference" when evidence is indirect, and name what would confirm it.
+- MHGU is a last-generation game, and quests are not seamless. A quest map is split into
+  numbered areas, and every move between areas, like entering or leaving a quest, goes
+  through a loading screen. Plan for per-area objects: a hunt's HUD rows, their cached
+  addresses and anything a plugin inserted into them die and come back at each transition.
+  (Tester account 2026-10-24. Every modern-sharpness-gauge run log agrees: the bar rect
+  moves, then reads `0 0 0 0`, then the words turn to garbage. In six sessions the
+  cGUIObjRoot destructor slot 0x04 never fired on a transition, and the real teardown path
+  is still unread. See `work/modern-sharpness-gauge/PHASE2_RESEARCH.md`, "Quests are split
+  into areas".)
 
 ## Choose a reference
 
