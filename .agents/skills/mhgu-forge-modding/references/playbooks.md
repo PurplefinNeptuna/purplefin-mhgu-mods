@@ -140,6 +140,10 @@ Do not change code until step 5.
      code comments, DEVELOPMENT.md and README for the refuted claim and fix
      them in the same change. The mod's own tree and sample lines often
      already answer the question.
+   - **Log says it worked, the user saw no change?** The log measures the
+     wrong thing, or the run never reached values where the effect shows.
+     Find what it misses before writing code; never explain the report away.
+     A forced-value candidate settles it (SKILL.md Known mistakes).
    - **Same build, new gate later in the run** (for example after a quest
      ends) means a stale pointer, not a new layout. Find where the object is
      destroyed and clear the capture there.

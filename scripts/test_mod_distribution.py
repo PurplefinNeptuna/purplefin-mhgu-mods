@@ -81,6 +81,12 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual(first['README.html'], b'<p>Install sample-mod alongside Forge.</p>\n')
         distribution.check(self.root)
 
+    def test_readme_naming_another_version_is_rejected(self):
+        self.write('mods/sample-mod/README.md', b'Extract `sample-mod-r1.zip`; r0 is history.\n')
+        distribution.check(self.root, source_only=True)
+        self.write('mods/sample-mod/README.md', b'Check **Loaded Plugins**: `Sample Mod r0`.\n')
+        self.rejected(lambda: distribution.check(self.root, source_only=True))
+
     def test_future_unregistered_mod_is_rejected(self):
         self.package()
         (self.root / 'mods/new-mod').mkdir()

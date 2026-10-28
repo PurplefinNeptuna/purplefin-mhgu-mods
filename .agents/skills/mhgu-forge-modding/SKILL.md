@@ -107,6 +107,10 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Using a timer, frame counter or "no sample for N calls" as proof that an object is still alive (or already gone) | Write to or free a game object only while a native lookup made in the same callback finds it, or before a hooked teardown runs. Without that, leave the restore code out (the game's destructor owns what is linked into its tree) and report the missing teardown path. |
 | Reparenting nodes with hand-written +0x68/+0x6c/+0x70 links | List every link the walker follows on each moved node and on its old neighbours, and say where each new value comes from. Prefer the native linker `0xa4844c`. Prove the tree with a walker port over the post-write state (playbook P2 step 5). |
 | Re-reading the row after insertion with gates written for the tree before it | Each per-frame path after a write must accept the tree your write produced. Fixture it (playbook P2 step 5). |
+| Explaining a "looks like vanilla" report with a theory that makes the feature invisible by construction | The user's eyes decide the "visible on screen" stage. A positive log with a negative visual report means the log measures the wrong thing, or the run never reached values where the effect shows. Test with forced values. |
+| Testing a visual mechanism only with live data | Build a forced-value candidate first, with extremes the eye cannot miss (for example 0/25/50/100%). Connect live data after the user sees each step. |
+| Changing a user's design decision so a candidate looks different | Design decisions belong to the user. Report the blocker and ask; never hide, drop or swap a designed element to get a visible change. |
+| Deriving draw geometry from a node rect whose relation to the drawn sprite is unproven, or citing a setter probe as proof of clipping | Label such geometry inference. Shared render state read at an arbitrary moment proves only that the setter ran, not that it was active during the target draw. |
 
 ## Topic references
 

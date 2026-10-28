@@ -536,6 +536,16 @@ def package(mod, root=ROOT, refresh_support=False):
     return verify_release(spec, root)
 
 
+def readme_version(spec, root=ROOT):
+    """Reject a README whose code spans (archive name, plugin label) name another version."""
+    version = re.match(r'r\d+\b', spec.get('version') or '')
+    if not spec.get('readme') or not version:
+        return
+    for span in re.findall(r'`([^`\n]+)`', read(root, spec['readme']).decode()):
+        stale = set(re.findall(r'\br\d+\b', span)) - {version.group()}
+        require(not stale, f'README names {span!r} but the version is {spec["version"]}: {spec["mod"]}')
+
+
 def check(root=ROOT, source_only=False):
     result = []
     for directory in ([root] if (root/'mod.json').is_file() else sorted((root/'mods').iterdir())):
@@ -545,6 +555,7 @@ def check(root=ROOT, source_only=False):
         spec = spec_for(mod, root)
         require(spec['status'] != 'RETIRED',
                 f'Retired mod must be removed from the workspace: {directory.name}')
+        readme_version(spec, root)
         archive = None
         if spec['status'] in READY and not source_only:
             archive = verify_release(spec, root)
