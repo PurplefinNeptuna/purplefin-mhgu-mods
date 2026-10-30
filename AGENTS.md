@@ -55,6 +55,9 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   written. Never swap one for something weaker (a timer for a destruction
   hook, a copied constant for a derived size). If a step can't be done, leave
   out the code that depends on it and report that step as the blocker.
+- When the user accepts a behaviour or closes a phase, run forge-modding P7
+  (consolidate after acceptance) before new features or promotion: remove
+  test scaffolding, stale wording and run history from source and README.
 - A failed validation gate is evidence that your model is wrong. Check it
   against the logged values, and never loosen it to get further. After two
   gate failures in a row, go back to static research (forge-modding P3 step 4).

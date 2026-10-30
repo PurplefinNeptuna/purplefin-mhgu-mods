@@ -6,9 +6,11 @@ No sibling mod, personal path, installed game/emulator or parent history is a
 build dependency. Use build.sh and copied inputs from build.local.json; fetch
 only explicitly. Validate dependency/input fingerprints and preserve originals.
 
-Explain substantial functions, native offsets/units, data flow, lifetimes and
-unsafe caller contracts beside code. Preserve NZCVQ and all live state; audit
-GE and never require APSR_g/APSR_nzcvqg writes. Keep native ownership/rollback.
+Comments state the current contract: native offsets/units, data flow, lifetimes,
+ownership and unsafe caller rules. Run IDs (r23), run narratives and refuted
+approaches go in DEVELOPMENT.md history, never in source. Preserve NZCVQ and
+all live state; audit GE and never require APSR_g/APSR_nzcvqg writes. Keep
+native ownership/rollback.
 Use Forge facilities before private substitutes; document any verified gap.
 
 Settings use closed compact unframed Plugin UI tree rows, stable IDs and paired

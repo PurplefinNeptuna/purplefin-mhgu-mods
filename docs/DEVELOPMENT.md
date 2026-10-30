@@ -67,6 +67,8 @@ the task to one phase:
    API gaps are documented beside the workaround.
 4. Focused host tests cover the pure logic, and `./build.sh test` passes.
 5. The README follows the release README standard below, since candidate ZIPs ship it.
+   What the tester should try and which log lines to send go in
+   `mods/NAME/TESTING.md`, outside the ZIP, and into the report's "To test".
 6. A registered DEVELOPMENT candidate is packaged and the full `check` passes.
 7. The report gives the candidate hashes and the runtime checks still needed.
 
@@ -83,7 +85,21 @@ level path. Validate pointers, signatures, allocation failures and rollback.
 Explain native offsets, units, data flow, ownership, nested hooks, TLS borrows
 and unsafe caller requirements beside substantial code. Preserve audited assembly.
 Comments-only work keeps pinned assembly and third-party bytes unchanged. Skip
-comments that only repeat the code.
+comments that only repeat the code. A comment states the current contract in a
+line or two. Run IDs (`r23`), what a run printed and approaches that were
+refuted go in the mod's DEVELOPMENT.md history, never in source.
+
+Store a tuned or user-accepted value in the frame it was measured against: an
+offset from, or a fraction of, the node or rect it was read on. Never store
+absolute screen pixels. Record the frame it was measured in beside the value.
+
+A mod's DEVELOPMENT.md starts with exactly one current-state paragraph. Replace
+it for each version and move the old one into the history below. Keep the part
+above the history short enough to read in full at the start of every task.
+
+Diagnostics, forced values, test sliders and probes are scaffolding. Once the
+user accepts the behaviour they were for, remove them with the consolidation
+playbook (forge-modding P7) before adding the next feature or promoting.
 
 Preserve NZCVQ and all live registers. Audit GE liveness at every hook and
 continuation; never require `msr APSR_g` or `msr APSR_nzcvqg`. Choose another hook

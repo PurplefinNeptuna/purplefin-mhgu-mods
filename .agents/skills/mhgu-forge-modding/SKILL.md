@@ -1,6 +1,6 @@
 ---
 name: mhgu-forge-modding
-description: Develop, change, debug, build, package and release native ARM32 Forge plugins (.nro) for Monster Hunter Generations Ultimate 1.4.0 on Switch, Eden and Ryujinx. Step-by-step playbooks for new plugins, behaviour changes, user bug reports, adding hooks, promotion and doc refreshes, plus reference material on Forge/forge-rs APIs, hooks, native GUI insertion, ImGui rendering, settings and release evidence. Not for Forge PC or GURecomp ports (use mhgu-pc-modding).
+description: Develop, change, debug, build, package and release native ARM32 Forge plugins (.nro) for Monster Hunter Generations Ultimate 1.4.0 on Switch, Eden and Ryujinx. Step-by-step playbooks for new plugins, behaviour changes, user bug reports, adding hooks, consolidation after acceptance, promotion and doc refreshes, plus reference material on Forge/forge-rs APIs, hooks, native GUI insertion, ImGui rendering, settings and release evidence. Not for Forge PC or GURecomp ports (use mhgu-pc-modding).
 ---
 
 # MHGU Forge Modding
@@ -11,9 +11,10 @@ forge-rs 1.5.0. Knowledge dated 2026-10-20.
 
 ## Start here
 
-1. Read the workspace `AGENTS.md`, then `mods/NAME/AGENTS.md`,
-   `mods/NAME/DEVELOPMENT.md` (current state is at the top) and
-   `mods/NAME/DISTRIBUTION.json` (authoritative status and hashes).
+1. Read the workspace `AGENTS.md`, then `mods/NAME/AGENTS.md`, the top of
+   `mods/NAME/DEVELOPMENT.md` up to its history (read the history only when
+   diagnosing) and `mods/NAME/DISTRIBUTION.json` (authoritative status and
+   hashes).
 2. Pick the matching procedure in [Playbooks](references/playbooks.md) and
    follow it step by step. Each step names the exact command or file.
 3. Open a topic reference below only when a step needs it.
@@ -75,6 +76,9 @@ build it and extract into the scratchpad.
 - Write `msr APSR_g` / `APSR_nzcvqg`, hold game pointers after a callback, do file I/O or locking inside a hook, or log every frame.
 - Create `_backup` config files, or restore the retired loader, Better Input, renderer, mutex or PC patches.
 - Call something "working" or "tested" when it was only built or unit-tested.
+- Write run IDs (`r23`), run narratives or refuted approaches in source
+  comments, or tester instructions in README.md. They go in DEVELOPMENT.md
+  history and `TESTING.md`.
 
 ## Stop and ask the user when
 
@@ -108,7 +112,12 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Reparenting nodes with hand-written +0x68/+0x6c/+0x70 links | List every link the walker follows on each moved node and on its old neighbours, and say where each new value comes from. Prefer the native linker `0xa4844c`. Prove the tree with a walker port over the post-write state (playbook P2 step 5). |
 | Re-reading the row after insertion with gates written for the tree before it | Each per-frame path after a write must accept the tree your write produced. Fixture it (playbook P2 step 5). |
 | Explaining a "looks like vanilla" report with a theory that makes the feature invisible by construction | The user's eyes decide the "visible on screen" stage. A positive log with a negative visual report means the log measures the wrong thing, or the run never reached values where the effect shows. Test with forced values. |
-| Testing a visual mechanism only with live data | Build a forced-value candidate first, with extremes the eye cannot miss (for example 0/25/50/100%). Connect live data after the user sees each step. |
+| Testing a visual mechanism only with live data | Build a forced-value candidate first, with extremes the eye cannot miss (for example 0/25/50/100%). Connect live data after the user sees each step, then remove the forced path with P7. |
+| Leaving test controls, probes, "record" helpers and their log lines in after the user accepts | Every experiment is scaffolding. Run P7 after acceptance: delete what nothing live reads, fix stale names and messages. |
+| Storing a value the user dialled in as absolute screen pixels | Store it relative to the rect it was measured on (offset or fraction), with a host test reproducing the accepted output. |
+| Justifying each line with what run rN printed | A comment states the current contract. The evidence lives in DEVELOPMENT.md history and EVIDENCE.json. |
+| Putting tester steps, log-line guides or stage-code tables in README.md | README.md is for mod users. Put tester material in `mods/NAME/TESTING.md` and the report. |
+| Prepending a new "Current state:" paragraph per version | Replace the one paragraph and move the old one into history. |
 | Changing a user's design decision so a candidate looks different | Design decisions belong to the user. Report the blocker and ask; never hide, drop or swap a designed element to get a visible change. |
 | Deriving draw geometry from a node rect whose relation to the drawn sprite is unproven, or citing a setter probe as proof of clipping | Label such geometry inference. Shared render state read at an arbitrary moment proves only that the setter ran, not that it was active during the target draw. |
 

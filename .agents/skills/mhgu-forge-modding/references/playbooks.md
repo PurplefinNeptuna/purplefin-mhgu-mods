@@ -19,6 +19,7 @@ user explicitly asks for that exact action in this task.
 | "Hook function F" (as part of P1 or P2) | [P4 Add a native hook](#p4-add-a-native-hook) |
 | "It works, make it ready to distribute" | [P5 Promote a candidate](#p5-promote-a-candidate) |
 | "Fix the README/docs" of an already released mod | [P6 Support-only refresh](#p6-support-only-refresh) |
+| "It's accepted" / a phase closed / "clean it up" | [P7 Consolidate after acceptance](#p7-consolidate-after-acceptance) |
 | A port to GURecomp/PC | Use the `mhgu-pc-modding` skill |
 
 ## P1 New Switch plugin
@@ -89,7 +90,9 @@ user explicitly asks for that exact action in this task.
    (build/work folders), `scripts/build.py` (archive name, manifest version),
    the plugin name label in `forge_onLoad`, the startup log line, tests that
    assert the label, `README.md`. Leave historical mentions in DEVELOPMENT.md
-   and EVIDENCE.json alone.
+   and EVIDENCE.json alone. If this version removes a feature, control or
+   mode, also grep its words in `src/`, `core/src/` and log strings, and fix
+   every comment, name and message that still describes it.
 5. Make the change. If it needs a new hook, use [P4](#p4-add-a-native-hook).
    Add or update a host test that fails without your change.
    - **One structural change per candidate.** If you have two fixes, ship the
@@ -106,7 +109,8 @@ user explicitly asks for that exact action in this task.
      only checks the state before your writes proves nothing about them.
 6. From the mod folder: `./build.sh build`, `./build.sh test`, `./build.sh verify`.
 7. Update `DISTRIBUTION.json` `reason` and evidence summary, `DEVELOPMENT.md`
-   (current state at the top, one new row in the release history table),
+   (replace the one current-state paragraph at the top and move the old one
+   into history; add one new row in the release history table),
    and `docs/LOCAL_STATE.md` (one table row). Say `Gameplay NOT RUN`.
 8. `python3 scripts/mod_distribution.py package NAME`, then `... check`.
 9. Commit and report.
@@ -196,7 +200,9 @@ Do not change code until step 5.
 ## P5 Promote a candidate
 
 Only when the user explicitly approves this exact version for distribution.
-Approval is not a gameplay result unless they also report a run.
+Approval is not a gameplay result unless they also report a run. If the
+version still carries test scaffolding, run-history comments or tester text in
+its README, say so and propose [P7](#p7-consolidate-after-acceptance) first.
 
 1. Confirm the candidate files still match the `DISTRIBUTION.json` payload
    hashes. Do **not** rebuild: promotion ships the exact tested bytes.
@@ -227,6 +233,50 @@ whose runtime did not. The release folder keeps copies of these files, so
 3. Compare the ZIP SHA-256 before and after (it changes only when README.md
    changed, because the ZIP contains README.md). Run the full `check`. Commit.
 
+## P7 Consolidate after acceptance
+
+Run this when the user accepts a behaviour (or closes a phase) and before the
+next feature or a P5 promotion. Experiments add code; this playbook removes it.
+It is a P2 change with a new `rNEW`. Visible behaviour stays the same: anything
+that must change position or format gets a host test showing identical output
+on the accepted values.
+
+1. **List what the accepted build no longer needs.** For each item, grep its
+   uses first and delete it only when nothing live reads it:
+   - test controls: forced values, sliders, prototype steps, Plugin UI test panels;
+   - core helpers kept only "as a record" of a refuted approach (the record
+     belongs in DEVELOPMENT.md history);
+   - sampled fields, counters and statics that nothing reads or prints;
+   - probes and log lines whose question the user's acceptance answered.
+     Keep one line per lifecycle event (inserted, failed with stage, torn down).
+   Delete the host tests that only covered removed code. Keep every test for
+   code that remains.
+2. **Re-express tuned values in their own frame.** A value the user dialled
+   in is stored relative to what it was measured on (an offset from, or a
+   fraction of, the node rect), never as an absolute screen pixel. Add a host
+   test showing the new form gives the accepted outputs on the measured rect.
+3. **Fix stale wording.** For every feature, control or mode removed in this
+   or earlier versions, grep its words in `src/`, `core/src/` and log strings
+   (for example `slider|forced|prototype|diagnostic|panel`). Rename
+   identifiers named after the experiment. Check the startup log line and
+   each module's top comment against what the code does now.
+4. **Rewrite comments as current contracts.** Offset, unit, owner, why, in
+   a line or two. Move run IDs, what a run printed and refuted approaches into
+   DEVELOPMENT.md history. Leave audited assembly bytes unchanged. Gate:
+   `grep -nE '\br[0-9]{1,3}\b' src core/src` returns nothing.
+5. **Split the README.** README.md follows the release README standard in
+   docs/DEVELOPMENT.md with nothing aimed at the tester. Tester steps, what to
+   report and the log-line and stage-code reference go in `mods/NAME/TESTING.md`
+   (outside the ZIP). Gate:
+   `grep -nE 'Tell me|MSG r[0-9]|stage [0-9]{2}|run showed' mods/NAME/README.md`
+   returns nothing. Refresh the export list after adding a file (from the mod
+   folder: `python3 scripts/export_source.py --refresh`).
+6. **Collapse DEVELOPMENT.md's head.** Exactly one current-state paragraph,
+   then the history. Merge stacked "Current state:" paragraphs into one for
+   `rNEW` and move the older ones under history.
+7. Continue with P2 steps 6 to 9. In the report, give the line counts of
+   `src/` and `core/src/` before and after, plus `git diff --stat`.
+
 ## Finish every playbook
 
 ```sh
@@ -251,7 +301,8 @@ Version/status: <rN> DEVELOPMENT candidate | READY_TO_DISTRIBUTE
 Files: <ZIP path> sha256 <hash>
 Validated: <host tests, ARM tests, verify, package, check — counts if known>
 Not validated: gameplay NOT RUN on <emulators/hardware>
-To test: <numbered steps the user can do in game, what they should see>
+To test: <numbered steps the user can do in game, what they should see;
+         the same text goes in mods/NAME/TESTING.md, never in README.md>
 Open questions: <unknowns, assumptions>
 ```
 
