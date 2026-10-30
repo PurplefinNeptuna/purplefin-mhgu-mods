@@ -57,13 +57,9 @@ def export(mod,dest):
   stage.rename(dest)
  return dest
 
-def scaffold(path,name,kind,platform='switch'):
+def scaffold(path,name,kind):
  if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*',name):raise ValueError('Invalid mod name')
  if path.exists():raise ValueError('Preserving existing mod folder: '+str(path))
- if platform=='forge-pc':
-  if kind!='plugin':raise ValueError('Forge PC scaffold currently supports --kind plugin only')
-  return scaffold_pc(path,name)
- if platform!='switch':raise ValueError('Unknown scaffold platform: '+platform)
  source=ROOT/'templates/standalone'
  path.mkdir(parents=True)
  try:
@@ -115,25 +111,6 @@ extern "C" void forge_onImGuiFreeRender() {} // Background work remains independ
   (path/'dependencies.lock.json').write_text(json.dumps(lock,indent=2)+'\n')
   files=[str(p.relative_to(path)) for p in sorted(path.rglob('*')) if p.is_file()]
   (path/'EXPORT.json').write_text(json.dumps({'schema_version':1,'mod':name,'files':files},indent=2)+'\n')
- except BaseException:
-  shutil.rmtree(path);raise
- return path
-
-def scaffold_pc(path,name):
- """Copy the offline PC template; no Switch SDK or assembly enters this backend."""
- source=ROOT/'templates/forge-pc'
- shutil.copytree(source,path,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
- try:
-  for p in path.rglob('*'):
-   if p.is_file() and (p.suffix in ('.md','.json','.cpp') or p==path/'LICENSE'):
-    p.write_text(p.read_text().replace('@MOD_NAME@',name).replace('@PLUGIN_NAME@',name.replace('-','_')))
-  # Helpers are snapshots so the exported source needs no coordinating checkout.
-  shutil.copy2(ROOT/'scripts/mod_distribution.py',path/'scripts/mod_distribution.py')
-  shutil.copy2(ROOT/'templates/standalone/scripts/export_source.py',path/'scripts/export_source.py')
-  exporter=path/'scripts/export_source.py'
-  exporter.write_text(exporter.read_text().replace("'.dll',", "'.dll','.so',"))
-  names=[str(p.relative_to(path)) for p in sorted(path.rglob('*')) if p.is_file() and p.name!='EXPORT.json']
-  (path/'EXPORT.json').write_text(json.dumps({'schema_version':1,'mod':name,'files':names},indent=2)+'\n')
  except BaseException:
   shutil.rmtree(path);raise
  return path

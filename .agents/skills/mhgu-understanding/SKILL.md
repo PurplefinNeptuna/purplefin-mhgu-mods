@@ -93,5 +93,4 @@ inputs. When inputs are missing, explain what cannot be checked and use the
 documented method with equivalent inputs. Do not invent game bytes.
 
 The companion `mhgu-forge-modding` skill owns plugin implementation, hook
-safety, GUI insertion, settings, builds and delivery. `mhgu-pc-modding` covers
-GURecomp/Forge PC ports.
+safety, GUI insertion, settings, builds and delivery.

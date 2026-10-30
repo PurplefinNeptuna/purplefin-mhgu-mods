@@ -51,10 +51,8 @@ are recorded in COMPACTION.json and WORKSPACE_EVIDENCE.json.
 | --- | --- |
 | Forge 1.5.1 | `tools/forge-local/` |
 | forge-rs 1.5.0 | `tools/forge-rs/` |
-| Forge PC 0.2.1 | `tools/forge-pc-local/` |
 | Eden | `references/eden/` |
 | Ryujinx-Nextendo | `references/ryujinx-nextendo/` |
-| SUYU-GURecomp | `references/gurecomp-research/SUYU-GURecomp/` |
 
 `./scripts/tool.sh forge-rs status` checks source and converter fingerprints.
 The pinned cargo-forge converter remains 1.4.1; it builds the self-contained

@@ -1,8 +1,8 @@
 # MHGU modding
 
-Monster Hunter Generations Ultimate 1.4.0 for Switch (Eden/Ryujinx) and native
-GURecomp PC ports. Switch development uses upstream Forge **1.5.1**; PC uses
-stock Forge PC **0.2.1**.
+Monster Hunter Generations Ultimate 1.4.0 for Switch (Eden/Ryujinx), built on
+upstream Forge **1.5.1**. On PC, [MHGURecomp](https://github.com/morerokk/MHGURecomp)
+loads the same Forge NROs.
 
 | Mod | Release | Guide |
 | --- | --- | --- |
@@ -10,10 +10,6 @@ stock Forge PC **0.2.1**.
 | Key Quest Markers | r18 | [Install](mods/key-quest-markers/README.md) |
 | Modern Weapon Controls | r12 | [Install](mods/modern-weapon-controls/README.md) |
 | Please do Better | r24-forge151 | [Install](mods/please-do-better/README.md) |
-| Damage Numbers PC | r3 | [Install](mods/damage-numbers-pc/README.md) |
-| Key Quest Markers PC | r1 | [Install](mods/key-quest-markers-pc/README.md) |
-| Modern Weapon Controls PC | r1 | [Install](mods/modern-weapon-controls-pc/README.md) |
-| Please do Better PC | r1 | [Install](mods/please-do-better-pc/README.md) |
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Current
 candidates and acceptance scope are summarised in
@@ -24,7 +20,6 @@ extraction support are local integrations.
 - [Development and distribution](docs/DEVELOPMENT.md)
 - [Tools and references](docs/TOOLS.md)
 - [Code, DTI and native GUI research](docs/RESEARCH.md)
-- [GURecomp setup and ports](docs/GURECOMP.md)
 - [HD ownership and merge order](docs/CLEANUP_HD_PROJECT.md)
 - [Compaction and preserved-artifact receipt](docs/COMPACTION.json)
 

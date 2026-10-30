@@ -20,7 +20,6 @@ user explicitly asks for that exact action in this task.
 | "It works, make it ready to distribute" | [P5 Promote a candidate](#p5-promote-a-candidate) |
 | "Fix the README/docs" of an already released mod | [P6 Support-only refresh](#p6-support-only-refresh) |
 | "It's accepted" / a phase closed / "clean it up" | [P7 Consolidate after acceptance](#p7-consolidate-after-acceptance) |
-| A port to GURecomp/PC | Use the `mhgu-pc-modding` skill |
 
 ## P1 New Switch plugin
 
@@ -119,12 +118,12 @@ user explicitly asks for that exact action in this task.
 
 Do not change code until step 5.
 
-1. **Which run?** Ask or determine: emulator (Eden, Ryujinx, GURecomp, real
-   Switch), date/time, which mod version they think they ran.
+1. **Which run?** Ask or determine: emulator (Eden, Ryujinx, MHGURecomp,
+   real Switch), date/time, which mod version they think they ran.
 2. **Read the newest log**, not an old one:
    Eden `~/.local/share/eden/log/eden_log.txt`; Ryujinx
    `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` (newest file);
-   GURecomp see docs/GURECOMP.md. Copy it to
+   MHGURecomp `log.txt` beside its executable. Copy it to
    `work/NAME/runs/rN-<emulator>-<YYYY-MM-DD>.txt` before anything else,
    because the next launch overwrites it.
 3. **Match the bytes.** `sha256sum` the installed NRO/assets (read-only) and

@@ -1,6 +1,6 @@
 ---
 name: mhgu-forge-modding
-description: Develop, change, debug, build, package and release native ARM32 Forge plugins (.nro) for Monster Hunter Generations Ultimate 1.4.0 on Switch, Eden and Ryujinx. Step-by-step playbooks for new plugins, behaviour changes, user bug reports, adding hooks, consolidation after acceptance, promotion and doc refreshes, plus reference material on Forge/forge-rs APIs, hooks, native GUI insertion, ImGui rendering, settings and release evidence. Not for Forge PC or GURecomp ports (use mhgu-pc-modding).
+description: Develop, change, debug, build, package and release native ARM32 Forge plugins (.nro) for Monster Hunter Generations Ultimate 1.4.0 on Switch, Eden, Ryujinx and MHGURecomp (PC). Step-by-step playbooks for new plugins, behaviour changes, user bug reports, adding hooks, consolidation after acceptance, promotion and doc refreshes, plus reference material on Forge/forge-rs APIs, hooks, native GUI insertion, ImGui rendering, settings and release evidence.
 ---
 
 # MHGU Forge Modding

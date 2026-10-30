@@ -8,13 +8,14 @@ Switch development uses unmodified [Fexty's Forge fork](https://github.com/Fexty
 Native ARM32 Hook is 24 bytes: target/detour/original/context pointers at
 0/4/8/12, ctx_cell at16 and has_ctx at20. Forge pools ordinary/context
 trampolines; verify allocations, ownership and the actual headers at each boundary.
-Forge PC uses stock 0.2.1 at `tools/forge-pc-local/`. forge-rs source is1.5.0
+forge-rs source is1.5.0
 at `tools/forge-rs/`; its compatible converter is separately pinned at1.4.1.
 
 Update the existing checkout from its official remote; do not create an extra
 upstream clone/worktree. Keep old revisions in Git when research needs them.
 Do not apply or recreate the retired loader, legacy Better Input, renderer,
-mutex or PC support patches. Source updates never replace installed packages.
+mutex or PC support patches, or GURecomp/Forge PC ports: MHGURecomp loads the
+Switch NROs. Source updates never replace installed packages.
 
 ## Independent mod builds
 
@@ -42,10 +43,7 @@ compare inventories. Same-path ARC changes require an internal-resource merge.
 Repack ARCs only with supported MHGU tools against an original repacking baseline.
 
 Scaffold with `python3 scripts/mod_distribution.py init NAME --kind plugin`
-(or resource, cheat, tool). PC plugins add `--platform forge-pc` and live in
-separate `<name>-pc` folders. Default PC builds/verifies/packages require both
-Linux x64 SO and Windows x64 DLL; single-target output is development-only.
-Refresh `EXPORT.json` deliberately; exports exclude runtime/game binaries,
+(or resource, cheat, tool). Refresh `EXPORT.json` deliberately; exports exclude runtime/game binaries,
 private configurations, ignored trees and unsafe paths. Validate exported source
 outside this workspace using explicitly supplied copied inputs.
 
@@ -220,7 +218,7 @@ short description of what it does. Use these sections in this order:
 | Requirements | Bullet list of the game/version, platform, linked loader and other actual requirements. |
 | Installation | Numbered steps to close the game, extract the named ZIP, copy the whole named folder, and enable/start it. Include the destination paths and any required loader configuration. |
 | Usage | What the user does and sees. Put controls, badges, settings and INI examples here as needed. |
-| Update and removal | Close the game, explain which files/folder to replace or remove, and preserve settings stored inside a PC mod folder. |
+| Update and removal | Close the game, explain which files/folder to replace or remove, and preserve settings stored inside a mod folder. |
 | Compatibility and known issues | Relevant conflicts, visible limitations and steps the user can take. Omit this section when there is nothing useful to say. |
 
 Use `### Settings` and `### INI settings` below Usage when applicable. Settings
@@ -229,10 +227,8 @@ Write overlay paths as **Plugin UI > Plugin name**, keeping the actual UI name
 and button labels exact. Use colour/grey consistently, with plain colour names
 such as Green and Red. Gathering/objective labels belong in research records.
 
-Switch installation steps give both Eden and Ryujinx destinations. PC steps
-give the exported game's `mods/0100770008DD8000/` destination and retain both
-platform libraries. Include hot-reload restrictions only where required by
-that mod. Link Fexty's Forge fork for Switch and GURecomp's Forge PC for PC.
+Switch installation steps give both Eden and Ryujinx destinations. Include
+hot-reload restrictions only where required by that mod. Link Fexty's Forge fork.
 Build fixtures and co-installed mods do not establish runtime dependencies.
 
 Apply the full local Humanizer process: read the whole guide, rewrite awkward

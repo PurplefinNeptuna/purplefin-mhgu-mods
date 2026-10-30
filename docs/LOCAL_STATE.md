@@ -1,7 +1,8 @@
 # Local state
 
-Workspace baseline updated 2026-10-15: stock Switch Forge 1.5.1, forge-rs 1.5.0,
-and stock Forge PC 0.2.1, on branch `main`. Merged task branches, obsolete
+Workspace baseline updated 2026-10-15: stock Switch Forge 1.5.1 and forge-rs
+1.5.0, on branch `main`. GURecomp, Forge PC and the `-pc` ports were retired on
+2026-10-30 because MHGURecomp loads the Switch NROs. Merged task branches, obsolete
 source forks and the old release worktree are removed; their tips are recorded
 in [COMPACTION.json](COMPACTION.json) and remain reachable through main or archive
 tags. This file describes workspace sources and deliveries, not current
@@ -12,7 +13,7 @@ emulator activation.
 Each mod's DISTRIBUTION.json is authoritative. "Packaged" means a local,
 unpublished ZIP; approval is not a gameplay result. Release history, design and
 manual checks are in each mod's DEVELOPMENT.md; exact validation and runtime
-records are in its EVIDENCE.json (Switch) or RUNTIME_RESULTS.json (PC).
+records are in its EVIDENCE.json.
 
 | Mod | Current | Acceptance scope |
 | --- | --- | --- |
@@ -22,10 +23,6 @@ records are in its EVIDENCE.json (Switch) or RUNTIME_RESULTS.json (PC).
 | Modern Weapon Controls | r12 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
 | Please do Better | r24-forge151 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
 | Shared Urgent Quests | r1 DEVELOPMENT candidate (2026-10-21), gameplay NOT RUN | Records a rank-up urgent clear for an online client when the urgent is on that client's own board. Needs a two-instance session test. |
-| Damage Numbers PC | r3 READY_TO_DISTRIBUTE | Linux user acceptance of the exact binaries; Windows gameplay untested. |
-| Key Quest Markers PC | r1 READY_TO_DISTRIBUTE | Same as above. |
-| Modern Weapon Controls PC | r1 READY_TO_DISTRIBUTE | Same as above. |
-| Please do Better PC | r1 READY_TO_DISTRIBUTE | Same as above. |
 | HD Project, wiki cheats, DTI dumper support | LOCAL_ONLY | Local integrations. |
 
 Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
@@ -65,8 +62,7 @@ Trust the user's alternative-mod activation choices; investigate overlap only
 when fresh evidence implicates it. After a reported run, inspect that emulator's
 latest log before concluding.
 
-GURecomp installation/export paths, SDL3 override and native-port limits are in
-[GURECOMP.md](GURECOMP.md). HD resource priorities are in
+HD resource priorities are in
 [CLEANUP_HD_PROJECT.md](CLEANUP_HD_PROJECT.md). DTI extraction is not enabled
 for gameplay. There is no automated in-game suite.
 
