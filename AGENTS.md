@@ -34,6 +34,8 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   empties the file before the read runs. `work/` is gitignored, so nothing can
   undo a lost note there. Run `wc -l` before and after any scripted rewrite,
   and stop if the count dropped when it should have grown.
+- **Tool names.** Call only the tools you were given, by their exact names:
+  files are read with `read` (`file_path`, `offset`, `limit`), not `read_file`.
 - **Evidence.** Keep source, build, package, installation, activation, user
   acceptance and runtime evidence separate. Never present one as another.
   Quote log values verbatim; a number that is not in the log is invented.
