@@ -155,6 +155,14 @@ Do not change code until step 5.
      further: a gate that fails on live data means the model behind it is
      wrong. Go back to static research (decompiled code, original bytes), and
      report the blocker if that research cannot settle it.
+   - **Two candidates in a row with no visible effect?** This counts as two
+     gate failures, even when every logged gate passed. Stop and go back to
+     static research. The next candidate is a forced-value one whose effect
+     the eye cannot miss.
+   - **One hypothesis per candidate.** Before the user runs a candidate,
+     write in the report what they will see and which logged values will
+     confirm it. A run that matches neither prediction refutes the
+     hypothesis; do not reinterpret it afterwards.
 5. **Reproduce statically.** Write a host or ARM fixture that fails the same
    way with the old build (the KQM history in its DEVELOPMENT.md shows this
    for r3 to r11). Then fix with [P2](#p2-change-a-mods-behaviour).

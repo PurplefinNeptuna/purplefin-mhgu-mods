@@ -120,6 +120,11 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Prepending a new "Current state:" paragraph per version | Replace the one paragraph and move the old one into history. |
 | Changing a user's design decision so a candidate looks different | Design decisions belong to the user. Report the blocker and ask; never hide, drop or swap a designed element to get a visible change. |
 | Deriving draw geometry from a node rect whose relation to the drawn sprite is unproven, or citing a setter probe as proof of clipping | Label such geometry inference. Shared render state read at an arbitrary moment proves only that the setter ran, not that it was active during the target draw. |
+| Leaving out steps of an in-repo precedent (such as the KQM badge's construction) | Compare your code with the precedent field by field. Name every skipped step and the native code that makes it unnecessary ([Native GUI extensions](references/native-gui-extensions.md)). |
+| Logging the values you wrote and calling that placement evidence | Read back the game's own output (rect +`0xe0`, matrix +`0x10..+0x4c`, size) at the next callback, after the native layout has run. A constructor default read back proves only that the constructor ran. |
+| Reading numbers from a log that prints float fields as raw bits | Log floats as floats. Quote log values verbatim; a number that is not in the log is invented. |
+| Writing screen pixels into a node's local position or size | First find which node in the parent chain carries the scale, and convert with it. |
+| Interpreting a screenshot | Name each HUD element in the photo and confirm it with the user or a baseline shot of the accepted build. A user's correction about one element does not extend to others. An artefact that appears or disappears between builds is evidence; never discard it. |
 
 ## Topic references
 

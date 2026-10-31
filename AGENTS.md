@@ -36,6 +36,7 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   and stop if the count dropped when it should have grown.
 - **Evidence.** Keep source, build, package, installation, activation, user
   acceptance and runtime evidence separate. Never present one as another.
+  Quote log values verbatim; a number that is not in the log is invented.
 - **Research first.** Search saved Ghidra/DTI before gameplay code:
   `./scripts/tool.sh research find QUERY --kind functions` (or symbols/types/dti).
   Imported base is 0x009c9000; subtract it for Forge offsets. One text byte and
