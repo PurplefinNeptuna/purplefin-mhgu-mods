@@ -8,6 +8,7 @@ loads the same Forge NROs.
 | --- | --- | --- |
 | Damage Numbers | r36 | [Install](mods/damage-numbers/README.md) |
 | Key Quest Markers | r18 | [Install](mods/key-quest-markers/README.md) |
+| Modern Sharpness Gauge | r63 | [Install](mods/modern-sharpness-gauge/README.md) |
 | Modern Weapon Controls | r12 | [Install](mods/modern-weapon-controls/README.md) |
 | Please do Better | r24-forge151 | [Install](mods/please-do-better/README.md) |
 
