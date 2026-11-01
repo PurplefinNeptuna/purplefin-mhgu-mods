@@ -38,11 +38,18 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   files are read with `read` (`file_path`, `offset`, `limit`), not `read_file`.
 - **Evidence.** Keep source, build, package, installation, activation, user
   acceptance and runtime evidence separate. Never present one as another.
-  Quote log values verbatim; a number that is not in the log is invented.
+  Quote log values verbatim; a number that is not in the log is invented. Quote
+  the tester's requirement verbatim too, and build to those words rather than a
+  paraphrase. An empty search counts only after the tool finds a known positive.
 - **Research first.** Search saved Ghidra/DTI before gameplay code:
-  `./scripts/tool.sh research find QUERY --kind functions` (or symbols/types/dti).
-  Imported base is 0x009c9000; subtract it for Forge offsets. One text byte and
-  some imported type layouts differ from the target, so verify against real bytes.
+  `./scripts/tool.sh research find QUERY --kind functions` (or symbols/types/dti);
+  `research xref`, `word`, `dis` and `vtable` read the checked main directly.
+  Imported base is 0x009c9000; subtract it for Forge offsets, but not from vtable
+  or DTI words, which are already main-relative. One text byte and some imported
+  type layouts differ from the target, so verify against real bytes.
+- **Native writes.** Before writing a game field by hand, find what reads it and
+  what gates that read, and use a setter if one exists. A value that reads back
+  has been stored, not consumed.
 - **Forge first.** Use Forge headers and APIs before private substitutes, and
   document each verified gap beside the workaround.
 - **Versions.** Runtime changes get a new version. `DISTRIBUTION.json` is authoritative.

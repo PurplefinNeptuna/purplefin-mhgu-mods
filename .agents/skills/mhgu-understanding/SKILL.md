@@ -7,7 +7,7 @@ description: Find and interpret Monster Hunter Generations Ultimate 1.4.0 Switch
 
 Research MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
 `FB08F1D20FD1204FE7070672777F869B`. Offsets belong to this exact executable,
-not other game versions. Knowledge dated 2026-10-20.
+not other game versions. Knowledge dated 2026-11-01.
 
 ## Start here
 
@@ -42,6 +42,8 @@ build it and extract into the scratchpad.
 | Ghidra address | Address in the saved database (image base `0x009c9000`) | `0x01177f68` |
 | main+0xNNNN | Main-relative offset = Ghidra address − `0x009c9000`. Used everywhere in these skills and in hook code | main+`0x7aef68` |
 | +0xNN | Field offset inside an object. Never subtract the image base | `monster+0x1428` |
+| Vtable word / DTI `get`, `set`, `vft` | Already main-relative. Never subtract the Ghidra base from these | Texture slot 0x38 holds `0xa4e628` |
+| Decompiled `param_1[0x38]` on an `int *` | Indexed in words: byte offset = index × 4. Written pointer arithmetic is already in bytes | `param_1[0x38]` is `+0xe0` |
 | Cell 0xNNNN | Main-relative address of a global pointer to a singleton | session cell `0x188ca48` |
 | ID / index / row | Object ID, lookup index, table row and resource ID are different numbers; keep them in separate columns | |
 
@@ -50,6 +52,9 @@ build it and extract into the scratchpad.
 - Verify against the copied, hash-checked original NSO (`work/shared/game-exefs/main`).
   Ghidra text differs from it at one byte, and some imported type layouts are wrong.
 - Names, wiki fields, decompiler variables and file presence are leads, not proof.
+- An empty search is evidence only once the same tool has found a known positive.
+  A broken cross-reference script reported "no `bl` site" for every target through
+  the whole of Modern Sharpness Gauge's research. `research xref` replaces it.
 - Follow writer, reader, callers and destructor before claiming what a field means or who owns an object.
 - A runtime object and its serialized resource record can have different layouts.
 - Do not run DTI extraction, launch the game, edit saves or touch original dumps.
@@ -60,10 +65,12 @@ build it and extract into the scratchpad.
   through a loading screen. Plan for per-area objects: a hunt's HUD rows, their cached
   addresses and anything a plugin inserted into them die and come back at each transition.
   (Tester account 2026-10-24. Every modern-sharpness-gauge run log agrees: the bar rect
-  moves, then reads `0 0 0 0`, then the words turn to garbage. In six sessions the
-  cGUIObjRoot destructor slot 0x04 never fired on a transition, and the real teardown path
-  is still unread. See `work/modern-sharpness-gauge/PHASE2_RESEARCH.md`, "Quests are split
-  into areas".)
+  moves, then reads `0 0 0 0`, then the words turn to garbage. The cGUIObjRoot destructor
+  slot 0x04 fired in no saved log, including every one since its gate was corrected at r29.
+  `setAnimationId` `0xa38828` destroys a row's controller and map and builds new ones
+  (called from `0x54504c` and `0x5451fc`), but nothing shows it is what fires at an area
+  change, so the transition's teardown path is still unproven. See
+  `work/modern-sharpness-gauge/PHASE2_RESEARCH.md`, "Quests are split into areas".)
 
 ## Choose a reference
 
@@ -72,6 +79,7 @@ build it and extract into the scratchpad.
 | How do I go from a question to a verified offset? | [Research playbook](references/research-playbook.md) |
 | Where is the code/data? Ghidra, DTI, IDs and resource search details | [Discovery and evidence](references/discovery-and-evidence.md) |
 | How do GUI resources, properties, trees, maps and caches work? | [Native GUI](references/native-gui.md) |
+| Where are sharpness points, tiers, tables and the sharpness HUD row? | [Sharpness](references/sharpness.md) |
 | How do key quests, urgents, completion and progression relate? | [Quests and progression](references/quests-and-progression.md) |
 | Which input representation/player/state is this? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
 | Where do damage, HP loss, ownership, hitzones and camera matrices come from? | [Damage and cameras](references/damage-and-cameras.md) |

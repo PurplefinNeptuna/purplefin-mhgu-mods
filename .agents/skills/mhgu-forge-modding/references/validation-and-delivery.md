@@ -25,6 +25,8 @@ Each `mods/NAME/DISTRIBUTION.json` is authoritative. DEVELOPMENT is unapproved w
 
 Runtime changes require a new version. Promote accepted candidate bytes without rebuilding. Preserve the previous accepted release under `backups/accepted/`. Support-only refreshes back up the prior delivery and keep runtime hashes unchanged. Do not rebuild into a candidate/output directory whose receipts an immutable release still references.
 
+The payload NRO hash identifies a build. An archive's hash moves with any repackaging or README refresh, so record both and scope acceptance to the NRO. A comment-only source edit is not a runtime change once a scratch rebuild gives the released NRO hash: rebuild outside `build/NAME/`, never into a folder an immutable release references.
+
 Version diagnostic/prototype candidates before manual testing too. Set DEVELOPMENT, run relevant tests/build/verify, package and run the full distribution check, then record source/loader revisions and NRO/assets/ZIP hashes before supplying bytes for an authorized run. Follow-up runtime changes get another version. Record observations against those exact hashes and promote unchanged accepted bytes only with release approval. Do not put the first version/distribution record after the acceptance loop.
 
 The packager accepts a DEVELOPMENT mod only when `DISTRIBUTION.json` registers `version`, `package_name`, `archive` (`NAME-VERSION-candidate.zip`), `candidate` (`build/NAME/candidates/VERSION/delivery`), `candidate_builder` (`scripts/build.py` for scaffolded mods) and `gamebanana`. The builder writes the delivery, and `verify_candidate` in `scripts/mod_distribution.py` checks it. Without `candidate_builder` the refusal is a missing registration, not a ban on candidates.

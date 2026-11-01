@@ -24,6 +24,20 @@ Follow the failing stage: module load/imports, metadata/init, signature checks, 
 | No number for kinsect, poison, blast or mount damage | Those never pass the hit handler, or kinsect tags were unclassified | Dedicated hooks 8–10 and the kinsect tag rule (Damage Numbers r31+; see mhgu-understanding damage reference) |
 | Texture/downsample overlay never appears | Reported Please do Better native downsample hooks did not execute | Current independent Forge overlay supersedes that experiment |
 | Quest controls fail after DTI extraction | The 2026-10-03 dump completed but affected live game state | Remove extraction plugin and flag, restart, use the saved dump |
+| Inserted mask hides the gauge; box reads `left == right` | Recycled anchor modes at mask +0xa0, an empty x row at +0x10, then a width fed from an animated field | The field table in [Native GUI extensions](native-gui-extensions.md#clip-with-a-scissor-mask) |
+| Gauge gone after an area change, row never rebuilt | Nodes reachable through two chains were freed twice and poisoned the allocator | End the old chain at root +0x6c |
+| Game freezes on inserting a built node, no insertion line on any path | Texture vtable slot 0x00 called as a constructor (r45) | Standalone constructor main+0xa4f60c on a zeroed block |
+| Copy built with `dim=0x0`, refused at its texture step | `Texture` setter returned early: +0x78 unset, or +0x64 zero | Write both first, run the setter last |
+| New node laid out at `rect=0 0 128 128`, matrix never composed | Bit 17 cleared on a node or a parent | Keep bit 17 on every node you add |
+| Atlas or colour writes land in the log and the sprite never changes | The quad is cached and nothing marked it dirty | Use the setter |
+
+## Read a log and a photo
+
+Run-independent noise in Eden logs, not evidence against a plugin unless something else connects it: `maxwell_3d.cpp:392 ... assert method == executing_macro + 1` (r62's began 6271 s before the mod's insertion), and a PANIC or host `Unhandled SIGSEGV` shortly after `ForceStop: Force stopping EmuThread` (r59's was 7 ms later, with `nn::hid::VibrationNode::Update()` in its backtrace). Check timing against the mod's own lines before setting a line aside.
+
+A row's death reads as words turning to freed-heap fill at unchanged addresses: `0x727272`, `0xffffff`, `0xffeaeaea`, `0xff7f7f7f`, `0x4d4d4d`. A rect of `0 0 0 0` comes first. A captured pointer whose word reads one of these is gone, and live relinked pointers there mean the row is mid-teardown (r28).
+
+To measure a photo, use the log as the ruler: fit the image scale on two logged box edges, then read the ink against it (r35 gave 1.4 image px per GUI px, r41's fit landed within 1 to 2 image px on all four crops). Downscaled crops carry a few px of noise, so don't treat a single measurement as a mechanism.
 
 Key Quest Markers r17 and Damage Numbers r27 have dated user acceptance on Eden/Linux. This does not establish individual feature coverage, Ryujinx, or physical Switch gameplay. Modern Controls r12 and Please do Better r24-forge151 are stock-loader maintenance builds whose approval does not add a new gameplay run.
 

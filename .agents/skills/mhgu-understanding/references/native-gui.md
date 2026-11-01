@@ -36,9 +36,13 @@ The inspected file is the English base `hud0.gui`, SHA-256 `5966122d6a28b1ba5700
 | `sharp` | 4 | 7 | 29..32 | Root, `Txt_sharp`, `Txt_sharpefx`, `Txt_sharpEdge` |
 | `pl_gauge0` | 7 | 8 | 33..38 | Other player HUD objects |
 
+The sharpness row's tier bands, sequences and live identity are in [Sharpness](sharpness.md).
+
 `Anm_sharp` selects ID 4, not ID 7. The sharp resource counts are four objects, fifteen sequences and three drawables. The stamina tiling texture is `Txt_sgauge1` at 960×16. `Txt_sgauge0` is 24×16, and `Pol_sgauge` is 960×4. The `Txt_mask` objects belong to `h_hand`, not the sharpness animation, and their names do not establish 5% steps. Do not expose or repurpose these objects as dormant sharpness machinery.
 
 Reproduce identity checks using `mods/key-quest-markers/scripts/gui_layout.py:Gui`: animation records use table `(40,164,24)`, ID at +0, counts as three little-endian 16-bit fields at +4, first object at +12, name offset at +16 and first sequence at +20. Objects use table `(48,172,36)`, ID at +0, name offset at +16 and properties at +24/count byte +4. Instances use `(68,188,36)`, name at +20 and properties at +28/count +16. Decode the instance's `AnimationId` property and match the animation's ID explicitly. Keep serialized tree-link offsets distinct from runtime object links.
+
+Keyframes (hud0, 2026-10-19). The object×sequence table at header +176 has 16-byte records, object-major, one record per object per sequence: flag byte +0, init-param count +2, keyed-param count +3, frame length u16 +6, init-param index +8, keyed-param index +12. Keyed params at header +184 are 24 bytes: value type +4, key count +5, owning object ID +8, name +12, key index +16, value offset +20. The key table is at header **+264** (+244 is `messageOffset`; both read 48,000 in hud0 only because it has no messages). Each key is 8 bytes with its frame in the first u16. A check over all 1972 dumped `.gui` files found the keyed-param word at +8 always equal to the owning object's ID, so it is not an interpolation mode.
 
 ## Classes and identities
 
@@ -60,20 +64,43 @@ Check the callback direction too. Saved object-vtable DTI for `cGUIObjTexture` e
 | Object-relative offset | Meaning |
 | --- | --- |
 | +0x50 | Object ID |
-| +0x54 | Visibility/draw/dirty flags |
+| +0x54 | Flag word, bits below |
+| +0x60 | Priority, halfword: the sort key when bit 19 is set |
+| +0x64 | The `cGUI` whose texture list the `Texture` setter scans (`*(obj+0x64)+0xe8`). The constructor zeroes it. |
 | +0x68 / +0x6c / +0x70 | First child / next sibling / parent |
 | +0x74 / +0x78 | Borrowed owning cGUI / rGUI resource context |
 | Texture +0x80 / +0x84 | Local X/Y floats |
+| Texture +0xa4..+0xb0 | Four corner colours, `0xAABBGGRR` |
 | Texture +0xb4 / +0xb8 | Width/height floats |
+| Texture +0xc0 bits 24..26 | Vertex cache dirty mark |
+| Node +0xe0..+0xec / +0xf0..+0xfc | Rect (a 128x128 box on the sharpness row, not the sprite) / effective rect, four ints |
+| Texture +0x100 / +0x104 | Texture ID / resolved texture object |
+| Texture +0x108 | Style byte: sampler in the low nibble, bits 4/5 tested by the rect setter |
+| Texture +0x10c..+0x118 | Atlas window, four floats `[u1, v1, u2, v2]` |
+| Mask +0xa0 low nibble / +0xa4 / +0xa8, +0xac / +0xb0..+0xbc | Anchor modes / bit 0 apply, bit 1 rebuild / size ints / built box |
 | Instance +0x6c | Owning cGUI source |
 | Instance +0xd8 / +0xdc | Runtime object map / owned root |
-| Root +0x9c / +0xa0 | Original descriptor / live map alias |
+| Root +0x9c / +0xa0 | Animation row / live map alias |
 | Root +0xa4 / +0x80 | Owned draw-cache allocation / command-list start |
-| Root +0x8c bits 1/2 | Draw-list/transform dirty state |
+| Root +0x8c bit 0 / bit 1 | Walker rebuilds its record list / transform walk starts (`0xa39c40`) |
+
+Flag word +0x54, read from the bytes on 2026-11-01. The constructor default `0x020a0001` is bits 0, 17, 19 and 25.
+
+| Bit | Evidence and meaning |
+| --- | --- |
+| 0 | Visible. The walker skips the subtree when clear. |
+| 17 | Transform dirty. Transform walk `0xa4964c` calls slot 0x44 (setMatrix) only with this bit (`0xa4969c`). It pushes bits 17 and 24 to children only from a node that has one of them (`0xa496e0`), so a clean parent leaves its subtree on its constructor's matrix. |
+| 18 | Cleared by the walker after a node's exit call. Meaning unread. |
+| 19 | One-shot child re-sort in `0xa4915c` (tested at `0xa49368`, cleared at `0xa49464`). Not a layout bit. |
+| 21 | Set by the transform walk after setMatrix (`0xa496c8`). Meaning unread. |
+| 22 | Byte +0x56 bit 6. The texture's enter skips its scissor branch when set (`0xa4e670`). |
+| 25 | Drawable. The walker emits enter and exit records on it; byte +0x57 bit 1 is the same bit. |
+
+Draw walker `0xa494a0`: with root +0x8c bit 0 set, it rebuilds an 8-byte record list, `(0,node)` on entry when drawable, `(1,node)` on exit, `(2,…)` to end. It descends +0x68, follows +0x6c, pops to +0x70 on a zero sibling, and stops when the next node is the root. It then consumes the list in order: kind 0 calls slots 0x38 and 0x3c, kind 1 calls slot 0x40. Slot 0x38 on a texture is `0xa4e628`, on a scissor mask `0xa4ba94`.
 
 Object +0x74 does not point to the animation instance. Native factory `0xa38bc0` establishes owner/resource links. Holder lookup uses the primary table at +0xf8/count +0x298 and the alternate table +0x294 for higher indices. Counter row instances 16..23 have their own maps/root objects.
 
-Native count getter `0xa38ffc` counts the tree. Cleanup `0x5456e4` indexes the map to that count. A child addition changes both, even if sequence descriptors stay unchanged. With secondary prefix count zero, root setup `0xa49b28` allocates `drawableCount*16+8`: nine drawables 152 bytes, ten 168. Another animation may have a nonzero prefix and need a different calculation.
+Native count getter `0xa38ffc` counts the tree. Cleanup `0x5456e4` indexes the map to that count. A child addition changes both, even if sequence descriptors stay unchanged. Root setup `0xa49b28` allocates `(objects << 4 | 8) + sequences * 12` from the halfwords at row+8: with no sequences that is `drawableCount*16+8`, nine drawables 152 bytes, ten 168; the sharpness row's 3 and 16 give 248.
 
 The optional Forge skill's GUI-extension reference owns the allocation/publication procedure. Its verified lesson is to preserve original bindings while expanding tree/map/cache together, with allocation matched to the native destructor. Native texture DTI has three slots; there is no placement constructor at +0x0c.
 
@@ -85,7 +112,7 @@ Size/AutoScale updates also need title +0xf0 bit 16 to rebuild glyph caches. Par
 
 The resource theme audit traces Gathering Green `#006305` and objective Red `#A30000` to native properties. The objective instance overrides its shared Message template. Slaying category Red `#CC0000` is a separate colour. Current badge user labels are Green/Red/Grey, with completed Grey `#808080`. Historical yellow/purple badge palettes are superseded.
 
-Reward world-quad helper `0xa4b390` combines anchors +0xa0, size +0xb4, matrix +0x10, direction bit 0x40 at +0x56, and hard-VFP scale s0. Scissor `0xa37c1c` applies draw offsets/scales and viewport intersections; sentinel fallback is at `0xbc12d8..0xbc1364`. A computed world quad does not establish framebuffer coordinates. The exact shader/constant-buffer route remained unresolved in that experiment.
+Reward world-quad helper `0xa4b390` combines anchors +0xa0, size +0xb4, matrix +0x10, direction bit 0x40 at +0x56, and hard-VFP scale s0. A scissor mask's enter calls the same builder with its own node and its +0xa8/+0xac size, so its box starts at its own +0x40/+0x44 translation. Scissor `0xa37c1c` applies draw offsets/scales and viewport intersections, writes the render target's scissor at target +0xe4..+0xf0 and stores the request at context +0xd0..+0xdc (one Eden run read the box at x1.5 there); sentinel fallback is at `0xbc12d8..0xbc1364`. A computed world quad does not establish framebuffer coordinates. The exact shader/constant-buffer route remained unresolved in that experiment.
 
 Verify constructor, setters, material dispatch, quad output, traversal, and destruction using original ARM bodies. GPU doubles prove no actual pixels/clipping. Counter r17 visible acceptance is scoped to dated Eden/Linux user reports with optional HD, not every menu/language/platform.
 

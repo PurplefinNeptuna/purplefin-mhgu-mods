@@ -7,7 +7,7 @@ description: Develop, change, debug, build, package and release native ARM32 For
 
 Target: MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
 `FB08F1D20FD1204FE7070672777F869B`. Loader: stock Forge 1.5.1 (Fexty's fork),
-forge-rs 1.5.0. Knowledge dated 2026-10-20.
+forge-rs 1.5.0. Knowledge dated 2026-11-01.
 
 ## Start here
 
@@ -54,13 +54,14 @@ build it and extract into the scratchpad.
 | GE / NZCVQ | ARM status flag groups. Restore NZCVQ; never write GE (`APSR_g`). |
 | Candidate | A packaged DEVELOPMENT build under `build/NAME/candidates/rN/`. |
 | Release | A READY_TO_DISTRIBUTE build under `build/NAME/releases/rN/`. |
-| Accepted | The user reported it working on a named emulator for exact hashes. |
+| Accepted | The user reported it working on a named emulator for an exact payload NRO hash. A ZIP hash moves with any README refresh, so it does not identify a build. |
 
 ## Hard rules
 
 **Always**
 - Give every runtime change a new version `rN`. Old candidates and releases stay byte-for-byte.
 - Verify every offset against the original NSO bytes before using it.
+- Before writing a native field by hand, find what reads it and what gates that read. If a setter exists, use it. A field that reads back your value has only been stored; three separate rounds of Modern Sharpness Gauge (r14 to r24, r53 to r55, r59 to r61) wrote fields nothing consumed.
 - Use Forge headers and APIs first. When you must go lower, write the verified gap next to the code.
 - Keep PIC and `-nostartfiles` / `-Wl,-z,text` in every Rust/GCC NRO target.
 - Install hooks all-or-nothing, with signature checks before any write and rollback on failure.
@@ -109,10 +110,13 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Keeping a captured instance after a quest or scene ends | Clear it at the destruction path. An unchanged address does not prove the object is still alive. |
 | Treating a quest as one continuous scene | Quests cross areas through loading screens, and per-area HUD objects are freed and rebuilt each time. Drop every captured address and redo per-row setup when the next area's object is found. The cGUIObjRoot slot 0x04 destructor does not fire on these transitions, so do not rely on it (`mhgu-understanding` Rules). |
 | Using a timer, frame counter or "no sample for N calls" as proof that an object is still alive (or already gone) | Write to or free a game object only while a native lookup made in the same callback finds it, or before a hooked teardown runs. Without that, leave the restore code out (the game's destructor owns what is linked into its tree) and report the missing teardown path. |
-| Reparenting nodes with hand-written +0x68/+0x6c/+0x70 links | List every link the walker follows on each moved node and on its old neighbours, and say where each new value comes from. Prefer the native linker `0xa4844c`. Prove the tree with a walker port over the post-write state (playbook P2 step 5). |
+| Reparenting nodes with hand-written +0x68/+0x6c/+0x70 links | List every link the walker and the native teardown follow on each moved node and on its old neighbours, and say where each new value comes from. Prefer the native linkers `0xa48460` and `0xa4844c`, and end the old chain: a node reachable twice is freed twice ([Native GUI extensions](references/native-gui-extensions.md)). Prove the tree with a walker port over the post-write state (playbook P2 step 5). |
+| Checking a row's liveness only from a callback that row owns | A freed node's handler stops being called, so the check goes silent. Check read-only from a callback that keeps running (the draw walker), and write only where the game hands over a live object. |
 | Re-reading the row after insertion with gates written for the tree before it | Each per-frame path after a write must accept the tree your write produced. Fixture it (playbook P2 step 5). |
 | Explaining a "looks like vanilla" report with a theory that makes the feature invisible by construction | The user's eyes decide the "visible on screen" stage. A positive log with a negative visual report means the log measures the wrong thing, or the run never reached values where the effect shows. Test with forced values. |
 | Testing a visual mechanism only with live data | Build a forced-value candidate first, with extremes the eye cannot miss (for example 0/25/50/100%). Connect live data after the user sees each step, then remove the forced path with P7. |
+| Rebuilding once per guess at a visual value | If no native model gives the value, ship a session-only tuner (P3 step 4). r33 to r36 measured photos across four builds; r39's panel found the accepted endpoints in one run. |
+| Working from a task's paraphrase of the tester | Copy the tester's words into the plan and `TESTING.md`, and check the build against those. r60 was built to a rewording that had the requirement backwards. |
 | Leaving test controls, probes, "record" helpers and their log lines in after the user accepts | Every experiment is scaffolding. Run P7 after acceptance: delete what nothing live reads, fix stale names and messages. |
 | Storing a value the user dialled in as absolute screen pixels | Store it relative to the rect it was measured on (offset or fraction), with a host test reproducing the accepted output. |
 | Justifying each line with what run rN printed | A comment states the current contract. The evidence lives in DEVELOPMENT.md history and EVIDENCE.json. |
@@ -121,10 +125,11 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Changing a user's design decision so a candidate looks different | Design decisions belong to the user. Report the blocker and ask; never hide, drop or swap a designed element to get a visible change. |
 | Deriving draw geometry from a node rect whose relation to the drawn sprite is unproven, or citing a setter probe as proof of clipping | Label such geometry inference. Shared render state read at an arbitrary moment proves only that the setter ran, not that it was active during the target draw. |
 | Leaving out steps of an in-repo precedent (such as the KQM badge's construction) | Compare your code with the precedent field by field. Name every skipped step and the native code that makes it unnecessary ([Native GUI extensions](references/native-gui-extensions.md)). |
-| Logging the values you wrote and calling that placement evidence | Read back the game's own output (rect +`0xe0`, matrix +`0x10..+0x4c`, size) at the next callback, after the native layout has run. A constructor default read back proves only that the constructor ran. |
+| Logging the values you wrote and calling that placement evidence | Read back the game's own output (rect +`0xe0`, matrix +`0x10..+0x4c`, size) at the next callback, after the native layout has run. A constructor default read back proves only that the constructor ran, and a field you wrote reads back whether or not anything consumes it. |
 | Reading numbers from a log that prints float fields as raw bits | Log floats as floats. Quote log values verbatim; a number that is not in the log is invented. |
-| Writing screen pixels into a node's local position or size | First find which node in the parent chain carries the scale, and convert with it. |
-| Interpreting a screenshot | Name each HUD element in the photo and confirm it with the user or a baseline shot of the accepted build. A user's correction about one element does not extend to others. An artefact that appears or disappears between builds is evidence; never discard it. |
+| Writing screen pixels into a node's local position or size | Those fields are local, and later writes to them may be inert. Move geometry with a mask, and treat a node's rect as a layout box, not as its sprite. |
+| Interpreting a screenshot | Name each HUD element in the photo and confirm it with the user or a baseline shot of the accepted build (the Dual Blades demon gauge was misread as the mod's own node across r47 to r49). A user's correction about one element does not extend to others. An artefact that appears or disappears between builds is evidence; never discard it. |
+| Treating an empty search as proof nothing references a function | Run the tool on a known positive first. A broken script's "no `bl` site" stood for weeks. Use `research xref` and `research word`, and check both. |
 
 ## Topic references
 

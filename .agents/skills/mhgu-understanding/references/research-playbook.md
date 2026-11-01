@@ -70,28 +70,27 @@ Read the original instruction bytes from the verified copied NSO. Never use
 Ghidra bytes for signatures (offset `0x283710` differs).
 
 ```sh
-python3 -c "
-import sys; sys.path.insert(0, 'scripts')
-from mhgu_binary import main_image
-img, _ = main_image(open('work/shared/game-exefs/main', 'rb').read())
-off = 0xa2664   # main-relative offset to inspect
-print(' '.join(img[off+i:off+i+4][::-1].hex() for i in range(0, 32, 4)))
-"
+./scripts/tool.sh research dis 0xa2664 0x20     # disassemble at a main-relative offset
+./scripts/tool.sh research xref 0xa2664         # ARM b/bl sites reaching it
+./scripts/tool.sh research word 0xa4ba94        # stored words equal to it: vtables, DTI
+./scripts/tool.sh research vtable 0x178fcc8 32  # a vtable's code offsets by slot
 ```
 
-`main_image` refuses any file whose SHA-256 or build ID differs from 1.4.0.
-The example prints `e92d48f0 ed2d8b02 ...` (`push {r4-r7,r11,lr}`,
-`vpush {d8}`), the documented start of the poison tick.
+These read `main` through `main_image`, which refuses any file whose SHA-256 or
+build ID differs from 1.4.0. The `dis` example starts `push {r4, r5, r6, r7,
+r11, lr}`, `vpush {d8}`, the documented start of the poison tick. Disassembly
+prints words byte-swapped: `e92d4830` is the memory bytes `30 48 2d e9`, and a
+signature window is written in memory order. `b`/`bl` targets in a `dis` listing
+are relative to the window, so read them with `xref` instead.
 
-To disassemble, write the window to a scratch file and run:
+Use these three traps as checks on any address or field you read:
 
-```sh
-llvm-objcopy -I binary -O elf32-littlearm --rename-section=.data=.text,code win.bin win.o
-llvm-objdump -d --triple=armv7a win.o
-```
-
-Printed addresses are relative to the window start, and `bl` targets are
-wrong by that same amount. Add your start offset by hand.
+- Vtable words and DTI `get`/`set` values are already main-relative. Subtracting
+  the Ghidra base from one gives a real-looking address in unrelated code, and
+  Modern Sharpness Gauge drew conclusions from three of those.
+- A decompiled `param_1[0x38]` on an `int *` is byte offset `0xe0`.
+- `xref` lists direct branches only. Before calling a function unreferenced, run
+  `word` too. Run any new or borrowed search tool on a known positive first.
 
 ## 6. Prove the meaning
 

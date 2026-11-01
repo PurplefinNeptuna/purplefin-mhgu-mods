@@ -106,13 +106,22 @@ user explicitly asks for that exact action in this task.
      they produce: for a walker, every node visited exactly once, every enter
      entry matched by its exit, and the exact cache length. A fixture that
      only checks the state before your writes proves nothing about them.
+   - **Trace the consumer of each native write.** Name the function that reads
+     the field and any dirty bit or cache in front of it. No host fixture can
+     cover game code, so this is the only check before a run.
 6. From the mod folder: `./build.sh build`, `./build.sh test`, `./build.sh verify`.
 7. Update `DISTRIBUTION.json` `reason` and evidence summary, `DEVELOPMENT.md`
    (replace the one current-state paragraph at the top and move the old one
    into history; add one new row in the release history table),
-   and `docs/LOCAL_STATE.md` (one table row). Say `Gameplay NOT RUN`.
-8. `python3 scripts/mod_distribution.py package NAME`, then `... check`.
-9. Commit and report.
+   and `docs/LOCAL_STATE.md`. That row holds current status, the release path
+   and the payload hash only; run history belongs in `DEVELOPMENT.md`. Say
+   `Gameplay NOT RUN`.
+8. **Review the premise before asking for a run.** Re-read what this version
+   assumes against the decompile or bytes, and against the tester's own words.
+   If it fails, withdraw the candidate and say why. That review found five
+   defects in r13 and withdrew r58 and r61 without spending a run.
+9. `python3 scripts/mod_distribution.py package NAME`, then `... check`.
+10. Commit and report.
 
 ## P3 Diagnose a user report
 
@@ -125,7 +134,10 @@ Do not change code until step 5.
    `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` (newest file);
    MHGURecomp `log.txt` beside its executable. Copy it to
    `work/NAME/runs/rN-<emulator>-<YYYY-MM-DD>.txt` before anything else,
-   because the next launch overwrites it.
+   because the next launch overwrites it. Eden also keeps only a rolling
+   100 MiB window, so a long session can lose a build's lines while it runs:
+   r58 to r61 were gone from the log r62 was read from, and r52's was never kept.
+   Ask for a copy after every run, and for the tester's exact words.
 3. **Match the bytes.** `sha256sum` the installed NRO/assets (read-only) and
    compare with `DISTRIBUTION.json` payload hashes and the candidate folder.
    If they differ, the report is about a different build; say so.
@@ -159,6 +171,11 @@ Do not change code until step 5.
      gate failures, even when every logged gate passed. Stop and go back to
      static research. The next candidate is a forced-value one whose effect
      the eye cannot miss.
+   - **The mechanism works and only a value is unknown?** Give the tester a
+     session-only tuner instead of rebuilding per guess: one closed Plugin UI
+     row, sliders that write a draft, Apply and Reset, and a line saying which
+     state is live. Bake the accepted value into the build and remove the panel
+     with P7. Check that an untouched control leaves the same state as Reset.
    - **One hypothesis per candidate.** Before the user runs a candidate,
      write in the report what they will see and which logged values will
      confirm it. A run that matches neither prediction refutes the
@@ -210,6 +227,9 @@ Only when the user explicitly approves this exact version for distribution.
 Approval is not a gameplay result unless they also report a run. If the
 version still carries test scaffolding, run-history comments or tester text in
 its README, say so and propose [P7](#p7-consolidate-after-acceptance) first.
+If this version is P7's output, its bytes were not the ones the user accepted.
+Ask whether to run it or promote it on static validation, and quote the choice
+in `approval.basis`, with the accepted version named as the runtime evidence.
 
 1. Confirm the candidate files still match the `DISTRIBUTION.json` payload
    hashes. Do **not** rebuild: promotion ships the exact tested bytes.
@@ -246,7 +266,11 @@ Run this when the user accepts a behaviour (or closes a phase) and before the
 next feature or a P5 promotion. Experiments add code; this playbook removes it.
 It is a P2 change with a new `rNEW`. Visible behaviour stays the same: anything
 that must change position or format gets a host test showing identical output
-on the accepted values.
+on the accepted values. Never combine it with a behaviour change. r60 did, and
+deleted its read-backs in the same build the tester then rejected. Before
+stripping, freeze the accepted candidate under
+`backups/accepted/NAME/rN-screen-accepted/`, because `rNEW`'s bytes will not be
+the accepted ones (P5 says what to ask next).
 
 1. **List what the accepted build no longer needs.** For each item, grep its
    uses first and delete it only when nothing live reads it:
@@ -270,7 +294,9 @@ on the accepted values.
 4. **Rewrite comments as current contracts.** Offset, unit, owner, why, in
    a line or two. Move run IDs, what a run printed and refuted approaches into
    DEVELOPMENT.md history. Leave audited assembly bytes unchanged. Gate:
-   `grep -nE '\br[0-9]{1,3}\b' src core/src` returns nothing.
+   `grep -nE '\br[0-9]{1,3}\b' src core/src` returns nothing. The gate cannot
+   see a comment that drops its run ID and keeps a refuted claim, so also check
+   each native claim in a comment against the history's corrections.
 5. **Split the README.** README.md follows the release README standard in
    docs/DEVELOPMENT.md with nothing aimed at the tester. Tester steps, what to
    report and the log-line and stage-code reference go in `mods/NAME/TESTING.md`
@@ -279,9 +305,12 @@ on the accepted values.
    returns nothing. Refresh the export list after adding a file (from the mod
    folder: `python3 scripts/export_source.py --refresh`).
 6. **Collapse DEVELOPMENT.md's head.** Exactly one current-state paragraph,
+   then the commands, files and offset tables, corrected to `rNEW`, and only
    then the history. Merge stacked "Current state:" paragraphs into one for
-   `rNEW` and move the older ones under history.
-7. Continue with P2 steps 6 to 9. In the report, give the line counts of
+   `rNEW` and move the older ones under history. A later result that overturns
+   an earlier reading goes in a short corrections list above the history, since
+   readers stop at the head.
+7. Continue with P2 steps 6 to 10. In the report, give the line counts of
    `src/` and `core/src/` before and after, plus `git diff --stat`.
 
 ## Finish every playbook

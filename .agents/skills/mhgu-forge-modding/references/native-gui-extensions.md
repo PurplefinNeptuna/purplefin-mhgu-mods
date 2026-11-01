@@ -4,7 +4,7 @@ This recipe is established for the quest counter row in MHGU Switch 1.4.0. It is
 
 ## Plan a different menu before adapting the recipe
 
-Establish the selected resource hash/variant, live instance, animation ID versus table row, owned object range and sequence bindings. Node names and file presence do not establish a spare rendering mechanism. The corrected hud0 case has `Anm_sharp` selecting animation ID 4 at row 7. Its apparent `sgauge` candidates belong to stamina, and `Txt_mask05..55` belong to `h_hand`. Use the companion's native GUI identity table when researching that fixture. At runtime (Modern Sharpness Gauge r9 Eden log, 2026-10-22), `Txt_sharp`, `Txt_sharpefx` and the third sharpness texture are siblings whose parent is the gauge controller itself. The file's child indices do not describe this tree: there is no group node, and the glow is not a child of the bar. Unlike the counter row, the controller carries no map aliases at +0xa0/+0xa4.
+Establish the selected resource hash/variant, live instance, animation ID versus table row, owned object range and sequence bindings. Node names and file presence do not establish a spare rendering mechanism. The corrected hud0 case has `Anm_sharp` selecting animation ID 4 at row 7. Its apparent `sgauge` candidates belong to stamina, and `Txt_mask05..55` belong to `h_hand`. Use the companion's native GUI identity table when researching that fixture. At runtime (Modern Sharpness Gauge r9 Eden log, 2026-10-22), `Txt_sharp`, `Txt_sharpefx` and the third sharpness texture are siblings whose parent is the gauge controller itself. The file's child indices do not describe this tree: there is no group node, and the glow is not a child of the bar. Like the counter row, it has a map alias: controller +0xa0 holds the same pointer as instance +0xd8 (r16 log; the insertion's gate has required it on every insert since r18). An earlier zero reading did not hold.
 
 Before adding a child, identify the target menu's construction/update/draw/destruction paths, every affected count/map consumer, map aliases, cache prefix and capacity, allocation/free pairing and publication order. Derive its sizes from those paths. The 13-pointer map and 168-byte cache below are quest-row results, not reusable HUD constants. Resource counts alone do not establish runtime capacity. Prepare allocations before publishing, preserve original bindings, avoid duplicate insertion and verify failure cleanup.
 
@@ -28,12 +28,12 @@ The Key Quest Markers badge (`create()` in `mods/key-quest-markers/src/gui.rs`) 
 
 1. Allocate 304 bytes through alloc+`0x20` with `(bytes, 16, dti id)`, zero the block, then run constructor main+`0xa4f60c` with the storage in r0.
 2. Write +`0x50` (a private ID), +`0x74` (owner) and +`0x78` (resource). Modern Sharpness Gauge also needed a live sibling's +`0x64`, because the `Texture` resolve scans `*(obj+0x64)+0xe8` (main+`0xb80fd0`). Without it, its r46 copy was refused at the texture step.
-3. Run the 12 style setters, each with two integer arguments. Names are from the saved DTI; values are the badge's: `BlendState` `0xa4dc24`=1, `ControlPoint` `0xa4a9f4`=0, `FixFrame` `0xa47a94`=0, `Mask` `0xa4dca0`=0, `Priority` `0xa47a04`=2, `ReferencePosition` `0xa4aa24`=1, `ReferenceRotation` `0xa4aa5c`=1, `ReferenceScaleX/Y/Z` `0xa4aa94`/`0xa4aac8`/`0xa4aafc`=3, `Reverse` `0xa4dc54`=0, `SamplerState` `0xa4fa5c`=0. A zeroed block leaves every `Reference*` property at 0.
-4. Run `Texture` `0xa4faf0` last; it returns early while +`0x78` is 0. Then set `mTextureRect` through `0xa4fb58` with a pointer to four floats.
+3. Run the 12 style setters, each with two integer arguments. Names are from the saved DTI; values are the badge's: `BlendState` `0xa4dc24`=1, `ControlPoint` `0xa4a9f4`=0, `FixFrame` `0xa47a94`=0, `Mask` `0xa4dca0`=0, `Priority` `0xa47a04`=2, `ReferencePosition` `0xa4aa24`=1, `ReferenceRotation` `0xa4aa5c`=1, `ReferenceScaleX/Y/Z` `0xa4aa94`/`0xa4aac8`/`0xa4aafc`=3, `Reverse` `0xa4dc54`=0, `SamplerState` `0xa4fa5c`=0. A zeroed block leaves every `Reference*` property at 0. These are the badge's values: a copy of another sprite takes that sprite's sampler, the low nibble of +`0x108` (the sharpness bar's is 2; a copy left on 0 filtered its edges differently).
+4. Run `Texture` `0xa4faf0` last; it returns early while +`0x78` is 0. Then set `mTextureRect` through `0xa4fb58` with a pointer to four floats, and keep using that setter afterwards (see "A texture caches its quad").
 
-The constructor's own defaults include +`0x54` = `0x020a0001` and +`0xb4`/+`0xb8` = 32.0 (main+`0xa4d0d8`). Reading those words back proves only that the constructor ran, not that the node draws. +`0x80`/+`0x84` and +`0xb4`/+`0xb8` are local values, not screen pixels. Before converting a screen measurement into them, find which node in the parent chain carries the scale (the sharpness bar is authored 88 wide and drawn 128 px wide).
+The constructor's own defaults include +`0x54` = `0x020a0001` and +`0xb4`/+`0xb8` = 32.0 (main+`0xa4d0d8`). Reading those words back proves only that the constructor ran, not that the node draws. +`0x80`/+`0x84` and +`0xb4`/+`0xb8` are local values, not screen pixels. A node's rect at +`0xe0` is not its sprite either: the sharpness bar is authored 88x24 with an x scale of 1.0, its rect is 128x128, and its ink was measured ending at 200 px inside the rect's 110..238. No mapping from atlas columns to rect pixels was ever derived, so measure geometry on screen and store it as a fraction of the rect (P7 step 2).
 
-The alternative is to copy a live sibling of the same class byte for byte. That carries every style field. Then replace the ID, clear the +`0x68`/+`0x6c`/+`0x70` links and the animation binding, and link the copy with the native linker.
+An untested alternative is to copy a live sibling of the same class byte for byte, then replace the ID, clear the +`0x68`/+`0x6c`/+`0x70` links and the animation binding, and link the copy with the native linker. No mod has run this, and the class has no clone function: its vtable slot 0x00 (main+`0xa4f6a4`) is not a constructor, and calling it on a fresh block froze the game (r45).
 
 When a new node becomes the parent of existing nodes, the draw walker main+`0xa494a0` decides the result. It descends +0x68, moves along +0x6c, and when a sibling is 0 it pops to that node's +0x70. It writes a node's exit entry only when a pop lands on that node. So a moved node's old sibling link and its parent link both decide whether the new parent's exit entry is ever written. Run a walker port over the tree after your writes before you trust it (playbook P2 step 5). An enter entry with no matching exit leaves masks and other state active for every draw that follows.
 
@@ -47,6 +47,65 @@ Appending a child requires both storage expansions:
 The map uses the instance's MT allocator. Cache allocation must match the native cache-free/destructor path. Fully prepare replacement allocations, publish aliases/cache/tree coherently, mark sorting/transform/draw state dirty, and free replaced storage at the verified point. The native root/instance recursively destroy the child, map, cache, and graphics allocations. No extra destructor hook is required for this audited static addition.
 
 The count getter `0xa38ffc` counts the linked tree, while cleanup `0x5456e4` indexes the runtime map to that count. A 13-node tree with a twelve-entry map froze the game. Enlarging only the cache does not fix it. Original resource descriptors, first twelve animation bindings, and sequences remain unchanged. An animated addition may need another design.
+
+### Size any row from its own numbers
+
+Root setup `0xa49b28` allocates `(objects << 4 | 8) + sequences * 12` through root vtable slot 0x58 and stores it at root +`0xa4`, with the walker's pointer root +`0x80` = allocation + `sequences * 12`. Both counts are the halfwords at **row+8**, not row+4: the sharpness row reads 3 and 16 there and 4 and 15 at row+4.
+
+- Objects is the node count. The map is one longer, because its first entry is the controller.
+- The walker's list is 8 bytes per record plus an 8-byte terminator. A visible drawable node emits an enter and an exit; a hidden one emits neither.
+- The grown map comes from the `cGUIInstance` allocator, slot 0x1c with `(bytes, 16)`. Passing no alignment leaves it as register garbage. Publish instance +`0xd8` and root +`0xa0` together.
+- Return the old cache through root slot 0x5c. A build that left it unreleased stopped the bar drawing (r28; mechanism unread).
+- Link last, so a larger tree never exists against the old map, and then set root +`0x8c` bits 0 and 1 (bit 0 rebuilds the walker's list, bit 1 starts the transform walk).
+
+The game allocates a row's map in `FUN_01401bc0` and frees it in `0xa38828` (`setAnimationId`) through the same class allocator. Modern Sharpness Gauge still leaks the old 16-byte block, a shortcut from before that was read.
+
+## Move nodes under a new parent
+
+The accepted shape (Modern Sharpness Gauge r62) is the controller over a mask over the bar, glow and edge, with a second mask over the shade as the first mask's sibling.
+
+- **One inbound chain per node.** Native teardown (root `0xa486fc`, mask `0xa56758`) walks children and then siblings, calling slot 0x04 on each. After moving the first sibling under the new node, also write 0 to root +`0x6c`, or the moved nodes are reachable twice and are freed twice. That poisoned the allocator the next area's row builds from, so the row never came back (r24 to r28), and it crashed at a quest end (r14). The old chain also hides the bug: r24 to r27's visible bar was drawing through it, outside the mask.
+- **Native linkers.** `0xa48460(parent, child)` writes the child link and the child's parent. `0xa4844c(node, sibling)` writes the sibling link and copies `node`'s parent into the sibling, so link the parent first.
+- **Paint order is walk order.** The walker has no sort and no z value. To draw under a node, a node has to be walked before it, but linking one ahead of the mask on the controller's chain lost the row (r54: `root.child=0x0` 8 ms after insertion, never matched again; mechanism unread). A sibling after the mask is the only proven position.
+- **Priority is a re-sort key, not a layer the walker reads.** Bit 19 of +`0x54` makes `0xa4915c` sort that node's children ascending by the halfword at +`0x60`, relink them and clear the bit. The constructor's default flags carry bit 19, so set a child's Priority deliberately.
+
+## Clip with a scissor mask
+
+A node's rect does not limit its drawing (r55 wrote a zero-width +`0xe0` and +`0xf0` and the copy painted anyway). The render state's scissor does. A mask's enter (main+`0xa4ba94`, slot 0x38) sets it and its exit (main+`0xa4bcdc`, slot 0x40) restores it, for everything walked between them. It clips at 1:1 and never scales what it covers (the premise of r58 and r61 was refuted).
+
+Build a `cGUIObjScissorMask` (0xd0 bytes) with factory main+`0xa4b6cc`: no arguments, object in r0, allocated through its own DTI. Give it a marker at +`0x50` and a sibling's +`0x74`/+`0x78`. Then, in a hook on the enter handler filtered by that marker, write on every enter:
+
+| Field | Value | Why |
+| --- | --- | --- |
+| +`0xa0` low nibble | 0 | Two anchor modes the factory leaves as recycled memory: `& 3` for +`0xa8`, `& 0xc` for +`0xac`. Mode 0 spans `0..size`, 1 centres, 2 spans `-size..0`, 3 collapses the axis. The class has no Anchor property. |
+| +`0x10`, +`0x14` | 1.0, 0.0 | Builder `0xa4b390` multiplies the width by this row, and the factory's template leaves it zero. |
+| +`0x40`, +`0x44` | floats, only to move the box | The box corner is the mask's own translation. The builder reads no parent field. The transform walk fills it from the parent, which is why a mask defaults to the row's corner. |
+| +`0xa8`, +`0xac` | integers | Box size, forward from the corner. |
+| +`0xa4` | 3 | Bit 1 rebuilds +`0xb0..+0xbc` and clears itself; bit 0 applies the scissor. |
+
+Keep bit 17 on the mask's +`0x54`. Without it the node never takes its parent's transform and neither does anything under it (r57).
+
+These do nothing: +`0xb0..+0xbc` (derived, rebuilt from the row above), +`0x80`/+`0x84` on a mask with no animation entry, and +`0xe0` (past the end of the 0xd0-byte object). Take a width from the bar's rect, never from bar +`0xa8`, which is an animated field that reads zero at enter: feeding it produced the zero-width box of r23 to r29, and the "layout zeroes the width" reading of r24 was that zero.
+
+Turn a mask off with `Enable` `0xa4ba20(mask, 0)`, which writes bit 0 of +`0xa4` from its argument.
+
+### An unread route: per-node scissor
+
+The texture's enter (`0xa4e628`, slot 0x38) does intersect the live scissor with its own +`0xe0` and apply it, but only when +`0xcc`'s low nibble is 3 or 6 and +`0x56` bit 6 is clear. That explains r55 without ruling out the route. `ScissorSize` (`0xa4dcc4`) writes +`0xd8`/+`0xdc`, and +`0xd0` bit 0 makes the enter call slot 0x74 (`0xa4f420`) to rebuild +`0xe0`. Nothing has set +`0xcc` or read slot 0x74: an earlier "unsafe to arm" verdict disassembled the wrong address, and an earlier read of "+0x33" read the wrong field. Read this before adding another mask.
+
+## A texture caches its quad
+
+Draw slot 0x3c (main+`0xa4fc9c`) calls `0xa4feb4`, which copies the UVs from +`0x10c..+0x118` and the corner colours from +`0xa4..+0xb0` into the vertex record only while `global+0x98 & (+0xc0 >> 24) & 7` is nonzero, then clears those bits. Only slot 0x50 (main+`0xa4fc68`) sets them.
+
+So use the setter. `mTextureRect` `0xa4fb58(node, *f32[4])` returns at once when the floats match, otherwise stores them, calls slot 0x28 when `+0x108 & 0x30`, and tail-calls slot 0x50. Calling it every frame is cheap. A raw write to +`0x10c` reads back perfectly and never repaints: r59, r60 and r61 all drew the band the first build left, and r60's `shade_tex=` showed the write landing on all 73 fill lines. Inference: raw colour writes after the first build are inert the same way, so use the `VertexColor*` setters. Position and authored-size writes after the build were also inert (r53: `pos=90.0 0.0 size=0.7 24.0` with `rect=110 38 238 166`, mechanism unread), so move geometry with a mask.
+
+## Survive area changes
+
+A row dies at every area's loading screen, and `cGUIObjRoot`'s destructor has fired in no saved log.
+
+- Detect the death from a callback that keeps running. A freed mask's enter stops being called, so a check placed only there goes silent (r20). Check from the draw walker: read-only, the marker, the mask's parent against the root and the root's child against the mask. On failure, drop every captured address and re-arm discovery, so the next row is read and inserted like the first.
+- Write only where the game hands over a live object. In the mask's enter, when the links are gone, turn the mask off and drop the addresses. Left alone, it keeps applying its last box into the next area (r24).
+- Every HUD instance calls the walker, so capture the pair whose instance +`0xdc` is the controller you identified, not the last one seen (r5). The walker has two entries: `0xa39300` calls it at `0xa39664`, and `0xa56a14` tail-branches with node +`0xcc`.
 
 ## Material, geometry, and title fitting
 
@@ -70,4 +129,4 @@ Trace handshake, original trampoline, hook entry, resource identity, attachment,
 
 Mocked GPU commands/allocations establish no actual clipping or pixels. Manual acceptance checks opening, scrolling, selection, request overlap, confirmation, closing/reopening, and scene transitions. Preserve successful payload hashes. A visible bit or successful plugin load does not establish a working GUI.
 
-Sources: `mods/key-quest-markers/src/{gui.rs,native.rs,offers.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py,arm.py}`, `research/theme-colours.json`, `DEVELOPMENT.md`, `EVIDENCE.json`; `docs/RESEARCH.md`. Read current source/r17 records before historical r3 through r16 narratives.
+Sources: `mods/key-quest-markers/src/{gui.rs,native.rs,offers.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py,arm.py}`, `research/theme-colours.json`, `DEVELOPMENT.md`, `EVIDENCE.json`; `mods/modern-sharpness-gauge/src/insert.rs` and its `DEVELOPMENT.md`; `docs/RESEARCH.md`. Read current source/r17 records before historical r3 through r16 narratives. Native addresses in the mask, cache and flag sections were rechecked against the original bytes on 2026-11-01; `rN` tags name Modern Sharpness Gauge runs in its history.
