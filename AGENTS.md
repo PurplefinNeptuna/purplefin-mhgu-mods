@@ -27,8 +27,10 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   emulator, changes emulator settings, edits saves, publishes or pushes. Commit
   validated, coherent changes locally after checking staged paths, run
   `python3 scripts/mod_distribution.py check` first and keep the custom hooks.
-- **Preserve** unrelated work, original dumps, library inputs, saves, accepted
-  artifacts in `backups/accepted/` and research inputs in `work/`.
+- **Preserve** unrelated work, original dumps, library inputs, saves and research
+  inputs in `work/`. `backups/` is an optional local archive: agents do not delete
+  it, the user may clear it, and nothing may depend on it. Each mod's last
+  gameplay-accepted build stays under `build/NAME/` (see docs/LOCAL_STATE.md).
 - **Scripted edits.** Prefer the edit tool. Append with `open(p, 'a')` or
   `cat >>`. Never write `open(p, 'w').write(open(p).read() + x)`: the `'w'`
   empties the file before the read runs. `work/` is gitignored, so nothing can

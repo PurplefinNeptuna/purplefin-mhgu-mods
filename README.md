@@ -26,5 +26,6 @@ extraction support are local integrations.
 
 Use mod-local build.sh commands. Inspect all deliveries with
 `python3 scripts/mod_distribution.py check`. Builds and packaging do not install,
-activate or publish. Superseded source remains in Git; accepted deliveries are
-preserved under backups/accepted/. Update upstream repositories in place.
+activate or publish. Superseded source remains in Git. Each mod's last gameplay-accepted build stays
+under build/, and backups/ is an optional local archive. Update upstream
+repositories in place.

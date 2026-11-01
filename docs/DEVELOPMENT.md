@@ -166,6 +166,9 @@ Archive superseded releases outside active releases.
    `release_sha256` (one entry per release file), `"runtime": "UNCHANGED"` and
    `reason`. Confirm the copy with `diff -r`, then remove the build copy and
    any empty `releases/`. `check` allows only a READY version there.
+   `backups/` is optional and the user may clear it, so if OLD is the mod's last
+   gameplay-accepted build, first copy its ZIP to `build/NAME/candidates/OLD/`
+   with a `SHA256SUMS`, and update the table in `docs/LOCAL_STATE.md`.
 3. In `DISTRIBUTION.json`, set `status` to DEVELOPMENT and update `version`,
    `reason`, `archive`, `candidate`, `candidate_builder`, payload sources and
    hashes, `limitations` and the evidence summaries. Delete `approval`; it

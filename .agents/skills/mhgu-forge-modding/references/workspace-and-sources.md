@@ -31,7 +31,7 @@ The supplied dump is RomFS-only. Original main/SDK/loader inputs must come from 
 
 Core workspace reading: `AGENTS.md`, `README.md`, `docs/LOCAL_STATE.md`, `docs/DEVELOPMENT.md`, `docs/TOOLS.md`, `docs/RESEARCH.md`. Current source and exact artifact receipts resolve stale narrative claims. Preserve dated evidence instead of rewriting its historical assertions.
 
-Useful evidence locations: `work/shared/game-exefs/`, `work/shared/forge-1.5.1/`, `work/research-tooling/`, per-mod `work/NAME/`, `build/NAME/candidates/`, `build/NAME/releases/`, and `backups/accepted/`. Ignored/private material may be absent from another checkout. Consult the current docs, EVIDENCE.json and Git history.
+Useful evidence locations: `work/shared/game-exefs/`, `work/shared/forge-1.5.1/`, `work/research-tooling/`, per-mod `work/NAME/`, `build/NAME/candidates/`, and `build/NAME/releases/`. Ignored/private material may be absent from another checkout. Consult the current docs, EVIDENCE.json and Git history.
 
 ## Source and acceptance snapshot
 

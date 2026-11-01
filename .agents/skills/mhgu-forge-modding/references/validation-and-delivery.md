@@ -23,7 +23,7 @@ No automated in-game suite exists. After a reported run, read that emulator's la
 
 Each `mods/NAME/DISTRIBUTION.json` is authoritative. DEVELOPMENT is unapproved work, LOCAL_ONLY is local tooling/dependency, READY_TO_DISTRIBUTE is approved verified local delivery, and PUBLISHED additionally records URL/date. Distribution approval and exact-binary gameplay acceptance remain distinct.
 
-Runtime changes require a new version. Promote accepted candidate bytes without rebuilding. Preserve the previous accepted release under `backups/accepted/`. Support-only refreshes back up the prior delivery and keep runtime hashes unchanged. Do not rebuild into a candidate/output directory whose receipts an immutable release still references.
+Runtime changes require a new version. Promote accepted candidate bytes without rebuilding. Keep the last gameplay-accepted build under `build/NAME/`, and treat `backups/` as an optional archive. Support-only refreshes back up the prior delivery and keep runtime hashes unchanged. Do not rebuild into a candidate/output directory whose receipts an immutable release still references.
 
 The payload NRO hash identifies a build. An archive's hash moves with any repackaging or README refresh, so record both and scope acceptance to the NRO. A comment-only source edit is not a runtime change once a scratch rebuild gives the released NRO hash: rebuild outside `build/NAME/`, never into a folder an immutable release references.
 

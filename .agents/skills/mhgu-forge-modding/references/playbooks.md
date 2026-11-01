@@ -81,7 +81,8 @@ user explicitly asks for that exact action in this task.
    copy its `build/NAME/releases/rOLD/` folder and the mod's
    `DISTRIBUTION.json`/`EVIDENCE.json` into
    `backups/accepted/NAME/rOLD-before-<short-change-name>/` before editing.
-   Never edit or delete anything in `backups/accepted/`.
+   Agents never edit or delete anything in `backups/accepted/`, but the user may clear
+   it, so nothing may depend on it.
 4. **Bump every version string.** Find them with
    `grep -rn 'rOLD' mods/NAME --exclude-dir=vendor --exclude-dir=__pycache__`.
    Typical places: `mod.json`, `DISTRIBUTION.json` (`version`, `archive`,
@@ -266,9 +267,8 @@ It is a P2 change with a new `rNEW`. Visible behaviour stays the same: anything
 that must change position or format gets a host test showing identical output
 on the accepted values. Never combine it with a behaviour change. r60 did, and
 deleted its read-backs in the same build the tester then rejected. Before
-stripping, freeze the accepted candidate under
-`backups/accepted/NAME/rN-screen-accepted/`, because `rNEW`'s bytes will not be
-the accepted ones (P5 says what to ask next).
+stripping, confirm the accepted candidate stays under `build/NAME/candidates/rN/` and list it in `docs/LOCAL_STATE.md`,
+because `rNEW`'s bytes will not be the accepted ones (P5 says what to ask next).
 
 1. **List what the accepted build no longer needs.** For each item, grep its
    uses first and delete it only when nothing live reads it:

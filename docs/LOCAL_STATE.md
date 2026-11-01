@@ -11,18 +11,30 @@ EVIDENCE.json.
 
 | Mod | Current | Acceptance scope |
 | --- | --- | --- |
-| Damage Numbers | r36 READY_TO_DISTRIBUTE (2026-10-30) | Hits outside the camera view stay hidden until the camera turns to them instead of showing at screen centre. Release `build/damage-numbers/releases/r36/damage-numbers-r36.zip`, promoted unchanged from the candidate (approval and archive in `backups/accepted/damage-numbers/r36-distribution-approved/`). User reports an Eden run (log not retained); r37-projection-ab, a diagnostic with r36's display code, ran docked on Eden and looked right. Handheld unreported. |
+| Damage Numbers | r36 READY_TO_DISTRIBUTE (2026-10-30) | Hits outside the camera view stay hidden until the camera turns to them instead of showing at screen centre. Release `build/damage-numbers/releases/r36/damage-numbers-r36.zip`, promoted unchanged from the candidate. User reports an Eden run (log not retained); r37-projection-ab, a diagnostic with r36's display code, ran docked on Eden and looked right. Handheld unreported. |
 | Key Quest Markers | r18 READY_TO_DISTRIBUTE (2026-10-18) | Link rebuild of the Eden/Linux-accepted r17. HD is optional. Ryujinx and Switch hardware unconfirmed. |
-| Modern Sharpness Gauge | r63 READY_TO_DISTRIBUTE (2026-11-01) | r62 with its run instruments removed, promoted on static validation by the user's choice: r63 itself has never been run. Runtime evidence is r62, accepted on Eden 2026-11-01 at the red tier and frozen in `backups/accepted/modern-sharpness-gauge/r62-screen-accepted/`. Release `build/modern-sharpness-gauge/releases/r63/modern-sharpness-gauge-r63.zip`, payload NRO `202c0719c7edfb28f4b3b359630b60f84ec69ac00c632a573284f7b2d3cc965f`, approved snapshot in `backups/accepted/modern-sharpness-gauge/r63-distribution-approved/`. Open: an orange-tier crop, Ryujinx and native hardware. r61 is withdrawn, do not ship. |
+| Modern Sharpness Gauge | r63 READY_TO_DISTRIBUTE (2026-11-01) | r62 with its run instruments removed, promoted on static validation by the user's choice: r63 itself has never been run. Runtime evidence is r62, accepted on Eden 2026-11-01 at the red tier and at `build/modern-sharpness-gauge/candidates/r62/`. Release `build/modern-sharpness-gauge/releases/r63/modern-sharpness-gauge-r63.zip`, payload NRO `202c0719c7edfb28f4b3b359630b60f84ec69ac00c632a573284f7b2d3cc965f`. Open: an orange-tier crop, Ryujinx and native hardware. r61 is withdrawn, do not ship. |
 | Modern Weapon Controls | r12 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
 | Please do Better | r24-forge151 READY_TO_DISTRIBUTE | Stock-Forge maintenance build approved after static validation; no new gameplay run. |
 | Shared Urgent Quests | r1 DEVELOPMENT candidate (2026-10-21), gameplay NOT RUN | Records a rank-up urgent clear for an online client when the urgent is on that client's own board. Needs a two-instance session test. |
 | HD Project, wiki cheats, DTI dumper support | LOCAL_ONLY | Local integrations. |
 
 Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
-`build/NAME/releases/VERSION/`. Superseded and accepted deliveries are preserved
-unchanged under `backups/accepted/NAME/`, named after the change that replaced
-them (for example `r30-before-status-damage/`).
+`build/NAME/releases/VERSION/`.
+
+## Last gameplay-accepted builds
+
+The rollback for a release with no gameplay run of its own. `backups/` is an optional local archive, and nothing here or in any tool depends on it.
+
+| Mod | Build | Where | Scope |
+| --- | --- | --- | --- |
+| Damage Numbers | r36 | `build/damage-numbers/releases/r36/` | User-reported Eden run, log not retained |
+| Key Quest Markers | r17 | `build/key-quest-markers/candidates/r17/` | Accepted on Eden/Linux |
+| Modern Sharpness Gauge | r62 | `build/modern-sharpness-gauge/candidates/r62/` | Accepted on Eden at the red tier |
+| Modern Weapon Controls | r10 | `build/modern-weapon-controls/candidates/r10/` | Accepted on the retired loader; not checked on stock Forge 1.5.1 |
+| Please do Better | r23, r17-config1 | `build/please-do-better/candidates/r23/`, `build/please-do-better/candidates/r17-config1/` | r23 confirmed loading with an approval; r17-config1 confirmed by the user on the retired loader |
+
+The three ZIP-only folders have a `SHA256SUMS`. Dated records in `EVIDENCE.json`, `COMPACTION.json` and `WORKSPACE_EVIDENCE.json` name `backups/` paths that may no longer exist. They keep the hashes, which remain each file's identity.
 
 Open device reports: Damage Numbers placement on real Switch and Android in
 handheld mode (reported against r28; testers' exact loader/plugin hashes were
@@ -61,4 +73,4 @@ for gameplay. There is no automated in-game suite.
 
 ## Evidence and recovery
 
-[COMPACTION.json](COMPACTION.json) records source revisions, archive and payload hashes, removed paths and validation for the 2026-10-15 cleanup. [WORKSPACE_EVIDENCE.json](WORKSPACE_EVIDENCE.json) keeps dated workspace research. Run logs removed from the docs are in Git history at commit `31ed4ef` and earlier. The recovery tag is `cleanup/before-stock-forge-20261015`. The pre-prune copies of the `work/` research notes are in `backups/work-notes/20261102-before-prune/`.
+[COMPACTION.json](COMPACTION.json) records source revisions, archive and payload hashes, removed paths and validation for the 2026-10-15 cleanup. [WORKSPACE_EVIDENCE.json](WORKSPACE_EVIDENCE.json) keeps dated workspace research. Run logs removed from the docs are in Git history at commit `31ed4ef` and earlier. The recovery tag is `cleanup/before-stock-forge-20261015`. Tag `archive/backups-records-20261102` holds the pre-prune `work/` research notes, the text records from `backups/accepted/`, and an inventory of `backups/` taken on 2026-11-02, with no working-tree cost: `git show archive/backups-records-20261102:backups-inventory.txt`.
