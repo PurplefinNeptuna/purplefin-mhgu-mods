@@ -16,7 +16,7 @@ The parser checks header length/size, count×stride bounds, string termination, 
 | 17 immediate boolean | Low byte of value, zero/nonzero |
 | 18 immediate integer/enum | Value itself |
 
-Other kinds need their own native decoding. Treating 17/18 as offsets made icon parameters appear mostly 1, concealing `Mask=0`. Mask 1 writes masks. Normal coloured texture rendering requires the actual material path as well as visibility and vertex colours.
+Other kinds need their own native decoding. Treating 17/18 as offsets made icon parameters appear mostly 1, concealing `Mask=0`. Mask 1 writes masks. The game authors only 0 and 1; modes 1, 2, 4, 5 and modes 3, 6 enter through `0xb375c4` and `0xb38004`. Normal coloured texture rendering requires the actual material path as well as visibility and vertex colours.
 
 ## Establish GUI identity before proposing reuse
 

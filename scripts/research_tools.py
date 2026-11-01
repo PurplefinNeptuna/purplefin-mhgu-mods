@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 
@@ -109,6 +110,12 @@ def word_sites(image, value):
     return [at for at in range(0, len(image) - 3, 4) if image[at:at + 4] == needle]
 
 
+def real_target(instruction, start):
+    """objdump prints a branch target relative to the window; give it as main+offset."""
+    match = re.fullmatch(r"(bl?x?(?:eq|ne|hs|lo|mi|pl|vs|vc|hi|ls|ge|lt|gt|le)?) 0x([0-9a-f]+)", instruction)
+    return f"{match[1]} main+{(start + int(match[2], 16)) & 0xffffffff:#x}" if match else instruction
+
+
 def disassemble(image, start, size):
     with tempfile.TemporaryDirectory() as folder:
         raw, obj = Path(folder, "win.bin"), Path(folder, "win.o")
@@ -120,7 +127,7 @@ def disassemble(image, start, size):
     for line in listing.splitlines():
         address, colon, text = line.strip().partition(":")
         if colon and text and all(c in "0123456789abcdef" for c in address):
-            print(f"main+0x{start + int(address, 16):x}  {' '.join(text.split('@')[0].split())}")
+            print(f"main+0x{start + int(address, 16):x}  {real_target(' '.join(text.split('@')[0].split('<')[0].split()), start)}")
 
 
 def main():

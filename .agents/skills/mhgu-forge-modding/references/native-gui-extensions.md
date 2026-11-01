@@ -89,9 +89,16 @@ These do nothing: +`0xb0..+0xbc` (derived, rebuilt from the row above), +`0x80`/
 
 Turn a mask off with `Enable` `0xa4ba20(mask, 0)`, which writes bit 0 of +`0xa4` from its argument.
 
-### An unread route: per-node scissor
+### Per-node scissor is not a substitute for a mask
 
-The texture's enter (`0xa4e628`, slot 0x38) does intersect the live scissor with its own +`0xe0` and apply it, but only when +`0xcc`'s low nibble is 3 or 6 and +`0x56` bit 6 is clear. That explains r55 without ruling out the route. `ScissorSize` (`0xa4dcc4`) writes +`0xd8`/+`0xdc`, and +`0xd0` bit 0 makes the enter call slot 0x74 (`0xa4f420`) to rebuild +`0xe0`. Nothing has set +`0xcc` or read slot 0x74: an earlier "unsafe to arm" verdict disassembled the wrong address, and an earlier read of "+0x33" read the wrong field. Read this before adding another mask.
+Use a scissor mask. Static reading, never run: `ScissorSize` (`0xa4dcc4`) only takes effect under `Mask` 3 or 6, and `Mask` (`0xa4dca0`) is +`0xcc`'s low nibble.
+
+- **There is no scissor-only mode.** After applying its box, the texture's enter (`0xa4e628`) always calls `0xb38004` for modes 3 and 6, and its exit (`0xa4eddc`) calls `0xb38bc8`. While `sGUI`+`0x1c` is set, `0xb38004` redirects the render target, draws a full-screen quad and swaps two GUI shaders.
+- **It widens the live box.** The texture's enter takes min left/top and max right/bottom (`0xa4e71c`), a union. A mask's enter intersects (`0xa4bc78`). The node's own box is used alone only when the live box has no width or height.
+- **The box is tied to the sprite.** Slot 0x74 (`0xa4f420`) builds +`0xe0` with `0xa4b390` from the node's own matrix, `ScissorSize` and `ControlPoint` (+`0xa0` & 0xf). Slot 0x44 (`0xa4e604`) sets the rebuild bit +`0xd0` bit 0.
+- **The game never uses it.** In all 6,887 GUI files, `Mask` is 0 in 159,217 entries, 1 in 36 and never keyed, and `ScissorSize` never appears. The setters have no direct callers, only DTI words.
+
+Unread: what writes `sGUI`+`0x1c`, so whether `0xb38004` does anything at runtime, and what the live box holds outside any mask. If both turned out harmless, this could in principle replace masks, but on a path no game GUI has ever run.
 
 ## A texture caches its quad
 

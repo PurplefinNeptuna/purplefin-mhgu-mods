@@ -1,7 +1,7 @@
 """The negative answers research relies on must first find known positives."""
 from pathlib import Path
 import unittest
-from research_tools import ROOT, branch_sites, main_bytes, word_sites
+from research_tools import ROOT, branch_sites, main_bytes, real_target, word_sites
 
 
 def arm_branch(site, target, opcode):
@@ -22,6 +22,14 @@ class BranchSites(unittest.TestCase):
     def test_word_sites_are_aligned(self):
         image = b"\0" * 5 + (0xABCD).to_bytes(4, "little") + b"\0" * 3 + (0xABCD).to_bytes(4, "little")
         self.assertEqual(word_sites(image, 0xABCD), [12])
+
+
+class RealTarget(unittest.TestCase):
+    def test_branches_become_main_offsets_and_nothing_else_changes(self):
+        self.assertEqual(real_target("bl 0xfffe94dc", 0xa4e740), "bl main+0xa37c1c")
+        self.assertEqual(real_target("beq 0x124", 0xa4e628), "beq main+0xa4e74c")
+        self.assertEqual(real_target("bic r0, r0, #0x10", 0x1000), "bic r0, r0, #0x10")
+        self.assertEqual(real_target("ldr r0, [pc, #0x7e8]", 0x1000), "ldr r0, [pc, #0x7e8]")
 
 
 @unittest.skipUnless(Path(ROOT, "work/shared/game-exefs/main").exists(), "needs the copied main NSO")
