@@ -44,4 +44,4 @@ Reload postcondition helper `0x2ad534(p,1)` checks capability while skipping onl
 
 Unknown rows, ambiguous duplicates, unsupported postconditions, missing reserve, different timing, or lost ownership retain native behavior. Retain a replacement only while its native row/cache remains valid; cancel owned latches on menu/settings/sheathing transitions.
 
-Sources: `mods/modern-weapon-controls/src/`, especially game-input/bowgun/transaction headers, `DEVELOPMENT.md`, `src/game_signatures.h`, native tests, `RUNTIME_RESULTS.json`, `EVIDENCE.json`. Static coverage of 84 weapon/style combinations and 8 Prowler biases is not an exhaustive gameplay run.
+Sources: `mods/modern-weapon-controls/core/src/` (input, binding, bowgun and install), `src/`, `DEVELOPMENT.md`, `core/src/signatures.rs`, native tests, `RUNTIME_RESULTS.json`, `EVIDENCE.json`. Static coverage of 84 weapon/style combinations and 8 Prowler biases is not an exhaustive gameplay run.

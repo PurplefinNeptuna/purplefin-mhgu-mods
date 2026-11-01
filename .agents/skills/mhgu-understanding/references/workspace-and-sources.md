@@ -27,9 +27,9 @@ Library material is not an installed mod. A RomFS-only dump cannot supply execut
 | Native GUI | Key Quest Markers `src/{gui.rs,native.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/native_adapter.py`, `research/theme-colours.json`; Please do Better native geometry research |
 | Sharpness | Modern Sharpness Gauge `DEVELOPMENT.md`, `core/src/lib.rs`, `src/insert.rs`; `work/modern-sharpness-gauge/PHASE*_RESEARCH.md` |
 | Quests / progression | Key Quest Markers `core/src/lib.rs`, `src/{native.rs,offers.rs}`, native tests and `DEVELOPMENT.md` |
-| Input / actions | Modern Weapon Controls `src/`, native fixtures, `src/game_signatures.h`, `DEVELOPMENT.md`, `RUNTIME_RESULTS.json` |
+| Input / actions | Modern Weapon Controls `src/`, `core/src/`, native fixtures, `core/src/signatures.rs`, `DEVELOPMENT.md`, `RUNTIME_RESULTS.json` |
 | Damage / cameras | Damage Numbers `src/signatures.rs`, `core/src/{capture.rs,lib.rs,presentation.rs,mailbox.rs}`, tests, `work/damage-numbers/projection-r27/` |
-| Rewards / Luck | Please do Better `src/{runtime.cpp,quantity.h,attribution.h}`, native fixtures, `DEVELOPMENT.md`, research/layout receipts |
+| Rewards / Luck | Please do Better `src/runtime.rs`, `core/src/{quantity.rs,attribution.rs}`, native fixtures, `DEVELOPMENT.md`, research/layout receipts |
 | Resource/tool workflows | `docs/TOOLS.md`, `docs/CLEANUP_HD_PROJECT.md`, tool wrappers/tests, offline wiki/templates/indexes, `mods/hd-project/README.md` |
 | Exact current release/evidence scope | Each mod's `DISTRIBUTION.json` / `EVIDENCE.json`; dated workspace receipts in `docs/WORKSPACE_EVIDENCE.json` |
 

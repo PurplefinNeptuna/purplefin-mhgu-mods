@@ -36,4 +36,4 @@ Please do Better stores `[PleaseDoBetter]`, `force_miraculous`, and `reward_mult
 
 Emit brief lifetime-deduplicated failure reasons outside hot hooks. Successful frames, hits, reward rows, and ordinary saves do not produce periodic diagnostics. Key Quest Markers r16's successful startup/row ERROR traces were removed in r17, which retains one INFO startup and once-per-reason failures. Closed settings rows must not stop pending diagnostic collection or background work.
 
-Sources: `tools/forge-local/source/forge/graphics.cpp`, `tools/forge-rs/forge/src/{config.rs,mt/fs.rs}`, `mods/damage-numbers/src/{lib.rs,render.rs,config.rs,runtime.rs}`, `mods/key-quest-markers/src/{settings.rs,config.rs}`, `mods/please-do-better/src/{settings.cpp,preferences.h}` and their development/evidence records.
+Sources: `tools/forge-local/source/forge/graphics.cpp`, `tools/forge-rs/forge/src/{config.rs,mt/fs.rs}`, `mods/damage-numbers/src/{lib.rs,render.rs,config.rs,runtime.rs}`, `mods/key-quest-markers/src/{settings.rs,config.rs}`, `mods/please-do-better/src/settings.rs`, `mods/please-do-better/core/src/preferences.rs` and their development/evidence records.
