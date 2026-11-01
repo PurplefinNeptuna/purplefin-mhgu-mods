@@ -59,4 +59,4 @@ That permission concern describes the pinned stock loader. The separately review
 
 An authorized console trial should establish Forge alone, then one NRO at a time, checking boot/load, graphics, controls, settings persistence, transitions, and performance. Retain rollback material and exact hashes. Compilation, import verification, emulator success, and generic CFW loader support do not establish physical compatibility.
 
-Sources: `docs/RESEARCH.md` historical diagnostics; maintained mod development/evidence records; `tools/forge-local/{README.md,config.json}`, `source/forge/{plugin.cpp,hook.c}`, `libs/libnx/nx/source/kernel/jit.c`. Physical feasibility was source-inspected on 2026-10-16 and rechecked against these local files for this compilation; no hardware test occurred.
+Sources: `docs/RESEARCH.md`; maintained mod development and evidence records; `tools/forge-local/{README.md,config.json}`, `source/forge/{plugin.cpp,hook.c}`, `libs/libnx/nx/source/kernel/jit.c`. Physical feasibility was source-inspected on 2026-10-16 and rechecked against these local files for this compilation; no hardware test occurred.

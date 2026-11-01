@@ -55,23 +55,23 @@ Root setup `0xa49b28` allocates `(objects << 4 | 8) + sequences * 12` through ro
 - Objects is the node count. The map is one longer, because its first entry is the controller.
 - The walker's list is 8 bytes per record plus an 8-byte terminator. A visible drawable node emits an enter and an exit; a hidden one emits neither.
 - The grown map comes from the `cGUIInstance` allocator, slot 0x1c with `(bytes, 16)`. Passing no alignment leaves it as register garbage. Publish instance +`0xd8` and root +`0xa0` together.
-- Return the old cache through root slot 0x5c. A build that left it unreleased stopped the bar drawing (r28; mechanism unread).
+- Return the old cache through root slot 0x5c. A build that left it unreleased stopped the bar drawing (mechanism unread).
 - Link last, so a larger tree never exists against the old map, and then set root +`0x8c` bits 0 and 1 (bit 0 rebuilds the walker's list, bit 1 starts the transform walk).
 
 The game allocates a row's map in `FUN_01401bc0` and frees it in `0xa38828` (`setAnimationId`) through the same class allocator. Modern Sharpness Gauge still leaks the old 16-byte block, a shortcut from before that was read.
 
 ## Move nodes under a new parent
 
-The accepted shape (Modern Sharpness Gauge r62) is the controller over a mask over the bar, glow and edge, with a second mask over the shade as the first mask's sibling.
+The accepted shape (Modern Sharpness Gauge) is the controller over a mask over the bar, glow and edge, with a second mask over the shade as the first mask's sibling.
 
-- **One inbound chain per node.** Native teardown (root `0xa486fc`, mask `0xa56758`) walks children and then siblings, calling slot 0x04 on each. After moving the first sibling under the new node, also write 0 to root +`0x6c`, or the moved nodes are reachable twice and are freed twice. That poisoned the allocator the next area's row builds from, so the row never came back (r24 to r28), and it crashed at a quest end (r14). The old chain also hides the bug: r24 to r27's visible bar was drawing through it, outside the mask.
+- **One inbound chain per node.** Native teardown (root `0xa486fc`, mask `0xa56758`) walks children and then siblings, calling slot 0x04 on each. After moving the first sibling under the new node, also write 0 to root +`0x6c`, or the moved nodes are reachable twice and are freed twice. That poisoned the allocator the next area's row builds from, so the row never came back, and it crashed at a quest end. The old chain also hides the bug: a visible bar can be drawing through it, outside the mask.
 - **Native linkers.** `0xa48460(parent, child)` writes the child link and the child's parent. `0xa4844c(node, sibling)` writes the sibling link and copies `node`'s parent into the sibling, so link the parent first.
-- **Paint order is walk order.** The walker has no sort and no z value. To draw under a node, a node has to be walked before it, but linking one ahead of the mask on the controller's chain lost the row (r54: `root.child=0x0` 8 ms after insertion, never matched again; mechanism unread). A sibling after the mask is the only proven position.
+- **Paint order is walk order.** The walker has no sort and no z value. To draw under a node, a node has to be walked before it, but linking one ahead of the mask on the controller's chain lost the row (`root.child=0x0` 8 ms after insertion, never matched again; mechanism unread). A sibling after the mask is the only proven position.
 - **Priority is a re-sort key, not a layer the walker reads.** Bit 19 of +`0x54` makes `0xa4915c` sort that node's children ascending by the halfword at +`0x60`, relink them and clear the bit. The constructor's default flags carry bit 19, so set a child's Priority deliberately.
 
 ## Clip with a scissor mask
 
-A node's rect does not limit its drawing (r55 wrote a zero-width +`0xe0` and +`0xf0` and the copy painted anyway). The render state's scissor does. A mask's enter (main+`0xa4ba94`, slot 0x38) sets it and its exit (main+`0xa4bcdc`, slot 0x40) restores it, for everything walked between them. It clips at 1:1 and never scales what it covers (the premise of r58 and r61 was refuted).
+A node's rect does not limit its drawing (a zero-width +`0xe0` and +`0xf0` landed and the copy painted anyway). The render state's scissor does. A mask's enter (main+`0xa4ba94`, slot 0x38) sets it and its exit (main+`0xa4bcdc`, slot 0x40) restores it, for everything walked between them. It clips at 1:1 and never scales what it covers.
 
 Build a `cGUIObjScissorMask` (0xd0 bytes) with factory main+`0xa4b6cc`: no arguments, object in r0, allocated through its own DTI. Give it a marker at +`0x50` and a sibling's +`0x74`/+`0x78`. Then, in a hook on the enter handler filtered by that marker, write on every enter:
 
@@ -83,9 +83,9 @@ Build a `cGUIObjScissorMask` (0xd0 bytes) with factory main+`0xa4b6cc`: no argum
 | +`0xa8`, +`0xac` | integers | Box size, forward from the corner. |
 | +`0xa4` | 3 | Bit 1 rebuilds +`0xb0..+0xbc` and clears itself; bit 0 applies the scissor. |
 
-Keep bit 17 on the mask's +`0x54`. Without it the node never takes its parent's transform and neither does anything under it (r57).
+Keep bit 17 on the mask's +`0x54`. Without it the node never takes its parent's transform and neither does anything under it.
 
-These do nothing: +`0xb0..+0xbc` (derived, rebuilt from the row above), +`0x80`/+`0x84` on a mask with no animation entry, and +`0xe0` (past the end of the 0xd0-byte object). Take a width from the bar's rect, never from bar +`0xa8`, which is an animated field that reads zero at enter: feeding it produced the zero-width box of r23 to r29, and the "layout zeroes the width" reading of r24 was that zero.
+These do nothing: +`0xb0..+0xbc` (derived, rebuilt from the row above), +`0x80`/+`0x84` on a mask with no animation entry, and +`0xe0` (past the end of the 0xd0-byte object). Take a width from the bar's rect, never from bar +`0xa8`, which is an animated field that reads zero at enter: feeding it produced a zero-width box, and "the layout zeroes the width" was that zero.
 
 Turn a mask off with `Enable` `0xa4ba20(mask, 0)`, which writes bit 0 of +`0xa4` from its argument.
 
@@ -104,15 +104,15 @@ Unread: what writes `sGUI`+`0x1c`, so whether `0xb38004` does anything at runtim
 
 Draw slot 0x3c (main+`0xa4fc9c`) calls `0xa4feb4`, which copies the UVs from +`0x10c..+0x118` and the corner colours from +`0xa4..+0xb0` into the vertex record only while `global+0x98 & (+0xc0 >> 24) & 7` is nonzero, then clears those bits. Only slot 0x50 (main+`0xa4fc68`) sets them.
 
-So use the setter. `mTextureRect` `0xa4fb58(node, *f32[4])` returns at once when the floats match, otherwise stores them, calls slot 0x28 when `+0x108 & 0x30`, and tail-calls slot 0x50. Calling it every frame is cheap. A raw write to +`0x10c` reads back perfectly and never repaints: r59, r60 and r61 all drew the band the first build left, and r60's `shade_tex=` showed the write landing on all 73 fill lines. Inference: raw colour writes after the first build are inert the same way, so use the `VertexColor*` setters. Position and authored-size writes after the build were also inert (r53: `pos=90.0 0.0 size=0.7 24.0` with `rect=110 38 238 166`, mechanism unread), so move geometry with a mask.
+So use the setter. `mTextureRect` `0xa4fb58(node, *f32[4])` returns at once when the floats match, otherwise stores them, calls slot 0x28 when `+0x108 & 0x30`, and tail-calls slot 0x50. Calling it every frame is cheap. A raw write to +`0x10c` reads back perfectly and never repaints: the copy kept the band the first build left while a read-back showed the write landing on all 73 fill lines. Inference: raw colour writes after the first build are inert the same way, so use the `VertexColor*` setters. Position and authored-size writes after the build were also inert (`pos=90.0 0.0 size=0.7 24.0` with `rect=110 38 238 166`, mechanism unread), so move geometry with a mask.
 
 ## Survive area changes
 
 A row dies at every area's loading screen, and `cGUIObjRoot`'s destructor has fired in no saved log.
 
-- Detect the death from a callback that keeps running. A freed mask's enter stops being called, so a check placed only there goes silent (r20). Check from the draw walker: read-only, the marker, the mask's parent against the root and the root's child against the mask. On failure, drop every captured address and re-arm discovery, so the next row is read and inserted like the first.
-- Write only where the game hands over a live object. In the mask's enter, when the links are gone, turn the mask off and drop the addresses. Left alone, it keeps applying its last box into the next area (r24).
-- Every HUD instance calls the walker, so capture the pair whose instance +`0xdc` is the controller you identified, not the last one seen (r5). The walker has two entries: `0xa39300` calls it at `0xa39664`, and `0xa56a14` tail-branches with node +`0xcc`.
+- Detect the death from a callback that keeps running. A freed mask's enter stops being called, so a check placed only there goes silent. Check from the draw walker: read-only, the marker, the mask's parent against the root and the root's child against the mask. On failure, drop every captured address and re-arm discovery, so the next row is read and inserted like the first.
+- Write only where the game hands over a live object. In the mask's enter, when the links are gone, turn the mask off and drop the addresses. Left alone, it keeps applying its last box into the next area.
+- Every HUD instance calls the walker, so capture the pair whose instance +`0xdc` is the controller you identified, not the last one seen. The walker has two entries: `0xa39300` calls it at `0xa39664`, and `0xa56a14` tail-branches with node +`0xcc`.
 
 ## Material, geometry, and title fitting
 
@@ -136,4 +136,4 @@ Trace handshake, original trampoline, hook entry, resource identity, attachment,
 
 Mocked GPU commands/allocations establish no actual clipping or pixels. Manual acceptance checks opening, scrolling, selection, request overlap, confirmation, closing/reopening, and scene transitions. Preserve successful payload hashes. A visible bit or successful plugin load does not establish a working GUI.
 
-Sources: `mods/key-quest-markers/src/{gui.rs,native.rs,offers.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py,arm.py}`, `research/theme-colours.json`, `DEVELOPMENT.md`, `EVIDENCE.json`; `mods/modern-sharpness-gauge/src/insert.rs` and its `DEVELOPMENT.md`; `docs/RESEARCH.md`. Read current source/r17 records before historical r3 through r16 narratives. Native addresses in the mask, cache and flag sections were rechecked against the original bytes on 2026-11-01; `rN` tags name Modern Sharpness Gauge runs in its history.
+Sources: `mods/key-quest-markers/src/{gui.rs,native.rs,offers.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py,arm.py}`, `research/theme-colours.json`, `DEVELOPMENT.md`, `EVIDENCE.json`; `mods/modern-sharpness-gauge/src/insert.rs` and its `DEVELOPMENT.md`; `docs/RESEARCH.md`.  Native addresses in the mask, cache and flag sections were rechecked against the original bytes on 2026-11-01.

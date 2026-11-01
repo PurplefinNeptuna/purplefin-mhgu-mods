@@ -45,4 +45,4 @@ Existing native count fixtures cover 1,092 deterministic cases comparing natural
 
 Manual scenarios include 1x and 2..5x, both Luck modes, guaranteed rewards, subquest/free-hunt/overflow/extra pages, unchanged Palico/pouch/box, Take All/Send to Box/partial stacks/full storage, appraisal quantities, slider edits while results are visible, and consecutive quests/settings persistence. The r23/r24 distribution records preserve their scoped loading/approval evidence; do not mark this entire matrix completed from them.
 
-Sources: `mods/please-do-better/DEVELOPMENT.md` count/copy/layout and r23 sections; `src/{attribution.h,quantity.h,mode.h,runtime.cpp,gateway.S}`, native tests, `research/{patch-sites.json,highlight-fixtures.json}`, `EVIDENCE.json`; original main and retained reward-page receipts when available.
+Sources: `mods/please-do-better/DEVELOPMENT.md` count, copy, layout and reward-page sections; `src/{attribution.h,quantity.h,mode.h,runtime.cpp,gateway.S}`, native tests, `research/{patch-sites.json,highlight-fixtures.json}`, `EVIDENCE.json`; original main and retained reward-page receipts when available.

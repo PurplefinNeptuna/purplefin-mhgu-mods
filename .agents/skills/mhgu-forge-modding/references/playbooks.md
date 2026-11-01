@@ -88,8 +88,7 @@ user explicitly asks for that exact action in this task.
    `candidate`, payload `source` paths, `reason`), `scripts/paths.py`
    (build/work folders), `scripts/build.py` (archive name, manifest version),
    the plugin name label in `forge_onLoad`, the startup log line, tests that
-   assert the label, `README.md`. Leave historical mentions in DEVELOPMENT.md
-   and EVIDENCE.json alone. If this version removes a feature, control or
+   assert the label, `README.md`. Leave dated records in EVIDENCE.json alone. If this version removes a feature, control or
    mode, also grep its words in `src/`, `core/src/` and log strings, and fix
    every comment, name and message that still describes it.
 5. Make the change. If it needs a new hook, use [P4](#p4-add-a-native-hook).
@@ -111,10 +110,10 @@ user explicitly asks for that exact action in this task.
      cover game code, so this is the only check before a run.
 6. From the mod folder: `./build.sh build`, `./build.sh test`, `./build.sh verify`.
 7. Update `DISTRIBUTION.json` `reason` and evidence summary, `DEVELOPMENT.md`
-   (replace the one current-state paragraph at the top and move the old one
-   into history; add one new row in the release history table),
+   (replace the one current-state paragraph at the top, correct the facts in
+   their sections, and add any refuted approach to "Do not". No run logs),
    and `docs/LOCAL_STATE.md`. That row holds current status, the release path
-   and the payload hash only; run history belongs in `DEVELOPMENT.md`. Say
+   and the payload hash only; dated run results belong in `EVIDENCE.json`. Say
    `Gameplay NOT RUN`.
 8. **Review the premise before asking for a run.** Re-read what this version
    assumes against the decompile or bytes, and against the tester's own words.
@@ -181,8 +180,7 @@ Do not change code until step 5.
      confirm it. A run that matches neither prediction refutes the
      hypothesis; do not reinterpret it afterwards.
 5. **Reproduce statically.** Write a host or ARM fixture that fails the same
-   way with the old build (the KQM history in its DEVELOPMENT.md shows this
-   for r3 to r11). Then fix with [P2](#p2-change-a-mods-behaviour).
+   way with the old build (`mods/key-quest-markers/tests/native_adapter.py` shows the method). Then fix with [P2](#p2-change-a-mods-behaviour).
 6. If you cannot tell which stage fails, build a diagnostic candidate (its own
    version, bounded logs outside hooks, at ERROR level because stock Forge
    filters below ERROR) and ask the user to run it. Say exactly what to do and
@@ -244,7 +242,7 @@ in `approval.basis`, with the accepted version named as the runtime evidence.
 5. `python3 scripts/mod_distribution.py package NAME` writes
    `build/NAME/releases/rN/`. Then run the full `check`.
 6. Update `README.md` (root table), `docs/LOCAL_STATE.md` and the mod's
-   DEVELOPMENT.md history row. Commit.
+   DEVELOPMENT.md current-state paragraph. Commit.
 
 ## P6 Support-only refresh
 
@@ -275,8 +273,8 @@ the accepted ones (P5 says what to ask next).
 1. **List what the accepted build no longer needs.** For each item, grep its
    uses first and delete it only when nothing live reads it:
    - test controls: forced values, sliders, prototype steps, Plugin UI test panels;
-   - core helpers kept only "as a record" of a refuted approach (the record
-     belongs in DEVELOPMENT.md history);
+   - core helpers kept only "as a record" of a refuted approach (a line in DEVELOPMENT.md's
+     "Do not" list is enough);
    - sampled fields, counters and statics that nothing reads or prints;
    - probes and log lines whose question the user's acceptance answered.
      Keep one line per lifecycle event (inserted, failed with stage, torn down).
@@ -292,11 +290,11 @@ the accepted ones (P5 says what to ask next).
    identifiers named after the experiment. Check the startup log line and
    each module's top comment against what the code does now.
 4. **Rewrite comments as current contracts.** Offset, unit, owner, why, in
-   a line or two. Move run IDs, what a run printed and refuted approaches into
-   DEVELOPMENT.md history. Leave audited assembly bytes unchanged. Gate:
+   a line or two. Run IDs and what a run printed go in EVIDENCE.json; refuted
+   approaches go in DEVELOPMENT.md's "Do not" list. Leave audited assembly bytes unchanged. Gate:
    `grep -nE '\br[0-9]{1,3}\b' src core/src` returns nothing. The gate cannot
    see a comment that drops its run ID and keeps a refuted claim, so also check
-   each native claim in a comment against the history's corrections.
+   each native claim in a comment against DEVELOPMENT.md and its "Do not" list.
 5. **Split the README.** README.md follows the release README standard in
    docs/DEVELOPMENT.md with nothing aimed at the tester. Tester steps, what to
    report and the log-line and stage-code reference go in `mods/NAME/TESTING.md`
@@ -305,11 +303,11 @@ the accepted ones (P5 says what to ask next).
    returns nothing. Refresh the export list after adding a file (from the mod
    folder: `python3 scripts/export_source.py --refresh`).
 6. **Collapse DEVELOPMENT.md's head.** Exactly one current-state paragraph,
-   then the commands, files and offset tables, corrected to `rNEW`, and only
-   then the history. Merge stacked "Current state:" paragraphs into one for
-   `rNEW` and move the older ones under history. A later result that overturns
-   an earlier reading goes in a short corrections list above the history, since
-   readers stop at the head.
+   then the commands, files and offset tables, corrected to `rNEW`, then a short
+   "Do not" list and open items. Merge stacked "Current state:" paragraphs into
+   one for `rNEW`. Delete run logs and superseded paragraphs: Git keeps them, and
+   EVIDENCE.json keeps the dated results. A later result that overturns a reading
+   corrects that fact in place.
 7. Continue with P2 steps 6 to 10. In the report, give the line counts of
    `src/` and `core/src/` before and after, plus `git diff --stat`.
 

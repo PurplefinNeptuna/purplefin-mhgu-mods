@@ -85,15 +85,18 @@ and unsafe caller requirements beside substantial code. Preserve audited assembl
 Comments-only work keeps pinned assembly and third-party bytes unchanged. Skip
 comments that only repeat the code. A comment states the current contract in a
 line or two. Run IDs (`r23`), what a run printed and approaches that were
-refuted go in the mod's DEVELOPMENT.md history, never in source.
+refuted stay out of source.
 
 Store a tuned or user-accepted value in the frame it was measured against: an
 offset from, or a fraction of, the node or rect it was read on. Never store
 absolute screen pixels. Record the frame it was measured in beside the value.
 
-A mod's DEVELOPMENT.md starts with exactly one current-state paragraph. Replace
-it for each version and move the old one into the history below. Keep the part
-above the history short enough to read in full at the start of every task.
+A mod's DEVELOPMENT.md holds the current project only: exactly one current-state
+paragraph, replaced for each version, then the facts a change needs, a short
+"Do not" list of refuted approaches, and open items. Run logs and superseded
+paragraphs do not go in it: dated results go in EVIDENCE.json and Git keeps the
+rest. Keep it short enough to read in full at the start of every task. `work/`
+research notes follow the same rule once a phase closes.
 
 Diagnostics, forced values, test sliders and probes are scaffolding. Once the
 user accepts the behaviour they were for, remove them with the consolidation

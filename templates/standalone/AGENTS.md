@@ -8,7 +8,8 @@ only explicitly. Validate dependency/input fingerprints and preserve originals.
 
 Comments state the current contract: native offsets/units, data flow, lifetimes,
 ownership and unsafe caller rules. Run IDs (r23), run narratives and refuted
-approaches go in DEVELOPMENT.md history, never in source. Preserve NZCVQ and
+approaches stay out of source. DEVELOPMENT.md holds current state and a short
+Do not list, never run logs; EVIDENCE.json and Git keep the record. Preserve NZCVQ and
 all live state; audit GE and never require APSR_g/APSR_nzcvqg writes. Keep
 native ownership/rollback.
 Use Forge facilities before private substitutes; document any verified gap.

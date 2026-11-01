@@ -12,8 +12,7 @@ forge-rs 1.5.0. Knowledge dated 2026-11-01.
 ## Start here
 
 1. Read the workspace `AGENTS.md`, then `mods/NAME/AGENTS.md`, the top of
-   `mods/NAME/DEVELOPMENT.md` up to its history (read the history only when
-   diagnosing) and `mods/NAME/DISTRIBUTION.json` (authoritative status and
+   `mods/NAME/DEVELOPMENT.md` and `mods/NAME/DISTRIBUTION.json` (authoritative status and
    hashes).
 2. Pick the matching procedure in [Playbooks](references/playbooks.md) and
    follow it step by step. Each step names the exact command or file.
@@ -78,8 +77,9 @@ build it and extract into the scratchpad.
 - Create `_backup` config files, or restore the retired loader, Better Input, renderer, mutex or PC patches.
 - Call something "working" or "tested" when it was only built or unit-tested.
 - Write run IDs (`r23`), run narratives or refuted approaches in source
-  comments, or tester instructions in README.md. They go in DEVELOPMENT.md
-  history and `TESTING.md`.
+  comments, or tester instructions in README.md. Refuted approaches go in
+  DEVELOPMENT.md's "Do not" list, run results in `EVIDENCE.json`, and tester
+  steps in `TESTING.md`.
 
 ## Stop and ask the user when
 
@@ -119,9 +119,9 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Working from a task's paraphrase of the tester | Copy the tester's words into the plan and `TESTING.md`, and check the build against those. r60 was built to a rewording that had the requirement backwards. |
 | Leaving test controls, probes, "record" helpers and their log lines in after the user accepts | Every experiment is scaffolding. Run P7 after acceptance: delete what nothing live reads, fix stale names and messages. |
 | Storing a value the user dialled in as absolute screen pixels | Store it relative to the rect it was measured on (offset or fraction), with a host test reproducing the accepted output. |
-| Justifying each line with what run rN printed | A comment states the current contract. The evidence lives in DEVELOPMENT.md history and EVIDENCE.json. |
+| Justifying each line with what run rN printed | A comment states the current contract. The evidence lives in EVIDENCE.json and Git. |
 | Putting tester steps, log-line guides or stage-code tables in README.md | README.md is for mod users. Put tester material in `mods/NAME/TESTING.md` and the report. |
-| Prepending a new "Current state:" paragraph per version | Replace the one paragraph and move the old one into history. |
+| Prepending a new "Current state:" paragraph per version | Replace the one paragraph. Run logs do not go in DEVELOPMENT.md: put the fact in its section and a refuted approach in "Do not". |
 | Changing a user's design decision so a candidate looks different | Design decisions belong to the user. Report the blocker and ask; never hide, drop or swap a designed element to get a visible change. |
 | Deriving draw geometry from a node rect whose relation to the drawn sprite is unproven, or citing a setter probe as proof of clipping | Label such geometry inference. Shared render state read at an arbitrary moment proves only that the setter ran, not that it was active during the target draw. |
 | Leaving out steps of an in-repo precedent (such as the KQM badge's construction) | Compare your code with the precedent field by field. Name every skipped step and the native code that makes it unnecessary ([Native GUI extensions](references/native-gui-extensions.md)). |

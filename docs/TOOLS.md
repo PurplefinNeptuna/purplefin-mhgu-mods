@@ -151,31 +151,6 @@ cmake -S tools/quest-source -B tools/quest-build -G Ninja \
 cmake --build tools/quest-build --parallel 6
 ```
 
-## Verification performed
+## Known limits
 
-- SaladSoftware extracted the copied Barioth and localized quest archives.
-  No-edit repacks were byte-identical, covering 468 and 328 resources.
-  A test repack changing one resource preserved every unrelated resource.
-- Kuriimu2's MT ARC plugin loaded the copied enemy archive through the
-  launcher's alias; its GUI passed startup with the matching runtime.
-- Revil converted the enemy MOD to GLB and a TEX to DDS. Blender imported the
-  GLB with 18 mesh objects.
-- NXAenc and AdpcmEncoder encoded a generated 0.2-second tone. The final
-  `adpcm` launcher produced a Capcom ADPCM file with a matching mono header.
-- GMD preservation checks and limitations are described above.
-- SaladSoftware, Pax, Titanbreak, ImHex, Audacity, the native quest editor,
-  Kuriimu2, and the toolbox passed brief desktop startup checks. These checks
-  establish startup, not full interactive editing or visual layout correctness.
-- The copied game inputs' source hashes remained unchanged. Logs and scratch
-  samples are in `work/tool-smoke/`; no test output was installed into Eden.
-
-No in-game validation, quest-save validation, texture replacement/import test,
-music playback/loop test, or model-export round trip has been performed.
-
-## Cleanup on 2026-10-02
-
-Redundant installers/npm cache were removed after checking installed copies.
-`tools/downloads/` retains provenance/checksums; tools/runtimes/pinned
-dependencies remain. Evidence: `work/tool-smoke/`; large sample trees are
-regenerable. Historical visual outputs are archived outside Eden:
-`docs/CLEANUP_HD_PROJECT.md`.
+Tools passed desktop startup checks, and SaladSoftware no-edit repacks were byte-identical (468 and 328 resources). No in-game validation, quest-save validation, texture replacement or import test, music playback or loop test, or model-export round trip has been performed. `tools/downloads/` keeps provenance and checksums. Evidence: `work/tool-smoke/`.
