@@ -4,11 +4,11 @@ This recipe is established for the quest counter row in MHGU Switch 1.4.0. It is
 
 ## Plan a different menu before adapting the recipe
 
-Establish the selected resource hash/variant, live instance, animation ID versus table row, owned object range and sequence bindings. Node names and file presence do not establish a spare rendering mechanism. The corrected hud0 case has `Anm_sharp` selecting animation ID 4 at row 7. Its apparent `sgauge` candidates belong to stamina, and `Txt_mask05..55` belong to `h_hand`. Use the companion's native GUI identity table when researching that fixture. At runtime (Modern Sharpness Gauge r9 Eden log, 2026-10-22), `Txt_sharp`, `Txt_sharpefx` and the third sharpness texture are siblings whose parent is the gauge controller itself. The file's child indices do not describe this tree: there is no group node, and the glow is not a child of the bar. Like the counter row, it has a map alias: controller +0xa0 holds the same pointer as instance +0xd8 (r16 log; the insertion's gate has required it on every insert since r18). An earlier zero reading did not hold.
+Establish the selected resource hash/variant, live instance, animation ID versus table row, owned object range and sequence bindings. Node names and file presence do not establish a spare rendering mechanism. The corrected hud0 case has `Anm_sharp` selecting animation ID 4 at row 7. Its apparent `sgauge` candidates belong to stamina, and `Txt_mask05..55` belong to `h_hand`. Use the companion's native GUI identity table when researching that fixture. At runtime (World Sharpness Gauge r9 Eden log, 2026-10-22), `Txt_sharp`, `Txt_sharpefx` and the third sharpness texture are siblings whose parent is the gauge controller itself. The file's child indices do not describe this tree: there is no group node, and the glow is not a child of the bar. Like the counter row, it has a map alias: controller +0xa0 holds the same pointer as instance +0xd8 (r16 log; the insertion's gate has required it on every insert since r18). An earlier zero reading did not hold.
 
 Before adding a child, identify the target menu's construction/update/draw/destruction paths, every affected count/map consumer, map aliases, cache prefix and capacity, allocation/free pairing and publication order. Derive its sizes from those paths. The 13-pointer map and 168-byte cache below are quest-row results, not reusable HUD constants. Resource counts alone do not establish runtime capacity. Prepare allocations before publishing, preserve original bindings, avoid duplicate insertion and verify failure cleanup.
 
-Choose an update point after the final native write and before transform/draw-cache construction for the properties being changed. Keep pointers inside a verified owner lifetime. A HUD may disappear, hide or be recreated across weapon/scene changes, and on every area transition inside a quest (each one has a loading screen). Establish how the plugin restores its overrides while objects remain valid and reacquires new objects without retaining stale pointers. Include exit/re-entry and recreation in validation even if initial drawing works.
+Choose an update point after the final native write and before transform/draw-cache construction for the properties being changed. Keep pointers inside a verified owner lifetime. A HUD may disappear, hide or be recreated across weapon, scene and quest changes; measure how long the object you touch lives. Establish how the plugin restores its overrides while objects remain valid and reacquires new objects without retaining stale pointers. Include exit/re-entry and recreation in validation even if initial drawing works.
 
 Keep the user's visual design distinct from mechanism feasibility. Mark unresolved masking, ownership or field contracts as research work. A plan is not ready for native mutation merely because the quest-row example worked.
 
@@ -27,7 +27,7 @@ Initialize geometry, material, texture, visibility, parent/owner/resource links 
 The Key Quest Markers badge (`create()` in `mods/key-quest-markers/src/gui.rs`) is the only standalone Texture node that has drawn in-game. Build a new one with every step it takes, in this order, and name the native code that makes any skipped step unnecessary:
 
 1. Allocate 304 bytes through alloc+`0x20` with `(bytes, 16, dti id)`, zero the block, then run constructor main+`0xa4f60c` with the storage in r0.
-2. Write +`0x50` (a private ID), +`0x74` (owner) and +`0x78` (resource). Modern Sharpness Gauge also needed a live sibling's +`0x64`, because the `Texture` resolve scans `*(obj+0x64)+0xe8` (main+`0xb80fd0`). Without it, its r46 copy was refused at the texture step.
+2. Write +`0x50` (a private ID), +`0x74` (owner) and +`0x78` (resource). World Sharpness Gauge also needed a live sibling's +`0x64`, because the `Texture` resolve scans `*(obj+0x64)+0xe8` (main+`0xb80fd0`). Without it, its r46 copy was refused at the texture step.
 3. Run the 12 style setters, each with two integer arguments. Names are from the saved DTI; values are the badge's: `BlendState` `0xa4dc24`=1, `ControlPoint` `0xa4a9f4`=0, `FixFrame` `0xa47a94`=0, `Mask` `0xa4dca0`=0, `Priority` `0xa47a04`=2, `ReferencePosition` `0xa4aa24`=1, `ReferenceRotation` `0xa4aa5c`=1, `ReferenceScaleX/Y/Z` `0xa4aa94`/`0xa4aac8`/`0xa4aafc`=3, `Reverse` `0xa4dc54`=0, `SamplerState` `0xa4fa5c`=0. A zeroed block leaves every `Reference*` property at 0. These are the badge's values: a copy of another sprite takes that sprite's sampler, the low nibble of +`0x108` (the sharpness bar's is 2; a copy left on 0 filtered its edges differently).
 4. Run `Texture` `0xa4faf0` last; it returns early while +`0x78` is 0. Then set `mTextureRect` through `0xa4fb58` with a pointer to four floats, and keep using that setter afterwards (see "A texture caches its quad").
 
@@ -58,11 +58,11 @@ Root setup `0xa49b28` allocates `(objects << 4 | 8) + sequences * 12` through ro
 - Return the old cache through root slot 0x5c. A build that left it unreleased stopped the bar drawing (mechanism unread).
 - Link last, so a larger tree never exists against the old map, and then set root +`0x8c` bits 0 and 1 (bit 0 rebuilds the walker's list, bit 1 starts the transform walk).
 
-The game allocates a row's map in `FUN_01401bc0` and frees it in `0xa38828` (`setAnimationId`) through the same class allocator. Modern Sharpness Gauge still leaks the old 16-byte block, a shortcut from before that was read.
+The game allocates a row's map in `FUN_01401bc0` and frees it in `0xa38828` (`setAnimationId`) through the same class allocator. World Sharpness Gauge still leaks the old 16-byte block, a shortcut from before that was read.
 
 ## Move nodes under a new parent
 
-The accepted shape (Modern Sharpness Gauge) is the controller over a mask over the bar, glow and edge, with a second mask over the shade as the first mask's sibling.
+The accepted shape (World Sharpness Gauge) is the controller over a mask over the bar, glow and edge, with a second mask over the shade as the first mask's sibling.
 
 - **One inbound chain per node.** Native teardown (root `0xa486fc`, mask `0xa56758`) walks children and then siblings, calling slot 0x04 on each. After moving the first sibling under the new node, also write 0 to root +`0x6c`, or the moved nodes are reachable twice and are freed twice. That poisoned the allocator the next area's row builds from, so the row never came back, and it crashed at a quest end. The old chain also hides the bug: a visible bar can be drawing through it, outside the mask.
 - **Native linkers.** `0xa48460(parent, child)` writes the child link and the child's parent. `0xa4844c(node, sibling)` writes the sibling link and copies `node`'s parent into the sibling, so link the parent first.
@@ -106,12 +106,12 @@ Draw slot 0x3c (main+`0xa4fc9c`) calls `0xa4feb4`, which copies the UVs from +`0
 
 So use the setter. `mTextureRect` `0xa4fb58(node, *f32[4])` returns at once when the floats match, otherwise stores them, calls slot 0x28 when `+0x108 & 0x30`, and tail-calls slot 0x50. Calling it every frame is cheap. A raw write to +`0x10c` reads back perfectly and never repaints: the copy kept the band the first build left while a read-back showed the write landing on all 73 fill lines. Inference: raw colour writes after the first build are inert the same way, so use the `VertexColor*` setters. Position and authored-size writes after the build were also inert (`pos=90.0 0.0 size=0.7 24.0` with `rect=110 38 238 166`, mechanism unread), so move geometry with a mask.
 
-## Survive area changes
+## Survive a row's end
 
-A row dies at every area's loading screen, and `cGUIObjRoot`'s destructor has fired in no saved log.
+The sharpness gauge's row lasts a quest (inference, see Lifecycle in `mods/world-sharpness-gauge/DEVELOPMENT.md`), other rows are unmeasured, and `cGUIObjRoot`'s destructor has fired in no saved log.
 
 - Detect the death from a callback that keeps running. A freed mask's enter stops being called, so a check placed only there goes silent. Check from the draw walker: read-only, the marker, the mask's parent against the root and the root's child against the mask. On failure, drop every captured address and re-arm discovery, so the next row is read and inserted like the first.
-- Write only where the game hands over a live object. In the mask's enter, when the links are gone, turn the mask off and drop the addresses. Left alone, it keeps applying its last box into the next area.
+- Write only where the game hands over a live object. In the mask's enter, when the links are gone, turn the mask off and drop the addresses. Left alone, it keeps applying its last box.
 - Every HUD instance calls the walker, so capture the pair whose instance +`0xdc` is the controller you identified, not the last one seen. The walker has two entries: `0xa39300` calls it at `0xa39664`, and `0xa56a14` tail-branches with node +`0xcc`.
 
 ## Material, geometry, and title fitting
@@ -136,4 +136,4 @@ Trace handshake, original trampoline, hook entry, resource identity, attachment,
 
 Mocked GPU commands/allocations establish no actual clipping or pixels. Manual acceptance checks opening, scrolling, selection, request overlap, confirmation, closing/reopening, and scene transitions. Preserve successful payload hashes. A visible bit or successful plugin load does not establish a working GUI.
 
-Sources: `mods/key-quest-markers/src/{gui.rs,native.rs,offers.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py,arm.py}`, `research/theme-colours.json`, `DEVELOPMENT.md`, `EVIDENCE.json`; `mods/modern-sharpness-gauge/src/insert.rs` and its `DEVELOPMENT.md`; `docs/RESEARCH.md`.  Native addresses in the mask, cache and flag sections were rechecked against the original bytes on 2026-11-01.
+Sources: `mods/key-quest-markers/src/{gui.rs,native.rs,offers.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py,arm.py}`, `research/theme-colours.json`, `DEVELOPMENT.md`, `EVIDENCE.json`; `mods/world-sharpness-gauge/src/insert.rs` and its `DEVELOPMENT.md`; `docs/RESEARCH.md`.  Native addresses in the mask, cache and flag sections were rechecked against the original bytes on 2026-11-01.

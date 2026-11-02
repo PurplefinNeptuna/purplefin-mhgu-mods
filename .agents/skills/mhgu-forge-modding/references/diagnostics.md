@@ -25,7 +25,7 @@ Follow the failing stage: module load/imports, metadata/init, signature checks, 
 | Texture/downsample overlay never appears | Reported Please do Better native downsample hooks did not execute | Current independent Forge overlay supersedes that experiment |
 | Quest controls fail after DTI extraction | The 2026-10-03 dump completed but affected live game state | Remove extraction plugin and flag, restart, use the saved dump |
 | Inserted mask hides the gauge; box reads `left == right` | Recycled anchor modes at mask +0xa0, an empty x row at +0x10, then a width fed from an animated field | The field table in [Native GUI extensions](native-gui-extensions.md#clip-with-a-scissor-mask) |
-| Gauge gone after an area change, row never rebuilt | Nodes reachable through two chains were freed twice and poisoned the allocator | End the old chain at root +0x6c |
+| Gauge gone in the next quest, row never rebuilt | Nodes reachable through two chains were freed twice and poisoned the allocator | End the old chain at root +0x6c |
 | Game freezes on inserting a built node, no insertion line on any path | Texture vtable slot 0x00 called as a constructor (r45) | Standalone constructor main+0xa4f60c on a zeroed block |
 | Copy built with `dim=0x0`, refused at its texture step | `Texture` setter returned early: +0x78 unset, or +0x64 zero | Write both first, run the setter last |
 | New node laid out at `rect=0 0 128 128`, matrix never composed | Bit 17 cleared on a node or a parent | Keep bit 17 on every node you add |

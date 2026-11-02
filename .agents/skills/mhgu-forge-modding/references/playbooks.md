@@ -299,7 +299,7 @@ because `rNEW`'s bytes will not be the accepted ones (P5 says what to ask next).
    docs/DEVELOPMENT.md with nothing aimed at the tester. Tester steps, what to
    report and the log-line and stage-code reference go in `mods/NAME/TESTING.md`
    (outside the ZIP). Gate:
-   `grep -nE 'Tell me|MSG r[0-9]|stage [0-9]{2}|run showed' mods/NAME/README.md`
+   `grep -nE 'Tell me|WSG r[0-9]|stage [0-9]{2}|run showed' mods/NAME/README.md`
    returns nothing. Refresh the export list after adding a file (from the mod
    folder: `python3 scripts/export_source.py --refresh`).
 6. **Collapse DEVELOPMENT.md's head.** Exactly one current-state paragraph,

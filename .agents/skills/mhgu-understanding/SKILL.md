@@ -54,23 +54,22 @@ build it and extract into the scratchpad.
 - Names, wiki fields, decompiler variables and file presence are leads, not proof.
 - An empty search is evidence only once the same tool has found a known positive.
   A broken cross-reference script reported "no `bl` site" for every target through
-  the whole of Modern Sharpness Gauge's research. `research xref` replaces it.
+  the whole of World Sharpness Gauge's research. `research xref` replaces it.
 - Follow writer, reader, callers and destructor before claiming what a field means or who owns an object.
 - A runtime object and its serialized resource record can have different layouts.
 - Do not run DTI extraction, launch the game, edit saves or touch original dumps.
   Reuse the saved indexes. New runtime evidence needs the user to run something.
 - Say "inference" when evidence is indirect, and name what would confirm it.
-- MHGU is a last-generation game, and quests are not seamless. A quest map is split into
-  numbered areas, and every move between areas, like entering or leaving a quest, goes
-  through a loading screen. Plan for per-area objects: a hunt's HUD rows, their cached
-  addresses and anything a plugin inserted into them die and come back at each transition.
-  (Tester account 2026-10-24. Every modern-sharpness-gauge run log agrees: the bar rect
-  moves, then reads `0 0 0 0`, then the words turn to garbage. The cGUIObjRoot destructor
-  slot 0x04 fired in no saved log, including every one since its gate was corrected at r29.
-  `setAnimationId` `0xa38828` destroys a row's controller and map and builds new ones
-  (called from `0x54504c` and `0x5451fc`), but nothing shows it is what fires at an area
-  change, so the transition's teardown path is still unproven. See
-  `work/modern-sharpness-gauge/PHASE2_RESEARCH.md`, "Quests are split into areas".)
+- MHGU is a last-generation game, and quests are not seamless: a quest map is split into
+  numbered areas, with a loading screen between them. Do not assume what that does to an
+  object; measure each one. The sharpness gauge's HUD row lasts a whole quest. That is
+  inference: its row ends sit beside the game's save commits and testers report area
+  changes and faints with no re-insertion, but no log line marks an area change (see
+  Lifecycle in `mods/world-sharpness-gauge/DEVELOPMENT.md`). Other objects are unmeasured.
+  Any row can still die, so a plugin keeps a liveness check and drops its addresses on
+  failure. The cGUIObjRoot destructor slot 0x04 fired in no saved log. `setAnimationId`
+  `0xa38828` destroys a row's controller and map and builds new ones (called from
+  `0x54504c` and `0x5451fc`), and whether that is the path a row's end takes is unread.
 
 ## Choose a reference
 

@@ -88,7 +88,7 @@ Use these three traps as checks on any address or field you read:
 
 - Vtable words and DTI `get`/`set` values are already main-relative. Subtracting
   the Ghidra base from one gives a real-looking address in unrelated code, and
-  Modern Sharpness Gauge drew conclusions from three of those.
+  World Sharpness Gauge drew conclusions from three of those.
 - A decompiled `param_1[0x38]` on an `int *` is byte offset `0xe0`.
 - `xref` lists direct branches only. Before calling a function unreferenced, run
   `word` too. Run any new or borrowed search tool on a known positive first.

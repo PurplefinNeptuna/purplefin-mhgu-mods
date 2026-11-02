@@ -25,7 +25,7 @@ Library material is not an installed mod. A RomFS-only dump cannot supply execut
 | Discovery / executable identity | `docs/RESEARCH.md`, `scripts/{research_tools.py,mhgu_binary.py}`, `work/research-tooling/ghidra-export/summary.json`, DTI provenance |
 | DTI trial / limitations | `mods/dti-dumper-support/README.md`, `docs/RESEARCH.md`, `scripts/dti_dumper.py`, `docs/WORKSPACE_EVIDENCE.json` |
 | Native GUI | Key Quest Markers `src/{gui.rs,native.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/native_adapter.py`, `research/theme-colours.json`; Please do Better native geometry research |
-| Sharpness | Modern Sharpness Gauge `DEVELOPMENT.md`, `core/src/lib.rs`, `src/insert.rs`; `work/modern-sharpness-gauge/PHASE*_RESEARCH.md` |
+| Sharpness | World Sharpness Gauge `DEVELOPMENT.md`, `core/src/lib.rs`, `src/insert.rs`; `work/world-sharpness-gauge/PHASE*_RESEARCH.md` |
 | Quests / progression | Key Quest Markers `core/src/lib.rs`, `src/{native.rs,offers.rs}`, native tests and `DEVELOPMENT.md` |
 | Input / actions | Modern Weapon Controls `src/`, `core/src/`, native fixtures, `core/src/signatures.rs`, `DEVELOPMENT.md`, `RUNTIME_RESULTS.json` |
 | Damage / cameras | Damage Numbers `src/signatures.rs`, `core/src/{capture.rs,lib.rs,presentation.rs,mailbox.rs}`, tests, `work/damage-numbers/projection-r27/` |
