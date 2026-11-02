@@ -9,10 +9,12 @@ The local player is session cell `0x188ca48` +0x30 (hunter index 0..3), then the
 | Field | Meaning |
 | --- | --- |
 | `uPlayerQuest` +10100 | `mSharpness`: signed points, not a percentage |
-| `uPlayerQuest` +10104 | `mMaxSharpness`: signed points, follows `150 + 25 * amount` in the weapon's level row |
+| `uPlayerQuest` +10104 | `mMaxSharpness`: signed points, `min(150 + 25 * level, 450)`, set once by init main+`0x29b7d4` and never changed in a quest |
 | `uPlayerBase` +5104 | `mSharpnessType`: tier index, 0 red, 1 orange, 2 yellow, 3 green, 4 blue, 5 white, 6 purple (mapping from the tester) |
 
-`uPlayerQuest::adjustSharpness` (main+`0x2ad288`) is the only writer found of `mSharpness`. It applies the amount as a `short` and clamps to 0 and to the maximum, then recomputes the tier through `calculateSharpnessType` (main+`0x29cdfc`) and fires events on a change. Skills change the cost: HeavyPolish zeroes it; RazorSharp, StonefistSoul(X), SteadyHand and NightcloakSoul(X) halve it, with a coin flip on 1 point; BluntEdge doubles it. So the cost per hit is not fixed (runs read 2 to 42 points between samples).
+`uPlayerQuest::adjustSharpness` (main+`0x2ad288`) is the only writer of `mSharpness` during a quest; the constructor zeroes it and init main+`0x29b7d4` sets it to the maximum. It applies the amount as a `short` and clamps to 0 and to the maximum, then recomputes the tier through `calculateSharpnessType` (main+`0x29cdfc`) and fires events on a change. Skills change the cost: HeavyPolish zeroes it while its timer at `+0x277c` runs; RazorSharp, StonefistSoul(X), SteadyHand and NightcloakSoul(X) halve it, with a coin flip on 1 point; BluntEdge doubles it. So the cost per hit is not fixed (runs read 2 to 42 points between samples). Sharpening has no partial steps: the points update at once when the sharpen animation ends (tester).
+
+The level in the maximum is status stat 14, an s16 at `mpPlParam + 4 + 0x338`, written by main+`0xe1eec`: the weapon's base level, plus 2 for `Sharpness_Plus2` or `HellbladeSoul(X)`, otherwise plus 1 for `Sharpness_Plus1`, `HonedBlade` or `BoltreaverSoul(X)`, capped at 12. Init reads it through player vtable `+0x15c` with argument 14. A bonus can end the maximum partway through a tier's band, so the top band is clipped at `mMaxSharpness`.
 
 A tier is a per-weapon band of points, not a percentage. In runs, 250 points crossed at 189 and 200 points crossed at 190. Take fill length from `current/max` and colour from the game; a ratio can never pick the tier.
 
@@ -20,9 +22,11 @@ A hunter changes weapon at the box, never mid-quest (tester). A weapon with no s
 
 ## RomFS tables
 
-`table/kireajiData.kad`: 8-byte header, 164 entries of seven u16 cumulative thresholds. The tier index is how many thresholds are strictly below the sharpness value; all 12 measured transitions fit that rule and no type fits the non-strict one.
+All in the dump's `nativeNX/loc/arc/resident.arc`.
 
-`table/weapon07LevelData.w07d` (Long Sword, 876 entries, stride 15) and `table/weapon11LevelData.w11d` (Dual Blades, 845 entries, stride 17) have an 8-byte header. Each row starts: int32 level ID, u8 base ID, u8 level, u8 kireaji type, u8 sharpness amount, int16 raw. File sizes match `8 + entries * stride`. Other weapon tables were not read.
+`table/kireajiData.kad`: 8-byte header, 164 entries of seven u16 cumulative thresholds. The tier index is how many thresholds are strictly below the sharpness value (main+`0xf4794`); all 12 measured transitions fit that rule and no type fits the non-strict one. Every entry is monotonic, starts at 10 or more and ends at 450, so tier 7 is unreachable. 70 bands are zero-width, 58 of them tier 6 (`..., 450, 450`), and the rule never lands in one.
+
+`table/weaponNNLevelData` for the 11 melee weapons has an 8-byte header and these strides: 15 for 00, 01, 02, 03, 07 (Long Sword) and 13; 16 for 09 and 12; 17 for 08, 11 (Dual Blades) and 14. Each row starts: int32 level ID, u8 base ID, u8 level, u8 kireaji type, u8 sharpness amount, int16 raw. All 8766 rows have an even amount from 0 to 12 and a valid kireaji type, and file sizes match `8 + entries * stride`. Bow and bowgun tables were not read.
 
 ## The HUD row
 
@@ -40,7 +44,7 @@ The runtime tree is the controller with `Txt_sharp`, `Txt_sharpefx` and `Txt_sha
 
 The blade's length runs along `u`; `v` selects the tier band. The atlas is greyscale, and the tier colour is `VertexColor`. The bands differ in their bottom outline: 280 is straight, 304 has chips at columns 46, 58 and 70, and 328 has more chips and a raised bottom over columns 62 to 73.
 
-Sequences: `DEFAULT`; looping `sharp_0..6` (IDs 1000017..23, 50 frames), which key `VertexColor` on the bar and glow and hide the edge; static `sharp_0a..6a` (IDs 1000052..58, 0 frames), which fix the colour, hide the glow and show the edge. The looping set is the normal quest display. What selects between them is untraced. The HUD driver `0x61912c` (widget type 8) reads the tier through player vtable +0x1a0.
+Sequences: `DEFAULT`; looping `sharp_0..6` (IDs 1000017..23, 50 frames), which key `VertexColor` on the bar and glow and hide the edge; static `sharp_0a..6a` (IDs 1000052..58, 0 frames), which fix the colour, hide the glow and show the edge. The looping set is the normal quest display, and the static set shows while the Heavy Polish timer runs. The driver is main+`0x62bb0c` (vtable word `0x177633c`): each frame it takes the main player's tier through vtable `+0x1fc`, clamps it to 6, and indexes table `0x1638ecc` (looping) or, when `player+0x2844 & 0x200` is set, table `0x1638ee8` (static). That flag is `+0x277c > 0`, built at `0x29f644` and stored at `0x29f834`. The HUD widget driver `0x61912c` is not this: its case 8 reads `+0x2784` through vtable `+0x1a0`, a different field whose meaning is unread.
 
 ## Measured geometry
 
