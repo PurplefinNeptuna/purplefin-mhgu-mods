@@ -10,7 +10,7 @@ loads the same Forge NROs.
 | Key Quest Markers | r18 | [Install](mods/key-quest-markers/README.md) |
 | Modern Weapon Controls | r13 | [Install](mods/modern-weapon-controls/README.md) |
 | Please do Better | r25 | [Install](mods/please-do-better/README.md) |
-| World Sharpness Gauge | r63 | [Install](mods/world-sharpness-gauge/README.md) |
+| World Sharpness Gauge | r65 | [Install](mods/world-sharpness-gauge/README.md) |
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Current
 candidates and acceptance scope are summarised in
