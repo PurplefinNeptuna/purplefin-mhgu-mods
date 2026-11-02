@@ -316,7 +316,6 @@ because `rNEW`'s bytes will not be the accepted ones (P5 says what to ask next).
 ```sh
 git status --short
 git diff --check
-grep -nE '^#+ .*\br[0-9]{1,3}\b' mods/*/DEVELOPMENT.md docs/*.md   # must print nothing
 python3 scripts/mod_distribution.py check
 git add <only the paths you changed>
 git diff --cached --name-only

@@ -108,8 +108,8 @@ describe the project as it is now, not how it got here.
 - **Bulk pruning.** List the files and proposed cuts first, and cut only after the
   user reviews them. Confirm that every address in the old text still appears
   somewhere before you commit.
-- **Before committing a doc change,** this must print nothing:
-  `grep -nE '^#+ .*\br[0-9]{1,3}\b' mods/*/DEVELOPMENT.md docs/*.md`
+
+The pre-commit hook refuses per-run headings and files over these sizes.
 
 ## Runtime evidence and installation paths
 
