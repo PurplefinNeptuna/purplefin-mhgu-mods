@@ -202,6 +202,9 @@ training-dataset inventory. Model-generated creative assets require known
 software/input/dataset credits; never invent provenance or claim unperformed
 human review. Recheck [the live policy](https://gamebanana.com/wikis/2175) before
 publication. Packaging does not publish or establish moderation approval.
+`"compact_html": true` in the `gamebanana` record spaces the guide part of that
+page with `<br><br>` instead of `<p>`. The packager appends the record's credits
+there, so a README with its own Credits section lists them twice.
 
 GameBanana can reject literal INI text such as `style = wilds` as forbidden
 inline styling. HTML code examples encode equals signs as `&#61;` so displayed

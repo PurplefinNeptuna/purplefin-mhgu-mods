@@ -324,6 +324,13 @@ def validate_gamebanana(profile):
                 'Describe the applicable GameBanana credit')
 
 
+def compact_html(html):
+    """Space a rendered guide with line breaks: no <p>, two <br> after paragraphs and top-level lists."""
+    html = re.sub(r'<li><p>(.*?)</p>\n?(?=<[uo]l|</li>)', r'<li>\1', html)
+    html = re.sub(r'<p>(.*?)</p>', r'\1<br><br>', html)
+    return re.sub(r'</li>\n(</[uo]l>)(?=\n|$)', r'<br><br></li>\n\1', html)
+
+
 def gamebanana_readme_html(blob, profile):
     """Platform description with policy-specific disclosures and current credits."""
     validate_gamebanana(profile)
@@ -345,7 +352,8 @@ def gamebanana_readme_html(blob, profile):
             output += ['<li>' + link(record) + ' by ' + escape(record['author']) + '</li>'
                        for record in asset[group]]
             output.append('</ul>')
-    output.append(readme_html(blob).decode('utf-8').strip())
+    guide = readme_html(blob).decode('utf-8').strip()
+    output.append(compact_html(guide) if profile.get('compact_html') else guide)
     if profile['credits']:
         output += ['<h2>Credits</h2>', '<ul>']
         output += ['<li>' + link(credit) + ' by ' + escape(credit['author']) + '</li>'

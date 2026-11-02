@@ -424,6 +424,18 @@ literal=<script>&
                 self.rejected(self.package)
                 self.assertFalse((self.root / 'build/sample-mod/releases/r1').exists())
 
+    def test_gamebanana_compact_html_spaces_the_guide_with_line_breaks(self):
+        profile = copy.deepcopy(self.spec['gamebanana'])
+        markdown = b'# Fixture\n\nOne.\n\n1. First\n2. Copy:\n   - Nested\n3. Last\n\nTwo.\n'
+        plain = distribution.gamebanana_readme_html(markdown, profile)
+        self.assertIn(b'<p>One.</p>', plain)
+        profile['compact_html'] = True
+        html = distribution.gamebanana_readme_html(markdown, profile).decode()
+        self.assertIn('</h2>\nOne.<br><br>\n<ol>\n<li>First</li>\n<li>Copy:<ul>\n'
+                      '<li>Nested</li>\n</ul></li>\n<li>Last<br><br></li>\n</ol>\nTwo.<br><br>\n', html)
+        if profile['ai_code']['used']:
+            self.assertIn('<p>AI assistance from', html)
+
     def test_gamebanana_asset_credits_and_code_only_exceptions(self):
         profile = copy.deepcopy(self.spec['gamebanana'])
         profile['ai_code'] = {'used': False}
