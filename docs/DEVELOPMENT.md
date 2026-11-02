@@ -92,11 +92,8 @@ offset from, or a fraction of, the node or rect it was read on. Never store
 absolute screen pixels. Record the frame it was measured in beside the value.
 
 A mod's DEVELOPMENT.md holds the current project only: exactly one current-state
-paragraph, replaced for each version, then the facts a change needs, a short
-"Do not" list of refuted approaches, and open items. Run logs and superseded
-paragraphs do not go in it: dated results go in EVIDENCE.json and Git keeps the
-rest. Keep it short enough to read in full at the start of every task. `work/`
-research notes follow the same rule once a phase closes.
+paragraph, then the facts a change needs, a short "Do not" list and open items.
+"Writing project docs" in the root AGENTS.md has the full rules.
 
 Diagnostics, forced values, test sliders and probes are scaffolding. Once the
 user accepts the behaviour they were for, remove them with the consolidation
@@ -179,7 +176,7 @@ Archive superseded releases outside active releases.
    wrapper: a plain `cargo` run inside the mod leaves a `target/` that blocks
    the next build. Update READMEs before `package`, because the ZIP includes
    README.md.
-5. Update the mod's DEVELOPMENT.md (current state and release table) and
+5. Update the mod's DEVELOPMENT.md (the current-state paragraph) and
    `docs/LOCAL_STATE.md`. The root README table lists the approved release,
    not the candidate.
 

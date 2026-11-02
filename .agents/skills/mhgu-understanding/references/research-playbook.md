@@ -2,7 +2,8 @@
 
 Follow these steps in order for any "where does the game do X?" question.
 Run commands from the workspace root. Write findings into
-`mods/NAME/DEVELOPMENT.md` or `work/NAME/` as you go, not only at the end.
+`mods/NAME/DEVELOPMENT.md` or `work/NAME/` as you go, not only at the end, as
+standing facts rather than a log ("Writing project docs" in the workspace `AGENTS.md`).
 
 ## 1. Write the question as something observable
 

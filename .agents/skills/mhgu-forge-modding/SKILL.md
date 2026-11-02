@@ -79,7 +79,8 @@ build it and extract into the scratchpad.
 - Write run IDs (`r23`), run narratives or refuted approaches in source
   comments, or tester instructions in README.md. Refuted approaches go in
   DEVELOPMENT.md's "Do not" list, run results in `EVIDENCE.json`, and tester
-  steps in `TESTING.md`.
+  steps in `TESTING.md`. "Writing project docs" in the workspace `AGENTS.md` has
+  the full rules.
 
 ## Stop and ask the user when
 

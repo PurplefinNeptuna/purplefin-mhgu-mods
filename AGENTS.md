@@ -77,6 +77,40 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 - Record unknowns and keep going on the parts that don't depend on them. Never
   invent signatures, offsets, layouts, licenses or AI provenance.
 
+## Writing project docs
+
+Agents read these docs at the start of a task, small models included, so they
+describe the project as it is now, not how it got here.
+
+| Content | Goes in |
+| --- | --- |
+| Current state, commands, native facts, open items | `mods/NAME/DEVELOPMENT.md` |
+| A refuted approach | One line in that file's "Do not" list: what not to do and why |
+| Run results: hashes, log counts, tester quotes | `mods/NAME/EVIDENCE.json` |
+| Tester steps and log-line meanings, current version only | `mods/NAME/TESTING.md` |
+| What a mod user needs | `mods/NAME/README.md` |
+| A rule that holds across mods | The matching skill reference |
+| Research in progress | `work/NAME/` |
+
+- **Edit in place.** When a fact changes, correct it where it stands. Never add a
+  dated section, per-run heading, "corrections" list, superseded paragraph or
+  release table. Git keeps the old text.
+- **State the fact, not the run.** Write "bit 17 is transform dirty, gate at
+  main+0xa4969c", not "the r57 run showed". Name a version only when the version
+  is the fact, such as which build was accepted.
+- **One current-state paragraph.** Replace it for each version.
+- **One home per fact.** Link instead of copying. When you remove a section or
+  file, fix what points at it.
+- **Size.** Keep a `DEVELOPMENT.md` under 500 lines and other project docs under
+  350. Over that, merge facts and drop narrative. Don't split a file to hide it.
+- **`work/` notes.** Write standing facts from the start. `work/` is gitignored,
+  so don't rewrite an existing note until the user agrees and a copy is archived.
+- **Bulk pruning.** List the files and proposed cuts first, and cut only after the
+  user reviews them. Confirm that every address in the old text still appears
+  somewhere before you commit.
+- **Before committing a doc change,** this must print nothing:
+  `grep -nE '^#+ .*\br[0-9]{1,3}\b' mods/*/DEVELOPMENT.md docs/*.md`
+
 ## Runtime evidence and installation paths
 
 - Dump/RomFS: `~/.local/share/eden/dump/0100770008DD8000/`.
