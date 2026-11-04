@@ -8,9 +8,22 @@ Record function purpose, callers, ARM/Thumb state, displaced instructions, argum
 
 Ordinary ARM Forge hooks replace eight bytes with `0xE51FF004` (`ldr pc,[pc,#-4]`) and a detour address. The returned trampoline copies the displaced bytes and appends the same literal branch plus target+8. The pinned implementation copies instructions without a general relocation engine. Choose position-independent pairs or supply an explicitly verified relocation. PC-relative loads, branches, and partial instruction boundaries cannot be copied blindly. Do not infer Thumb safety from an ARM fixture.
 
-Before publication, verify title/build scope, complete supporting signatures, checked address arithmetic, alignment, mapping permissions, nonoverlap, reserved hook ranges, and instruction forms. A library filename/build ID is insufficient. Check the returned original pointer, executable mapping, displaced words, return instruction, and continuation.
+Before publication, verify title/build scope, complete supporting signatures, checked address arithmetic, alignment, mapping permissions, nonoverlap, reserved hook ranges (a pre/post-only entry hook [may share a site](#chaining-onto-another-plugins-hook)), and instruction forms. A library filename/build ID is insufficient. Check the returned original pointer, executable mapping, displaced words, return instruction, and continuation.
 
 Forge returns a `Hook` record even when creation fails; nonzero target/detour fields do not prove success. Supply and validate the original output where the installation needs a callable original. All hooks required for one feature must succeed before enabling it.
+
+## Chaining onto another plugin's hook
+
+An entry hook that only runs code before or after the original needs no guard against another plugin's Forge hook on the same entry. It must not refuse the site, list it as occupied, or disable itself when a later plugin covers its branch. Forge copies the foreign `ldr pc,[pc,#-4]` and its literal into the new trampoline as a pair, and that pair is position-independent, so the call runs newest hook, older hook, then the game's function from target+8.
+
+Read the whole function and your detour before classing a hook this way. All of these must hold:
+
+- Every path through the detour calls the original exactly once, with the arguments it received, and returns its result. A detour that skips the original, or changes an argument or the result, is not pre/post-only.
+- It is an entry hook. Interior taps and direct patches depend on the exact bytes they replace.
+- The function's callers and body were read: its return paths, tail calls, and anything branching to entry+4 (P4 step 3).
+- The post part tolerates a foreign hook that skipped the game's function. It must check what it reads rather than assume the body ran.
+
+What changes is narrow. The window still compares every byte past the first eight, and the build checks stay, so a different game build is still refused. Only the exact pair `e51ff004` plus any literal is accepted in those eight bytes; any other difference is a mismatch. Run the P4 step 3 relocation check against the original NSO bytes, and compare the trampoline against the live words captured just before hooking. `window_matches` in `mods/world-sharpness-gauge/core/src/lib.rs` is the current form, with a fixture covering all four cases. Copy it, since no mod builds against a sibling.
 
 ## Pool and publication behavior
 

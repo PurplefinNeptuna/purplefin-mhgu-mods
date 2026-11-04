@@ -52,6 +52,10 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 - **Native writes.** Before writing a game field by hand, find what reads it and
   what gates that read, and use a setter if one exists. A value that reads back
   has been stored, not consumed.
+- **Hook guards.** An entry hook that only runs code before or after the original
+  stacks on another plugin's Forge hook, so it must not refuse one. Read the whole
+  function to confirm that it is only that. Every other kind of hook keeps the
+  exact-bytes gate (see "Chaining" in the forge-modding hooks reference).
 - **Forge first.** Use Forge headers and APIs before private substitutes, and
   document each verified gap beside the workaround.
 - **Versions.** Runtime changes get a new version. `DISTRIBUTION.json` is authoritative.

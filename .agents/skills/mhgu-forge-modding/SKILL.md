@@ -63,7 +63,7 @@ build it and extract into the scratchpad.
 - Before writing a native field by hand, find what reads it and what gates that read. If a setter exists, use it. A field that reads back your value has only been stored; three separate rounds of World Sharpness Gauge (r14 to r24, r53 to r55, r59 to r61) wrote fields nothing consumed.
 - Use Forge headers and APIs first. When you must go lower, write the verified gap next to the code.
 - Keep PIC and `-nostartfiles` / `-Wl,-z,text` in every Rust/GCC NRO target.
-- Install hooks all-or-nothing, with signature checks before any write and rollback on failure.
+- Install hooks all-or-nothing, with signature checks before any write and rollback on failure. A pre/post-only entry hook accepts another plugin's Forge hook over its first eight bytes ([Chaining](references/hooks-and-lifetimes.md#chaining-onto-another-plugins-hook)).
 - Copy values out of game memory inside the hook; render and log from copies later.
 - Run `python3 scripts/mod_distribution.py check` before every commit.
 - Say exactly what was validated and what was not.
@@ -99,6 +99,7 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Rebuilding a release to "promote" it | Promotion ships the existing candidate bytes unchanged (playbook P5). |
 | Trusting a nonzero `Hook` record | Forge returns one even on failure. Check the trampoline bytes and executable mapping. |
 | Hooking a function that starts with `ldr rX,[pc,#N]` | PC-relative instructions break when copied. Pick another site. |
+| Refusing to load because another plugin hooked the same entry | A pre/post-only hook chains onto it. Read the whole function to confirm the hook is only that, then accept the foreign hook. |
 | Reading the local player index from sUserInfo | Use session `0x188ca48` +0x30 (input-and-actions in mhgu-understanding). |
 | Using Forge `malloc` for game GUI objects | Use the class DTI's MT allocator so the native destructor frees it correctly. |
 | Appending a GUI child without growing the object map | The game indexes the map by the tree count and crashes. Grow map and draw cache together. |

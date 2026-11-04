@@ -210,7 +210,9 @@ Do not change code until step 5.
    only. Never use `APSR_g` or `APSR_nzcvqg` (Ryujinx cannot translate them).
 6. **Add a signature window**: the exact original bytes your code expects,
    checked before any hook is installed. Startup must refuse to install when
-   they differ.
+   they differ. A pre/post-only entry hook also accepts another plugin's Forge
+   hook over the first eight bytes, once the whole function has been read
+   ([Chaining](hooks-and-lifetimes.md#chaining-onto-another-plugins-hook)).
 7. **Install all-or-nothing.** All hooks for one feature succeed, or roll back
    the ones you installed and stay disabled. Check each returned trampoline
    (original 8 bytes, then `e51ff004`, then target+8).
