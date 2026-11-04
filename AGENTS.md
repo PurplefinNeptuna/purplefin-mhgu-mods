@@ -123,9 +123,10 @@ The pre-commit hook refuses per-run headings and files over these sizes.
   log: `~/.local/share/eden/log/eden_log.txt`.
 - Ryujinx-Nextendo: `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` and
   `portable/mods/contents/0100770008dd8000/` under that installation.
-- MHGURecomp: no local installation recorded. Each mod goes in its own folder
-  under `mods/` beside the executable, with NROs at `romfs/nativeNX/plugins/`;
-  its log is `log.txt`.
+- MHGURecomp: `/mnt/storage2/Programs/MHGURecomp/`, Linux build. Each mod goes
+  in its own folder under `mods/` beside the executable, with NROs at
+  `romfs/nativeNX/plugins/`; its log is `log.txt`, and saves are in
+  `~/.local/share/MHGURecomp/save/save_0/`.
 
 Folder presence proves no activation, and library contents are not installed
 mods. After a reported run or failure, read that emulator's latest log and
