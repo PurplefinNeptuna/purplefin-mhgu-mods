@@ -23,6 +23,8 @@ Read the whole function and your detour before classing a hook this way. All of 
 - The function's callers and body were read: its return paths, tail calls, and anything branching to entry+4 (P4 step 3).
 - The post part tolerates a foreign hook that skipped the game's function. It must check what it reads rather than assume the body ran.
 
+All hooks of one feature still install together, so a strict hook in the set refuses for the whole feature. Check each hook on its own and mark only the ones that qualify; a mod's other windows, which are only compared or called through their entry, accept a foreign hook too. Stacking is safe through a private arena as well as Forge's trampolines, as `chains` in `mods/please-do-better/core/src/hooks.rs` shows, as long as the arena copies the pair unchanged and treats it as that entry's original.
+
 What changes is narrow. The window still compares every byte past the first eight, and the build checks stay, so a different game build is still refused. Only the exact pair `e51ff004` plus any literal is accepted in those eight bytes; any other difference is a mismatch. Run the P4 step 3 relocation check against the original NSO bytes, and compare the trampoline against the live words captured just before hooking. `window_matches` in `mods/world-sharpness-gauge/core/src/lib.rs` is the current form, with a fixture covering all four cases. Copy it, since no mod builds against a sibling.
 
 ## Pool and publication behavior
