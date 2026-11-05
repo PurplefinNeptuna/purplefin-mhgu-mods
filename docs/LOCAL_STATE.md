@@ -37,7 +37,7 @@ The rollback for a release with no gameplay run of its own. `backups/` is an opt
 | Please do Better | r26 | `build/please-do-better/candidates/r26/` | User-reported Eden run for luck highlights, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` | User-reported Eden run for a joiner on the Diablos and Nakarkos urgents, no joiner log |
 | Village Quests in Hub | r2 | `build/village-quests-in-hub/candidates/r2/` | User-reported Eden run for the blank difficulty menu fix, no log lines from the mod |
-| World Sharpness Gauge | r64 | `build/world-sharpness-gauge/candidates/r64/` | Built under an earlier name, so its folder differs from r65's: remove the other folder when swapping. Accepted on Eden for the per-tier fill, yellow to red, two quests; the worn-blade crop is r62's at `build/world-sharpness-gauge/candidates/r62/` |
+| World Sharpness Gauge | r67 | `build/world-sharpness-gauge/candidates/r67/` | User-reported quest on MHGURecomp beside KatLib and UIScale. r64 at `build/world-sharpness-gauge/candidates/r64/` is the Eden-accepted picture, under an earlier name: remove the other folder when switching |
 
 Older accepted C++ builds stay at `build/modern-weapon-controls/candidates/r10/` and `build/please-do-better/candidates/r23/` and `r17-config1/`, each with a `SHA256SUMS`. Dated records in `EVIDENCE.json`, `COMPACTION.json` and `WORKSPACE_EVIDENCE.json` name `backups/` paths that may no longer exist. They keep the hashes, which remain each file's identity.
 
