@@ -121,13 +121,15 @@ The pre-commit hook refuses per-run headings and files over these sizes.
 - Uninstalled library: `/mnt/storage2/ROM/Switch/cheats/mhgu/`.
 - Eden packages: `~/.local/share/eden/load/0100770008DD8000/`;
   log: `~/.local/share/eden/log/eden_log.txt`.
-- Ryujinx-Nextendo: `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` and
-  `portable/mods/contents/0100770008dd8000/` under that installation.
-- Ryubing 1.3.3 (latest stable; what Ryujinx reporters run):
-  `/mnt/storage2/Programs/Ryubing-1.3.3/app/Ryujinx`, portable data in
+- Ryubing 1.3.3 (latest stable; what Ryujinx reporters run), the Ryujinx test
+  target: `/mnt/storage2/Programs/Ryubing-1.3.3/app/Ryujinx`, portable data in
   `app/portable/` (mods `portable/mods/contents/0100770008dd8000/`, logs
   `portable/Logs/`, MHGU save `portable/bis/user/save/0000000000000001/`).
   Build steps are in docs/TOOLS.md.
+- Ryujinx-Nextendo: `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` and
+  `portable/mods/contents/0100770008dd8000/` under that installation. By the
+  user's decision it counts as a superset of Ryubing: a mod that works on
+  Ryubing is taken to work there, so install and test on Ryubing, not here.
 - MHGURecomp: `/mnt/storage2/Programs/MHGURecomp/`, Linux build. Each mod goes
   in its own folder under `mods/` beside the executable, with NROs at
   `romfs/nativeNX/plugins/`; its log is `log.txt`, and saves are in
