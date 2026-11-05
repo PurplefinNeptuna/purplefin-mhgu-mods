@@ -105,9 +105,13 @@ def spec_for(mod, root=ROOT):
         require(isinstance(spec.get(field), str) and
                 re.fullmatch(pattern, spec[field]),
                 f'Invalid {field}: {mod}')
+    # A renamed mod's archive follows its public name; its ID, folders and runtime keep the old one.
+    archive_stem = spec.get('archive_stem', mod)
+    require(isinstance(archive_stem, str) and re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', archive_stem),
+            f'Invalid archive stem: {mod}')
     archive = spec.get('archive', '')
     require(isinstance(archive, str) and
-            re.fullmatch(re.escape(f'{mod}-{spec["version"]}') + r'(?:-[a-z0-9]+)*\.zip', archive),
+            re.fullmatch(re.escape(f'{archive_stem}-{spec["version"]}') + r'(?:-[a-z0-9]+)*\.zip', archive),
             f'Invalid archive name: {mod}')
     require(spec.get('approval', {}).get('date') and spec['approval'].get('basis'),
             f'Distribution approval missing: {mod}')

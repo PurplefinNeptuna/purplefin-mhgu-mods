@@ -62,6 +62,14 @@ class DistributionTests(unittest.TestCase):
         with self.assertRaises((ValueError, KeyError, TypeError, OSError)):
             action()
 
+    def test_archive_follows_a_declared_stem_only(self):
+        self.spec.update(archive='public-name-r1.zip')
+        self.save_spec()
+        self.rejected(self.package)
+        self.spec['archive_stem'] = 'public-name'
+        self.save_spec()
+        self.assertEqual(self.package().name, 'public-name-r1.zip')
+
     def test_ready_requires_artifacts_and_is_deterministic(self):
         self.rejected(lambda: distribution.check(self.root))
         distribution.check(self.root, source_only=True)

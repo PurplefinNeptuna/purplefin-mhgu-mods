@@ -150,6 +150,8 @@ beside the named runtime folder. The README is identical inside/outside the ZIP;
 runtime folders contain no guides/notices/manifests. Keep notices and HTML outside
 ZIPs. Support refreshes back up the prior release and preserve runtime bytes.
 Archive superseded releases outside active releases.
+A renamed mod sets `archive_stem` in `DISTRIBUTION.json`, and its archive starts with that stem. Its
+ID, folders and runtime keep the old name, so the runtime bytes don't change.
 
 ### Starting a new version
 
