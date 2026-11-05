@@ -9,7 +9,7 @@ loads the same Forge NROs.
 | Damage Numbers | r38 | [Install](mods/damage-numbers/README.md) |
 | Key Quest Markers | r19 | [Install](mods/key-quest-markers/README.md) |
 | Modern Weapon Controls | r15 | [Install](mods/modern-weapon-controls/README.md) |
-| Online Roaming | r13 | [Install](mods/online-roaming/README.md) |
+| Multiplayer Roaming | r13 | [Install](mods/online-roaming/README.md) |
 | Please do Better | r26 | [Install](mods/please-do-better/README.md) |
 | Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
 | Village Quests in Hub | r5 | [Install](mods/village-quests-in-hub/README.md) |
