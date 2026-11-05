@@ -30,7 +30,7 @@ The rollback for a release with no gameplay run of its own. `backups/` is an opt
 
 | Mod | Build | Where | Scope |
 | --- | --- | --- | --- |
-| Damage Numbers | r38 | `build/damage-numbers/candidates/r38/` | User-reported Eden run for damage numbers, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
+| Damage Numbers | r38, before its log-line amendment | `build/damage-numbers/candidates/r38-accepted/` | User-reported Eden run for damage numbers, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
 | Key Quest Markers | r19 | `build/key-quest-markers/candidates/r19/` | User-reported Eden run for quest badges, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` | User-reported Eden run for the ZR remap, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
 | Online Roaming | r10 | `build/online-roaming/candidates/r10/` | User-reported Eden run with two players, both logs read; all eight meetings enabled. A look change doesn't update |
