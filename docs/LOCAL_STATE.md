@@ -60,6 +60,7 @@ not supplied). No later build has run on an affected device.
 | Eden log | `~/.local/share/eden/log/eden_log.txt` |
 | Ryujinx-Nextendo packages | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/mods/contents/0100770008dd8000/` |
 | Ryujinx-Nextendo logs | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` |
+| Ryubing 1.3.3 (portable) | `/mnt/storage2/Programs/Ryubing-1.3.3/app/`, data in `app/portable/` (`mods/`, `Logs/`, save `bis/user/save/0000000000000001/`) |
 | Copied native inputs | `work/shared/game-exefs/` |
 | Official Forge package/input | `work/shared/forge-1.5.1/` |
 | Ghidra and saved DTI | `work/research-tooling/` |

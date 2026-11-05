@@ -53,6 +53,18 @@ are recorded in COMPACTION.json and WORKSPACE_EVIDENCE.json.
 | forge-rs 1.5.0 | `tools/forge-rs/` |
 | Eden | `references/eden/` |
 | Ryujinx-Nextendo | `references/ryujinx-nextendo/` |
+| Ryubing | same checkout, remote `ryubing` (https://git.ryujinx.app/projects/Ryubing.git), tag `ryubing-1.3.3` = upstream `1.3.3`, commit `e2143d43b` |
+
+Ryubing 1.3.3 is built from `git archive ryubing-1.3.3` into
+`/mnt/storage2/Programs/Ryubing-1.3.3/src/` with the release workflow's command,
+`dotnet publish -c Release -r linux-x64 -o ../app -p:Version=1.3.3 -p:DebugType=embedded -p:SourceRevisionId=e2143d4 src/Ryujinx --self-contained`
+(.NET 9). Its `nuget.config` feeds are gone: point `LibHacAlpha` at
+`https://git.ryujinx.app/api/packages/projects/nuget/index.json` and drop the
+`Ryujinx.UpdateClient` source and mapping, so nuget.org supplies
+`Ryujinx.UpdateClient`/`Ryujinx.Systems.Update.Common` 1.0.44. A `portable/`
+folder beside the executable makes it portable. The lsfg-vk layer attaches to
+any executable named `Ryujinx` through the user's `3x` profile; launch with
+`DISABLE_LSFGVK=1` to run without it.
 
 `./scripts/tool.sh forge-rs status` checks source and converter fingerprints.
 The pinned cargo-forge converter remains 1.4.1; it builds the self-contained
