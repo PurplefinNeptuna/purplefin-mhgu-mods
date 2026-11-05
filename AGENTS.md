@@ -125,7 +125,10 @@ The pre-commit hook refuses per-run headings and files over these sizes.
   target: `/mnt/storage2/Programs/Ryubing-1.3.3/app/Ryujinx`, portable data in
   `app/portable/` (mods `portable/mods/contents/0100770008dd8000/`, logs
   `portable/Logs/`, MHGU save `portable/bis/user/save/0000000000000001/`).
-  Build steps are in docs/TOOLS.md.
+  Build steps are in docs/TOOLS.md. The user starts it with
+  `/mnt/storage2/Programs/Ryubing-1.3.3/run.sh`, which copies the Eden save in
+  and, after exit, back to Eden (Eden backups in `save-backups/eden/`). Never
+  symlink the save: LibHac deletes and renames slot `0` on every commit.
 - Ryujinx-Nextendo: `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` and
   `portable/mods/contents/0100770008dd8000/` under that installation. By the
   user's decision it counts as a superset of Ryubing: a mod that works on
