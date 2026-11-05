@@ -6,11 +6,14 @@ loads the same Forge NROs.
 
 | Mod | Release | Guide |
 | --- | --- | --- |
-| Damage Numbers | r36 | [Install](mods/damage-numbers/README.md) |
-| Key Quest Markers | r18 | [Install](mods/key-quest-markers/README.md) |
-| Modern Weapon Controls | r13 | [Install](mods/modern-weapon-controls/README.md) |
-| Please do Better | r25 | [Install](mods/please-do-better/README.md) |
-| World Sharpness Gauge | r65 | [Install](mods/world-sharpness-gauge/README.md) |
+| Damage Numbers | r38 | [Install](mods/damage-numbers/README.md) |
+| Key Quest Markers | r19 | [Install](mods/key-quest-markers/README.md) |
+| Modern Weapon Controls | r15 | [Install](mods/modern-weapon-controls/README.md) |
+| Online Roaming | r13 | [Install](mods/online-roaming/README.md) |
+| Please do Better | r26 | [Install](mods/please-do-better/README.md) |
+| Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
+| Village Quests in Hub | r5 | [Install](mods/village-quests-in-hub/README.md) |
+| World Sharpness Gauge | r67 | [Install](mods/world-sharpness-gauge/README.md) |
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Current
 candidates and acceptance scope are summarised in
