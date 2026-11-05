@@ -32,12 +32,13 @@ The rollback for a release with no gameplay run of its own. `backups/` is an opt
 | Mod | Build | Where | Scope |
 | --- | --- | --- | --- |
 | Damage Numbers | r38, before its log-line amendment | `build/damage-numbers/candidates/r38-accepted/` | User-reported Eden run for damage numbers, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
-| Key Quest Markers | r19 | `build/key-quest-markers/candidates/r19/` | User-reported Eden run for quest badges, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
+| Key Quest Markers | r20 | `build/key-quest-markers/candidates/r20/` | User-reported Eden run beside Wishlist r2, unitemized. r19 at `build/key-quest-markers/candidates/r19/` is the last approved release |
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` | User-reported Eden run for the ZR remap, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
 | Multiplayer Roaming (folder `online-roaming`) | r14 | `build/online-roaming/candidates/r14/` | User-reported Eden run, unitemized. r10 at `build/online-roaming/candidates/r10/` has the two-player logs for seeing each other, with a look change not updating |
 | Please do Better | r26 | `build/please-do-better/candidates/r26/` | User-reported Eden run for luck highlights, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` | User-reported Eden run for a joiner on the Diablos and Nakarkos urgents, no joiner log |
 | Village Quests in Hub | r2 | `build/village-quests-in-hub/candidates/r2/` | User-reported Eden run for the blank difficulty menu fix, no log lines from the mod |
+| Wishlist | r2 | `build/wishlist/candidates/r2/` | User-reported Eden run, unitemized |
 | World Sharpness Gauge | r67 | `build/world-sharpness-gauge/candidates/r67/` | User-reported quest on MHGURecomp beside KatLib and UIScale. r64 at `build/world-sharpness-gauge/candidates/r64/` is the Eden-accepted picture, under an earlier name: remove the other folder when switching |
 
 Older accepted C++ builds stay at `build/modern-weapon-controls/candidates/r10/` and `build/please-do-better/candidates/r23/` and `r17-config1/`, each with a `SHA256SUMS`. Dated records in `EVIDENCE.json`, `COMPACTION.json` and `WORKSPACE_EVIDENCE.json` name `backups/` paths that may no longer exist. They keep the hashes, which remain each file's identity.
