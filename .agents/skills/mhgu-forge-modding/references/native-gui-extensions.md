@@ -42,7 +42,7 @@ Appending a child requires both storage expansions:
 | Storage | Original | Extended | Contract |
 | --- | --- | --- | --- |
 | Lookup map | 12 pointers | 13 pointers | Keep original indices, append static child; publish instance+0xd8 and root +0xa0 |
-| Draw cache | 152 bytes | 168 bytes | Zero secondary prefix, `drawableCount*16+8`, 9 becomes 10 |
+| Draw cache | 152 bytes | 168 bytes | No prefix on this row (`root+0x80 == root+0xa4`); `drawableCount*16+8`, 9 becomes 10 |
 
 The map uses the instance's MT allocator. Cache allocation must match the native cache-free/destructor path. Fully prepare replacement allocations, publish aliases/cache/tree coherently, mark sorting/transform/draw state dirty, and free replaced storage at the verified point. The native root/instance recursively destroy the child, map, cache, and graphics allocations. No extra destructor hook is required for this audited static addition.
 
@@ -55,7 +55,8 @@ Root setup `0xa49b28` allocates `(objects << 4 | 8) + sequences * 12` through ro
 - Objects is the node count. The map is one longer, because its first entry is the controller.
 - The walker's list is 8 bytes per record plus an 8-byte terminator. A visible drawable node emits an enter and an exit; a hidden one emits neither.
 - The grown map comes from the `cGUIInstance` allocator, slot 0x1c with `(bytes, 16)`. Passing no alignment leaves it as register garbage. Publish instance +`0xd8` and root +`0xa0` together.
-- Return the old cache through root slot 0x5c. A build that left it unreleased stopped the bar drawing (mechanism unread).
+- A row with sequences has live animation tracks in the prefix: setup (`0xa484c4`) stores each object's slice at +`0x64`, and the row update `0xa4915c` evaluates and writes them every frame. Copy the prefix into the new block and move every map entry's +`0x64` that points into the old prefix to the same offset before freeing the old block; freeing it under them crashed Ryubing at `0xb349c0`.
+- Return the old cache through root slot 0x5c, after that move.
 - Link last, so a larger tree never exists against the old map, and then set root +`0x8c` bits 0 and 1 (bit 0 rebuilds the walker's list, bit 1 starts the transform walk).
 
 The game allocates a row's map in `FUN_01401bc0` and frees it in `0xa38828` (`setAnimationId`) through the same class allocator. World Sharpness Gauge still leaks the old 16-byte block, a shortcut from before that was read.
