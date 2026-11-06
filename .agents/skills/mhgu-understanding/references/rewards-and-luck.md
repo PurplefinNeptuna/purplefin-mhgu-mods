@@ -14,7 +14,7 @@ UI builder `0x3874e0` copies generated four-byte `(u16 item, u16 amount)` entrie
 
 Native list copy `0x623c08` copies min(source count, capacity) by index. Items are inline at list +0x60; that field is not an item-array pointer. Flags at +0x120 come from a separate descriptor. Result update `0x384848` observes reward states 2..5 at +0x3c; departure/destruction invalidates provenance. If array growth frees the old allocation, snapshot before original execution and verify the new prefix without rereading freed memory.
 
-Luck attribution identifies observed additional slots, not an intrinsic quality of each item. Unknown generation routes publish no attribution. Current highlighting uses the independent Forge overlay and guarded native slot/frame geometry, replacing retired downsample-transfer experiments.
+Luck attribution identifies observed additional slots, not an intrinsic quality of each item. Unknown generation routes publish no attribution. Current highlighting sets each verified extra-luck slot's native background frame white through its vertex-colour setter; the earlier ImGui overlay and downsample experiments are retired.
 
 ## Result page layout
 
