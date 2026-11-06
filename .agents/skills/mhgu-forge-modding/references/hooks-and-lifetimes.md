@@ -29,6 +29,12 @@ Check stacking with a real foreign hook on the entry at install, not with any lo
 
 What changes is narrow. The window still compares every byte past the first eight, and the build checks stay, so a different game build is still refused. Only the exact pair `e51ff004` plus any literal is accepted in those eight bytes; any other difference is a mismatch. Run the P4 step 3 relocation check against the original NSO bytes, and compare the trampoline against the live words captured just before hooking. `window_matches` in `mods/world-sharpness-gauge/core/src/lib.rs` is the current form, with a fixture covering all four cases. Copy it, since no mod builds against a sibling.
 
+## On MHGURecomp
+
+Recomp runs the game as compiled code and plugins in an interpreter, and implements Forge's hook and patch calls itself (`runtime/forge.c`, `dispatch.c` in its source). Only Forge calls change code there: a plugin's own stores into `main` are never seen. A hook at a function entry redirects the compiled function; its trampoline calls the whole function. A hook inside a function makes Recomp interpret that whole function for the session, so a gateway may jump back to any address inside it. A jump into the middle of a function that is still compiled is fatal (`no function at %x`). Recomp refuses Thumb targets, sites outside a function, and sites under eight bytes before the next function.
+
+An entry whose first two words read PC-relative data cannot run from Forge's copied trampoline on Switch. Please do Better's `0x381FEC` takes a Forge hook with no original and resumes through a fixed stub in its `gateway.S` that replays both words and jumps to site + 8; on Recomp that works because two interior hooks in the same function make it interpreted. A function interpreted for the session costs per call, so keep interior hooks out of per-draw or per-frame hot paths.
+
 ## Pool and publication behavior
 
 At pinned Forge 1.5.1, `hook.c` owns at most two 16 KiB CodeMemory chunks. Slots align to eight bytes and are never reused. A normal eight-byte ARM displacement needs a 16-byte trampoline. Damage Numbers' eleven hooks use 176 bytes; the two quest-badge hooks use 32 bytes. Context hooks also allocate a 44-byte stub, rounded to 48, in addition to any original trampoline.
