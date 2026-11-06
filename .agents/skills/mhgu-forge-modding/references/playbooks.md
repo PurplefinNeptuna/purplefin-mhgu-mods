@@ -130,8 +130,9 @@ Do not change code until step 5.
 1. **Which run?** Ask or determine: emulator (Eden, Ryujinx, MHGURecomp,
    real Switch), date/time, which mod version they think they ran.
 2. **Read the newest log**, not an old one:
-   Eden `~/.local/share/eden/log/eden_log.txt`; Ryujinx
-   `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` (newest file);
+   Eden `~/.local/share/eden/log/eden_log.txt`; Ryubing 1.3.3
+   `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/Logs/` (newest file;
+   Ryujinx-Nextendo counts as a superset, so test on Ryubing);
    MHGURecomp `log.txt` beside its executable. Copy it to
    `work/NAME/runs/rN-<emulator>-<YYYY-MM-DD>.txt` before anything else,
    because the next launch overwrites it. Eden also keeps only a rolling

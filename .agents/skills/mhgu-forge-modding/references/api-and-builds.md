@@ -77,6 +77,15 @@ The 2026-10-18 r18/r28 rebuilds removed all six executable-text relocations from
 
 Plugins built against the pinned 1.5.1 SDK are expected to work with that reviewed fork when their imports and ABI match. Confirm the tester's exact loader revision/binary, strong imports and runtime results before claiming compatibility. The fork is an optional hardware-test loader; it does not replace the workspace's stock SDK/source baseline or become a required dependency merely because a test uses it. The reviewed source and the r18/r28 candidates were not tested together on physical hardware here.
 
+## Plugin-to-plugin APIs
+
+A plugin can export plain C functions for another plugin (Wishlist: `wishlist_api_version`, `wishlist_sync`, `wishlist_search`, `wishlist_add`, `wishlist_remove`). A caller finds them with `nn::ro::LookupSymbol` (SDK `_ZN2nn2ro12LookupSymbolEPjPKc`) in its own `forge_onInit` or later; every NRO is loaded before any `forge_onInit`, so load order does not matter. Rules from Wishlist and its My Weapon Tree bridge:
+
+- The contract is a fixed-layout record (Wishlist's 64-byte `WishlistEntry`) and a version function the caller checks first. Check range readability and alignment on entry, copy, and hand the data to `forge_onUpdate` through a bounded mailbox; nothing locks.
+- A plugin that exports only Forge's callbacks (My Weapon Tree) cannot be looked up by symbol. Walk `svcQueryMemory` for an R-X mapping starting with an NRO header (`NRO0` at +0x10) whose build ID at +0x40 matches, pin that exact build, and check the whole range is mapped readable before every read of its memory. Then read its data by fixed offsets (the bridge's DEVELOPMENT.md has a layout table); a host test that loads the real NRO at base 0 checks the offsets and relocated tables.
+- Keep logic in one header that both the plugin and the host test compile (`src/bridge.hpp`).
+- Look a partner up by name, never by folder prefix or position.
+
 ## Standalone workflow
 
 From a maintained mod's directory:

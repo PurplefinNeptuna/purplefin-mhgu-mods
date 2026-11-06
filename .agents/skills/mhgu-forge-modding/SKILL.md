@@ -140,7 +140,7 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Task | Read |
 | --- | --- |
 | Step-by-step procedures | [Playbooks](references/playbooks.md) |
-| Loader, Rust/C++ APIs, metadata, ABI, standalone builds | [API and builds](references/api-and-builds.md) |
+| Loader, Rust/C++ APIs, metadata, ABI, standalone builds, plugin-to-plugin exports | [API and builds](references/api-and-builds.md) |
 | Detours, trampolines, flags, TLS, transactions, rollback | [Hooks and lifetimes](references/hooks-and-lifetimes.md) |
 | Add game-owned GUI objects or extend a native menu | [Native GUI extensions](references/native-gui-extensions.md) |
 | ImGui, fonts/textures, damage overlay, INIs, save mounts | [Rendering and settings](references/rendering-and-settings.md) |

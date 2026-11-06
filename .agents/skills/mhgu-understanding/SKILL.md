@@ -83,6 +83,7 @@ build it and extract into the scratchpad.
 | Which input representation/player/state is this? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
 | Where do damage, HP loss, ownership, hitzones and camera matrices come from? | [Damage and cameras](references/damage-and-cameras.md) |
 | How do Luck, reward pages, quantities and appraisal work? | [Rewards and Luck](references/rewards-and-luck.md) |
+| Where are equipment box slots, weapon crafting rows and armor series names? | [Equipment and crafting](references/equipment-and-crafting.md) |
 | Which tools/formats edit a resource, which wiki `.bt` templates match real files? | [Resources and tooling](references/resources-and-tooling.md) |
 | Original local paths and topic-to-source coverage | [Workspace and sources](references/workspace-and-sources.md) |
 

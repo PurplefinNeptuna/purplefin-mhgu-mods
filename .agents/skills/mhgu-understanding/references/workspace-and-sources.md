@@ -12,7 +12,7 @@ The source workspace is `/mnt/storage2/Programs/MHGU_Modding`, Linux, user shell
 | GZF/main-memory/project/indexes | `work/research-tooling/` |
 | Mod-specific copied resources/research | `work/<mod>/` and mod-local configured inputs |
 | Current Eden log | `~/.local/share/eden/log/eden_log.txt` |
-| Ryujinx logs | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` |
+| Ryubing logs | `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/Logs/` |
 
 What each input holds and when to use it: the Game data section of this skill's SKILL.md.
 

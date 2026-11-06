@@ -1,6 +1,6 @@
 # Original workspace and coverage index
 
-This appendix describes `/mnt/storage2/Programs/MHGU_Modding` on 2026-10-20. Paths and installed state can drift. All other source pointers in this skill are relative to that root. Outside this workspace, provide equivalent source/private inputs explicitly. The skill's Markdown remains usable without them.
+This appendix describes `/mnt/storage2/Programs/MHGU_Modding` Paths and installed state can drift. All other source pointers in this skill are relative to that root. Outside this workspace, provide equivalent source/private inputs explicitly. The skill's Markdown remains usable without them.
 
 ## Machine-specific paths
 
@@ -10,8 +10,9 @@ This appendix describes `/mnt/storage2/Programs/MHGU_Modding` on 2026-10-20. Pat
 | Uninstalled mod/input library | `/mnt/storage2/ROM/Switch/cheats/mhgu/` |
 | Eden packages | `~/.local/share/eden/load/0100770008DD8000/` |
 | Latest Eden log | `~/.local/share/eden/log/eden_log.txt` |
-| Ryujinx packages | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/mods/contents/0100770008dd8000/` |
-| Ryujinx logs | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` |
+| Ryubing 1.3.3 (Ryujinx test target) packages | `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/mods/contents/0100770008dd8000/` |
+| Ryubing logs | `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/Logs/` |
+| MHGURecomp | `/mnt/storage2/Programs/MHGURecomp/` (`mods/NAME/romfs/nativeNX/plugins/`, `log.txt`) |
 
 What each input holds and when to use it: the Game data section of this skill's SKILL.md.
 
@@ -33,15 +34,10 @@ Core workspace reading: `AGENTS.md`, `README.md`, `docs/LOCAL_STATE.md`, `docs/D
 
 Useful evidence locations: `work/shared/game-exefs/`, `work/shared/forge-1.5.1/`, `work/research-tooling/`, per-mod `work/NAME/`, `build/NAME/candidates/`, and `build/NAME/releases/`. Ignored/private material may be absent from another checkout. Consult the current docs, EVIDENCE.json and Git history.
 
-## Source and acceptance snapshot
+## Source baselines
 
 Forge 1.5.1 commit `b23e114a23f41c9a8e2fd34b2f4df2a2102d0ee1`; forge-rs 1.5.0 commit `d1865b68e9b194eb3eacc8bd71bbf601a5fac63e`. Native offsets target main SHA-256 `b3935415499549adaf4c0e89822831daa175cfd456a7990791c79be3997645ef`, build `FB08F1D20FD1204FE7070672777F869B`.
 
-| Maintained Switch mod | Snapshot / evidence boundary (2026-10-20) |
-| --- | --- |
-| Damage Numbers | r35 DEVELOPMENT candidate, gameplay NOT RUN; last release r30 (approval only, no affected-device run); r27 last user-tested on Eden/Linux |
-| Key Quest Markers | r18 READY_TO_DISTRIBUTE, link rebuild of r17; r17 accepted Eden/Linux 2026-10-15 with and without optional HD |
-| Modern Weapon Controls | r12 stock-loader maintenance, earlier r10 acceptance retained at its exact-byte scope |
-| Please do Better | r24-forge151 maintenance; earlier reward-page/overlay evidence retains its own runtime limits |
+Per-mod versions and acceptance scope are in `docs/LOCAL_STATE.md`, `DISTRIBUTION.json` and `EVIDENCE.json`; this file does not repeat them.
 
-`EVIDENCE.json.current` and `DISTRIBUTION.json` hold exact versions/hashes/status. Some mod development paragraphs describe preserved older releases. Do not turn this snapshot into a statement about the latest upstream or installed payload.
+`EVIDENCE.json.current` and `DISTRIBUTION.json` hold exact versions/hashes/status. Do not turn these baselines into a statement about the latest upstream or installed payload.
