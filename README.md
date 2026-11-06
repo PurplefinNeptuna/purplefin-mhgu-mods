@@ -10,8 +10,8 @@ loads the same Forge NROs.
 | Key Quest Markers | r20 | [Install](mods/key-quest-markers/README.md) |
 | Lock-on Target | r2 | [Install](mods/lock-on-target/README.md) |
 | Modern Weapon Controls | r15 | [Install](mods/modern-weapon-controls/README.md) |
-| Multiplayer Roaming | r14 | [Install](mods/online-roaming/README.md) |
-| Please do Better | r26 | [Install](mods/please-do-better/README.md) |
+| Multiplayer Roaming | r15 | [Install](mods/online-roaming/README.md) |
+| Please do Better | r29 | [Install](mods/please-do-better/README.md) |
 | Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
 | Village Quests in Hub | r5 | [Install](mods/village-quests-in-hub/README.md) |
 | World Sharpness Gauge | r68 | [Install](mods/world-sharpness-gauge/README.md) |
