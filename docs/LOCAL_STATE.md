@@ -54,7 +54,7 @@ not supplied). No later build has run on an affected device.
 
 | Purpose | Path |
 | --- | --- |
-| Game dump/RomFS | `~/.local/share/eden/dump/0100770008DD8000/` |
+| Game RomFS | `/mnt/storage2/Programs/MHGURecomp/data/romfs/` (MHGURecomp's copy of 1.4.0; the Eden dump keeps only `exefs` and `nso`) |
 | Sealed base game (v0) | `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` |
 | Sealed 1.4.0 update (v262144) | `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` |
 | Keys for the XCI/NSP | `/mnt/storage2/ROM/Switch/keys+firmware/` |

@@ -12,7 +12,7 @@ from pathlib import Path
 from mhgu_assets import read_arc
 
 ROMFS = Path(sys.argv[1] if len(sys.argv) > 1 else
-             Path.home() / '.local/share/eden/dump/0100770008DD8000/romfs')
+             Path('/mnt/storage2/Programs/MHGURecomp/data/romfs'))
 
 W_BASE = {w: h for w, h in zip((0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14), (
     0x4199032B, 0x56E21768, 0x6F6F2BAD, 0x78143FEE, 0x1C755227, 0x32837AA1, 0x25F86EE2,

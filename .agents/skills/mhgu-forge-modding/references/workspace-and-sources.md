@@ -6,7 +6,7 @@ This appendix describes `/mnt/storage2/Programs/MHGU_Modding` on 2026-10-20. Pat
 
 | Purpose | Path |
 | --- | --- |
-| RomFS dump | `~/.local/share/eden/dump/0100770008DD8000/` |
+| RomFS | `/mnt/storage2/Programs/MHGURecomp/data/romfs/` (MHGURecomp's copy; the Eden dump keeps only `exefs` and `nso`) |
 | Uninstalled mod/input library | `/mnt/storage2/ROM/Switch/cheats/mhgu/` |
 | Eden packages | `~/.local/share/eden/load/0100770008DD8000/` |
 | Latest Eden log | `~/.local/share/eden/log/eden_log.txt` |

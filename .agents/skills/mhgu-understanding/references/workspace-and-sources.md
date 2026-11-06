@@ -6,7 +6,7 @@ The source workspace is `/mnt/storage2/Programs/MHGU_Modding`, Linux, user shell
 
 | Purpose | Path |
 | --- | --- |
-| RomFS-only dump | `~/.local/share/eden/dump/0100770008DD8000/` |
+| RomFS | `/mnt/storage2/Programs/MHGURecomp/data/romfs/` (MHGURecomp's copy; the Eden dump keeps only `exefs` and `nso`) |
 | Uninstalled library | `/mnt/storage2/ROM/Switch/cheats/mhgu/` |
 | Copied executable inputs | `work/shared/game-exefs/` |
 | GZF/main-memory/project/indexes | `work/research-tooling/` |

@@ -117,7 +117,8 @@ The pre-commit hook refuses per-run headings and files over these sizes.
 
 ## Runtime evidence and installation paths
 
-- Dump/RomFS: `~/.local/share/eden/dump/0100770008DD8000/`.
+- RomFS: `/mnt/storage2/Programs/MHGURecomp/data/romfs/` (MHGURecomp's copy of the 1.4.0 RomFS). The Eden dump at
+  `~/.local/share/eden/dump/0100770008DD8000/` keeps only `exefs` and `nso`.
 - Uninstalled library: `/mnt/storage2/ROM/Switch/cheats/mhgu/`.
 - Eden packages: `~/.local/share/eden/load/0100770008DD8000/`;
   log: `~/.local/share/eden/log/eden_log.txt`.
