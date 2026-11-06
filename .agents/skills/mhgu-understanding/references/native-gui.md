@@ -66,7 +66,7 @@ Check the callback direction too. Saved object-vtable DTI for `cGUIObjTexture` e
 | +0x50 | Object ID |
 | +0x54 | Flag word, bits below |
 | +0x60 | Priority, halfword: the sort key when bit 19 is set |
-| +0x64 | The `cGUI` whose texture list the `Texture` setter scans (`*(obj+0x64)+0xe8`). The constructor zeroes it. |
+| +0x64 | In a row with sequences, the object's slice of the draw block prefix: row setup `0xa484c4` stores it and writes the object at `+8` of each 12-byte track, and the row update `0xa4915c` evaluates the tracks through it every frame (`0xb349c0`). The `Texture` setter reads `*(obj+0x64)+0xe8` as a `cGUI` texture list. The constructor zeroes it. A replaced draw block must carry these pointers ([native GUI extensions](../../mhgu-forge-modding/references/native-gui-extensions.md)). |
 | +0x68 / +0x6c / +0x70 | First child / next sibling / parent |
 | +0x74 / +0x78 | Borrowed owning cGUI / rGUI resource context |
 | Texture +0x80 / +0x84 | Local X/Y floats |

@@ -103,6 +103,8 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Reading the local player index from sUserInfo | Use session `0x188ca48` +0x30 (input-and-actions in mhgu-understanding). |
 | Using Forge `malloc` for game GUI objects | Use the class DTI's MT allocator so the native destructor frees it correctly. |
 | Appending a GUI child without growing the object map | The game indexes the map by the tree count and crashes. Grow map and draw cache together. |
+| Freeing or zeroing a row's draw block prefix when growing it | Objects animate through `+0x64` pointers into it. Copy the prefix and move those pointers first ([Native GUI extensions](references/native-gui-extensions.md)). |
+| Using `i32::saturating_add`/`saturating_sub` | They compile to QADD/QSUB, which Ryubing 1.3.3 cannot run, and `-dsp` does not stop them in ARM mode. Use plain or u32-capped arithmetic and gate the build ([Diagnostics](references/diagnostics.md)). |
 | Fixing `check` failures by editing release folders by hand | Use `package NAME --refresh-support` for doc-only changes. |
 | Concluding from an old log or a folder listing | Read the newest log and match installed hashes first (playbook P3). |
 | Assuming a test double proves pixels | GPU commands are doubles. Visible output needs a user run. |
