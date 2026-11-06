@@ -12,6 +12,10 @@ Before publication, verify title/build scope, complete supporting signatures, ch
 
 Forge returns a `Hook` record even when creation fails; nonzero target/detour fields do not prove success. Supply and validate the original output where the installation needs a callable original. All hooks required for one feature must succeed before enabling it.
 
+## Plugin order
+
+Forge loads every NRO first, then runs each `forge_onLoad`/`forge_onInit` in the order `app:/nativeNX/plugins` lists them, all before the game's first update. That order differs by emulator, so no design may depend on it: Eden sorts by `.nro` file name in byte order (`references/eden/src/core/file_sys/fsmitm_romfsbuild.cpp`); Ryubing follows mod folders in raw `readdir` order, unsorted on ext4; MHGURecomp follows `mods/load_order.txt`. A folder prefix like `zzz_` orders only on MHGURecomp's default list. At `forge_onInit` every plugin is already loaded, so look another plugin up then instead.
+
 ## Chaining onto another plugin's hook
 
 An entry hook that only runs code before or after the original needs no guard against another plugin's Forge hook on the same entry. It must not refuse the site, list it as occupied, or disable itself when a later plugin covers its branch. Forge copies the foreign `ldr pc,[pc,#-4]` and its literal into the new trampoline as a pair, and that pair is position-independent, so the call runs newest hook, older hook, then the game's function from target+8.
