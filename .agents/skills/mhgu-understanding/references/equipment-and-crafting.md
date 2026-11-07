@@ -4,7 +4,17 @@ Verified on MHGU 1.4.0 through the Wishlist bridge for My Weapon Tree (`mods/wis
 
 ## Equipment box
 
-Forge singleton `sEquipBox` (find by name): 2000 slots of 44 bytes from +0x20. Type = byte 0 bits 0..4; level = bits 5..9 of the first u16; number = u16 at +2. Weapons are types 7..21 except 12 (type = weapon table + 7). Armor types 1..5 are part + 1 in head, chest, arms, waist, legs order (inferred from My Weapon Tree's reader and from `armorCreateA00` holding Leather Headgear), number = armor series. Equipped gear sits in the same array, which is why the armor parts have their own types; the type of the **equipped weapon** slot is not verified, and is one of the types the ranges above leave out (0, 6, 12). My Weapon Tree's reader, and any reader that copies it, counts box weapons at 7..21 and equipped armor at 1..5, so it treats an equipped weapon as not owned.
+Forge singleton `sEquipBox` (find by name): 2000 slots of 44 bytes from +0x20. The slot record is
+`cFestaEquip` (DTI, 44 bytes): type = bits 0..4 of the u16 at **+4**, level = bits 5..9 of that u16, number = u16 at
+**+6**, bit 15 of the +4 u16 is a flag `cFestaEquip::reset` (`main+0xdac14`) preserves, and a 40-byte payload plus a
+pointer at +0x28 follow. A box slot carries the same two u16s four bytes earlier, at slot +0 and +2, and that is
+the pair My Weapon Tree's working reader uses; the two views differ only by that 4-byte head.
+`FUN_00b0803c` (`main+0x13f03c`) is the decoder: `and r3, r2, #31`, `sub r2, r3, #1`, `cmp r2, #23`, `movhi r0, #0`
+⇒ types **1..23 are valid and 0 is empty**, and the data getter is `main+0x13c208(type, number)`. The availability
+helpers that take a `cFestaEquip*` are `main+0xdb5c4` (count) and `main+0x54ff2c` (pouch + box). Weapons are types
+7..21 except 12 (type = weapon table + 7). Armor types 1..5 are part + 1 in head, chest, arms, waist, legs order
+(inferred from My Weapon Tree's reader and from `armorCreateA00` holding Leather Headgear), number = armor series.
+Types 6, 22 and 23 are unnamed, and which one holds the weapon in hand is not settled by the bytes. Equipped gear sits in the same array, which is why the armor parts have their own types; the type of the **equipped weapon** slot is not verified, and is one of the types the ranges above leave out (0, 6, 12). My Weapon Tree's reader, and any reader that copies it, counts box weapons at 7..21 and equipped armor at 1..5, so it treats an equipped weapon as not owned.
 
 ## Weapon crafting data
 
