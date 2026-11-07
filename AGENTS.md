@@ -117,7 +117,8 @@ describe the project as it is now, not how it got here.
   file, fix what points at it.
 - **Size.** Keep a `DEVELOPMENT.md` under 500 lines and other project docs under
   350. Over that, merge facts and drop narrative. Don't split a file to hide it.
-- **`work/` notes.** Write standing facts from the start. `work/` is gitignored,
+- **`work/` notes.** Write standing facts from the start, by topic, with no dated or
+  per-pass headings: the pre-commit hook never sees `work/`, so nothing else stops it. `work/` is gitignored,
   so don't rewrite an existing note until the user agrees and a copy is archived.
 - **Bulk pruning.** List the files and proposed cuts first, and cut only after the
   user reviews them. Confirm that every address in the old text still appears

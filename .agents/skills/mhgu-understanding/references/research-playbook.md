@@ -144,6 +144,18 @@ Evidence: <writer/reader/caller addresses, DTI record, byte window checked>
 Status: verified against original NSO | inference (needs <what>)
 ```
 
+Before you write it down or commit, answer each line. Any "no" means fix it first.
+
+1. Does every "because", "so" or "which is why" have its own source in the Evidence line?
+2. If two sources disagree, did you write both and the read that would decide, not a story
+   that joins them?
+3. Is a count stated with what did not match ("588 of 632; 44 differ")?
+4. Did a check fail and get dropped, softened or relabelled? Then undo that and change your
+   hypothesis instead.
+5. Does this contradict anything already written? `rg` the old claim across
+   `.agents/skills`, `mods/*/DEVELOPMENT.md` and the task's `work/` notes, and correct each copy.
+6. Is it a fact about the game, or the tester's rule for the feature? Keep them apart.
+
 ## 8. What not to do
 
 - Do not run the DTI dumper again. The saved dump exists, and the
