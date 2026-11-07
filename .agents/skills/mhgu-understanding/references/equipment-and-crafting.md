@@ -28,7 +28,7 @@ Both tables are loose in the RomFS and also inside `arc/facility/blacksmith.arc`
 Layouts are verified by exact file size over all 14 of each.
 
 - `nativeNX/table/weaponProcessW<table>.wpd`, `rWeaponProcessData`: `float version, u32 entryCount`, rows of 32
-  bytes `{u16 mNo, u16 mLevel, 4 x u16 item, 4 x u8 count, u16 mCategory, u16 mRank, 3 x {u16 id, u16 count}
+  bytes `{u16 mNo, u16 mLevel, 4 x {u16 item, u8 count}, u16 mCategory, u16 mRank, 3 x {u16 id, u16 count}
   pieces}`, size `8 + 32*entryCount`, counts 958, 877, 885, 857, 718, 703, 875, 769, 809, 735, 844, 801, 547, 533,
   levels 1..15. `mCategory`/`mRank` are 0/0 on the lv 1, 4 and 7 rows; the lv 1 and lv 2 rows of number 1 are empty
   in every table.
