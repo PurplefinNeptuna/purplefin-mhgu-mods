@@ -8,7 +8,20 @@ Forge singleton `sEquipBox` (find by name): 2000 slots of 44 bytes from +0x20. T
 
 ## Weapon crafting data
 
-`arc/facility/blacksmith.arc` holds `weaponProcessW<table>` per weapon class, tables W00..W14 without W05. Row `(weapon number, level)` lists the craft items and the upgrade-from weapon (at most four items). Upgrade-from of level > 1 is always level - 1 of the same weapon. Armor recipes are `armorCreateA00..A04` (see the Resources and tooling reference for the 42-byte records).
+`nativeNX/table/weaponProcessW<table>.wpd`, tables 00..14 without 05 (the same files sit inside
+`arc/facility/blacksmith.arc`), is `rWeaponProcessData`: `float version, u32 entryCount`, then rows of 32 bytes
+`{u16 mNo, u16 mLevel, 4 x {u16 item, u8 count}, u16 mCategory, u16 mRank, 3 x {u16 id, u16 count} pieces}`,
+verified as exactly `8 + 32*entryCount` for all 14 sizes, counts 958, 877, 885, 857, 718, 703, 875, 769, 809, 735,
+844, 801, 547, 533, and levels 1..15. `mCategory` and `mRank` are 0/0 on the lv 1, 4 and 7 rows and non-zero on the
+others; the lv 1 and lv 2 rows of number 1 are empty in every table. `nativeNX/table/weaponCreateW<table>.wcd` is
+`rWeaponCreateData`: rows of 38 bytes `{u16 mLevel, u16 mNo, u16 mDispFlag, 4 x {u16 item, u8 count, u8 key},
+u16 mCategory, u16 mRank, 3 pieces}`, verified as exactly `8 + 38*entryCount`; its `mNo` is a create-entry index,
+not the weapon number a smithy list names. The smithy window (its sub-screen `shop_prcsn`) loads 74 `.wpd` records
+into `+0x28d4` (`main+0x6f0134` calls `main+0x13efd7c(window+0x28d4, 2368)`) and indexes them as 48-byte rows, so
+the row list the game shows is `.wpd` data; which file feeds a given create-list row is not verified. No row stores
+its own chain link: taking the upgrade-from of a level above 1 as level - 1 of the same line is inference from the
+shape of the rows and My Weapon Tree's baked table, not from the bytes. Armor recipes are `armorCreateA00..A04`
+(see the Resources and tooling reference for the 42-byte records).
 
 ## Armor names
 
