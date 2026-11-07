@@ -20,6 +20,7 @@ user explicitly asks for that exact action in this task.
 | "It works, make it ready to distribute" | [P5 Promote a candidate](#p5-promote-a-candidate) |
 | "Fix the README/docs" of an already released mod | [P6 Support-only refresh](#p6-support-only-refresh) |
 | "It's accepted" / a phase closed / "clean it up" | [P7 Consolidate after acceptance](#p7-consolidate-after-acceptance) |
+| Read another plugin that has no API / update such a bridge | [Bridges to another plugin](plugin-bridges.md) |
 
 ## P1 New Switch plugin
 

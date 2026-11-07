@@ -143,6 +143,7 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Loader, Rust/C++ APIs, metadata, ABI, standalone builds, plugin-to-plugin exports | [API and builds](references/api-and-builds.md) |
 | Detours, trampolines, flags, TLS, transactions, rollback | [Hooks and lifetimes](references/hooks-and-lifetimes.md) |
 | Add game-owned GUI objects or extend a native menu | [Native GUI extensions](references/native-gui-extensions.md) |
+| Read another plugin's memory when it has no API (bridges) | [Plugin bridges](references/plugin-bridges.md) |
 | ImGui, fonts/textures, damage overlay, INIs, save mounts | [Rendering and settings](references/rendering-and-settings.md) |
 | Tests, exports, packaging, legal/support files, commits | [Validation and delivery](references/validation-and-delivery.md) |
 | Failed initialization, logs, historical failures, physical Switch | [Diagnostics](references/diagnostics.md) |
