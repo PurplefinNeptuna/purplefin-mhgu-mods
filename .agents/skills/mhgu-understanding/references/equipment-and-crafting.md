@@ -34,10 +34,10 @@ Layouts are verified by exact file size over all 14 of each.
   in every table.
 - `nativeNX/table/weaponCreateW<table>.wcd`, `rWeaponCreateData`: rows of 38 bytes `{u16 mLevel, u16 mNo,
   u16 mDispFlag, 4 x {u16 item, u8 count, u8 key}, u16 mCategory, u16 mRank, 3 pieces}`, size `8 + 38*entryCount`.
-  Its `(mLevel, mNo)` is the weapon number and level the smithy shows: of the 632 level-1 material groups
-  KatSmithy logged in `work/wishlist/runs/r10-recomp-2026-11-07.txt`, 588 equal a create row's four items, over 142
-  `(class, number)` nodes. **44 differ and 20 have no create row, unexplained**; until they are, treat the key as
-  verified for those 142 nodes only.
+  Its `(mLevel, mNo)` is the weapon number and level the smithy shows: all 700 material groups KatSmithy logged
+  in `work/wishlist/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's
+  four items exactly, 163 distinct rows (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`). KatSmithy prints only
+  the four items, never the row's pieces. Its `FULL layout type=N` is the weapon table N, not the equip type.
 
 The smithy window's row array at `+0x28d4` (48-byte rows) is built by code, not loaded from a file:
 `main+0x6f0134` clears 2368 bytes of it (`bl main+0x13efd7c`, a memset), `main+0x70091c` fills the selected row

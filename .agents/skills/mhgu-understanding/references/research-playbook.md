@@ -123,8 +123,9 @@ Checks that catch the usual wrong turns:
   their sources, and the read that decides (here: the code that indexes the array).
 - **A size or count that fits is a lead.** `2368 = 74 * 32` matched the `.wpd` record size;
   the call was a memset, not a load.
-- **A partial match states its remainder.** 588 of 632 is "588 match, 44 differ, 20 have no
-  row, unexplained", and the claim covers the 588 only.
+- **A partial match states its remainder.** 588 of 632 is "588 match, 44 differ", and the
+  claim covers the 588 only until the 44 are explained. Here they were the matching script
+  pairing each log group with the wrong node; matched against every row, all 700 groups fit.
 - **A failed cross-check means your model is wrong, not the reference.** Never re-label the
   reference ("its panel is its own construction") to drop the check. Try the next
   hypothesis against the same check (worked example 2).
@@ -174,8 +175,9 @@ Status: verified against original NSO | inference (needs <what>)
 3. First hypothesis, the `.wpd` row `(number, 1)`: no level-1 group in the log matches.
    Wrong move taken here: calling KatSmithy's panel "its own construction" and dropping the
    check. Right move: keep the check, change the hypothesis.
-4. Second hypothesis, the `.wcd` row keyed `(mLevel, mNo)`: 588 of the 632 groups match its
-   four items exactly, over 142 nodes, with 44 differing and 20 unmatched.
-5. Result, recorded with its remainder: the craft row is the `.wcd` row for those 142 nodes;
-   the 64 misses stay open. The earlier lines "`.wcd mNo` is a create-entry index" and
+4. Second hypothesis, the `.wcd` row keyed `(mLevel, mNo)`: 588 of 632 groups matched
+   under the first pairing of log groups to nodes. The misses were checked, not waved through:
+   matched against every create row of the open table, all 700 groups fit exactly
+   (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`).
+5. Result: the craft row is the `.wcd` row, 163 distinct rows over 8 tables. The earlier lines "`.wcd mNo` is a create-entry index" and
    "the window loads `.wpd` records" are corrected wherever they were written.
