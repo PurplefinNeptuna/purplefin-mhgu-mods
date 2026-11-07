@@ -58,7 +58,14 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   exact-bytes gate (see "Chaining" in the forge-modding hooks reference).
 - **Forge first.** Use Forge headers and APIs before private substitutes, and
   document each verified gap beside the workaround.
-- **Versions.** Runtime changes get a new version. `DISTRIBUTION.json` is authoritative.
+- **Refutations travel.** When a finding contradicts an earlier one, `rg` for the old
+  claim and correct every copy (skill references, DEVELOPMENT.md, the plan) in the same
+  commit. A skill reference holds facts verified in bytes or a run, each with its source;
+  the rest says "inference". Checks for premises, conflicting readings, partial matches
+  and failed cross-checks: mhgu-understanding research playbook, step 6.
+- **Versions.** Runtime changes get a new version, and so does any change to what
+  `package` ships, a new data file included. Wire a new payload into build, verify and
+  package only in the phase that ships it. `DISTRIBUTION.json` is authoritative.
 
 ## Getting work done
 
@@ -69,7 +76,9 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   report what the next phase needs. Do a plan's numbered steps in order, as
   written. Never swap one for something weaker (a timer for a destruction
   hook, a copied constant for a derived size). If a step can't be done, leave
-  out the code that depends on it and report that step as the blocker.
+  out the code that depends on it and report that step as the blocker. When a
+  step finishes, update that step and every section that restates its facts, so
+  the plan never contradicts itself.
 - When the user accepts a behaviour or closes a phase, run forge-modding P7
   (consolidate after acceptance) before new features or promotion: remove
   test scaffolding, stale wording and run history from source and README.
@@ -103,6 +112,7 @@ describe the project as it is now, not how it got here.
   main+0xa4969c", not "the r57 run showed". Name a version only when the version
   is the fact, such as which build was accepted.
 - **One current-state paragraph.** Replace it for each version.
+- **The tester** is "the tester" or they/them, never he or she.
 - **One home per fact.** Link instead of copying. When you remove a section or
   file, fix what points at it.
 - **Size.** Keep a `DEVELOPMENT.md` under 500 lines and other project docs under

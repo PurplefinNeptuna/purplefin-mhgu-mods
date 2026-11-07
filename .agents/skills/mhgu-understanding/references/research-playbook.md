@@ -112,6 +112,25 @@ A function name or decompiled variable name is a guess. Establish meaning by:
 If something is still an inference (for example "this branch is the mount
 finisher"), write the word *inference* and say what evidence would confirm it.
 
+Checks that catch the usual wrong turns:
+
+- **A premise needs its own evidence.** In "X, which is why Y", X is a claim too. "Equipped
+  gear sits in the box array, which is why armor has its own types" had no source; My Weapon
+  Tree's doc says types 1..5 are *box* armor. A tester's requirement ("an equipped weapon
+  counts as owned") is a rule to build to, not a fact about where the game keeps it.
+- **Two readings that disagree are both kept, with what would settle them.** Do not invent a
+  bridge between them ("the box view carries the same pair four bytes earlier"). Write both,
+  their sources, and the read that decides (here: the code that indexes the array).
+- **A size or count that fits is a lead.** `2368 = 74 * 32` matched the `.wpd` record size;
+  the call was a memset, not a load.
+- **A partial match states its remainder.** 588 of 632 is "588 match, 44 differ, 20 have no
+  row, unexplained", and the claim covers the 588 only.
+- **A failed cross-check means your model is wrong, not the reference.** Never re-label the
+  reference ("its panel is its own construction") to drop the check. Try the next
+  hypothesis against the same check (worked example 2).
+- **A refutation travels.** When a finding contradicts an earlier one, `rg` for the old claim
+  and correct every copy (skill references, DEVELOPMENT.md, the plan) in the same commit.
+
 ## 7. Record the finding
 
 Write one entry per finding in the mod's DEVELOPMENT.md:
@@ -146,3 +165,17 @@ Status: verified against original NSO | inference (needs <what>)
    use, safe to displace). No `SEL`/`MRS`/`MSR` in the function body.
 5. Result: an around hook at 0xa2664 reads `work+0x5d66` after the original
    returns. That became Damage Numbers hook 8.
+
+## Worked example 2: which table holds the craft cost
+
+1. Question: which RomFS rows hold the materials of a weapon's level-1 craft?
+2. Known: `weaponProcessW<table>.wpd` and `weaponCreateW<table>.wcd`, layouts verified by
+   file size. KatSmithy's run log prints each node's materials (`RISE mat id=... need=...`).
+3. First hypothesis, the `.wpd` row `(number, 1)`: no level-1 group in the log matches.
+   Wrong move taken here: calling KatSmithy's panel "its own construction" and dropping the
+   check. Right move: keep the check, change the hypothesis.
+4. Second hypothesis, the `.wcd` row keyed `(mLevel, mNo)`: 588 of the 632 groups match its
+   four items exactly, over 142 nodes, with 44 differing and 20 unmatched.
+5. Result, recorded with its remainder: the craft row is the `.wcd` row for those 142 nodes;
+   the 64 misses stay open. The earlier lines "`.wcd mNo` is a create-entry index" and
+   "the window loads `.wpd` records" are corrected wherever they were written.

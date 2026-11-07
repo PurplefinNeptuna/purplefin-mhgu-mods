@@ -11,8 +11,11 @@ of it.
 
 - Every NRO is loaded before any `forge_onInit`, so look plugins up in `forge_onInit` or
   later, never by load order ([Plugin order](hooks-and-lifetimes.md#plugin-order)).
-- Our plugins export C functions: find them with `nn::ro::LookupSymbol`
-  (`_ZN2nn2ro12LookupSymbolEPjPKc`, from the SDK) and check a version function first.
+- Our plugins export C functions: read each name from that plugin's NRO symbol table in its
+  loaded mapping (`mods/wishlist-mwt-bridge/core/src/lib.rs::nro_symbol`, driven by
+  `src/platform.rs`), then call its version function first. Do not use `nn::ro::LookupSymbol`:
+  it resolves only the game's own modules and finds nothing in a loaded plugin, and Forge
+  exports no plugin symbol lookup (`mods/wishlist/API.md`).
 - A plugin that exports nothing is found by its NRO build ID: walk `svcQueryMemory` for an
   R-X mapping whose first bytes are an NRO header (`NRO0` at +0x10) with the expected
   build ID at +0x40. Refuse any other build; offsets differ per build.
@@ -67,3 +70,29 @@ records sit in the data segment and point into ro.
   and have `test` compare the code's constants with what the finder reads from the
   configured file.
 - Keep the other plugin's file in `work/NAME/inputs/VERSION/`, never in a scratchpad.
+
+## A plugin that guards its hook sites
+
+Some plugins check the first words of each site before they hook it and refuse when the
+words differ (KatSmithy logs `GUARD MISMATCH ... NOT hooked`). Read its guard list (an
+embedded default ini, a save-folder ini) before planning any hook, and rank the options:
+
+1. **No hook in the bridge.** If one of our plugins already runs at a site the other plugin
+   also hooks, that plugin publishes the values as an export and the bridge only calls it.
+2. A hook at a site the other plugin never guards.
+3. A guarded site, only under the chaining rule of
+   [Hooks and lifetimes](hooks-and-lifetimes.md): install after the other plugin's Forge
+   branch (`0xe51ff004`) is there, or after a fixed wait when its probe is switched off.
+
+Worked example, Wishlist and KatSmithy (`work/wishlist-katsmithy-bridge/PLAN.md`): the
+bridge needs the smithy node the player stands on. KatSmithy guards `0x6f1ae8`,
+`0x6f31d8`, `0x55e4f8` and `0x2831e0`. Hooking the window factory `0x55e4f8` to capture
+the window would be option 3 on a second guarded site. Wishlist's own hook at `0x6f1ae8`
+already chains after KatSmithy's (r10: KatSmithy logged `guard OK` and `installed` for all
+four), so Wishlist exports `wishlist_smithy_node` and the bridge takes no hook: option 1.
+The guard evidence is then that no `GUARD MISMATCH` line appears in the run's log.
+
+When the user asks for a version-agnostic bridge, read no state out of the other plugin's
+NRO: the layout moves with every build (the My Weapon Tree bridge reads it only because it
+pins one build ID), and KatSmithy also renamed its file
+(`smithyrise.nro` to `katsmithy.nro`) and changed its hook set between builds.

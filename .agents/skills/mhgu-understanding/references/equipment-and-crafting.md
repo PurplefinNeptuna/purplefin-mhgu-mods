@@ -1,37 +1,55 @@
 # Equipment box, weapon crafting and armor series
 
-Verified on MHGU 1.4.0 through the Wishlist bridge for My Weapon Tree (`mods/wishlist-mwt-bridge/`, `scripts/generate_armor.py`).
+MHGU 1.4.0. Each fact names its source; "inference" marks what the bytes have not shown.
 
 ## Equipment box
 
-Forge singleton `sEquipBox` (find by name): 2000 slots of 44 bytes from +0x20. The slot record is
-`cFestaEquip` (DTI, 44 bytes): type = bits 0..4 of the u16 at **+4**, level = bits 5..9 of that u16, number = u16 at
-**+6**, bit 15 of the +4 u16 is a flag `cFestaEquip::reset` (`main+0xdac14`) preserves, and a 40-byte payload plus a
-pointer at +0x28 follow. A box slot carries the same two u16s four bytes earlier, at slot +0 and +2, and that is
-the pair My Weapon Tree's working reader uses; the two views differ only by that 4-byte head.
-`FUN_00b0803c` (`main+0x13f03c`) is the decoder: `and r3, r2, #31`, `sub r2, r3, #1`, `cmp r2, #23`, `movhi r0, #0`
-⇒ types **1..23 are valid and 0 is empty**, and the data getter is `main+0x13c208(type, number)`. The availability
-helpers that take a `cFestaEquip*` are `main+0xdb5c4` (count) and `main+0x54ff2c` (pouch + box). Weapons are types
-7..21 except 12 (type = weapon table + 7). Armor types 1..5 are part + 1 in head, chest, arms, waist, legs order
-(inferred from My Weapon Tree's reader and from `armorCreateA00` holding Leather Headgear), number = armor series.
-Types 6, 22 and 23 are unnamed, and which one holds the weapon in hand is not settled by the bytes. Equipped gear sits in the same array, which is why the armor parts have their own types; the type of the **equipped weapon** slot is not verified, and is one of the types the ranges above leave out (0, 6, 12). My Weapon Tree's reader, and any reader that copies it, counts box weapons at 7..21 and equipped armor at 1..5, so it treats an equipped weapon as not owned.
+Forge singleton `sEquipBox` (find by name), 2000 slots of 44 bytes. My Weapon Tree's working reader (0.55
+NRO+0x8481c, copied in `mods/wishlist-mwt-bridge/core/src/lib.rs::read_box`) reads them from +0x20: type = bits
+0..4 and level = bits 5..9 of the u16 at slot +0, number = u16 at +2. The DTI class `cFestaEquip` is 44 bytes, and
+the game's decoder `FUN_00b0803c` (`main+0x13f03c`: `ldrh r2, [r1, #4]`, `and r3, r2, #31`, `sub r2, r3, #1`,
+`cmp r2, #23`, `movhi r0, #0`, then `ldrh r2, [r1, #6]`, `b main+0x13c208`) reads the type from the u16 at **+4**
+and the number from **+6**, so types **1..23** are valid, 0 is empty, and the data getter is
+`main+0x13c208(type, number)`. The smithy writes the level into bits 5..9 of that u16 (`and r1, r1, r2` with
+`0xfc1f`, `orr r1, r1, r2, lsl #5` at `main+0x6f9ef8`; `bfi r0, r1, #0, #5` at `main+0x7008e4`).
+`cFestaEquip::reset` (`main+0xdac14`) keeps bit 15 of the +4 u16. The two readings agree if the `cFestaEquip`
+array starts at +0x1c; that base is inference until the code that indexes the array is read.
+
+Weapons are types 7..21 except 12: type = weapon table + 7, and there is no table 05. Box armor is types 1..5,
+part + 1 in head, chest, arms, waist, legs order (`cArmor00Base`..`cArmor04Base` return 1..5 from vtable +0x18),
+number = armor series. Types 6, 22 and 23 are unnamed. **Where the equipped weapon and armor live is not
+verified**: no code read so far shows whether they are box slots, other slot types, or references held elsewhere,
+so a reader must not claim that the box omits or includes them. Availability helpers that take a `cFestaEquip*`:
+`main+0xdb5c4` (count) and `main+0x54ff2c` (pouch + box).
 
 ## Weapon crafting data
 
-`nativeNX/table/weaponProcessW<table>.wpd`, tables 00..14 without 05 (the same files sit inside
-`arc/facility/blacksmith.arc`), is `rWeaponProcessData`: `float version, u32 entryCount`, then rows of 32 bytes
-`{u16 mNo, u16 mLevel, 4 x {u16 item, u8 count}, u16 mCategory, u16 mRank, 3 x {u16 id, u16 count} pieces}`,
-verified as exactly `8 + 32*entryCount` for all 14 sizes, counts 958, 877, 885, 857, 718, 703, 875, 769, 809, 735,
-844, 801, 547, 533, and levels 1..15. `mCategory` and `mRank` are 0/0 on the lv 1, 4 and 7 rows and non-zero on the
-others; the lv 1 and lv 2 rows of number 1 are empty in every table. `nativeNX/table/weaponCreateW<table>.wcd` is
-`rWeaponCreateData`: rows of 38 bytes `{u16 mLevel, u16 mNo, u16 mDispFlag, 4 x {u16 item, u8 count, u8 key},
-u16 mCategory, u16 mRank, 3 pieces}`, verified as exactly `8 + 38*entryCount`; its `mNo` is a create-entry index,
-not the weapon number a smithy list names. The smithy window (its sub-screen `shop_prcsn`) loads 74 `.wpd` records
-into `+0x28d4` (`main+0x6f0134` calls `main+0x13efd7c(window+0x28d4, 2368)`) and indexes them as 48-byte rows, so
-the row list the game shows is `.wpd` data; which file feeds a given create-list row is not verified. No row stores
-its own chain link: taking the upgrade-from of a level above 1 as level - 1 of the same line is inference from the
-shape of the rows and My Weapon Tree's baked table, not from the bytes. Armor recipes are `armorCreateA00..A04`
-(see the Resources and tooling reference for the 42-byte records).
+Both tables are loose in the RomFS and also inside `arc/facility/blacksmith.arc`, tables 00..14 without 05.
+Layouts are verified by exact file size over all 14 of each.
+
+- `nativeNX/table/weaponProcessW<table>.wpd`, `rWeaponProcessData`: `float version, u32 entryCount`, rows of 32
+  bytes `{u16 mNo, u16 mLevel, 4 x u16 item, 4 x u8 count, u16 mCategory, u16 mRank, 3 x {u16 id, u16 count}
+  pieces}`, size `8 + 32*entryCount`, counts 958, 877, 885, 857, 718, 703, 875, 769, 809, 735, 844, 801, 547, 533,
+  levels 1..15. `mCategory`/`mRank` are 0/0 on the lv 1, 4 and 7 rows; the lv 1 and lv 2 rows of number 1 are empty
+  in every table.
+- `nativeNX/table/weaponCreateW<table>.wcd`, `rWeaponCreateData`: rows of 38 bytes `{u16 mLevel, u16 mNo,
+  u16 mDispFlag, 4 x {u16 item, u8 count, u8 key}, u16 mCategory, u16 mRank, 3 pieces}`, size `8 + 38*entryCount`.
+  Its `(mLevel, mNo)` is the weapon number and level the smithy shows: of the 632 level-1 material groups
+  KatSmithy logged in `work/wishlist/runs/r10-recomp-2026-11-07.txt`, 588 equal a create row's four items, over 142
+  `(class, number)` nodes. **44 differ and 20 have no create row, unexplained**; until they are, treat the key as
+  verified for those 142 nodes only.
+
+The smithy window's row array at `+0x28d4` (48-byte rows) is built by code, not loaded from a file:
+`main+0x6f0134` clears 2368 bytes of it (`bl main+0x13efd7c`, a memset), `main+0x70091c` fills the selected row
+(`+2` number from window `+0x2ebc`, `+9` level, `+0x10` a pointer to a source record whose type is not verified)
+and `main+0x6f5570`..`main+0x6f56bc` the list rows. Each row's entry comes from a per-class container at window
+`+0x1f04 + type*4`, `{u32 count +0x64, data +0x6c}` of 48-byte elements indexed directly by the weapon number
+(`main+0x4c0090`).
+
+Inference, not shown in bytes: a level above 1 upgrades from level - 1 of the same number (the row shapes and My
+Weapon Tree's baked table), and the `.wpd` row of a level that also has a `.wcd` row is a create-from-base-weapon
+path, not an upgrade step (the rule `mods/wishlist/scripts/generate_weapon_path.py` builds on). Armor recipes are
+`armorCreateA00..A04` (see the Resources and tooling reference for the 42-byte records).
 
 ## Armor names
 
