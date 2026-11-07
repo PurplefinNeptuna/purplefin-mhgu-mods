@@ -4,7 +4,7 @@ Verified on MHGU 1.4.0 through the Wishlist bridge for My Weapon Tree (`mods/wis
 
 ## Equipment box
 
-Forge singleton `sEquipBox` (find by name): 2000 slots of 44 bytes from +0x20. Type = byte 0 bits 0..4; level = bits 5..9 of the first u16; number = u16 at +2. Weapons are types 7..21 except 12 (type = weapon table + 7). Armor types 1..5 are part + 1 in head, chest, arms, waist, legs order (inferred from My Weapon Tree's reader and from `armorCreateA00` holding Leather Headgear), number = armor series.
+Forge singleton `sEquipBox` (find by name): 2000 slots of 44 bytes from +0x20. Type = byte 0 bits 0..4; level = bits 5..9 of the first u16; number = u16 at +2. Weapons are types 7..21 except 12 (type = weapon table + 7). Armor types 1..5 are part + 1 in head, chest, arms, waist, legs order (inferred from My Weapon Tree's reader and from `armorCreateA00` holding Leather Headgear), number = armor series. Equipped gear sits in the same array, which is why the armor parts have their own types; the type of the **equipped weapon** slot is not verified, and is one of the types the ranges above leave out (0, 6, 12). My Weapon Tree's reader, and any reader that copies it, counts box weapons at 7..21 and equipped armor at 1..5, so it treats an equipped weapon as not owned.
 
 ## Weapon crafting data
 
