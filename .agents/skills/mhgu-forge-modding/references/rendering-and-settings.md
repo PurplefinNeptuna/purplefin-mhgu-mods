@@ -16,7 +16,7 @@ Check sizes before allocating, detect short reads, close all successful opens, a
 
 Damage rendering consumes copied model values. It never follows game identities captured by hooks. Use current display dimensions, actual font metrics, stable overlap placement, and peak animation bounds. Reset placement when epoch, viewport, style, or scale changes. The `mhgu-understanding` damage/camera reference owns the matrix and capture findings.
 
-r27 preserves valid damage when impact/camera/projection is unavailable by placing it at display centre with ordinary animation/spacing. Missing position is explicit, while a genuine world origin remains valid. Behind-camera and clipped points also use that fallback. Invalid display dimensions prevent drawing. The viewport aspect guard cannot prove that a same-aspect offscreen camera belongs to the presented frame.
+Damage Numbers keeps valid damage when impact/camera/projection is unavailable by placing it at display centre with ordinary animation/spacing. Missing position is explicit, while a genuine world origin remains valid. Behind-camera and clipped points also use that fallback. Invalid display dimensions prevent drawing. The viewport aspect guard cannot prove that a same-aspect offscreen camera belongs to the presented frame.
 
 ## Session settings and persistence
 
@@ -34,6 +34,6 @@ Please do Better stores `[PleaseDoBetter]`, `force_miraculous`, and `reward_mult
 
 ## Logs
 
-Emit brief lifetime-deduplicated failure reasons outside hot hooks. Successful frames, hits, reward rows, and ordinary saves do not produce periodic diagnostics. Key Quest Markers r16's successful startup/row ERROR traces were removed in r17, which retains one INFO startup and once-per-reason failures. Closed settings rows must not stop pending diagnostic collection or background work.
+Emit brief lifetime-deduplicated failure reasons outside hot hooks. Successful frames, hits, reward rows, and ordinary saves do not produce periodic diagnostics. Key Quest Markers keeps one INFO startup line and once-per-reason failures. Closed settings rows must not stop pending diagnostic collection or background work.
 
 Sources: `tools/forge-local/source/forge/graphics.cpp`, `tools/forge-rs/forge/src/{config.rs,mt/fs.rs}`, `mods/damage-numbers/src/{lib.rs,render.rs,config.rs,runtime.rs}`, `mods/key-quest-markers/src/{settings.rs,config.rs}`, `mods/please-do-better/src/settings.rs`, `mods/please-do-better/core/src/preferences.rs` and their development/evidence records.

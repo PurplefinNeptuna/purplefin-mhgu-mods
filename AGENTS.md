@@ -139,16 +139,27 @@ The pre-commit hook refuses per-run headings and files over these sizes.
   `portable/Logs/`, MHGU save `portable/bis/user/save/0000000000000001/`).
   Build steps are in docs/TOOLS.md. The user starts it with
   `/mnt/storage2/Programs/Ryubing-1.3.3/run.sh`, which copies the Eden save in
-  and, after exit, back to Eden (Eden backups in `save-backups/eden/`). Never
+  and, after exit, back to Eden (Eden backups in `save-backups/eden/`), and
+  copies each Eden mod folder's `exefs`/`romfs` into Ryubing's mods with Eden's
+  enabled state in `portable/games/0100770008dd8000/mods.json`. Never
   symlink the save: LibHac deletes and renames slot `0` on every commit.
 - Ryujinx-Nextendo: `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` and
   `portable/mods/contents/0100770008dd8000/` under that installation. By the
   user's decision it counts as a superset of Ryubing: a mod that works on
   Ryubing is taken to work there, so install and test on Ryubing, not here.
-- MHGURecomp: `/mnt/storage2/Programs/MHGURecomp/`, Linux build. Each mod goes
-  in its own folder under `mods/` beside the executable, with NROs at
-  `romfs/nativeNX/plugins/`; its log is `log.txt`, and saves are in
-  `~/.local/share/MHGURecomp/save/save_0/`.
+- MHGURecomp: `/mnt/storage2/Programs/MHGURecomp/`, Linux build (source at
+  `tools/MHGURecomp-source/`). Each mod is a folder under `mods/` beside the
+  executable, NROs at `mods/NAME/romfs/nativeNX/plugins/`, ordered by
+  `mods/load_order.txt`; saves are in `~/.local/share/MHGURecomp/save/save_0/`.
+  The user starts it with `/mnt/storage2/Programs/MHGURecomp/run.sh`, which
+  copies the Eden save in and back (backups in `save-backups/eden/`), copies
+  each Eden mod's `romfs` into `mods/` except those in its `EXCLUDE` list, and
+  writes Eden's enabled state into `load_order.txt`. Its log is
+  `recomplog.txt` beside the executable, replaced each run: `run.sh` tees the
+  launcher and game output there, so the game's own `log.txt` is not written.
+- So Eden's `load/` folder is the one mod set for all three emulators: a mod
+  added or disabled there reaches Ryubing and MHGURecomp at their next
+  `run.sh` launch.
 
 Folder presence proves no activation, and library contents are not installed
 mods. After a reported run or failure, read that emulator's latest log and

@@ -161,7 +161,7 @@ Before you write it down or commit, answer each line. Any "no" means fix it firs
 - Do not run the DTI dumper again. The saved dump exists, and the
   2026-10-03 run broke quest controls until restart.
 - Do not edit the Ghidra GZF or the original NSO. The editable project is
-  `ghidra-projects/MHGU_1.4.0.gpr`.
+  `work/research-tooling/ghidra-projects/MHGU_1.4.0.gpr`.
 - Do not use MHXX or PC offsets for Switch, or wiki fields without checking a
   real file.
 - Do not launch the game to "check quickly". Ask the user for a run instead.

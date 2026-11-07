@@ -134,7 +134,8 @@ Do not change code until step 5.
    Eden `~/.local/share/eden/log/eden_log.txt`; Ryubing 1.3.3
    `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/Logs/` (newest file;
    Ryujinx-Nextendo counts as a superset, so test on Ryubing);
-   MHGURecomp `log.txt` beside its executable. Copy it to
+   MHGURecomp `/mnt/storage2/Programs/MHGURecomp/recomplog.txt` (its `run.sh`
+   replaces it each launch). Copy it to
    `work/NAME/runs/rN-<emulator>-<YYYY-MM-DD>.txt` before anything else,
    because the next launch overwrites it. Eden also keeps only a rolling
    100 MiB window, so a long session can lose a build's lines while it runs:
