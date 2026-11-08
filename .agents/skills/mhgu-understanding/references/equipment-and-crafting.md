@@ -103,6 +103,10 @@ Layouts are verified by exact file size over all 14 of each.
   in `work/wishlist/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's
   four items exactly, 163 distinct rows (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`). KatSmithy prints only
   the four items, never the row's pieces. Its `FULL layout type=N` is the weapon table N, not the equip type.
+  The three piece slots hold a disjoint set of IDs: over all 14 classes the item slots hold 1,733 distinct
+  IDs and the piece slots 337, none in common (empty slots are 0 and excluded), and the three Scrap IDs
+  2158 Ore Scrap, 2164 Bone Scrap and 2187 Velociprey Scrap+ appear only in piece slots. Whether a piece ever
+  adds to what the Smithy charges is open until a run compares a step with the game's upgrade screen.
 
 The smithy window's row array at `+0x28d4` (48-byte rows) is built by code, not loaded from a file:
 `main+0x6f0134` clears 2368 bytes of it (`bl main+0x13efd7c`, a memset), `main+0x70091c` fills the selected row
