@@ -90,6 +90,11 @@ Use these three traps as checks on any address or field you read:
   the Ghidra base from one gives a real-looking address in unrelated code, and
   World Sharpness Gauge drew conclusions from three of those.
 - A decompiled `param_1[0x38]` on an `int *` is byte offset `0xe0`.
+- A global slot is loaded as `ldr rX, [pc, #imm]` then, possibly several instructions later,
+  `ldr rY, [pc, rX]`. Match the first with `word & 0x0f7f0000 == 0x051f0000` (bit 23 set adds `imm`,
+  clear subtracts it), find the second as the next `word & 0x0fff0ff0 == 0x079f0000` whose low
+  nibble is `rX`, and compute `slot = second + 8 + word(first + 8 ± imm)`. Using the wrong second
+  address, or stopping a few words ahead, gave two wrong slots in the equipment-box research.
 - `xref` lists direct branches only. Before calling a function unreferenced, run
   `word` too. Run any new or borrowed search tool on a known positive first.
 
