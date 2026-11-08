@@ -27,8 +27,8 @@ the decoder's `+4`/`+6` are one record (bridge base = base + 4). It also reads a
 1632-byte blob at `+259468` (8 bytes before the class end); the 122,000 bytes between the second array's end
 (`+132028`) and `+254028` have no reader in those two functions. The instance slots are all read as
 `ldr rX, [pc, #imm]` then `ldr rY, [pc, rX]`, whose pc is the second load's address + 8: the box save loader's object
-is `main+0x1839394` (`main+0x3e77f0` → literal `main+0x3e7944` = `0x1451b94`), the equip code's box object is
-`main+0x1839388` (`main+0x2633bc` → literal `main+0x2634c8` = `0x15d5fbc`), the getter's session object is
+is `main+0x1839394` (`main+0x3e77f0` → literal `main+0x3e7944` = `0x1451b94`), the equip code's box object is the same
+`main+0x1839394` (`main+0x2633bc` → literal `main+0x2634c8` = `0x15d5fbc`), the getter's session object is
 `main+0x1838d88` (`main+0x1438b4` → literal `main+0x143948` = `0x16f54c4`), the hunter status object is
 `main+0x1838d80` (`main+0x3e782c` → literal `main+0x3e7950` = `0x1451544`), and the param loader's object is
 `main+0x1838bbc` (`main+0x3e7840` → literal `main+0x3e7954` = `0x145136c`).
@@ -72,15 +72,16 @@ the one at `+0x1d0` (`main+0x13c2a0`), while type 12 has no case (its table entr
 category 15 is the Prowler's (Otomo, equip type 22) is **inference**: the RomFS pairs `otWeaponData.owp` +
 `otWeaponCreate.oec` and `otArmorData.oar` + `otArmorCreate.oec`, DTI `uOtomo` and `uOtomoLobby`, and the list in
 `mods/modern-weapon-controls/DEVELOPMENT.md`, "0 GS … 14 CB, 15 Prowler (5 unused)". No byte names that container.
-The 12 bytes `+0x4d4..+0x4df` are DTI `mCharParam[i]` (`nFestaNetwork::netPlData`, 12 `u8` properties at its
-`+0x4dc..+0x4e7`; `nPlayer::cPlayerParam` lists none): `main+0x26e618`..`main+0x26e674` copy them between params
+The 12 bytes `+0x4d4..+0x4df` match, by count and width, DTI `mCharParam[i]` of another class
+(`nFestaNetwork::netPlData`, 12 `u8` properties at its `+0x4dc..+0x4e7`; `nPlayer::cPlayerParam` lists none), so
+that name is inference; `mStyle` (Ghidra type, `+0x4d9`) is the sixth of them: `main+0x26e618`..`main+0x26e674` copy them between params
 bytewise, and the hunter status save carries them at `status + 1360` = `(status + 0x7c) + 0x4d4` (`add r1, r10,
 #1360; mov r2, #12` at `main+0x275730`) beside those kind-0 indices. The param loader `main+0x263368` always uses
 kind 1, and its one caller `main+0x2639ac` loads 84 params (`main+0x263ba4`..`main+0x263bc4`, `add r6, r6, #1376;
 cmp r4, #84`) at `object + 0x113938 + i*1376`; the default-init loop `main+0x2575f0` runs the same 84 × 1376 over
 `object + 0x13938` and stores 15 in each at `main+0x25a224`. A hunter's param carries a byte of 0..14 and kind-0
 indices — the saved status pairs them in one block, and the smithy equips that `+0x7c` block (`main+0x709954`'s slot
-`main+0x1838d84` → `main+0x709960 bl main+0x277454` = `add r0, r0, #124` → `main+0x709974 bl main+0x26eaa8`) — while
+`main+0x1838d80` → `main+0x709960 bl main+0x277454` = `add r0, r0, #124` → `main+0x709974 bl main+0x26eaa8`) — while
 a param with 15 indexes the 1000-record array. The entry is a copy of the box record at that index, so the equipped
 weapon is also a record in the array the byte's kind selects. That the box keeps the record after equipping is
 inference: nothing read clears or moves it, and no code that removes a box record was read. Availability helpers
