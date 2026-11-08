@@ -25,8 +25,13 @@ loader `main+0x14b0b0` (read, via `main+0x3df2a8` → the memcpy `main+0x13efe30
 bytes `+0x2c`, plus `bl main+0xddd48(box + 0x1c + i*44)`) and 1000 at the second, so the bridge's `+0x20` base and
 the decoder's `+4`/`+6` are one record (bridge base = base + 4). It also reads a 5440-byte blob at `+254028` and a
 1632-byte blob at `+259468` (8 bytes before the class end); the 122,000 bytes between the second array's end
-(`+132028`) and `+254028` have no reader in those two functions. The instance cell is `main+0x1839398` (save
-dispatcher) and `main+0x1839390` (equip code); `main+0x1838d80` is the getter's session cell.
+(`+132028`) and `+254028` have no reader in those two functions. The instance slots are all read as
+`ldr rX, [pc, #imm]` then `ldr rY, [pc, rX]`, whose pc is the second load's address + 8: the box save loader's object
+is `main+0x1839394` (`main+0x3e77f0` → literal `main+0x3e7944` = `0x1451b94`), the equip code's box object is
+`main+0x1839388` (`main+0x2633bc` → literal `main+0x2634c8` = `0x15d5fbc`), the getter's session object is
+`main+0x1838d88` (`main+0x1438b4` → literal `main+0x143948` = `0x16f54c4`), the hunter status object is
+`main+0x1838d80` (`main+0x3e782c` → literal `main+0x3e7950` = `0x1451544`), and the param loader's object is
+`main+0x1838bbc` (`main+0x3e7840` → literal `main+0x3e7954` = `0x145136c`).
 
 Weapons are types 7..21 except 12: type = weapon table + 7, and there is no table 05. Box armor is types 1..5,
 part + 1 in head, chest, arms, waist, legs order (`cArmor00Base`..`cArmor04Base` return 1..5 from vtable +0x18),
@@ -49,14 +54,37 @@ it with `bl main+0xdadf0` plus the index with `bl main+0xe1018`, then recomputes
 Reader: `uPlayerBase::calculateSharpnessType` `main+0x29cdfc` takes entry 0 (`mov r1, #0; bl main+0xdf814`), calls
 the weapon data getter `main+0x13f03c` and puts bits 5..9 of its `+4` u16 (`ldrh r1, [r6, #4]; ubfx r1, r1, #5, #5`)
 into that record's vtable `+0xd8`. The saved hunter status holds the same 7 slots at `status + 0x84` (indices) and
-`status + 0x94` (entries), resolved with kind 0 by the loader `main+0x2755f0`; the param loader `main+0x263368` uses
-kind 1 (its one direct caller, `main+0x263bb4` in `main+0x2639ac`, passes `r3 = 1`; which hunter that caller loads is
-not read), and which array the main hunter's param points at is **not settled** (it depends on `param+0x4d4 == 15`).
-The entry is a copy of the box record at that index, so the equipped weapon is also a record in whichever array
-the index means. That the box keeps the record after equipping is inference: nothing read clears or moves it, and
-no code that removes a box record was read. If the index means kind 1, a scan of the 2000 kind-0 records misses
-the equipped weapon. Availability helpers that take a `cFestaEquip*`:
-`main+0xdb5c4` (count) and `main+0x54ff2c` (pouch + box).
+`status + 0x94` (entries), resolved with kind 0 by the loader `main+0x2755f0` (`main+0x275670 mov r1, #0; bl
+main+0x143894`).
+
+**`param + 0x4d4` is the equipped weapon's category: the equipped record's type minus 7.** The store follows the
+equip: `main+0x26ea70 mov r0, r9; bl main+0xdaea4; main+0x26ea78 cmp r0, #255; main+0x26ea7c strbne r0, [r4,
+#0x4d4]`, with `r9` the record's type bits (`main+0x26e9fc ldrh r0, [r5, #4]; main+0x26ea00 and r0, r0, #31`) and
+`main+0xdaea4` indexing the words at `main+0x159fdcc`: types 0..6 and 23, 24 → 255 (leave the byte), types 7..22 →
+0..15. So 15 is type 22's category. The same byte picks the box kind (the equip action's `cmp r0, #15`) and the
+player class: `main+0x275afc` (`ldrb r0, [r8, #0x4d4]; cmp r0, #15; bhi main+0x275db4`) jumps 16 ways over the table
+at `main+0x275b18`, entry 5 exits — the missing weapon table 05 — and entry 15 goes to `main+0x276028 mov r0, #13312;
+bl main+0x2b6894` where entry 0 goes to `main+0x275b58 mov r0, #13120`. The factory's second test, `main+0x275d90
+ldrb r0, [r8, #0x4d4]; cmp r0, #15`, re-equips 3 entries for 15 (`main+0x276610`: slots 0, 1, 2) and all 7 otherwise
+(`main+0x276478`). Type 22 is not a weapon to `main+0x26ee70` (7..21), it maps to gear slot 0 (`main+0x159fd28`), and
+the equipment data getter `main+0x13c208` sends it to the container at `+0x1d4` (`main+0x13c320`) and types 23, 24 to
+the one at `+0x1d0` (`main+0x13c2a0`), while type 12 has no case (its table entry jumps to `main+0x13c32c`). That
+category 15 is the Prowler's (Otomo, equip type 22) is **inference**: the RomFS pairs `otWeaponData.owp` +
+`otWeaponCreate.oec` and `otArmorData.oar` + `otArmorCreate.oec`, DTI `uOtomo` and `uOtomoLobby`, and the list in
+`mods/modern-weapon-controls/DEVELOPMENT.md`, "0 GS … 14 CB, 15 Prowler (5 unused)". No byte names that container.
+The 12 bytes `+0x4d4..+0x4df` are DTI `mCharParam[i]` (`nFestaNetwork::netPlData`, 12 `u8` properties at its
+`+0x4dc..+0x4e7`; `nPlayer::cPlayerParam` lists none): `main+0x26e618`..`main+0x26e674` copy them between params
+bytewise, and the hunter status save carries them at `status + 1360` = `(status + 0x7c) + 0x4d4` (`add r1, r10,
+#1360; mov r2, #12` at `main+0x275730`) beside those kind-0 indices. The param loader `main+0x263368` always uses
+kind 1, and its one caller `main+0x2639ac` loads 84 params (`main+0x263ba4`..`main+0x263bc4`, `add r6, r6, #1376;
+cmp r4, #84`) at `object + 0x113938 + i*1376`; the default-init loop `main+0x2575f0` runs the same 84 × 1376 over
+`object + 0x13938` and stores 15 in each at `main+0x25a224`. A hunter's param carries a byte of 0..14 and kind-0
+indices — the saved status pairs them in one block, and the smithy equips that `+0x7c` block (`main+0x709954`'s slot
+`main+0x1838d84` → `main+0x709960 bl main+0x277454` = `add r0, r0, #124` → `main+0x709974 bl main+0x26eaa8`) — while
+a param with 15 indexes the 1000-record array. The entry is a copy of the box record at that index, so the equipped
+weapon is also a record in the array the byte's kind selects. That the box keeps the record after equipping is
+inference: nothing read clears or moves it, and no code that removes a box record was read. Availability helpers
+that take a `cFestaEquip*`: `main+0xdb5c4` (count) and `main+0x54ff2c` (pouch + box).
 
 ## Weapon crafting data
 
