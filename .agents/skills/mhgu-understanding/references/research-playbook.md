@@ -155,6 +155,11 @@ Before you write it down or commit, answer each line. Any "no" means fix it firs
 5. Does this contradict anything already written? `rg` the old claim across
    `.agents/skills`, `mods/*/DEVELOPMENT.md` and the task's `work/` notes, and correct each copy.
 6. Is it a fact about the game, or the tester's rule for the feature? Keep them apart.
+7. Does the conclusion depend on something you still list as open? Then state it as conditional
+   ("counts it only if the index means kind 0"), and the step is not done. Call it done only when
+   nothing it rests on is open.
+8. Did you read a table or data words by eye from a listing? Print them with a script over
+   `main_image()` and quote that output.
 
 ## 8. What not to do
 
