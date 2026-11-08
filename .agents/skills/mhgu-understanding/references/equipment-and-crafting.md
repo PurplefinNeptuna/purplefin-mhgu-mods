@@ -17,8 +17,8 @@ and the number from **+6**, so types **1..23** are valid, 0 is empty, and the da
 r2, #5` + `bfi r3, r2, #5, #5` level bits 5..9, `movw r2, #0x83ff` keeps bit 15 of the destination, then copies `+6`,
 `+8`, `+10`, `+12`, `+14` and 24 bytes from `+16`) keep bit 15. The array base is **+0x1c**, from the slot getter
 `main+0x143894(box, kind, index)`: 0 when the index is `0xffff` (`movw r0, #0xffff; cmp r5, r0`), a capacity check
-from the session flags (`ldr r2, [r0, #0x958]` bits 0x15/0x16, 200/1000 for kind 0 and 200/300 for kind 1, `bl
-main+0x525878`), then `mov r0, #44; mla r0, r5, r0, r8; add r4, r0, #28` (kind 0, `main+0x14391c`) or `add r0, #988;
+from the session flags (`ldr r2, [r0, #0x958]` bits 0x15 and 0x16): kind 0 allows `1000 + 200 × flags + 200 ×
+main+0x525878()`, kind 1 `300 + 200 × flags + 100 × main+0x525878()`, then `mov r0, #44; mla r0, r5, r0, r8; add r4, r0, #28` (kind 0, `main+0x14391c`) or `add r0, #988;
 add r4, r0, #87040` (kind 1, `main+0x143930`) → `box + 0x1c + index*44` and `box + 0x157dc + index*44`. The save
 loader `main+0x14b0b0` (read, via `main+0x3df2a8` → the memcpy `main+0x13efe30`) and the writer `main+0x14b1c4` (via
 `main+0x3df378`) touch 2000 records at the first base (u16 `+0x20`, u16 `+0x22`, u16 `+0x24`, 6 bytes `+0x26`, 24
@@ -35,7 +35,9 @@ number = armor series. Types 6, 22 and 23 are unnamed, and game code gates the w
 
 **The equipped gear is one box index plus one copied `cFestaEquip` per slot, and the weapon is slot 0.** The
 type→slot table `main+0xdae68` (`ldr r0, [r1, r0, lsl #2]`, data at `main+0x159fd28`) maps a record's type bits to a
-slot: `0 → 255`, `1..5 → 1..5`, `6 → 6`, `7..21 → 0`, `22 → 1`, `23 → 2`, `24 → 2`. The live gear lives in
+slot: `0 → 255`, `1..5 → 1..5`, `6 → 6`, `7..22 → 0`, `23 → 1`, `24 → 2` (the table's words). The param loader writes
+types 22, 23 and 24 into entries 0, 1 and 2 when their index is `0xffff` (`main+0x263424`..`main+0x263434`), so
+those three types are what an empty weapon, head and chest slot hold; what they draw as is not read. The live gear lives in
 `nPlayer::cPlayerParam` (1376 bytes), reached as `uPlayerBase + 0x13c4` (`mpPlParam`, set at `main+0x275d6c` and
 `main+0x275e1c` and zeroed by the constructor at `main+0x27a3f8`): the 7 indices are the u16s at `param + 8 + slot*2`
 (`0xffff` = empty) and the entries are at `param + 0x18 + slot*44`, both indexed by the accessors `main+0xe100c` /
@@ -48,9 +50,12 @@ Reader: `uPlayerBase::calculateSharpnessType` `main+0x29cdfc` takes entry 0 (`mo
 the weapon data getter `main+0x13f03c` and puts bits 5..9 of its `+4` u16 (`ldrh r1, [r6, #4]; ubfx r1, r1, #5, #5`)
 into that record's vtable `+0xd8`. The saved hunter status holds the same 7 slots at `status + 0x84` (indices) and
 `status + 0x94` (entries), resolved with kind 0 by the loader `main+0x2755f0`; the param loader `main+0x263368` uses
-kind 1, and which array the main hunter's param points at is **not settled** (it depends on `param+0x4d4 == 15`).
-Because the entry is a copy of a box record, an equipped weapon is one of the box slots the same getter returns; the
-pack index is not a separate item list. Availability helpers that take a `cFestaEquip*`:
+kind 1 (its one direct caller, `main+0x263bb4` in `main+0x2639ac`, passes `r3 = 1`; which hunter that caller loads is
+not read), and which array the main hunter's param points at is **not settled** (it depends on `param+0x4d4 == 15`).
+The entry is a copy of the box record at that index, so the equipped weapon is also a record in whichever array
+the index means. That the box keeps the record after equipping is inference: nothing read clears or moves it, and
+no code that removes a box record was read. If the index means kind 1, a scan of the 2000 kind-0 records misses
+the equipped weapon. Availability helpers that take a `cFestaEquip*`:
 `main+0xdb5c4` (count) and `main+0x54ff2c` (pouch + box).
 
 ## Weapon crafting data
