@@ -22,8 +22,8 @@ Forge scans `app:/nativeNX/plugins` for `.nro`, registers module hashes, loads m
 | `forge_onInit` | `void()`, initialize plugin |
 | `forge_onUpdate` | `void(float dt)`, after original game update |
 | `forge_onImGuiInit` | `void(void* ctx, void* alloc, void* free)` |
-| `forge_onImGuiRender` | `void()`, inside Forge's plugin UI |
-| `forge_onImGuiFreeRender` | `void()`, drawing outside the main window |
+| `forge_onImGuiRender` | `void()`, only while Forge's own window is open with its "Plugin UI" header expanded (`source/forge/graphics.cpp`); a settings panel, never an overlay |
+| `forge_onImGuiFreeRender` | `void()`, every frame, plugins in load order; overlays and anything drawn over the game or another plugin |
 
 Use C linkage and exported unmangled names. Forge's native metadata is **70 bytes**, alignment 2: three `u16` version fields at 0/2/4 and a 64-byte name at 6. The pinned Rust `PluginInitParams` declares only the six-byte version prefix. A name needs a checked native-compatible output view and a bounded NUL-terminated label. Native `forge_onInit` takes no argument. The pinned `#[forge::entry]` macro generates an init function with an unused pointer parameter; maintained explicit callbacks use the actual zero-argument ABI. Inspect generated exports before copying a macro recipe.
 
