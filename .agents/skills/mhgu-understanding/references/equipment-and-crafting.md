@@ -108,7 +108,10 @@ Layouts are verified by exact file size over all 14 of each.
   always 1: table 00 number 8 has its create row at level 6 with process rows at 1..9, number 12 at level 1 with
   process rows 1..7, and table 13 number 11 at level 6. Some numbers have no create row at all: table 11 number 6
   and number 25 have process rows for levels 1..8 and no create row, so their level-1 row is an upgrade from a
-  *different* number, not a craft. All 700 material groups KatSmithy logged in
+  *different* number, not a craft. Which file answers for a level is measured against the Smithy's own visits rather
+  than inferred: where the create file prices a level the weapon is crafted there and the create row is what is
+  charged, and every other level uses its process row. 807 process rows over the 14 classes carry no materials at
+  all, which is how the free first level of a line reads, and a level neither file lists is absent. All 700 material groups KatSmithy logged in
   `work/wishlist/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's four
   items exactly, 163 distinct rows (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`); in the 2026-11-09 log 22 of
   the 25 distinct groups equal the matching row of `work/wishlist/inputs/weaponPath.bin` at the number and level
@@ -120,14 +123,22 @@ Layouts are verified by exact file size over all 14 of each.
   IDs and the piece slots 337, none in common (empty slots are 0 and excluded), and the three Scrap IDs
   2158 Ore Scrap, 2164 Bone Scrap and 2187 Velociprey Scrap+ appear only in piece slots. Whether a piece ever
   adds to what the Smithy charges is open until a run compares a step with the game's upgrade screen.
-- `nativeNX/table/weaponNNLevelData.wNNd` with `weaponNNBaseData.wNNd` is the game's own smithy tree per class: the
-  level entries and the lines that hold them. Its file layout is undecoded here. What it turns into in memory is
-  known from My Weapon Tree 0.55's reader, copied in `mods/wishlist-mwt-bridge/core/src/lib.rs::level`: a per-class
-  `{ptr, len}` pair (in that plugin at its own +0x42bba0 lines and +0x57690c levels), 80-byte level entries with
-  name `{ptr,len}` at words 0/1, craft list `{ptr,len}` at 6/7 and upgrade list `{ptr,len}` at 10/11, and 8-byte
-  elements `{u16 id, u8 kind, u8 0, u32 count}` where kind 0 is an item and kind 1..15 names the weapon that level
-  upgrades **from**, in table `kind - 1`, at `id = number << 8 | level`. That parent link is the chain; the
-  `.wcd`/`.wpd` rows alone do not say which weapon a level comes from.
+- `nativeNX/table/weaponNNBaseData.wNNd` holds the derive links. A record is `(len-8)/entryCount` bytes, 32 to 34,
+  and the last ten bytes of each are five `{u8 deriveLv, u8 deriveID}` pairs: this weapon at level `deriveLv` leads
+  into number `deriveID` at its level 1. Inverted, that names the parent of a derived first level, and the shortest
+  such link is what the Smithy's list offers. Kiranico agrees on three: Petrified Blade LV2 makes Defender LV1
+  (table 00 number 8, whose process row at level 1 charges 318 Iron Ore x5, 321 Disc Stone x5, 320 Machalite Ore
+  x2); Petrified Daggers LV3 makes Type 51 Macerators LV1 (table 11 number 6, process row level 1 = 861 x2, 855 x4,
+  318 x4, 423 x4); Dual Piercers (table 11 number 22) at LV2 makes Khezu Daggers (number 25) LV1. A level-1 row the
+  create file prices has no parent, that weapon being crafted where it stands.
+- `nativeNX/table/weaponNNLevelData.wNNd` is **per-level stats**, not a tree: its rows start with the number, the
+  level and the attack, defense and affinity fields (`cWeaponLevelData`), and say nothing about which weapon a level
+  comes from. What My Weapon Tree 0.55 reads is built in memory, from that plugin's own code (copied in
+  `mods/wishlist-mwt-bridge/core/src/lib.rs::level`): a per-class `{ptr, len}` pair of 80-byte level entries with the
+  name `{ptr,len}` at words 0/1, a craft list `{ptr,len}` at 6/7 and an upgrade list `{ptr,len}` at 10/11, whose
+  8-byte elements `{u16 id, u8 kind, u8 0, u32 count}` carry the parent link in `kind`: 0 is an item, 1..15 names the
+  weapon that level comes from, in table `kind - 1`, at `id = number << 8 | level`. That shape is MWT's reader's, not
+  a fact about the RomFS files above.
 
 The smithy window's row array at `+0x28d4` (48-byte rows) is built by code, not loaded from a file:
 `main+0x6f0134` clears 2368 bytes of it (`bl main+0x13efd7c`, a memset), `main+0x70091c` fills the selected row
