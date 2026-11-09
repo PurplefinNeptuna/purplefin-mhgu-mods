@@ -133,6 +133,11 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Reading numbers from a log that prints float fields as raw bits | Log floats as floats. Quote log values verbatim; a number that is not in the log is invented. |
 | Writing screen pixels into a node's local position or size | Those fields are local, and later writes to them may be inert. Move geometry with a mask, and treat a node's rect as a layout box, not as its sprite. |
 | Interpreting a screenshot | Name each HUD element in the photo and confirm it with the user or a baseline shot of the accepted build (the Dual Blades demon gauge was misread as the mod's own node across r47 to r49). A user's correction about one element does not extend to others. An artefact that appears or disappears between builds is evidence; never discard it. |
+| Explaining a mismatch with the first story that fits | Find data that would disprove it, then look. "One level low on three weapons, because the weapon in hand is not read" cannot be true of three weapons; a save file showed the field counts from 0. |
+| Mixing bases across a boundary | Game box bits and smithy row `+9` count from 0, RomFS `mLevel` and the screen from 1. Convert once, at the boundary, and say so in the signature's comment. |
+| Calling a plugin API once per item in one update and ignoring the answer | Read the queue size first. An 8-slot mailbox dropped most of a 15-step line, and the success tone still played. |
+| Testing a key with a fake that builds the same key | The test agrees with itself. Assert against what the real finish path produces, in the native adapter. |
+| Stretching a rule from the rows it was measured on | "Create row wins" was true at level 1 and wrong for the 127 create rows above it. Run a rule over the whole table and read the branch counts. |
 | Treating an empty search as proof nothing references a function | Run the tool on a known positive first. A broken script's "no `bl` site" stood for weeks. Use `research xref` and `research word`, and check both. |
 
 ## Topic references

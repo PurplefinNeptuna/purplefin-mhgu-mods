@@ -59,3 +59,23 @@ Refresh `EXPORT.json` deliberately. Export source and approved dependency snapsh
 Inspect status and staged paths, run `git diff --check` and the full distribution check, preserve custom Git hooks, and commit coherent authorized changes locally. Installation, activation, launch, save/settings changes, publication, and push need their own task authorization.
 
 Sources: `docs/DEVELOPMENT.md`, `scripts/mod_distribution.py`, `templates/standalone/AGENTS.md`, maintained mod `build.sh`, `EXPORT.json`, `DISTRIBUTION.json`, `EVIDENCE.json`, tests, notices, and source/release READMEs.
+
+## Review before you report
+
+Do this after the tests pass and before the report. Each item is a question a passing test
+suite does not answer. Any "no" or "not checked" goes in the report.
+
+1. **Trace one real press end to end.** Follow the actual values from input to what is stored,
+   shown and later cleared, through every function, with numbers from a log or data file.
+2. **Every number's base.** For each level, index and count crossing a function or file, write
+   where it counts from and check both sides agree.
+3. **Every key, both ends.** List each place a key or ID is built and each place it is compared,
+   for every state that reaches them. Try the craft path and the upgrade path separately.
+4. **Every call in a loop.** Read the callee's queue and limit, and try the largest input the real
+   data produces (measure it from the RomFS, do not guess). Does a failure change what the user hears?
+5. **Run the rule over the whole data set.** A script over every RomFS row costs seconds. Print how
+   many rows each branch takes, and read the rows that look unusual.
+6. **Compare with something that does not come from your code**: the tester's list, a save file, a
+   log from another mod. If the mismatch has an explanation, test that explanation on other cases.
+7. **Reread the docs you changed against the code**: `rg` each number, version and claim. Check
+   `mod.json`, the plugin label and the zip name carry the new version.

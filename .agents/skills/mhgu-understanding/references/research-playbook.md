@@ -134,6 +134,17 @@ Checks that catch the usual wrong turns:
 - **A failed cross-check means your model is wrong, not the reference.** Never re-label the
   reference ("its panel is its own construction") to drop the check. Try the next
   hypothesis against the same check (worked example 2).
+- **An explanation predicts something else.** Before writing "X because Y", name another case Y
+  would change, and check it. "Owned is one low because the weapon in hand is unread" predicts
+  that only the carried weapon is wrong; six listed weapons were (worked example 3).
+- **Offsets are a base question first.** Values off by one constant across unrelated records mean
+  a 0-based field or an encoding. Rule that out before looking for missing reads.
+- **Read-only ground truth beats theory.** A save file, an ini the game or a mod wrote, and RomFS
+  rows are free to read and cannot flatter the model. Compare them with the tester's own list.
+- **Know what a measurement covers.** "Matches KatSmithy's log" covers the rows it printed. A rule
+  applied to a whole table is checked over the whole table, with the count of each branch printed.
+- **A layout is proved by its bytes, not its comment.** Dump one row in hex next to the claimed
+  stride; a stride that only fits by eye is a lead.
 - **A refutation travels.** When a finding contradicts an earlier one, `rg` for the old claim
   and correct every copy (skill references, DEVELOPMENT.md, the plan) in the same commit.
 
@@ -165,6 +176,9 @@ Before you write it down or commit, answer each line. Any "no" means fix it firs
    nothing it rests on is open.
 8. Did you read a table or data words by eye from a listing? Print them with a script over
    `main_image()` and quote that output.
+
+9. Does this explanation predict something you have not looked at? Look at it first.
+10. Is every level, index and count labelled with the base it counts from, on both sides of the use?
 
 ## 8. What not to do
 
@@ -203,3 +217,17 @@ Before you write it down or commit, answer each line. Any "no" means fix it firs
    (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`).
 5. Result: the craft row is the `.wcd` row, 163 distinct rows over 8 tables. The earlier lines "`.wcd mNo` is a create-entry index" and
    "the window loads `.wpd` records" are corrected wherever they were written.
+
+## Worked example 3: why owned levels read one low
+
+1. Report: three weapons the tester owns at levels 5, 3 and 2 were answered as 4, 2 and 1.
+2. First explanation: the weapon in hand was never read. It was also a real bug, so it looked
+   confirmed. Wrong move: fixing it and stopping. It predicts that only the carried weapon is
+   wrong, and a player carries one weapon.
+3. Check against ground truth: every weapon the tester listed, found in the save file read-only
+   (44-byte records). All six hold the shown level minus one.
+4. Confirm in bytes: `main+0x6f9f00` loads the smithy row's byte at `+9` and `main+0x6f9f08`
+   shifts it straight into the record's level bits. Saved upgrade keys hold 1 and 6 where the
+   matching RomFS process rows are levels 2 and 7, so the row byte counts from 0 as well.
+5. Result: three separate bugs came from the one wrong assumption: owned levels, step keys that
+   could never match a finish, and names one level ahead. Two independent bugs can share a symptom.

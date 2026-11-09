@@ -71,6 +71,17 @@ records sit in the data segment and point into ro.
   configured file.
 - Keep the other plugin's file in `work/NAME/inputs/VERSION/`, never in a scratchpad.
 
+## Call the other plugin's API safely
+
+- Read the callee's queue and limits before calling it in a loop. A hand-off mailbox holds a fixed
+  number of requests per update, and `forge_onUpdate` drains it once. Size it for the largest batch
+  the data produces (`wishlist_add`: one slot per list entry).
+- Check every return value, and let it decide the log line and the tone. A partial write that plays
+  the success tone looks like a working feature. For a toggle, a partial remove followed by the next
+  press adds the rest back, so the list can never empty.
+- A value the API hands over and something else later compares (a Wishlist key) needs its two ends
+  read: which screens build it and what level base each uses.
+
 ## A plugin that guards its hook sites
 
 Some plugins check the first words of each site before they hook it and refuse when the

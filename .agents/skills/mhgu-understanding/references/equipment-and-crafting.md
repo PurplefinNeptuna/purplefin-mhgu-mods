@@ -6,13 +6,12 @@ MHGU 1.4.0. Each fact names its source; "inference" marks what the bytes have no
 
 Forge singleton `sEquipBox` (find by name), class size 261108: 2000 records of 44 bytes from +0x1c, then 1000 more
 from +0x157dc, both walked by the save loader `main+0x14b0b0`. My Weapon Tree's working reader (0.55
-NRO+0x8481c, copied in `mods/wishlist-mwt-bridge/core/src/lib.rs::read_box`) reads them from +0x20: type = bits
-0..4 and level = bits 5..9 of the u16 at slot +0, number = u16 at +2. The DTI class `cFestaEquip` is 44 bytes, and
+NRO+0x8481c, copied in `mods/wishlist-mwt-bridge/core/src/lib.rs::read_box`) reads them from +0x20: type = bits 0..4 and level bits = bits 5..9 of the u16 at slot +0, number = u16 at +2. The DTI class `cFestaEquip` is 44 bytes, and
 the game's decoder `FUN_00b0803c` (`main+0x13f03c`: `ldrh r2, [r1, #4]`, `and r3, r2, #31`, `sub r2, r3, #1`,
 `cmp r2, #23`, `movhi r0, #0`, then `ldrh r2, [r1, #6]`, `b main+0x13c208`) reads the type from the u16 at **+4**
 and the number from **+6**, so types **1..23** are valid, 0 is empty, and the data getter is
 `main+0x13c208(type, number)`. The smithy writes the level into bits 5..9 of that u16 (`and r1, r1, r2` with
-`0xfc1f`, `orr r1, r1, r2, lsl #5` at `main+0x6f9ef8`; `bfi r0, r1, #0, #5` at `main+0x7008e4`).
+`0xfc1f`, `orr r1, r1, r2, lsl #5` at `main+0x6f9ef8`; `bfi r0, r1, #0, #5` at `main+0x7008e4`). **The level bits count from 0: they hold the shown level minus one.** `main+0x6f9f00` loads the row byte at window `+0x28dd` (row `+9`) and `main+0x6f9f08` shifts it straight into the bits, and in the tester's save (`system`, read-only, 44-byte records at 0x192fd2..0x1931ee) the six weapons they listed at shown levels 5, 6, 5, 3, 4 and 2 hold 4, 5, 4, 2, 3 and 1. So a level-1 weapon holds 0 with a non-zero type, and the row byte counts from 0 too: saved upgrade keys hold 1 and 6 where the matching process rows are levels 2 and 7 (Sage Rod, General's Bayonet; a third saved key, Full Bolt Chamber, matches no row of its table). RomFS `mLevel`, `deriveLv` and the player's display count from 1.
 `cFestaEquip::reset` (`main+0xdac14`) and `::assign` (`main+0xdadf0`: `bfi r3, r2, #0, #5` type bits 0..4, `lsr r2,
 r2, #5` + `bfi r3, r2, #5, #5` level bits 5..9, `movw r2, #0x83ff` keeps bit 15 of the destination, then copies `+6`,
 `+8`, `+10`, `+12`, `+14` and 24 bytes from `+16`) keep bit 15. The array base is **+0x1c**, from the slot getter
@@ -85,11 +84,7 @@ cmp r4, #84`) at `object + 0x113938 + i*1376`; the default-init loop `main+0x257
 indices — the saved status pairs them in one block, and the smithy equips that `+0x7c` block (`main+0x709954`'s slot
 `main+0x1838d80` → `main+0x709960 bl main+0x277454` = `add r0, r0, #124` → `main+0x709974 bl main+0x26eaa8`) — while
 a param with 15 indexes the 1000-record array. The entry is a copy of the box record at that index, so the equipped
-weapon is also a record in the array the byte's kind selects. That the box keeps the record after equipping is
-inference: nothing read clears or moves it, and no code that removes a box record was read. Measured against a
-player's own statement of what they own, a scan of the box alone came out one level low for three weapons (5, 3 and 2
-reported as 4, 2 and 1) in the run recorded in `mods/wishlist/EVIDENCE.json` under `runtime_r11_2026_11_09`, where the
-gear copy was not being read at all: the equipped weapon's own record is what closes that gap. Availability helpers
+weapon is also a record in the array the byte's kind selects. That the box keeps the record after equipping is inference: nothing read clears or moves it, and no code that removes a box record was read. Availability helpers
 that take a `cFestaEquip*`: `main+0xdb5c4` (count) and `main+0x54ff2c` (pouch + box).
 
 ## Weapon crafting data
@@ -109,9 +104,7 @@ Layouts are verified by exact file size over all 14 of each.
   process rows 1..7, and table 13 number 11 at level 6. Some numbers have no create row at all: table 11 number 6
   and number 25 have process rows for levels 1..8 and no create row, so their level-1 row is an upgrade from a
   *different* number, not a craft. Which file answers for a level is measured against the Smithy's own visits rather
-  than inferred: where the create file prices a level the weapon is crafted there and the create row is what is
-  charged, and every other level uses its process row. 807 process rows over the 14 classes carry no materials at
-  all, which is how the free first level of a line reads, and a level neither file lists is absent. All 700 material groups KatSmithy logged in
+  than inferred: a create row is what a direct craft charges, and at level 1 it is the step a chain starts from. All 127 create rows above level 1 also have a priced process row (table 00 number 8 at level 6: create 330x7, 1774x5, 333x1, 329x20, process 1774x1, 332x2, 324x5), and a chain walking up from level 1 pays the process row (that the upgrade screen charges it is inference from what the file is for, until a run compares them). 807 process rows carry no materials: a level-1 create row prices 771 of them, leaving 36 free steps, 22 at level 1 and 14 at level 2. A level neither file lists is absent. All 700 material groups KatSmithy logged in
   `work/wishlist/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's four
   items exactly, 163 distinct rows (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`); in the 2026-11-09 log 22 of
   the 25 distinct groups equal the matching row of `work/wishlist/inputs/weaponPath.bin` at the number and level
@@ -141,8 +134,7 @@ Layouts are verified by exact file size over all 14 of each.
   a fact about the RomFS files above.
 
 The smithy window's row array at `+0x28d4` (48-byte rows) is built by code, not loaded from a file:
-`main+0x6f0134` clears 2368 bytes of it (`bl main+0x13efd7c`, a memset), `main+0x70091c` fills the selected row
-(`+2` number from window `+0x2ebc`, `+9` level, `+0x10` a pointer to a source record whose type is not verified)
+`main+0x6f0134` clears 2368 bytes of it (`bl main+0x13efd7c`, a memset), `main+0x70091c` fills the selected row (`+2` number from window `+0x2ebc`, `+9` level counted from 0, `+0x10` a pointer to a source record whose type is not verified)
 and `main+0x6f5570`..`main+0x6f56bc` the list rows. Each row's entry comes from a per-class container at window
 `+0x1f04 + type*4`, `{u32 count +0x64, data +0x6c}` of 48-byte elements indexed directly by the weapon number
 (`main+0x4c0090`).
@@ -155,9 +147,7 @@ its tree level in none, because that mod rewrites the displayed rows and the lev
 (`DIRECT rows(+2) before: 0001 000B 001A … m2 after 6F53E4: 005B 0086 0085 0084 0008 0051 0000 0000 cur=4 page=4
 5E=8`). Untried alternative: the entry array at window `+0x1f80 + index*0x30` (`+0xcc` class, `+0xd0` level).
 
-Inference, not shown in bytes: the `.wpd` row of a level that also has a `.wcd` row is a create-from-base-weapon
-path rather than an upgrade step (the rule `mods/wishlist/scripts/generate_weapon_path.py` builds on, and the
-reason it mislabels kind for the numbers whose create row sits above level 1 or is missing). Armor recipes are
+Inference, not shown in bytes: the `.wpd` row of a level 1 that also has a `.wcd` row is a create-from-base-weapon path rather than the step a chain starts from (the rule `mods/wishlist/scripts/generate_weapon_path.py` builds on). Armor recipes are
 `armorCreateA00..A04` (see the Resources and tooling reference for the 42-byte records).
 
 ## Armor names

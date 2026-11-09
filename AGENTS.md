@@ -49,6 +49,21 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   Imported base is 0x009c9000; subtract it for Forge offsets, but not from vtable
   or DTI words, which are already main-relative. One text byte and some imported
   type layouts differ from the target, so verify against real bytes.
+- **Test the explanation.** Before writing down why something happened, name the data
+  that would disprove it and look. Read-only ground truth is cheap: a save file, a mod's
+  ini, a RomFS row. Values off by one constant across unrelated cases are a base or encoding
+  question first. Checks: mhgu-understanding research playbook, step 6.
+- **Base and unit at every boundary.** Every level, index or count that crosses a function,
+  file or plugin has a stated base and unit. Game box and row levels count from 0; RomFS
+  and the screen count from 1 (mhgu-understanding equipment reference).
+- **Keys have two ends.** A key built here and compared there: read both ends, for every
+  screen or state that reaches the comparison. A test whose fake builds the value proves
+  nothing about the real consumer, so drive the compiled producer or real bytes.
+- **Calls have limits and answers.** Before calling an API in a loop, read its queue depth
+  and limits. Check every return value, and report (sound, log, UI) what actually happened.
+- **A measured rule covers what was measured.** State which rows, levels or screens a rule
+  was checked on, and check the cases it is about to be applied to. A count in a doc is
+  recomputed from the shipped artifact whenever that artifact changes.
 - **Native writes.** Before writing a game field by hand, find what reads it and
   what gates that read, and use a setter if one exists. A value that reads back
   has been stored, not consumed.
@@ -79,6 +94,8 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   out the code that depends on it and report that step as the blocker. When a
   step finishes, update that step and every section that restates its facts, so
   the plan never contradicts itself.
+- Before reporting work done, review it as someone else's change: "Review before you
+  report" in forge-modding `references/validation-and-delivery.md`. Passing tests are not that review.
 - When the user accepts a behaviour or closes a phase, run forge-modding P7
   (consolidate after acceptance) before new features or promotion: remove
   test scaffolding, stale wording and run history from source and README.
