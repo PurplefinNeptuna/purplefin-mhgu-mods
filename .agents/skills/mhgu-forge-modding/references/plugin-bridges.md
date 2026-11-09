@@ -107,3 +107,8 @@ When the user asks for a version-agnostic bridge, read no state out of the other
 NRO: the layout moves with every build (the My Weapon Tree bridge reads it only because it
 pins one build ID), and KatSmithy also renamed its file
 (`smithyrise.nro` to `katsmithy.nro`) and changed its hook set between builds.
+
+If the user gives up version-agnostic instead, pin the build ID and read as little as possible. A bss word has no file bytes
+but is readable at run time. Prefer a word the plugin derives from the value, so a check can reject a wrong build: KatSmithy's
+selection detector `game + 0x1eef*id + 0x19919*level` fits one level or none. Have a finder script print the offsets for any
+build (`mods/wishlist-katsmithy-bridge/scripts/kat_layout.py`).
