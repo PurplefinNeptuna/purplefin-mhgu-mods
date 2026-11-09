@@ -43,8 +43,10 @@ type→slot table `main+0xdae68` (`ldr r0, [r1, r0, lsl #2]`, data at `main+0x15
 slot: `0 → 255`, `1..5 → 1..5`, `6 → 6`, `7..22 → 0`, `23 → 1`, `24 → 2` (the table's words). The param loader writes
 types 22, 23 and 24 into entries 0, 1 and 2 when their index is `0xffff` (`main+0x263424`..`main+0x263434`), so
 those three types are what an empty weapon, head and chest slot hold; what they draw as is not read. The live gear lives in
-`nPlayer::cPlayerParam` (1376 bytes), reached as `uPlayerBase + 0x13c4` (`mpPlParam`, set at `main+0x275d6c` and
-`main+0x275e1c` and zeroed by the constructor at `main+0x27a3f8`): the 7 indices are the u16s at `param + 8 + slot*2`
+`nPlayer::cPlayerParam` (1376 bytes), which `uPlayerBase + 0x13c4` holds a **pointer** to (`mpPlParam`; the factory
+`main+0x275d44` computes `base + 0x5bdc + player*1376` with `mov r0, #1376; mla r0, r6, r0, r9` plus
+`movw r1, #0x5bdc`, stores it at `main+0x275d6c` (again at `main+0x275e1c`), and `main+0x275d78` loads it back before using it; the
+constructor zeroes the slot at `main+0x27a3f8`): the 7 indices are the u16s at `param + 8 + slot*2`
 (`0xffff` = empty) and the entries are at `param + 0x18 + slot*44`, both indexed by the accessors `main+0xe100c` /
 `main+0xe1018` (index) and `main+0xdf814` / `main+0xe0d90` (`mov r2, #44; mla r0, r1, r2, r0; add r0, r0, #20`).
 Writer: the equip action `main+0x26eaa8(param, boxIndex, flag)` resolves the box record with `main+0x143894` (kind 1
@@ -84,7 +86,10 @@ indices — the saved status pairs them in one block, and the smithy equips that
 `main+0x1838d80` → `main+0x709960 bl main+0x277454` = `add r0, r0, #124` → `main+0x709974 bl main+0x26eaa8`) — while
 a param with 15 indexes the 1000-record array. The entry is a copy of the box record at that index, so the equipped
 weapon is also a record in the array the byte's kind selects. That the box keeps the record after equipping is
-inference: nothing read clears or moves it, and no code that removes a box record was read. Availability helpers
+inference: nothing read clears or moves it, and no code that removes a box record was read. Measured against a
+player's own statement of what they own, a scan of the box alone came out one level low for three weapons (5, 3 and 2
+reported as 4, 2 and 1) in the run recorded in `mods/wishlist/EVIDENCE.json` under `runtime_r11_2026_11_09`, where the
+gear copy was not being read at all: the equipped weapon's own record is what closes that gap. Availability helpers
 that take a `cFestaEquip*`: `main+0xdb5c4` (count) and `main+0x54ff2c` (pouch + box).
 
 ## Weapon crafting data
@@ -99,14 +104,30 @@ Layouts are verified by exact file size over all 14 of each.
   in every table.
 - `nativeNX/table/weaponCreateW<table>.wcd`, `rWeaponCreateData`: rows of 38 bytes `{u16 mLevel, u16 mNo,
   u16 mDispFlag, 4 x {u16 item, u8 count, u8 key}, u16 mCategory, u16 mRank, 3 pieces}`, size `8 + 38*entryCount`.
-  Its `(mLevel, mNo)` is the weapon number and level the smithy shows: all 700 material groups KatSmithy logged
-  in `work/wishlist/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's
-  four items exactly, 163 distinct rows (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`). KatSmithy prints only
-  the four items, never the row's pieces. Its `FULL layout type=N` is the weapon table N, not the equip type.
+  `mNo` is the weapon number and `mLevel` the level at which that number can be **crafted directly**, which is not
+  always 1: table 00 number 8 has its create row at level 6 with process rows at 1..9, number 12 at level 1 with
+  process rows 1..7, and table 13 number 11 at level 6. Some numbers have no create row at all: table 11 number 6
+  and number 25 have process rows for levels 1..8 and no create row, so their level-1 row is an upgrade from a
+  *different* number, not a craft. All 700 material groups KatSmithy logged in
+  `work/wishlist/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's four
+  items exactly, 163 distinct rows (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`); in the 2026-11-09 log 22 of
+  the 25 distinct groups equal the matching row of `work/wishlist/inputs/weaponPath.bin` at the number and level
+  named, 2 equal that number's create row at its own level, and one group is KatSmithy leaving one of four items
+  out (`Clero Blade 1` omits 582x4, which the game's own row carries) —
+  `work/wishlist-katsmithy-bridge/rise_vs_path.py` reproduces that count. KatSmithy prints only the four items,
+  never the row's pieces. Its `FULL layout type=N` is the weapon table N, not the equip type.
   The three piece slots hold a disjoint set of IDs: over all 14 classes the item slots hold 1,733 distinct
   IDs and the piece slots 337, none in common (empty slots are 0 and excluded), and the three Scrap IDs
   2158 Ore Scrap, 2164 Bone Scrap and 2187 Velociprey Scrap+ appear only in piece slots. Whether a piece ever
   adds to what the Smithy charges is open until a run compares a step with the game's upgrade screen.
+- `nativeNX/table/weaponNNLevelData.wNNd` with `weaponNNBaseData.wNNd` is the game's own smithy tree per class: the
+  level entries and the lines that hold them. Its file layout is undecoded here. What it turns into in memory is
+  known from My Weapon Tree 0.55's reader, copied in `mods/wishlist-mwt-bridge/core/src/lib.rs::level`: a per-class
+  `{ptr, len}` pair (in that plugin at its own +0x42bba0 lines and +0x57690c levels), 80-byte level entries with
+  name `{ptr,len}` at words 0/1, craft list `{ptr,len}` at 6/7 and upgrade list `{ptr,len}` at 10/11, and 8-byte
+  elements `{u16 id, u8 kind, u8 0, u32 count}` where kind 0 is an item and kind 1..15 names the weapon that level
+  upgrades **from**, in table `kind - 1`, at `id = number << 8 | level`. That parent link is the chain; the
+  `.wcd`/`.wpd` rows alone do not say which weapon a level comes from.
 
 The smithy window's row array at `+0x28d4` (48-byte rows) is built by code, not loaded from a file:
 `main+0x6f0134` clears 2368 bytes of it (`bl main+0x13efd7c`, a memset), `main+0x70091c` fills the selected row
@@ -115,9 +136,17 @@ and `main+0x6f5570`..`main+0x6f56bc` the list rows. Each row's entry comes from 
 `+0x1f04 + type*4`, `{u32 count +0x64, data +0x6c}` of 48-byte elements indexed directly by the weapon number
 (`main+0x4c0090`).
 
-Inference, not shown in bytes: a level above 1 upgrades from level - 1 of the same number (the row shapes and My
-Weapon Tree's baked table), and the `.wpd` row of a level that also has a `.wcd` row is a create-from-base-weapon
-path, not an upgrade step (the rule `mods/wishlist/scripts/generate_weapon_path.py` builds on). Armor recipes are
+**The window names the selected weapon, not its level.** What is reliable across a co-installed weapon-tree mod is
+category (`+0x5c` u16) and number (`+0x5c` high half, repeated at `+0x5e` u16), which the game and the mod agree on;
+the row's `+9` level byte belongs to whatever row the game last built for that slot. Over 30 right-stick presses on
+2026-11-09 the category and number matched KatSmithy's own `5C=`/`5E=` in every one and the row's level byte matched
+its tree level in none, because that mod rewrites the displayed rows and the level field it leaves alone
+(`DIRECT rows(+2) before: 0001 000B 001A … m2 after 6F53E4: 005B 0086 0085 0084 0008 0051 0000 0000 cur=4 page=4
+5E=8`). Untried alternative: the entry array at window `+0x1f80 + index*0x30` (`+0xcc` class, `+0xd0` level).
+
+Inference, not shown in bytes: the `.wpd` row of a level that also has a `.wcd` row is a create-from-base-weapon
+path rather than an upgrade step (the rule `mods/wishlist/scripts/generate_weapon_path.py` builds on, and the
+reason it mislabels kind for the numbers whose create row sits above level 1 or is missing). Armor recipes are
 `armorCreateA00..A04` (see the Resources and tooling reference for the 42-byte records).
 
 ## Armor names
