@@ -1,94 +1,82 @@
 # Local state
 
-Baseline: stock Switch Forge 1.5.1 and forge-rs 1.5.0, on branch `main`. On PC, MHGURecomp loads the Switch NROs. This file describes workspace sources and deliveries, not current emulator activation.
+Baseline: stock Switch Forge 1.5.1 and forge-rs 1.5.0, branch `main`. MHGURecomp
+loads the Switch NROs. This file lists workspace builds, not emulator activation.
 
-## Deliveries
-
-Each mod's DISTRIBUTION.json is authoritative. "Packaged" means a local,
-unpublished ZIP; approval is not a gameplay result. Design and manual checks are
-in each mod's DEVELOPMENT.md; exact validation and runtime records are in its
-EVIDENCE.json.
-
-| Mod | Current | Acceptance scope |
-| --- | --- | --- |
-| Damage Numbers | r42 DEVELOPMENT, gameplay NOT RUN | r41 without FSR's projection jitter (r41 shook on MHGURecomp with FSR on). Candidate `build/damage-numbers/candidates/r42/`. r41: r40 with the camera kept when the picture has another shape than the overlay (gu-native: bars or a resized window), placed by the projection's shape. r40 READY_TO_DISTRIBUTE (2026-11-06): r39 with the visible crop ignored on MHGURecomp, where a lowered render resolution made r39 draw numbers small and toward the top left; user reported "position corrected" on Eden and MHGURecomp. Preserved in `backups/accepted/damage-numbers/r40-before-letterbox/`, payload NRO `80619090a03b6031cfdddf73460737f4f9089827f02596e9b7bd5a925089c01c`. r39 (r38 without the QADD/QSUB that stop Ryubing 1.3.3; user reported "good on both" on Ryubing 1.3.3 and Eden, unitemized), the previous release, is preserved in `backups/accepted/damage-numbers/r39-before-recomp-crop/`. r38, the previous release, is preserved in `backups/accepted/damage-numbers/r38-before-ryubing-qadd/`. Scope of r38: r36 plus stacking on another plugin's Forge hook; user reported damage numbers working on Eden (2026-11-05). Scope of r36: Hits outside the camera view stay hidden until the camera turns to them instead of showing at screen centre. r36 was promoted unchanged from its candidate; its release folder is no longer kept. User reports an Eden run (log not retained); r37-projection-ab, a diagnostic with r36's display code, ran docked on Eden and looked right. Handheld unreported. |
-| Key Quest Markers | r20 READY_TO_DISTRIBUTE (2026-11-06) | Sizes the row from the live tree so another mod can add row children; badges unchanged. Release `build/key-quest-markers/releases/r20/key-quest-markers-r20.zip`, payload NRO `5efd5d35cb67ce649ebd4979ca25e3d287efa7c73d2a5f3c9d830345e7ed23b0`. User reported it working on Eden beside Wishlist r2: "its working", unitemized; installed NRO matches. r19, the previous release, is kept in `backups/accepted/key-quest-markers/r19-before-tree-sizing/`. HD is optional. Ryujinx and Switch hardware unconfirmed. |
-| Lock-on Target | r2 READY_TO_DISTRIBUTE (2026-11-06) | Forge port of the Lock-on Target V1 cheat: runs the local hunter's target-camera tap window out every frame from an entry hook on `main+0x27e970`. Release `build/lock-on-target/releases/r2/lock-on-target-r2.zip`, payload NRO `ae34b8adbe58804b501d7e8ef420354a264e81d01e5ca8ae40b0c461950bd775`. User-reported working on Eden and MHGURecomp 0.14.3 with no crosshair twitch, target cycling unitemized; Ryujinx and Switch hardware not run. |
-| Modern Weapon Controls | r15 READY_TO_DISTRIBUTE (2026-11-05) | r14 without the fixed-list check that aborted on MHGURecomp; loads there (`r15 loaded`, `Remap enabled`), controls not reported. r14 is r13 plus stacking on another plugin's Forge hook; user reported the ZR remap working on Eden (2026-11-05). Scope of r13: Rust/forge-rs rewrite of r12 using Forge hooks. User reported it working on Eden, unitemized; installed NRO matches.  Ryujinx and native Switch unconfirmed. |
-| Multiplayer Roaming (folder `online-roaming`) | r15 READY_TO_DISTRIBUTE (2026-11-06) | r14 with the airship prompt branch and the walking-exit op choice placed as Forge jumps, so MHGURecomp honours them. Release `build/online-roaming/releases/r15/multiplayer-roaming-r15.zip`, payload NRO `c3fae19582efbf3c20755cbf17925f579faa9bd2a237c48b71b719c112994c4f`. User reported it working on Eden and MHGURecomp 0.14.3 (2026-11-06), unitemized; installed NRO matches on both. r14's release is preserved in `backups/accepted/online-roaming/r14-before-recomp-jumps/`. |
-| Please do Better | r29 READY_TO_DISTRIBUTE (2026-11-06) | White native frames for extra-luck slots; all 22 hooks through Forge, so it runs on MHGURecomp. Release `build/please-do-better/releases/r29/please-do-better-r29.zip`, payload NRO `3583061f373aea64e2340a226c0e57d268e00b9be3534fa318f208f22b139621`. User reported it working on Eden and MHGURecomp 0.14.3 (2026-11-06), unitemized; installed NRO matches on both. r26's release is preserved in `backups/accepted/please-do-better/r26-before-native-tint-probe/`. |
-| Shared Urgent Quests | r2 READY_TO_DISTRIBUTE (2026-11-05) | Rust/forge-rs rewrite of r1, no intended behaviour change. Records a rank-up urgent clear for an online client when the urgent is on that client's own board. Candidate `build/shared-urgent-quests/candidates/r2/delivery/`, payload NRO `ea71cb605c28a4cc9d8cb34cf152582dc1704e3a4e07b6dc632daae0800c689b`. User reported it working for a joiner on Eden, with the rank-up and next quests following, for the Diablos and Nakarkos urgents; the host's installed NRO matches, and no joiner log exists. A joiner without the urgent on their board, Ryujinx and native Switch are untested. |
-| Village Quests in Hub | r5 READY_TO_DISTRIBUTE (2026-11-05) | r4 without the fixed-list check that aborted on MHGURecomp; logged `r5 loaded` there. On MHGURecomp, which has its own version of the feature, r5 runs and the tester reports it fixes some of that version's problems with Village quests, unitemized. r4 is r3 plus stacking on another plugin's Forge hook; logs from one Eden session (2026-11-05), no player report. Scope of r3: L or R at the Hub or Pub quest counter switches to the Village quests, to post and join them. Rebuilds a Village list left empty by an area load, and lets a joiner take either record of a variant pair. Forge port of MHGURecomp's feature without its HP scaling. Candidate `build/village-quests-in-hub/candidates/r3/delivery/`, payload NRO `28245e9292f41e8caaad033ba3d215dbf6362f3d72831b32c1dd22e8b0ef42b5`. r3 gameplay NOT RUN. r2 is the accepted build for the rebuilt list, user report on Eden, see its `EVIDENCE.json`. |
-| Wishlist | r44 DEVELOPMENT candidate, not run; r43 tester-accepted 2026-11-10 on MHGU Recomp; r42 tester-accepted 2026-11-10 on MHGU Recomp; r36 tester-accepted 2026-11-10 on Eden and MHGU Recomp | r44 is r43 consolidated for release, its diagnostic log lines removed, behaviour unchanged. r43 words the arrival popup's upgrade lines as "ready to craft" (the line names the level reached). r42 makes the arrival popup opt-in (off by default, a panel tick) and puts up to six ready entries in one popup. r41 places the Hunter's Notes description window as the pouch screen does (it sat mid-screen after a quest) and retires the needed-pickup sound (r37..r40 runs: the gather jingle comes from the motion, and the menu sound tried played nothing). r38 shows the arrival popup only after loading a save and after a quest (r37, run on MHGU Recomp, showed it on every area change). r37 adds the arrival popup of entries ready to craft or upgrade (chains by their target) and the rare pickup jingle for a needed material in quests, with sixteen hooks. r36 puts Wishlist's buttons in the game's button guide: the right stick's "Toggle Wishlist" wherever R3 lists a smithy row (under KatSmithy the upgrade and decoration lists) and the other list's button on the Hunter's Notes page (R "Material", L "Wishlist"), where L opens the entries and R the materials; r35 ran on Eden and MHGU Recomp with the earlier labels. r34 shows material counts as owned/needed; r33 closes the page when the menu closes on (+); r32 (run on Eden, the (+) report) writes the Wishlist row's own help line in the start menu; r31 (not run) translates the page and adds gunner armor to `weaponPath.bin` (5,787 pieces); r30, tester-accepted on MHGU Recomp 2026-11-10, gives decorations [C] too; r29 (not run) adds [C]/[U] and level labels and chain-cumulative craftable colours; r28, run on MHGU Recomp 2026-11-10, adds a Remove menu on entries; r27, tester-confirmed on MHGU Recomp 2026-11-10, fills the description window for weapon and armor entries; r26, run on MHGU Recomp 2026-11-10, hides decoration counts on the entries list; r25, tester-confirmed on MHGU Recomp 2026-11-10 ("working well now"), names entry rows from the stored names, since the game's equipment names are unloaded in a quest (r24's run: 4 of 4 empty there). r24 keeps equipment names visible and logs empty ones; r23, run on MHGU Recomp 2026-11-10, showed icons but no equipment names in a quest. r23 adds equipment icons, white/grey craftable entries, the menu's guide and two-line help; r22, run on MHGU Recomp 2026-11-10, cleaned up the pouch screen (description, Yes/No, delivery window, help line, Sort guide, row colours); r21, run on MHGU Recomp 2026-11-10, showed both lists. r21 opens the game's own Item Pouch screen from that row: the list's entries, and on L/R its materials with what is owned, red below need. r20 adds a seventh Hunter's Notes row, "Wishlist", in the village and in-quest menus, opening a placeholder page that closes with B; run once on MHGU Recomp 2026-11-10 (rows=7 help=7, page shown). The half of the KatSmithy bridge that owns the game knowledge: `weaponPath.bin` version 5 (armor pieces added) and API version 7 (`wishlist_smithy_node`, `wishlist_smithy_entry`, `wishlist_armor_piece`, `wishlist_weapon_owned`, `wishlist_weapon_step`, `wishlist_weapon_parent`, `wishlist_smithy_sound`, `wishlist_target`, `wishlist_protected`). r19 keys the second of a decoration's two recipes at level 1, so each recipe pins and clears on its own row; tester-confirmed on MHGU Recomp (2026-11-09). r18 gives any armor piece's craft from the shipped armor create rows, so the bridge can list a whole set; beside bridge r9 on MHGU Recomp (2026-11-09) the set cell listed Leather's five pieces, re-added one removed piece alone and removed all five, tester-confirmed. r17 filled the node on armor rows and hands out the craft of the armor row under the game's cursor; it ran on MHGU Recomp 2026-11-09 beside bridge r8, where the forged Leather Headgear's finish key equalled the listed key `00010001` and a weapon chain refused a lower level and left with its target. r16 added chain targets: while a target is listed, the steps on the way to it refuse removal from the panel, the Smithy R3 and the API, and removing the target takes its chain; saved as `target = KEY` lines. r15 showed the level on every weapon entry, level 1 included (`Craft: Defender lv1`). r14 keys each smithy weapon step as the game makes it - kind 0 where a create row prices the level, kind 1 for a process step, an upgrade or a derive - the row head's level word carries a `0x8000` create-price flag, and the panel names each entry with that kind and the level a weapon step reaches; an upgrade finish clears both kinds at its row level and a craft finish only its own. Candidate `build/wishlist/candidates/r44/delivery/`, payload NRO `334afb645dd5944aaf26f585a3b90516dbac1da0f074229380838785de28ab97` with `quests.bin` and `weaponPath.bin` (`78e0f85536a3e304423ca7af82d5970b178fb0b1480aeed25e399427de3eead0`, 348,220 bytes, 1,592 weapon numbers, 10,911 weapon rows, 5,787 armor pieces), 21 exports, 37 core host tests, 224 detour cases over 14 hooks and 26 native adapter cases; r18 ran once, for the full-set cell. r13 ran once on MHGURecomp beside bridge r4 and its owned levels and step keys were correct there. r10 ran beside KatSmithy on MHGU Recomp, unitemized ("wishlist r10 works well"), and r2 at `build/wishlist/candidates/r2/` is the item-by-item Eden acceptance. Needs Key Quest Markers r20 or later beside it. |
-| Wishlist bridge for KatSmithy (folder `wishlist-katsmithy-bridge`) | r15 DEVELOPMENT candidate, not run; r14 tester-accepted 2026-11-10 beside Wishlist r34 on Eden (no KatSmithy) and MHGU Recomp (with KatSmithy) | r15 is r14 consolidated for release, its per-press log lines removed, behaviour unchanged. r14 stays off without `katsmithy.nro` (r13 broke Wishlist's R3 there); r13 is r12 moved to the KatSmithy update of 2026-11-09 (build 2d7b3cc4…). Rust forge-rs plugin with no game hook; it patches KatSmithy's `AddRectFilled` import slot to draw, in its free render, gold pins on listed armor pieces (r11, tester-confirmed on MHGU Recomp 2026-11-09, single pieces and sets) and, from r12, on listed weapon levels in the tree (r12 tester-confirmed on MHGU Recomp 2026-11-09): on a right-stick click it samples Wishlist's smithy node twice and queues the steps up to the level selected in KatSmithy's tree, which it reads from two words of one pinned KatSmithy build (`d6a2e49e…`). Any other build, or words that fit no level, add level 1 alone. Missing steps are added and the set comes off on the next press, and a press Wishlist cannot fully take plays the deny tone. The selected level becomes a Wishlist chain target, so the levels below it stay listed until it goes, and a press on one of them is refused. On KatSmithy's armor page a press toggles the selected piece, and on the full-set cell (a third pinned word, `KAT_SET`) adds each missing piece of the set as its own entry or removes them all; that ran on MHGU Recomp 2026-11-09 and the tester confirmed it. Game values come from Wishlist r18 or later (API version 7; a lower version is refused) through its NRO symbol table, and its step lines name the kind Wishlist answered with (craft or upgrade) beside the level, matching the Wishlist panel. Candidate `build/wishlist-katsmithy-bridge/candidates/r15/delivery/`, payload NRO `40b6aa85fe75e213ae6b8ec99e110abf041d06fda42e0baeb837703113c5761a`, 22 core host tests, verify PASS with no game hook; r9 ran once for the full-set cell. r4 ran once on MHGURecomp and solved level 1 on its two logged presses. `work/wishlist-katsmithy-bridge/PLAN.md`, `FINDINGS.md` and `STEP-LABELS.md` hold the design and the byte findings. |
-| Wishlist bridge for My Weapon Tree (folder `wishlist-mwt-bridge`) | r6 DEVELOPMENT candidate | Rust forge-rs plugin that copies My Weapon Tree 0.55's wished weapons and armor pieces into Wishlist r7+ as the craft and upgrade steps still needed, through Wishlist's API. r6 finds both plugins by walking the loaded NROs: Wishlist by the symbol table of its NRO (`wishlist_sync` 0x52ac, `wishlist_api_version` 0x4ffc read by `core::nro_symbol`), My Weapon Tree by build ID `6cca4b6afc72c94c2b0d72d6ac4fe911de744bfb`; `nn::ro::LookupSymbol` is gone, because it resolves only the game's own modules. r5's MHGURecomp run (bridge `9cefe011…`, hashes matching the installed files) loaded the bridge and Wishlist r7 and logged `Wishlist bridge: Wishlist not found; nothing to do`, with `Wishlist (0/64)` on screen and the tester's "bridge does not work". Candidate `build/wishlist-mwt-bridge/candidates/r6/delivery/`, payload NRO `8eec64dd11e216ef9251b5b33cb04e7502d8306d3343d4be2f14f5cfe765ebf5`, 6 host tests PASSED, gameplay NOT RUN. The goal record format, the twelve-goal cap and class 200 come from 0.50's code (0.55 has the same instructions) and stay unverified until a run. r1 to r4 never ran. |
-| ImGui Meter (folder `imgui-meter`) | r1 DEVELOPMENT candidate | Rust forge-rs plugin that counts, per plugin, the ImGui calls that mint a host object in MHGURecomp's plugin mirror pool (8192 slots, `runtime/forge_imgui.c:138`; a slot returns only through the owning plugin's own `*_destroy`), which is why every plugin's drawing stops at once with the single line `[forge] too many ImGui objects for plugins`. The owner is known by construction: the mapping walk (`svcQueryMemory`) finds each loaded plugin NRO, `core::nro_import_slots` reads its MOD0 dynamic section for the `DT_JMPREL`/`DT_REL` slots of 16 counted calls, and a Forge patch record rewrites each slot to an ARM stub that adds one atomic counter and tail-jumps with `bx r12` (no literal in text, no VFP touched, no flag writes; `forge_hook` cannot cover plugin imports, and `nn::ro::LookupSymbol` finds no plugins). Fixture slot finds at base 0: MHGU DPS Meter v1.2.0 4 slots (no texture, no window call), Damage Numbers 14 including all three release calls, My Weapon Tree 0.55 8 slots with no release call at all, Wishlist 0, World Sharpness Gauge 0. Candidate `build/imgui-meter/candidates/r1/delivery/`, payload NRO `e3a8bad7d260c3f6126f5d4f3b727010a63ada5cbca3a8975c1fd9d76507c111`, 13 host tests PASSED, run once on MHGU Recomp 2026-11-09: 24 slots patched in 15 plugins, and KatSmithy's patched calls kept counting while it drew, so patching another plugin's import slots works there. Console loaders map plugin text read-only, so those plugins report `slots 0`. The pool-draining plugin stays unverified until a run. |
-| World Sharpness Gauge | r70 DEVELOPMENT, gameplay NOT RUN | r69 with the crop sized from the drawn quad's authored 88 px (r69 cut a full bar short on MHGURecomp). Candidate `build/world-sharpness-gauge/candidates/r70/`. r69: r68 with the cut and shade drawn as the sprites' own geometry instead of scissors, so the cut follows a HUD moved by gu-native. r68 READY_TO_DISTRIBUTE (2026-11-06): r67 without the use-after-free of the gauge's animation tracks that crashed Ryubing 1.3.3 after insertion. Preserved in `backups/accepted/world-sharpness-gauge/r68-before-geometric-cut/`, payload NRO `551b957a1502e1a632e6b7c30d2974faf26cf51d857bed8521b0af991c800054`. User reported r68 "good on both" on Ryubing 1.3.3 (three quests in the log, no crash) and Eden (one quest). r67, the previous release, is preserved in `backups/accepted/world-sharpness-gauge/r67-before-prefix-relocation/`; its ZIP is kept in `build/world-sharpness-gauge/candidates/r67/`. r64 is the accepted Eden picture: "all works perfectly" over two quests with different weapons. Sharpness +1/+2, Heavy Polish and native hardware have no runtime check. r61 is withdrawn, do not ship. |
-| HD Project, wiki cheats, DTI dumper support | LOCAL_ONLY | Local integrations. |
-
+Each mod's `DISTRIBUTION.json` is authoritative for status; `EVIDENCE.json` holds
+run history and tester quotes; each build folder's `SHA256SUMS` holds its hashes.
 Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 `build/NAME/releases/VERSION/`.
 
+## Current builds
+
+| Mod | Current | Status | Runtime |
+| --- | --- | --- | --- |
+| Damage Numbers | r42 | DEVELOPMENT | Not run |
+| ImGui Meter | r1 | DEVELOPMENT | Ran on MHGU Recomp, unitemized |
+| Key Quest Markers | r20 | READY_TO_DISTRIBUTE, release | Eden, unitemized |
+| Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
+| Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
+| Multiplayer Roaming (`online-roaming`) | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
+| Please do Better | r29 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
+| Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
+| Village Quests in Hub | r5 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; accepted behaviour is r2 |
+| Wishlist | r44 | DEVELOPMENT | Not run; r43 accepted. Needs Key Quest Markers r20+ |
+| Wishlist bridge for KatSmithy | r15 | DEVELOPMENT | Not run; r14 accepted |
+| Wishlist bridge for My Weapon Tree | r6 | DEVELOPMENT | Not run; r5 found no Wishlist |
+| World Sharpness Gauge | r70 | DEVELOPMENT | Not run; r69 cut the bar short on MHGU Recomp |
+| HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
+
+Ryujinx and Switch hardware are unconfirmed for every mod unless its
+`EVIDENCE.json` says otherwise. An open device report remains: Damage Numbers
+placement on real Switch and Android handheld (reported against r28, no hashes
+supplied).
+
 ## Last gameplay-accepted builds
 
-The rollback for a release with no gameplay run of its own. `backups/` is an optional local archive, and nothing here or in any tool depends on it.
+The rollback for a current build that has no run of its own.
 
-| Mod | Build | Where | Scope |
-| --- | --- | --- | --- |
-| Damage Numbers | r38, before its log-line amendment | `build/damage-numbers/candidates/r38-accepted/` | User-reported Eden run for damage numbers, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
-| Key Quest Markers | r20 | `build/key-quest-markers/candidates/r20/` | User-reported Eden run beside Wishlist r2, unitemized. r19 at `build/key-quest-markers/candidates/r19/` is the previous release |
-| Lock-on Target | r2 | `build/lock-on-target/candidates/r2/` | User-reported "work for both eden and recomp", unitemized; MHGURecomp log has the hook reaching the local hunter |
-| Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` | User-reported Eden run for the ZR remap, in a two-player session; not itemized further. Loading beside a foreign hook not exercised |
-| Multiplayer Roaming (folder `online-roaming`) | r15 | `build/online-roaming/candidates/r15/` | User-reported "ok, works perfectly" on Eden and MHGURecomp 0.14.3, unitemized; MHGURecomp logged both jumps as interior hooks. r14 at `build/online-roaming/candidates/r14/` is the previous Eden-accepted build; r10 has the two-player logs for seeing each other |
-| Please do Better | r29 | `build/please-do-better/candidates/r29/` | User-reported "woo, its working for both" on Eden and MHGURecomp 0.14.3, unitemized; MHGURecomp logged "r29 loaded; forcing and highlights ready". r28 at `build/please-do-better/candidates/r28/` is the previous Eden-accepted build; r26's release is preserved in `backups/accepted/please-do-better/r26-before-native-tint-probe/` |
-| Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` | User-reported Eden run for a joiner on the Diablos and Nakarkos urgents, no joiner log |
-| Village Quests in Hub | r2 | `build/village-quests-in-hub/candidates/r2/` | User-reported Eden run for the blank difficulty menu fix, no log lines from the mod |
-| Wishlist | r43 | `build/wishlist/candidates/r43/` | User-reported "r43 is good, please make ready to distribute one" on MHGU Recomp beside KatSmithy and bridge r14; the log has `Wishlist r43 loaded` and two arrivals (0 and 1 lines) |
-| Wishlist | r36 | `build/wishlist/candidates/r36/` | User-reported "ok, r36 acceptable, ran on eden and mhgurecomp, working perfectly at both", unitemized; MHGU Recomp ran it beside KatSmithy and bridge r14, Eden without KatSmithy |
-| Wishlist | r34 | `build/wishlist/candidates/r34/` | User-reported "ok, ran the latest wishlist, and the bridge in eden and recomp, all works wonderfully", unitemized, beside bridge r14; MHGU Recomp ran it beside KatSmithy `d1c7b874…`, Eden without KatSmithy |
-| Wishlist bridge for KatSmithy | r14 | `build/wishlist-katsmithy-bridge/candidates/r14/` | The same report, beside Wishlist r34; MHGU Recomp logged chains, pieces and whole sets queued with KatSmithy `d1c7b874…` |
-| Wishlist | r2 | `build/wishlist/candidates/r2/` | User-reported Eden run: quest pins in Village and Hub, rank, crafted items leaving the list and restart |
-| Wishlist | r10 | `build/wishlist/candidates/r10/` | User-reported "wishlist r10 works well" on MHGU Recomp 0.15.2 beside KatSmithy, unitemized; the log shows KatSmithy's four guarded probes installing and its window probe running through Wishlist's hook. r2 at `build/wishlist/candidates/r2/` is the item-by-item Eden acceptance |
-| World Sharpness Gauge | r68 | `build/world-sharpness-gauge/candidates/r68/` | User-reported "good on both" on Ryubing 1.3.3 (three quests in the log) and Eden. r67 at `build/world-sharpness-gauge/candidates/r67/` is the MHGURecomp run beside KatLib and UIScale. r64 at `build/world-sharpness-gauge/candidates/r64/` is the Eden-accepted picture, under an earlier name: remove the other folder when switching |
+| Mod | Build | Where |
+| --- | --- | --- |
+| Damage Numbers | r38 | `build/damage-numbers/candidates/r38-accepted/` |
+| Key Quest Markers | r20 | `build/key-quest-markers/candidates/r20/` |
+| Lock-on Target | r2 | `build/lock-on-target/candidates/r2/` |
+| Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
+| Multiplayer Roaming | r15 | `build/online-roaming/candidates/r15/` |
+| Please do Better | r29 | `build/please-do-better/candidates/r29/` |
+| Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
+| Village Quests in Hub | r2 | `build/village-quests-in-hub/candidates/r2/` |
+| Wishlist | r43 (r36 on Eden) | `build/wishlist/candidates/r43/`, `r36/` |
+| Wishlist bridge for KatSmithy | r14 | `build/wishlist-katsmithy-bridge/candidates/r14/` |
+| World Sharpness Gauge | r68 | `build/world-sharpness-gauge/candidates/r68/` |
 
-Older accepted C++ builds stay at `build/modern-weapon-controls/candidates/r10/` and `build/please-do-better/candidates/r23/` and `r17-config1/`, each with a `SHA256SUMS`. Dated records in `EVIDENCE.json`, `COMPACTION.json` and `WORKSPACE_EVIDENCE.json` name `backups/` paths that may no longer exist. They keep the hashes, which remain each file's identity.
-
-Open device reports: Damage Numbers placement on real Switch and Android in
-handheld mode (reported against r28; testers' exact loader/plugin hashes were
-not supplied). No later build has run on an affected device.
+Older accepted C++ builds: `build/modern-weapon-controls/candidates/r10/`,
+`build/please-do-better/candidates/r23/` and `r17-config1/`.
 
 ## Inputs and runtime paths
 
 | Purpose | Path |
 | --- | --- |
-| Game RomFS | `/mnt/storage2/Programs/MHGURecomp/data/romfs/` (MHGURecomp's copy of 1.4.0; the Eden dump keeps only `exefs` and `nso`) |
+| Game RomFS | `/mnt/storage2/Programs/MHGURecomp/data/romfs/` (1.4.0; the Eden dump keeps only `exefs` and `nso`) |
 | Sealed base game (v0) | `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` |
 | Sealed 1.4.0 update (v262144) | `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` |
 | Keys for the XCI/NSP | `/mnt/storage2/ROM/Switch/keys+firmware/` |
 | Uninstalled library | `/mnt/storage2/ROM/Switch/cheats/mhgu/` |
-| Eden packages | `~/.local/share/eden/load/0100770008DD8000/` |
-| Eden log | `~/.local/share/eden/log/eden_log.txt` |
-| Ryujinx-Nextendo packages | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/mods/contents/0100770008dd8000/` |
-| Ryujinx-Nextendo logs | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` |
-| Ryubing 1.3.3 (portable) | `/mnt/storage2/Programs/Ryubing-1.3.3/app/`, data in `app/portable/` (`mods/`, `Logs/`, save `bis/user/save/0000000000000001/`) |
-| Copied native inputs | `work/shared/game-exefs/` |
-| Official Forge package/input | `work/shared/forge-1.5.1/` |
+| Eden packages / log | `~/.local/share/eden/load/0100770008DD8000/`, `~/.local/share/eden/log/eden_log.txt` |
+| Ryubing 1.3.3 (portable) | `/mnt/storage2/Programs/Ryubing-1.3.3/app/`, data in `app/portable/` |
+| Ryujinx-Nextendo | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/` (`mods/contents/0100770008dd8000/`, `Logs/`) |
+| Copied native inputs (1.4.0 code) | `work/shared/game-exefs/` |
+| Official Forge package | `work/shared/forge-1.5.1/` |
 | Ghidra and saved DTI | `work/research-tooling/` |
 
-The supplied dump is RomFS-only. Eden made it on 2026-10-01 while loading the
-update from its external content folder (`Update+DLC/`), so it should hold base
-and 1.4.0 merged; no file has been compared against the base yet. The update's
-code is the copy in `work/shared/game-exefs/`. Library target is game 1.4.0, cheat build
-FB08F1D20FD1204F, NSO FB08F1D20FD1204FE7070672777F869B. Verify actual launch
-version/build before executable work. Folder presence proves no activation.
-Trust the user's alternative-mod activation choices; investigate overlap only
-when fresh evidence implicates it. After a reported run, inspect that emulator's
-latest log before concluding.
+Library target: game 1.4.0, cheat build FB08F1D20FD1204F, NSO
+FB08F1D20FD1204FE7070672777F869B. Check the launched version before executable
+work. HD resource priorities: [CLEANUP_HD_PROJECT.md](CLEANUP_HD_PROJECT.md).
+DTI extraction is not enabled for gameplay.
 
-HD resource priorities are in
-[CLEANUP_HD_PROJECT.md](CLEANUP_HD_PROJECT.md). DTI extraction is not enabled
-for gameplay. There is no automated in-game suite.
+## Recovery
 
-## Evidence and recovery
-
-[COMPACTION.json](COMPACTION.json) records source revisions, archive and payload hashes, removed paths and validation for the 2026-10-15 cleanup. [WORKSPACE_EVIDENCE.json](WORKSPACE_EVIDENCE.json) keeps dated workspace research. Run logs removed from the docs are in Git history at commit `31ed4ef` and earlier. The recovery tag is `cleanup/before-stock-forge-20261015`. Tag `archive/backups-records-20261102` holds the pre-prune `work/` research notes, the text records from `backups/accepted/`, and an inventory of `backups/` taken on 2026-11-02, with no working-tree cost: `git show archive/backups-records-20261102:backups-inventory.txt`.
+- [COMPACTION.json](COMPACTION.json): hashes and removed paths of the 2026-10-15 cleanup; tag `cleanup/before-stock-forge-20261015`.
+- [WORKSPACE_EVIDENCE.json](WORKSPACE_EVIDENCE.json): workspace research records.
+- Tag `archive/backups-records-20261102`: pre-prune `work/` notes and a `backups/` inventory (`git show archive/backups-records-20261102:backups-inventory.txt`).
+- Run logs removed from the docs: Git history at `31ed4ef` and earlier.
