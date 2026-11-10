@@ -14,6 +14,8 @@ loads the same Forge NROs.
 | Please do Better | r29 | [Install](mods/please-do-better/README.md) |
 | Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
 | Village Quests in Hub | r5 | [Install](mods/village-quests-in-hub/README.md) |
+| Wishlist | r44 | [Install](mods/wishlist/README.md) |
+| Wishlist bridge for KatSmithy | r15 | [Install](mods/wishlist-katsmithy-bridge/README.md) |
 | World Sharpness Gauge | r70 | [Install](mods/world-sharpness-gauge/README.md) |
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Current
