@@ -21,9 +21,9 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Please do Better | r29 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r5 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; accepted behaviour is r2 |
-| WishFinder (was Wishlist) | r47 | DEVELOPMENT | Not run; r43 accepted on MHGU Recomp. Needs Key Quest Markers r20+ |
+| WishFinder (was Wishlist) | r47 | DEVELOPMENT | Ran on Eden with My Weapon Tree; KatSmithy run pending. Needs Key Quest Markers r20+ |
 | WishFinder bridge for KatSmithy | r16 | DEVELOPMENT | Not run; r14 accepted on Eden and MHGU Recomp |
-| WishFinder bridge for My Weapon Tree | r7 | DEVELOPMENT | Not run; reads My Weapon Tree 0.59 |
+| WishFinder bridge for My Weapon Tree | r7 | DEVELOPMENT | Synced on Eden with My Weapon Tree 0.59 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
 
