@@ -6,7 +6,7 @@ MHGU 1.4.0. Each fact names its source; "inference" marks what the bytes have no
 
 Forge singleton `sEquipBox` (find by name), class size 261108: 2000 records of 44 bytes from +0x1c, then 1000 more
 from +0x157dc, both walked by the save loader `main+0x14b0b0`. My Weapon Tree's working reader (0.55
-NRO+0x8481c, copied in `mods/wishlist-mwt-bridge/core/src/lib.rs::read_box`) reads them from +0x20: type = bits 0..4 and level bits = bits 5..9 of the u16 at slot +0, number = u16 at +2. The DTI class `cFestaEquip` is 44 bytes, and
+NRO+0x8481c, copied in `mods/wishfinder-mwt-bridge/core/src/lib.rs::read_box`) reads them from +0x20: type = bits 0..4 and level bits = bits 5..9 of the u16 at slot +0, number = u16 at +2. The DTI class `cFestaEquip` is 44 bytes, and
 the game's decoder `FUN_00b0803c` (`main+0x13f03c`: `ldrh r2, [r1, #4]`, `and r3, r2, #31`, `sub r2, r3, #1`,
 `cmp r2, #23`, `movhi r0, #0`, then `ldrh r2, [r1, #6]`, `b main+0x13c208`) reads the type from the u16 at **+4**
 and the number from **+6**, so types **1..23** are valid, 0 is empty, and the data getter is
@@ -105,12 +105,12 @@ Layouts are verified by exact file size over all 14 of each.
   and number 25 have process rows for levels 1..8 and no create row, so their level-1 row is an upgrade from a
   *different* number, not a craft. Which file answers for a level is measured against the Smithy's own visits rather
   than inferred: a create row is what a direct craft charges, and at level 1 it is the step a chain starts from. All 127 create rows above level 1 also have a priced process row (table 00 number 8 at level 6: create 330x7, 1774x5, 333x1, 329x20, process 1774x1, 332x2, 324x5), and a chain walking up from level 1 pays the process row (that the upgrade screen charges it is inference from what the file is for, until a run compares them). 807 process rows carry no materials: a level-1 create row prices 771 of them, leaving 36 free steps, 22 at level 1 and 14 at level 2. A level neither file lists is absent. All 700 material groups KatSmithy logged in
-  `work/wishlist/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's four
-  items exactly, 163 distinct rows (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`); in the 2026-11-09 log 22 of
-  the 25 distinct groups equal the matching row of `work/wishlist/inputs/weaponPath.bin` at the number and level
+  `work/wishfinder/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's four
+  items exactly, 163 distinct rows (`work/wishfinder-katsmithy-bridge/rise_vs_wcd.py`); in the 2026-11-09 log 22 of
+  the 25 distinct groups equal the matching row of `work/wishfinder/inputs/weaponPath.bin` at the number and level
   named, 2 equal that number's create row at its own level, and one group is KatSmithy leaving one of four items
   out (`Clero Blade 1` omits 582x4, which the game's own row carries) —
-  `work/wishlist-katsmithy-bridge/rise_vs_path.py` reproduces that count. KatSmithy prints only the four items,
+  `work/wishfinder-katsmithy-bridge/rise_vs_path.py` reproduces that count. KatSmithy prints only the four items,
   never the row's pieces. Its `FULL layout type=N` is the weapon table N, not the equip type.
   The three piece slots hold a disjoint set of IDs: over all 14 classes the item slots hold 1,733 distinct
   IDs and the piece slots 337, none in common (empty slots are 0 and excluded), and the three Scrap IDs
@@ -127,7 +127,7 @@ Layouts are verified by exact file size over all 14 of each.
 - `nativeNX/table/weaponNNLevelData.wNNd` is **per-level stats**, not a tree: its rows start with the number, the
   level and the attack, defense and affinity fields (`cWeaponLevelData`), and say nothing about which weapon a level
   comes from. What My Weapon Tree 0.55 reads is built in memory, from that plugin's own code (copied in
-  `mods/wishlist-mwt-bridge/core/src/lib.rs::level`): a per-class `{ptr, len}` pair of 80-byte level entries with the
+  `mods/wishfinder-mwt-bridge/core/src/lib.rs::level`): a per-class `{ptr, len}` pair of 80-byte level entries with the
   name `{ptr,len}` at words 0/1, a craft list `{ptr,len}` at 6/7 and an upgrade list `{ptr,len}` at 10/11, whose
   8-byte elements `{u16 id, u8 kind, u8 0, u32 count}` carry the parent link in `kind`: 0 is an item, 1..15 names the
   weapon that level comes from, in table `kind - 1`, at `id = number << 8 | level`. That shape is MWT's reader's, not
@@ -147,7 +147,7 @@ its tree level in none, because that mod rewrites the displayed rows and the lev
 (`DIRECT rows(+2) before: 0001 000B 001A … m2 after 6F53E4: 005B 0086 0085 0084 0008 0051 0000 0000 cur=4 page=4
 5E=8`). Untried alternative: the entry array at window `+0x1f80 + index*0x30` (`+0xcc` class, `+0xd0` level).
 
-Inference, not shown in bytes: the `.wpd` row of a level 1 that also has a `.wcd` row is a create-from-base-weapon path rather than the step a chain starts from (the rule `mods/wishlist/scripts/generate_weapon_path.py` builds on). Armor recipes are
+Inference, not shown in bytes: the `.wpd` row of a level 1 that also has a `.wcd` row is a create-from-base-weapon path rather than the step a chain starts from (the rule `mods/wishfinder/scripts/generate_weapon_path.py` builds on). Armor recipes are
 `armorCreateA00..A04` (see the Resources and tooling reference for the 42-byte records).
 
 ## Armor names

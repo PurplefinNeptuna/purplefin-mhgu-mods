@@ -2,8 +2,8 @@
 
 A bridge is a plugin that reads another plugin's memory and passes what it finds to one
 of ours, when the other plugin has no API. The worked example is
-`mods/wishlist-mwt-bridge`: it reads My Weapon Tree's wish list and calls Wishlist's
-`wishlist_sync`. Its DEVELOPMENT.md has the exact layout and the update procedure; this
+`mods/wishfinder-mwt-bridge`: it reads My Weapon Tree's wish list and calls WishFinder's
+`wishfinder_sync`. Its DEVELOPMENT.md has the exact layout and the update procedure; this
 page has the method. Prefer an API in the other plugin: a bridge breaks on every release
 of it.
 
@@ -12,10 +12,10 @@ of it.
 - Every NRO is loaded before any `forge_onInit`, so look plugins up in `forge_onInit` or
   later, never by load order ([Plugin order](hooks-and-lifetimes.md#plugin-order)).
 - Our plugins export C functions: read each name from that plugin's NRO symbol table in its
-  loaded mapping (`mods/wishlist-mwt-bridge/core/src/lib.rs::nro_symbol`, driven by
+  loaded mapping (`mods/wishfinder-mwt-bridge/core/src/lib.rs::nro_symbol`, driven by
   `src/platform.rs`), then call its version function first. Do not use `nn::ro::LookupSymbol`:
   it resolves only the game's own modules and finds nothing in a loaded plugin, and Forge
-  exports no plugin symbol lookup (`mods/wishlist/API.md`).
+  exports no plugin symbol lookup (`mods/wishfinder/API.md`).
 - A plugin that exports nothing is found by its NRO build ID: walk `svcQueryMemory` for an
   R-X mapping whose first bytes are an NRO header (`NRO0` at +0x10) with the expected
   build ID at +0x40. Refuse any other build; offsets differ per build.
@@ -42,7 +42,7 @@ ldr rD, [pc, rT]        ; word & 0x0fff0ff0 == 0x079f0000  -> loads the word the
 ```
 
 So a search for the address as a literal, ADR or section-base arithmetic finds nothing.
-Decode the pairs instead (`mods/wishlist-mwt-bridge/scripts/mwt_layout.py`,
+Decode the pairs instead (`mods/wishfinder-mwt-bridge/scripts/mwt_layout.py`,
 `pc_relative`). Then:
 
 1. Anchor on a string the other plugin prints near the data, such as a debug line
@@ -75,11 +75,11 @@ records sit in the data segment and point into ro.
 
 - Read the callee's queue and limits before calling it in a loop. A hand-off mailbox holds a fixed
   number of requests per update, and `forge_onUpdate` drains it once. Size it for the largest batch
-  the data produces (`wishlist_add`: one slot per list entry).
+  the data produces (`wishfinder_add`: one slot per list entry).
 - Check every return value, and let it decide the log line and the tone. A partial write that plays
   the success tone looks like a working feature. For a toggle, a partial remove followed by the next
   press adds the rest back, so the list can never empty.
-- A value the API hands over and something else later compares (a Wishlist key) needs its two ends
+- A value the API hands over and something else later compares (a WishFinder key) needs its two ends
   read: which screens build it and what level base each uses.
 
 ## A plugin that guards its hook sites
@@ -95,12 +95,12 @@ embedded default ini, a save-folder ini) before planning any hook, and rank the 
    [Hooks and lifetimes](hooks-and-lifetimes.md): install after the other plugin's Forge
    branch (`0xe51ff004`) is there, or after a fixed wait when its probe is switched off.
 
-Worked example, Wishlist and KatSmithy (`work/wishlist-katsmithy-bridge/PLAN.md`): the
+Worked example, WishFinder and KatSmithy (`work/wishfinder-katsmithy-bridge/PLAN.md`): the
 bridge needs the smithy node the player stands on. KatSmithy guards `0x6f1ae8`,
 `0x6f31d8`, `0x55e4f8` and `0x2831e0`. Hooking the window factory `0x55e4f8` to capture
-the window would be option 3 on a second guarded site. Wishlist's own hook at `0x6f1ae8`
+the window would be option 3 on a second guarded site. WishFinder's own hook at `0x6f1ae8`
 already chains after KatSmithy's (r10: KatSmithy logged `guard OK` and `installed` for all
-four), so Wishlist exports `wishlist_smithy_node` and the bridge takes no hook: option 1.
+four), so WishFinder exports `wishfinder_smithy_node` and the bridge takes no hook: option 1.
 The guard evidence is then that no `GUARD MISMATCH` line appears in the run's log.
 
 When the user asks for a version-agnostic bridge, read no state out of the other plugin's
@@ -111,4 +111,4 @@ pins one build ID), and KatSmithy also renamed its file
 If the user gives up version-agnostic instead, pin the build ID and read as little as possible. A bss word has no file bytes
 but is readable at run time. Prefer a word the plugin derives from the value, so a check can reject a wrong build: KatSmithy's
 selection detector `game + 0x1eef*id + 0x19919*level` fits one level or none. Have a finder script print the offsets for any
-build (`mods/wishlist-katsmithy-bridge/scripts/kat_layout.py`).
+build (`mods/wishfinder-katsmithy-bridge/scripts/kat_layout.py`).

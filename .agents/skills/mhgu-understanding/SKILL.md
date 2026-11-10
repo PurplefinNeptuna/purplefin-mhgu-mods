@@ -24,7 +24,7 @@ before extracting, unpacking or editing it.
 
 | Location | What it holds | Use it for |
 | --- | --- | --- |
-| `/mnt/storage2/Programs/MHGURecomp/data/romfs/` | Every game resource (ARC archives in `nativeNX/arc/`, GUI, tables, per-language text), 12 GB, no code. MHGURecomp's copy of the 1.4.0 RomFS; files checked so far match the earlier Eden dump (Wishlist's `quests.bin` rebuilds byte for byte, and Modern Weapon Controls' pinned `hunter_note_eng.arc` hash matches). | Finding and reading resources: `rg --files DUMP/romfs \| rg NAME` |
+| `/mnt/storage2/Programs/MHGURecomp/data/romfs/` | Every game resource (ARC archives in `nativeNX/arc/`, GUI, tables, per-language text), 12 GB, no code. MHGURecomp's copy of the 1.4.0 RomFS; files checked so far match the earlier Eden dump (WishFinder's `quests.bin` rebuilds byte for byte, and Modern Weapon Controls' pinned `hunter_note_eng.arc` hash matches). | Finding and reading resources: `rg --files DUMP/romfs \| rg NAME` |
 | `work/shared/game-exefs/` | The 1.4.0 code only: `main` (the game), `sdk`, `subsdk0`, `rtld`, `main.npdm`. `forge` is Forge 1.5.1's `subsdk9`, not game code. | Instruction bytes and signatures. Read `main` with `scripts/mhgu_binary.py` `main_image()`, which refuses any other version. |
 | `work/research-tooling/` | Saved Ghidra project/export and DTI index built from that `main` | Search first: `./scripts/tool.sh research find QUERY --kind functions` |
 | `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` | Sealed base game (v0) | Rarely needed: an original the dump lacks |

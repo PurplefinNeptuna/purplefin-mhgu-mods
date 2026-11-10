@@ -21,9 +21,9 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Please do Better | r29 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r5 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; accepted behaviour is r2 |
-| Wishlist | r45 | READY_TO_DISTRIBUTE, release | Approved without a run of r45; r43 accepted on MHGU Recomp. Needs Key Quest Markers r20+ |
-| Wishlist bridge for KatSmithy | r15 | READY_TO_DISTRIBUTE, release | Approved without a run of r15; r14 accepted on Eden and MHGU Recomp |
-| Wishlist bridge for My Weapon Tree | r6 | DEVELOPMENT | Not run; r5 found no Wishlist |
+| WishFinder (was Wishlist) | r46 | DEVELOPMENT | Not run; r43 accepted on MHGU Recomp. Needs Key Quest Markers r20+ |
+| WishFinder bridge for KatSmithy | r16 | DEVELOPMENT | Not run; r14 accepted on Eden and MHGU Recomp |
+| WishFinder bridge for My Weapon Tree | r7 | DEVELOPMENT | Not run; reads My Weapon Tree 0.59 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
 
@@ -46,8 +46,8 @@ The rollback for a current build that has no run of its own.
 | Please do Better | r29 | `build/please-do-better/candidates/r29/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Village Quests in Hub | r2 | `build/village-quests-in-hub/candidates/r2/` |
-| Wishlist | r43 (r36 on Eden) | `build/wishlist/candidates/r43/`, `r36/` |
-| Wishlist bridge for KatSmithy | r14 | `build/wishlist-katsmithy-bridge/candidates/r14/` |
+| WishFinder | r43 (r36 on Eden) | `build/wishfinder/candidates/r43/`, `r36/` |
+| WishFinder bridge for KatSmithy | r14 | `build/wishfinder-katsmithy-bridge/candidates/r14/` |
 | World Sharpness Gauge | r70 (r68 on Eden and Ryubing) | `build/world-sharpness-gauge/candidates/r70/`, `r68/` |
 
 Older accepted C++ builds: `build/modern-weapon-controls/candidates/r10/`,

@@ -214,7 +214,7 @@ Before you write it down or commit, answer each line. Any "no" means fix it firs
 4. Second hypothesis, the `.wcd` row keyed `(mLevel, mNo)`: 588 of 632 groups matched
    under the first pairing of log groups to nodes. The misses were checked, not waved through:
    matched against every create row of the open table, all 700 groups fit exactly
-   (`work/wishlist-katsmithy-bridge/rise_vs_wcd.py`).
+   (`work/wishfinder-katsmithy-bridge/rise_vs_wcd.py`).
 5. Result: the craft row is the `.wcd` row, 163 distinct rows over 8 tables. The earlier lines "`.wcd mNo` is a create-entry index" and
    "the window loads `.wpd` records" are corrected wherever they were written.
 

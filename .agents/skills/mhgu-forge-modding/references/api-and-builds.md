@@ -79,11 +79,11 @@ Plugins built against the pinned 1.5.1 SDK are expected to work with that review
 
 ## Plugin-to-plugin APIs
 
-A plugin can export plain C functions for another plugin (Wishlist: `wishlist_api_version`, `wishlist_sync`, `wishlist_search`, `wishlist_add`, `wishlist_remove`). A caller reads them from that plugin's NRO symbol table in its loaded mapping, in its own `forge_onInit` or later (`mods/wishlist-mwt-bridge/core/src/lib.rs::nro_symbol`); every NRO is loaded before any `forge_onInit`, so load order does not matter. `nn::ro::LookupSymbol` resolves only the game's own modules and finds nothing in a plugin. Rules from Wishlist and its My Weapon Tree bridge:
+A plugin can export plain C functions for another plugin (WishFinder: `wishfinder_api_version`, `wishfinder_sync`, `wishfinder_search`, `wishfinder_add`, `wishfinder_remove`). A caller reads them from that plugin's NRO symbol table in its loaded mapping, in its own `forge_onInit` or later (`mods/wishfinder-mwt-bridge/core/src/lib.rs::nro_symbol`); every NRO is loaded before any `forge_onInit`, so load order does not matter. `nn::ro::LookupSymbol` resolves only the game's own modules and finds nothing in a plugin. Rules from WishFinder and its My Weapon Tree bridge:
 
-- The contract is a fixed-layout record (Wishlist's 64-byte `WishlistEntry`) and a version function the caller checks first. Check range readability and alignment on entry, copy, and hand the data to `forge_onUpdate` through a bounded mailbox; nothing locks.
+- The contract is a fixed-layout record (WishFinder's 64-byte `WishFinderEntry`) and a version function the caller checks first. Check range readability and alignment on entry, copy, and hand the data to `forge_onUpdate` through a bounded mailbox; nothing locks.
 - A plugin that exports only Forge's callbacks (My Weapon Tree) cannot be looked up by symbol. Walk `svcQueryMemory` for an R-X mapping starting with an NRO header (`NRO0` at +0x10) whose build ID at +0x40 matches, pin that exact build, and check the whole range is mapped readable before every read of its memory. Then read its data by fixed offsets (the bridge's DEVELOPMENT.md has a layout table); a host test that loads the real NRO at base 0 checks the offsets and relocated tables.
-- Keep the logic in a `core` crate that both the plugin and the host test build (`mods/wishlist-mwt-bridge/core/src/lib.rs`).
+- Keep the logic in a `core` crate that both the plugin and the host test build (`mods/wishfinder-mwt-bridge/core/src/lib.rs`).
 - Look a partner up by name, never by folder prefix or position.
 
 ## Standalone workflow
