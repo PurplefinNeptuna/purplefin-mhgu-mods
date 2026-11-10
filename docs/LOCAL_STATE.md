@@ -12,7 +12,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 
 | Mod | Current | Status | Runtime |
 | --- | --- | --- | --- |
-| Damage Numbers | r42 | DEVELOPMENT | Not run |
+| Damage Numbers | r42 | READY_TO_DISTRIBUTE, release | MHGU Recomp (FSR on) |
 | ImGui Meter | r1 | DEVELOPMENT | Ran on MHGU Recomp, unitemized |
 | Key Quest Markers | r20 | READY_TO_DISTRIBUTE, release | Eden, unitemized |
 | Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
@@ -24,7 +24,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Wishlist | r44 | DEVELOPMENT | Not run; r43 accepted. Needs Key Quest Markers r20+ |
 | Wishlist bridge for KatSmithy | r15 | DEVELOPMENT | Not run; r14 accepted |
 | Wishlist bridge for My Weapon Tree | r6 | DEVELOPMENT | Not run; r5 found no Wishlist |
-| World Sharpness Gauge | r70 | DEVELOPMENT | Not run; r69 cut the bar short on MHGU Recomp |
+| World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
 
 Ryujinx and Switch hardware are unconfirmed for every mod unless its
@@ -38,7 +38,7 @@ The rollback for a current build that has no run of its own.
 
 | Mod | Build | Where |
 | --- | --- | --- |
-| Damage Numbers | r38 | `build/damage-numbers/candidates/r38-accepted/` |
+| Damage Numbers | r42 (r38 on Eden) | `build/damage-numbers/candidates/r42/`, `r38-accepted/` |
 | Key Quest Markers | r20 | `build/key-quest-markers/candidates/r20/` |
 | Lock-on Target | r2 | `build/lock-on-target/candidates/r2/` |
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
@@ -48,7 +48,7 @@ The rollback for a current build that has no run of its own.
 | Village Quests in Hub | r2 | `build/village-quests-in-hub/candidates/r2/` |
 | Wishlist | r43 (r36 on Eden) | `build/wishlist/candidates/r43/`, `r36/` |
 | Wishlist bridge for KatSmithy | r14 | `build/wishlist-katsmithy-bridge/candidates/r14/` |
-| World Sharpness Gauge | r68 | `build/world-sharpness-gauge/candidates/r68/` |
+| World Sharpness Gauge | r70 (r68 on Eden and Ryubing) | `build/world-sharpness-gauge/candidates/r70/`, `r68/` |
 
 Older accepted C++ builds: `build/modern-weapon-controls/candidates/r10/`,
 `build/please-do-better/candidates/r23/` and `r17-config1/`.

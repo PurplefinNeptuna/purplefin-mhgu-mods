@@ -6,7 +6,7 @@ loads the same Forge NROs.
 
 | Mod | Release | Guide |
 | --- | --- | --- |
-| Damage Numbers | r40 | [Install](mods/damage-numbers/README.md) |
+| Damage Numbers | r42 | [Install](mods/damage-numbers/README.md) |
 | Key Quest Markers | r20 | [Install](mods/key-quest-markers/README.md) |
 | Lock-on Target | r2 | [Install](mods/lock-on-target/README.md) |
 | Modern Weapon Controls | r15 | [Install](mods/modern-weapon-controls/README.md) |
@@ -14,7 +14,7 @@ loads the same Forge NROs.
 | Please do Better | r29 | [Install](mods/please-do-better/README.md) |
 | Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
 | Village Quests in Hub | r5 | [Install](mods/village-quests-in-hub/README.md) |
-| World Sharpness Gauge | r68 | [Install](mods/world-sharpness-gauge/README.md) |
+| World Sharpness Gauge | r70 | [Install](mods/world-sharpness-gauge/README.md) |
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Current
 candidates and acceptance scope are summarised in
