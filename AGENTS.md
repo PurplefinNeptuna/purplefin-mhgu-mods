@@ -128,7 +128,11 @@ describe the project as it is now, not how it got here.
 - **State the fact, not the run.** Write "bit 17 is transform dirty, gate at
   main+0xa4969c", not "the r57 run showed". Name a version only when the version
   is the fact, such as which build was accepted.
-- **One current-state paragraph.** Replace it for each version.
+- **One current-state paragraph.** Replace it for each version; never extend it with
+  "rN is rM with…". It names the current build, its run state and the last accepted build,
+  in 150 words or fewer. Design facts go in their sections, runs in `EVIDENCE.json`.
+- **docs/LOCAL_STATE.md is a snapshot**: one short row per mod (version, status, run state,
+  path). Replace the row; no history, quotes or hashes (hashes are in each build's `SHA256SUMS`).
 - **The tester** is "the tester" or they/them, never he or she.
 - **One home per fact.** Link instead of copying. When you remove a section or
   file, fix what points at it.
@@ -141,7 +145,8 @@ describe the project as it is now, not how it got here.
   user reviews them. Confirm that every address in the old text still appears
   somewhere before you commit.
 
-The pre-commit hook refuses per-run headings and files over these sizes.
+The pre-commit hook refuses per-run and dated headings, files over these sizes, and the history
+checks in `scripts/doc_rules.py` (current-state length, version chains, previous-release history, long table cells).
 
 ## Runtime evidence and installation paths
 

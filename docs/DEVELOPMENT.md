@@ -178,8 +178,9 @@ ID, folders and runtime keep the old name, so the runtime bytes don't change.
    wrapper: a plain `cargo` run inside the mod leaves a `target/` that blocks
    the next build. Update READMEs before `package`, because the ZIP includes
    README.md.
-5. Update the mod's DEVELOPMENT.md (the current-state paragraph) and
-   `docs/LOCAL_STATE.md`. The root README table lists the approved release,
+5. Replace the mod's DEVELOPMENT.md current-state paragraph and its
+   `docs/LOCAL_STATE.md` rows; the old version's story goes nowhere but
+   `EVIDENCE.json` (`scripts/doc_rules.py` refuses chains). The root README table lists the approved release,
    not the candidate.
 
 `THIRD_PARTY.md` records development provenance;

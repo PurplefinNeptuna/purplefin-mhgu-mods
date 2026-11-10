@@ -12,6 +12,7 @@ if [ -n "$over" ]; then
     echo 'Doc rule: under 500 lines for DEVELOPMENT.md, 350 for other docs. Merge facts and drop narrative.' >&2
     exit 1
 fi
+echo "$docs" | xargs python3 scripts/doc_rules.py
 python3 scripts/mod_distribution.py check --staged
 python3 scripts/mod_distribution.py check
 git diff --cached --check
