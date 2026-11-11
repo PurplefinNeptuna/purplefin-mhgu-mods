@@ -43,8 +43,8 @@ user explicitly asks for that exact action in this task.
    `<forge/singleton.h>`, `<forge/fs.h>`. Wrap `<forge/mem.h>` in
    `extern "C" { }` (it has no C++ linkage guard). Never hand-declare a Forge
    function. Request version `{1, 5, 1}` in `forge_onLoad`.
-   For a Rust plugin, copy the structure of `mods/key-quest-markers/` (custom
-   target JSON, `build.rs`, vendored forge-rs) instead; `init` only makes C++.
+   Rust plugin: copy `mods/key-quest-markers/` (target JSON, `build.rs`, `fetch_vendor.py`,
+   `.gitignore`, `licenses/`), then `./build.sh fetch` (api-and-builds.md); `init` is C++ only.
    Rust targets must keep `"relocation-model": "pic"` and the GCC pre-link
    args `-nostartfiles`, `-Wl,-z,text` (see api-and-builds.md).
 5. **Research.** Follow the `mhgu-understanding` skill. Write every offset you

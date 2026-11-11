@@ -91,6 +91,7 @@ A plugin can export plain C functions for another plugin (WishFinder: `wishfinde
 From a maintained mod's directory:
 
 ```sh
+./build.sh fetch      # Rust mods, once: the only network step
 ./build.sh doctor
 ./build.sh prepare
 ./build.sh build
@@ -101,6 +102,14 @@ From a maintained mod's directory:
 ```
 
 Consult its usage for arguments. `test --host` intentionally omits native checks. `fetch` (Rust mods) and `prepare --fetch` (C template) are the only download operations. Supply copied/hash-verified inputs through ignored `build.local.json`. The mod owns its source, locks, dependency snapshots, recipes, tests, export allowlist, licenses, and notices. Sibling mods, installed emulators, personal paths, and parent Git history cannot be build dependencies.
+
+## Rust dependencies
+
+Git does not track `vendor/crates/` or `vendor/forge-rs/`; each mod's `.gitignore` lists both. `./build.sh fetch` runs `scripts/fetch_vendor.py` (identical in every Rust mod): it downloads the forge-rs tarball at `forge_rs_revision`, keeps only the files pinned under `vendor/forge-rs/` in `dependencies.lock.json` and fails on any hash difference, then runs `cargo vendor --quiet --locked --versioned-dirs` with `--sync` for the pinned toolchain's `library/Cargo.toml` (build-std) and every `tests/*/Cargo.lock` harness. It refuses to overwrite existing vendor folders. `doctor` stops with "run ./build.sh fetch" when `vendor/crates` is missing. Crate integrity comes from `Cargo.lock` checksums, which cargo checks at build time, so the lock pins no `vendor/crates` files. `export_source.py` skips both folders (`FETCHED`). Source: `mods/lock-on-target/scripts/fetch_vendor.py`.
+
+To change a dependency, edit `Cargo.lock` (or `forge_rs_revision` and the forge-rs pins), delete both vendor folders, run `fetch`, then `doctor`. Every release `notices` path must be a tracked file: copy a crate's license into `licenses/` (for example `licenses/LOG-MIT.txt`, `licenses/FORGE-RS-MIT.txt`) instead of pointing at `vendor/`, or `check --staged` fails with "Missing file".
+
+Rust NROs embed absolute source paths (std and crate panic locations, for example `.../vendor/crates/log-0.4.34/src/__private_api.rs`), so the same source built in two folders can give different bytes. Lock-on Target, Multiplayer Roaming, Shared Urgent Quests, Village Quests in Hub and the My Weapon Tree bridge happened not to, so their exported builds matched their releases; Damage Numbers, ImGui Meter, Key Quest Markers, WishFinder, the KatSmithy bridge and World Sharpness Gauge did not. To prove two builds equal, build both at one path. Removing the vendor trees was checked that way: all 13 NROs matched HEAD.
 
 Workspace scaffolding: `python3 scripts/mod_distribution.py init NAME --kind plugin`. Upstream Rust scaffolding is `cargo forge new NAME`, followed by `cargo forge build --release`; the standalone recipe remains authoritative for maintained mods. Forge's own source build needs its submodules, devkitARM/devkitPro, and LZ4. Do not install system packages merely to explain a build.
 

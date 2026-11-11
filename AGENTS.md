@@ -19,8 +19,11 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   Forge) at `tools/forge-local/`, commit `b23e114a23f41c9a8e2fd34b2f4df2a2102d0ee1`.
   Rust: forge-rs 1.5.0 at `tools/forge-rs/`, commit
   `d1865b68e9b194eb3eacc8bd71bbf601a5fac63e`. PC: [MHGURecomp](https://github.com/morerokk/MHGURecomp)
-  loads the same Switch Forge NROs, so there are no separate PC builds. Update
-  checkouts from their official remotes. Never create duplicate clones/worktrees
+  loads the same Switch Forge NROs, so there are no separate PC builds. Both
+  baselines are submodules; update them from their official remotes. History
+  was rewritten on 2026-11-11 (vendor trees, retired mods, `backups/`, personal
+  email and home path removed); older commit hashes resolve only in
+  `/mnt/storage2/Programs/MHGU_Modding-pre-rewrite.git`. Never create duplicate clones/worktrees
   or restore the retired loader, Better Input, renderer, mutex or PC patches,
   GURecomp or Forge PC ports.
 - **Authorization.** Preparing work never installs, activates, launches an

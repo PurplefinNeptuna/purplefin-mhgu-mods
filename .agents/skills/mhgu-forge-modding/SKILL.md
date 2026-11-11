@@ -106,6 +106,8 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Freeing or zeroing a row's draw block prefix when growing it | Objects animate through `+0x64` pointers into it. Copy the prefix and move those pointers first ([Native GUI extensions](references/native-gui-extensions.md)). |
 | Using `i32::saturating_add`/`saturating_sub` | They compile to QADD/QSUB, which Ryubing 1.3.3 cannot run, and `-dsp` does not stop them in ARM mode. Use plain or u32-capped arithmetic and gate the build ([Diagnostics](references/diagnostics.md)). |
 | Fixing `check` failures by editing release folders by hand | Use `package NAME --refresh-support` for doc-only changes. |
+| Pointing release `notices` at a `vendor/` license file | Fetched vendor is untracked. Copy the license into `licenses/` and list that path. |
+| Comparing NROs built in different folders | Rust NROs embed absolute source paths. Build both at one path ([Rust dependencies](references/api-and-builds.md#rust-dependencies)). |
 | Concluding from an old log or a folder listing | Read the newest log and match installed hashes first (playbook P3). |
 | Assuming a test double proves pixels | GPU commands are doubles. Visible output needs a user run. |
 | Shipping one candidate per failed gate, adjusting the gate each time | Check each gate assumption against the logged values (playbook P3 step 4). After two gate failures in a row, return to static research. |

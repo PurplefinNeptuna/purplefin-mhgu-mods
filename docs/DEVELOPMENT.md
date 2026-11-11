@@ -142,7 +142,8 @@ version in `mod.json`, then add these fields to `DISTRIBUTION.json`:
 (`build/NAME/candidates/VERSION/delivery`), `candidate_builder`
 (`scripts/build.py` for scaffolded mods) and the `gamebanana` record. Optional
 `notices` lists shipped license files; otherwise the mod's `LICENSE` and vendor
-licenses are used. Then run `./build.sh build`, `./build.sh test` and
+licenses are used. Rust mods list tracked copies in `licenses/`, never a fetched
+`vendor/` path. Then run `./build.sh build`, `./build.sh test` and
 `python3 scripts/mod_distribution.py package NAME`. Without `candidate_builder`
 the packager refuses DEVELOPMENT mods. Status stays DEVELOPMENT.
 
