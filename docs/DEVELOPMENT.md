@@ -30,9 +30,10 @@ for the reviewed Lawrence hardware-test fork and its separate validation scope.
 
 Each `mods/NAME/` owns its source, recipes, tests, dependency locks, licenses,
 export list and build entry point. No sibling mod, installed emulator, personal
-path or parent Git history may be required. Rust mods download forge-rs and
-crates.io sources into ignored `vendor/forge-rs/` and `vendor/crates/` with
-`./build.sh fetch`, the only step that uses the network: forge-rs files are
+path or parent Git history may be required. Third-party sources are fetched,
+never committed: Rust mods run `./build.sh fetch` (forge-rs and crates.io into
+ignored `vendor/forge-rs/` and `vendor/crates/`), C plugins `prepare --fetch`
+(Forge, libnx, cimgui into `vendor/forge/` and `vendor/sdk/`). Fetched files are
 checked against `dependencies.lock.json`, crates against `Cargo.lock`. Build/work
 folders are ignored outputs.
 

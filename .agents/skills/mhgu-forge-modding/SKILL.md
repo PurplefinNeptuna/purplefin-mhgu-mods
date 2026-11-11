@@ -108,6 +108,7 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Fixing `check` failures by editing release folders by hand | Use `package NAME --refresh-support` for doc-only changes. |
 | Pointing release `notices` at a `vendor/` license file | Fetched vendor is untracked. Copy the license into `licenses/` and list that path. |
 | Comparing NROs built in different folders | Rust NROs embed absolute source paths. Build both at one path ([Rust dependencies](references/api-and-builds.md#rust-dependencies)). |
+| Proving a dependency change with an equal NRO alone | Host test harnesses compile for x86_64, where C `char` is signed. Run `test --host` too. |
 | Concluding from an old log or a folder listing | Read the newest log and match installed hashes first (playbook P3). |
 | Assuming a test double proves pixels | GPU commands are doubles. Visible output needs a user run. |
 | Shipping one candidate per failed gate, adjusting the gate each time | Check each gate assumption against the logged values (playbook P3 step 4). After two gate failures in a row, return to static research. |

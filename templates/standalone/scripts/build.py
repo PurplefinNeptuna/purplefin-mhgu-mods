@@ -40,6 +40,7 @@ def prepare(fetch=False):
  if fetch:
   if cfg['kind']=='plugin':
    run(['podman','--root',CONTAINER_STORAGE,'--runroot',f'/tmp/mhgu-forge-container-{os.getuid()}','--storage-driver','vfs','pull',cfg['compiler_image']])
+   if not FORGE.is_dir():script('fetch_vendor')  # Forge, libnx and cimgui at their pinned commits
   if (MOD/'requirements.txt').exists():
    run([sys.executable,'-m','venv',MOD/'.venv']);run([MOD/'.venv/bin/python','-m','pip','install','-r',MOD/'requirements.txt'])
  if (MOD/'dependencies.lock.json').exists():check_dependencies()

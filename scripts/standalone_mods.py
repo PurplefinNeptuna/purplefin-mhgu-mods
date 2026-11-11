@@ -69,7 +69,7 @@ def scaffold(path,name,kind):
   (path/'scripts').mkdir();(path/'src').mkdir();(path/'tests').mkdir();(path/'recipes').mkdir()
   (path/'tests/README.md').write_text('Add focused behavior, failure and persistence tests here. test --host needs no game inputs.\n')
   helpers=['build.py','paths.py','mod_distribution.py','export_source.py']
-  if kind=='plugin':helpers+=['mhgu_binary.py','native_support.py']
+  if kind=='plugin':helpers+=['mhgu_binary.py','native_support.py','fetch_vendor.py']
   for n in helpers:
    shutil.copy2(source/'scripts'/n,path/'scripts'/n)
   (path/'LICENSE').write_text((ROOT/'scripts/standalone-license.txt').read_text().format(name=name))
@@ -108,6 +108,10 @@ extern "C" void forge_onImGuiFreeRender() {} // Background work remains independ
    (path/'recipe.json').write_text(json.dumps({'kind':kind,'payloads':{}},indent=2)+'\n')
   vendor=path/'vendor'
   lock={'schema_version':1,'compiler_image':cfg['compiler_image'],'files':{str(p.relative_to(path)):digest(p) for p in sorted(vendor.rglob('*')) if p.is_file()} if vendor.exists() else {}}
+  if kind=='plugin':
+   # Forge, libnx and cimgui are fetched by prepare --fetch; the template pins their commits and files.
+   pins=json.loads((source/'vendor.lock.json').read_text())
+   lock['archives']=pins['archives'];lock['files'].update(pins['files'])
   (path/'dependencies.lock.json').write_text(json.dumps(lock,indent=2)+'\n')
   files=[str(p.relative_to(path)) for p in sorted(path.rglob('*')) if p.is_file()]
   (path/'EXPORT.json').write_text(json.dumps({'schema_version':1,'mod':name,'files':files},indent=2)+'\n')

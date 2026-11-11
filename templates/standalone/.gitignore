@@ -12,3 +12,7 @@ __pycache__/
 *.arc
 *.nso
 *.zip
+
+# Downloaded by ./build.sh prepare --fetch
+/vendor/forge/
+/vendor/sdk/

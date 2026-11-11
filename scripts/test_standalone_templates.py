@@ -30,10 +30,10 @@ def main():
     path='cheats/0000000000000000.txt' if kind=='cheat' else 'romfs/nativeNX/example.txt' if kind=='resource' else 'exefs/example.txt'
     (p/'recipe.json').write_text(json.dumps({'kind':kind,'payloads':{path:'src/example.txt'}},indent=2)+'\n')
     run(['python3',p/'scripts/export_source.py','--refresh'])
-   for command in (['doctor'],['prepare'],['build'],['test','--host'],['test'],['verify'],['package']):run([p/'build.sh',*command])
+   for command in (*([['prepare','--fetch']] if kind=='plugin' else []),['doctor'],['prepare'],['build'],['test','--host'],['test'],['verify'],['package']):run([p/'build.sh',*command])
    dest=root/('standalone-'+kind);run([p/'build.sh','export','--output',dest]);run([p/'build.sh','export','--output',dest],ok=False)
    (dest/'build.local.json').write_text(json.dumps(config)+'\n')
-   for command in (['doctor'],['prepare'],['build'],['test','--host'],['test'],['verify'],['package']):run([dest/'build.sh',*command])
+   for command in (*([['prepare','--fetch']] if kind=='plugin' else []),['doctor'],['prepare'],['build'],['test','--host'],['test'],['verify'],['package']):run([dest/'build.sh',*command])
    for folder in (p,dest):
     run(['python3',folder/'scripts/mod_distribution.py','check']);run([folder/'build.sh','package','--release'],ok=False)
     receipt=json.loads((folder/('build/'+name+'/standalone-build.json') if folder==dest else hub/'build'/name/'standalone-build.json').read_text())

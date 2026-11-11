@@ -25,6 +25,8 @@ def check_dependencies():
     if config.get('compiler_image')!=record['compiler_image']:raise ValueError('Compiler pin differs from dependency record')
     for name,expected in record['files'].items():
         p=MOD/name
+        if not p.is_file() and name.startswith(('vendor/forge/','vendor/sdk/')):
+            raise ValueError('Dependencies missing: run ./build.sh prepare --fetch')
         if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()!=expected:
             raise ValueError('Pinned dependency differs: '+name)
     return record

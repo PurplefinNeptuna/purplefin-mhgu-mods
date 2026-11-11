@@ -27,7 +27,7 @@ user explicitly asks for that exact action in this task.
 1. **Scaffold.** `python3 scripts/mod_distribution.py init NAME --kind plugin`.
    It refuses an existing folder and an invalid name (lowercase words joined by
    `-`). It creates `mods/NAME/` with a C++ `src/plugin.cpp`, `build.sh`,
-   vendored Forge headers in `vendor/forge/include/forge/`, `mod.json`
+   Forge/libnx/cimgui pins (`prepare --fetch` downloads them), `mod.json`
    (version `r1`), `DISTRIBUTION.json` (DEVELOPMENT), `EXPORT.json`, tests and
    licence files.
 2. **Configure inputs.** From the mod folder: copy `build.local.example.json`
