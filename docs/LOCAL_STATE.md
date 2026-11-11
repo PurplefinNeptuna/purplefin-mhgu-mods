@@ -21,7 +21,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Please do Better | r29 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | DEVELOPMENT, candidate | Loads beside MHGU Definitive Edition on Eden; no Village quest played. Accepted behaviour is r2 |
-| WishFinder (was Wishlist) | r53 | DEVELOPMENT, candidate | Not run; ships only the NRO (both tables built in game); reads Definitive Edition stand-in quests and areas; progress window while the quest table builds; quest table built in game, live item count and weapon table, accepts MHGU Definitive Edition. Last accepted r47. Needs Key Quest Markers r20+ |
+| WishFinder (was Wishlist) | r54 | DEVELOPMENT, candidate | Not run (r53 bar seen on Eden); ships only the NRO (both tables built in game); reads Definitive Edition stand-in quests and areas; progress window while the quest table builds; quest table built in game, live item count and weapon table, accepts MHGU Definitive Edition. Last accepted r47. Needs Key Quest Markers r20+ |
 | WishFinder bridge for KatSmithy | r16 | READY_TO_DISTRIBUTE, release | Accepted on MHGU Recomp |
 | WishFinder bridge for My Weapon Tree | r7 | READY_TO_DISTRIBUTE, release | Accepted on Eden with My Weapon Tree 0.59 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
