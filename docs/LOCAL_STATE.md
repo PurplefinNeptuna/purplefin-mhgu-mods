@@ -80,4 +80,4 @@ DTI extraction is not enabled for gameplay.
 - [COMPACTION.json](COMPACTION.json): hashes and removed paths of the 2026-10-15 cleanup (its `starting_commit` is the pre-cleanup state).
 - [WORKSPACE_EVIDENCE.json](WORKSPACE_EVIDENCE.json): workspace research records.
 - `/mnt/storage2/Programs/MHGU_Modding-pre-rewrite.git`: history before the 2026-11-11 rewrite, with its tags (`cleanup/before-stock-forge-20261015`, `archive/backups-records-20261102` holding pre-prune `work/` notes and `backups-inventory.txt`).
-- Run logs removed from the docs: Git history at `91eea05` and earlier.
+- Run logs removed from the docs: Git history at `84e8410` and earlier.
