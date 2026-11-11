@@ -46,15 +46,18 @@ accepted Forge container and host system packages retain their existing versions
 
 One checkout per upstream repository is retained. Update it directly; do not
 create an additional upstream directory. Revisions/remotes and historical pins
-are recorded in COMPACTION.json and WORKSPACE_EVIDENCE.json.
+are recorded in COMPACTION.json and WORKSPACE_EVIDENCE.json. The two pinned
+baselines are submodules (`git submodule update --init --recursive`); the rest
+are ignored research clones, made by hand from the listed upstream.
 
 | Source | Checkout |
 | --- | --- |
-| Forge 1.5.1 | `tools/forge-local/` |
+| Forge 1.5.1 | `tools/forge-local/`, submodule of https://github.com/Fexty12573/forge.git |
 | MHGURecomp 0.15.1 | `tools/MHGURecomp-source/` (blobless sparse clone of https://github.com/morerokk/MHGURecomp at tag `0.15.1`: `runtime`, `tools`, `docs`, `third_party/cimgui/imgui`; `tools/` is gitignored) |
-| forge-rs 1.5.0 | `tools/forge-rs/` |
-| Eden | `references/eden/` |
-| Ryujinx-Nextendo | `references/ryujinx-nextendo/` |
+| forge-rs 1.5.0 | `tools/forge-rs/`, submodule of https://github.com/Fexty12573/forge-rs.git |
+| hactool | `tools/hactool-source/` (https://github.com/SciresM/hactool.git) |
+| Eden | `references/eden/` (https://git.eden-emu.dev/eden-emu/eden.git) |
+| Ryujinx-Nextendo | `references/ryujinx-nextendo/` (https://github.com/NextendoNetwork/Ryujinx-Nextendo.git) |
 | Ryubing | same checkout, remote `ryubing` (https://git.ryujinx.app/projects/Ryubing.git), tag `ryubing-1.3.3` = upstream `1.3.3`, commit `e2143d43b` |
 
 Ryubing 1.3.3 is built from `git archive ryubing-1.3.3` into

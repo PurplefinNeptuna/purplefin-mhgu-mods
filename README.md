@@ -31,7 +31,9 @@ extraction support are local integrations.
 - [HD ownership and merge order](docs/CLEANUP_HD_PROJECT.md)
 - [Compaction and preserved-artifact receipt](docs/COMPACTION.json)
 
-Use mod-local build.sh commands. Inspect all deliveries with
+Clone with `git clone --recursive` for the Forge and forge-rs baselines. Use
+mod-local build.sh commands; a Rust mod runs `./build.sh fetch` once to download
+its pinned dependencies. Inspect all deliveries with
 `python3 scripts/mod_distribution.py check`. Builds and packaging do not install,
 activate or publish. Superseded source remains in Git. Each mod's last gameplay-accepted build stays
 under build/, and backups/ is an optional local archive. Update upstream

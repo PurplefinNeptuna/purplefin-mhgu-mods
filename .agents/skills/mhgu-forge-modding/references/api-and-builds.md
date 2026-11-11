@@ -100,7 +100,7 @@ From a maintained mod's directory:
 ./build.sh export --output DEST
 ```
 
-Consult its usage for arguments. `test --host` intentionally omits native checks. `prepare --fetch`, where supported, is an explicit download operation. Supply copied/hash-verified inputs through ignored `build.local.json`. The mod owns its source, locks, dependency snapshots, recipes, tests, export allowlist, licenses, and notices. Sibling mods, installed emulators, personal paths, and parent Git history cannot be build dependencies.
+Consult its usage for arguments. `test --host` intentionally omits native checks. `fetch` (Rust mods) and `prepare --fetch` (C template) are the only download operations. Supply copied/hash-verified inputs through ignored `build.local.json`. The mod owns its source, locks, dependency snapshots, recipes, tests, export allowlist, licenses, and notices. Sibling mods, installed emulators, personal paths, and parent Git history cannot be build dependencies.
 
 Workspace scaffolding: `python3 scripts/mod_distribution.py init NAME --kind plugin`. Upstream Rust scaffolding is `cargo forge new NAME`, followed by `cargo forge build --release`; the standalone recipe remains authoritative for maintained mods. Forge's own source build needs its submodules, devkitARM/devkitPro, and LZ4. Do not install system packages merely to explain a build.
 

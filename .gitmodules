@@ -1,0 +1,6 @@
+[submodule "tools/forge-local"]
+	path = tools/forge-local
+	url = https://github.com/Fexty12573/forge.git
+[submodule "tools/forge-rs"]
+	path = tools/forge-rs
+	url = https://github.com/Fexty12573/forge-rs.git

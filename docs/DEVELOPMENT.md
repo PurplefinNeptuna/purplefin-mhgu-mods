@@ -30,12 +30,15 @@ for the reviewed Lawrence hardware-test fork and its separate validation scope.
 
 Each `mods/NAME/` owns its source, recipes, tests, dependency locks, licenses,
 export list and build entry point. No sibling mod, installed emulator, personal
-path or parent Git history may be required. Minimal vendored dependencies are
-intentional standalone inputs. Build/work folders are ignored outputs.
+path or parent Git history may be required. Rust mods download forge-rs and
+crates.io sources into ignored `vendor/forge-rs/` and `vendor/crates/` with
+`./build.sh fetch`, the only step that uses the network: forge-rs files are
+checked against `dependencies.lock.json`, crates against `Cargo.lock`. Build/work
+folders are ignored outputs.
 
 Use `./build.sh doctor`, `prepare`, `build`, `test`, `verify`, `package`,
 and `export --output DEST`. Host-only tests omit native verification;
-`prepare --fetch` is the explicit dependency-download operation where supported.
+Rust mods run `fetch` once first; the C template's `prepare --fetch` downloads its compiler image.
 Configure copied native/resource inputs with `build.local.json`; never edit
 original dumps, libraries or saves. Preserve unknown binary fields and unrelated
 resources. Record source paths and SHA-256; re-extract changed archives and

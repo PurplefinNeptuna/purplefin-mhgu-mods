@@ -2,7 +2,10 @@
 /work/
 /build/
 /backups/
-/tools
+/tools/*
+# Pinned baselines (AGENTS.md) are submodules
+!/tools/forge-local
+!/tools/forge-rs
 /references
 __pycache__/
 *.py[cod]
