@@ -80,4 +80,4 @@ DTI extraction is not enabled for gameplay.
 - [COMPACTION.json](COMPACTION.json): hashes and removed paths of the 2026-10-15 cleanup; tag `cleanup/before-stock-forge-20261015`.
 - [WORKSPACE_EVIDENCE.json](WORKSPACE_EVIDENCE.json): workspace research records.
 - Tag `archive/backups-records-20261102`: pre-prune `work/` notes and a `backups/` inventory (`git show archive/backups-records-20261102:backups-inventory.txt`).
-- Run logs removed from the docs: Git history at `31ed4ef` and earlier.
+- Run logs removed from the docs: Git history at `91eea05` and earlier.
