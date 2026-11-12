@@ -22,7 +22,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
 | WishFinder (was Wishlist) | r54 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition and on MHGU Recomp; ships only the NRO. Needs Key Quest Markers r20+ |
-| WishFinder bridge for KatSmithy | r16 | READY_TO_DISTRIBUTE, release | Accepted on MHGU Recomp |
+| WishFinder bridge for KatSmithy | r17 | DEVELOPMENT, candidate | Not run; re-pinned to KatSmithy of 2026-11-11, r16 accepted on MHGU Recomp |
 | WishFinder bridge for My Weapon Tree | r7 | READY_TO_DISTRIBUTE, release | Accepted on Eden with My Weapon Tree 0.59 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
