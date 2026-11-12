@@ -23,7 +23,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
 | WishFinder (was Wishlist) | r56 | DEVELOPMENT, candidate | Accepted on Eden with and without MHGU Definitive Edition (quest table v3). Needs Key Quest Markers r20+ |
 | WishFinder bridge for KatSmithy | r17 | READY_TO_DISTRIBUTE, release | Accepted on MHGU Recomp with KatSmithy of 2026-11-11 |
-| WishFinder bridge for My Weapon Tree | r7 | READY_TO_DISTRIBUTE, release | Accepted on Eden with My Weapon Tree 0.59 |
+| WishFinder bridge for My Weapon Tree | r8 (r7 accepted) | DEVELOPMENT, candidate | r8 reads My Weapon Tree 0.60, not run; r7 accepted on Eden with 0.59 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
 
@@ -48,7 +48,7 @@ The rollback for a current build that has no run of its own.
 | Village Quests in Hub | r6 | `build/village-quests-in-hub/candidates/r6/` |
 | WishFinder | r66 (r63 accepted) | `build/wishfinder/candidates/r66/`, `r63/` |
 | WishFinder bridge for KatSmithy | r17 | `build/wishfinder-katsmithy-bridge/candidates/r17/` |
-| WishFinder bridge for My Weapon Tree | r7 | `build/wishfinder-mwt-bridge/candidates/r7/` |
+| WishFinder bridge for My Weapon Tree | r8 (r7 accepted) | `build/wishfinder-mwt-bridge/candidates/r8/`, `r7/` |
 | World Sharpness Gauge | r70 (r68 on Eden and Ryubing) | `build/world-sharpness-gauge/candidates/r70/`, `r68/` |
 
 Older accepted C++ builds: `build/modern-weapon-controls/candidates/r10/`,
