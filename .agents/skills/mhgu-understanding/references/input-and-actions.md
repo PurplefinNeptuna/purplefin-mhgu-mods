@@ -12,6 +12,8 @@ These offsets and decisions are scoped to Switch 1.4.0 and the maintained Modern
 | sFestaPad cell `0x188c670` | Gameplay held/previous/pressed/released +0x6b9c/+0x6ba0/+0x6ba4/+0x6ba8 |
 | Same pad, menu view | Held/previous/pressed +0x6bf4/+0x6bf8/+0x6bfc |
 
+Where those views come from: `sFestaPad::move` `0x3ddf1c` (object vtable `0x1754954` slot 0x1c) calls `sPad::move` `0xbaade4` (its only caller, `bl` at `0x3ddf24`), then builds the gameplay view +0x6b98 and the menu view +0x6bf0 with `0x3de064`, which reads the selected `sPad::Pad` record's `On` (record +0x190; pad 0 at +0x1d0) and derives pressed and released from it. It skips both views while `sFestaMain` (`0x2126764`) has +0x60 zero and `mPause` (+0x64) set. `sPad::Pad` (DTI, 2896 bytes; eight in `mPad` from +0x40, `Handheld` at +0x5ac0): `On`/`Old`/`Trg`/`Rel`/`Chg`/`Rep` u64 at +400..+440, `Rx`/`Ry`/`Lx`/`Ly` s32 at +448..+460, `Rz/RT` +464, `Lz/LT` +465. Forge's own input (`forge_input_*`) reads `nn::hid` directly, so it never sees or clears the game's pad: zeroing the records after `sPad::move` is how WishFinder's welcome window keeps presses from the game (adapter-checked; in-play effect unverified). Sources: main bytes, `tools/forge-local/source/forge/input.cpp`, `mods/wishfinder/src/native.rs` `clear_pads`.
+
 sUserInfo cell `0x1897f78` supplies settings. Control byte+0x446c=2 means displayed Control Type 3, and original shoulder assignment+0x446e=0. Native R accessor `0x65f93c` returns 0x40 for assignment 0, else 0x800. Its PC-relative prologue was deliberately not hooked.
 
 ## Find the local player and weapon
