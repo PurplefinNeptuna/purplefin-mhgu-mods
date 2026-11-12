@@ -152,8 +152,11 @@ A release lives at `build/NAME/releases/VERSION/`, with versioned ZIP, named
 runtime folder, README.md, README.html, GAMEBANANA_README.html, NOTICES.txt,
 NOTICES.html, release manifest and SHA256SUMS. The ZIP contains only README.md
 beside the named runtime folder. The README is identical inside/outside the ZIP;
-runtime folders contain no guides/notices/release manifests; a mod may
-ship `manifest.txt` (`mod_name`, `version`, `author(s)`) beside `romfs/` for mod managers. Keep notices and HTML outside
+runtime folders contain no guides/notices/release manifests. Every new candidate or
+release ships `manifest.txt` beside `romfs/` for mod managers, one `key="value"` per line:
+`mod_name` (the README title), `version` (this version) and `author(s)="PurplefinNeptuna"`.
+Register it in `payloads`; `package` refuses a new candidate or release without it, and
+releases packaged before the rule keep their bytes. Keep notices and HTML outside
 ZIPs. Support refreshes back up the prior release and preserve runtime bytes.
 Archive superseded releases outside active releases.
 A renamed mod sets `archive_stem` in `DISTRIBUTION.json`, and its archive starts with that stem. Its
@@ -162,7 +165,7 @@ ID, folders and runtime keep the old name, so the runtime bytes don't change.
 ### Starting a new version
 
 1. Search the mod for the old version (`grep -rnw OLD mods/NAME`) and update
-   every copy: `mod.json` and any build/path scripts, plugin labels and test
+   every copy: `mod.json`, `manifest.txt` and any build/path scripts, plugin labels and test
    expectations that repeat it. Ignore unrelated hits such as register names.
 2. If the old version is READY_TO_DISTRIBUTE or PUBLISHED, copy
    `build/NAME/releases/OLD/` to `backups/accepted/NAME/OLD-before-CHANGE/release/`.

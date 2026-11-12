@@ -490,6 +490,22 @@ def verify_candidate(spec, root=ROOT):
     return directory / spec['archive']
 
 
+AUTHOR = 'PurplefinNeptuna'
+
+
+def manifest_txt(spec, root=ROOT):
+    """Every newly built candidate or release ships manifest.txt beside romfs/ for mod managers:
+    mod_name, version (this one) and author(s) (AUTHOR), each as key="value" on its own line."""
+    record = spec['payloads'].get('manifest.txt')
+    require(record, f'Ship manifest.txt beside romfs/ (docs/DEVELOPMENT.md, Releases): {spec["mod"]}')
+    lines = [re.fullmatch(r'(mod_name|version|author\(s\))="([^"\n]*)"', line)
+             for line in read(root, record['source']).decode('utf-8').splitlines() if line.strip()]
+    fields = dict(m.groups() for m in lines if m)
+    require(all(lines) and len(lines) == 3 and fields.get('mod_name')
+            and fields.get('version') == spec['version'] and fields.get('author(s)') == AUTHOR,
+            f'manifest.txt must hold mod_name, version="{spec["version"]}" and author(s)="{AUTHOR}": {spec["mod"]}')
+
+
 def package(mod, root=ROOT, refresh_support=False):
     spec = spec_for(mod, root)
     if spec['status'] == 'DEVELOPMENT' and spec.get('candidate_builder'):
@@ -497,12 +513,15 @@ def package(mod, root=ROOT, refresh_support=False):
         # producing files. This path never changes distribution approval/status.
         builder = relative(spec['candidate_builder'])
         folder = root if (root / 'mod.json').is_file() else root / 'mods' / mod
+        manifest_txt(spec, root)
         subprocess.run([sys.executable, folder / builder, 'package'], cwd=folder, check=True)
         return verify_candidate(spec, root)
     require(spec['status'] in READY, f'Mod is not approved for distribution: {mod}')
     files = expected_files(spec, root)
     directory = release_dir(spec, root)
     actual = inventory(directory)
+    if not actual:
+        manifest_txt(spec, root)  # existing releases from before the rule keep their bytes
     if actual and actual != files:
         # Runtime stays immutable; the archived README can change with support refresh.
         runtime = [p for p in files if p.startswith(spec['package_name'] + '/')]

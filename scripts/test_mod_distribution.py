@@ -24,6 +24,8 @@ class DistributionTests(unittest.TestCase):
         self.write('mods/sample-mod/NOTICE.txt', b'MIT license example.\n')
         self.write('build/sample-mod/validated.nro', b'validated-runtime\x00\x01')
         self.write('build/sample-mod/tests.json', b'{"status":"PASSED"}\n')
+        manifest = b'mod_name="Sample"\nversion="r1"\nauthor(s)="PurplefinNeptuna"\n'
+        self.write('build/sample-mod/manifest.txt', manifest)
         self.spec = {
             'schema_version': 1, 'mod': self.mod, 'status': 'READY_TO_DISTRIBUTE',
             'reason': 'Approved fixture', 'publication': {'published': False, 'url': None, 'date': None},
@@ -40,7 +42,8 @@ class DistributionTests(unittest.TestCase):
             },
             'payloads': {'romfs/nativeNX/plugins/test.nro': {
                 'source': 'build/sample-mod/validated.nro',
-                'sha256': distribution.digest(b'validated-runtime\x00\x01')}},
+                'sha256': distribution.digest(b'validated-runtime\x00\x01')},
+                'manifest.txt': {'source': 'build/sample-mod/manifest.txt', 'sha256': distribution.digest(manifest)}},
             'evidence': {'static': ['build/sample-mod/tests.json'],
                          'manual_summary': 'No manual gameplay claimed'},
         }
@@ -80,7 +83,7 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual(first, distribution.inventory(archive.parent))
         self.assertEqual(original, archive.read_bytes())
         with zipfile.ZipFile(archive) as zipped:
-            self.assertEqual(zipped.namelist(), ['README.md', 'sample-mod/romfs/nativeNX/plugins/test.nro'])
+            self.assertEqual(zipped.namelist(), ['README.md', 'sample-mod/manifest.txt', 'sample-mod/romfs/nativeNX/plugins/test.nro'])
             self.assertEqual(zipped.read('README.md'), first['README.md'])
             self.assertNotIn('NOTICES.txt', zipped.namelist())
             self.assertNotIn('NOTICES.html', zipped.namelist())
@@ -101,13 +104,36 @@ class DistributionTests(unittest.TestCase):
         self.rejected(lambda: distribution.check(self.root, source_only=True))
         self.rejected(lambda: distribution.check(self.root))
 
+    def test_new_builds_need_manifest_txt_with_version_and_author(self):
+        manifest = self.root / 'build/sample-mod/manifest.txt'
+        good = manifest.read_bytes()
+        for blob in (None, good.replace(b'r1', b'r0'), good.replace(b'PurplefinNeptuna', b'Someone'),
+                     good + b'extra="x"\n', good.replace(b'mod_name="Sample"', b'mod_name=""')):
+            with self.subTest(blob=blob):
+                spec = copy.deepcopy(self.spec)
+                if blob is None:
+                    del spec['payloads']['manifest.txt']
+                else:
+                    manifest.write_bytes(blob)
+                    spec['payloads']['manifest.txt']['sha256'] = distribution.digest(blob)
+                self.write('mods/sample-mod/DISTRIBUTION.json', distribution.json_bytes(spec))
+                self.rejected(self.package)
+        # A release written before the rule, without one, still verifies and re-packages.
+        del self.spec['payloads']['manifest.txt']
+        self.save_spec()
+        directory = distribution.release_dir(self.spec, self.root)
+        for name, blob in distribution.expected_files(self.spec, self.root).items():
+            self.write(str((directory / name).relative_to(self.root)), blob)
+        self.package()
+        distribution.check(self.root)
+
     def test_public_folder_name_with_spaces_is_preserved_in_zip(self):
         self.spec['package_name'] = 'Please do Better PC'
         self.save_spec()
         archive = self.package()
         with zipfile.ZipFile(archive) as zipped:
             self.assertEqual(zipped.namelist(), [
-                'Please do Better PC/romfs/nativeNX/plugins/test.nro', 'README.md'])
+                'Please do Better PC/manifest.txt', 'Please do Better PC/romfs/nativeNX/plugins/test.nro', 'README.md'])
         distribution.check(self.root)
 
     def test_public_folder_names_cannot_escape_or_loosen_version_rules(self):
@@ -238,7 +264,8 @@ class DistributionTests(unittest.TestCase):
 
     def test_legacy_zip_refresh_adds_readme_and_preserves_backup(self):
         archive = self.package()
-        runtime = {'romfs/nativeNX/plugins/test.nro': b'validated-runtime\x00\x01'}
+        runtime = {'romfs/nativeNX/plugins/test.nro': b'validated-runtime\x00\x01',
+                   'manifest.txt': (self.root / 'build/sample-mod/manifest.txt').read_bytes()}
         archive.write_bytes(distribution.make_zip(runtime, self.mod, {}))
         old = distribution.inventory(archive.parent)
         self.rejected(lambda: distribution.check(self.root))
@@ -247,7 +274,7 @@ class DistributionTests(unittest.TestCase):
         receipt = next((self.root / 'backups/sample-mod/distribution-support').glob('*/backup-manifest.json'))
         self.assertEqual(distribution.inventory(receipt.parent / 'r1'), old)
         with zipfile.ZipFile(archive) as zipped:
-            self.assertEqual(zipped.namelist(), ['README.md', self.mod + '/romfs/nativeNX/plugins/test.nro'])
+            self.assertEqual(zipped.namelist(), ['README.md', self.mod + '/manifest.txt', self.mod + '/romfs/nativeNX/plugins/test.nro'])
         distribution.check(self.root)
 
     def test_support_metadata_refresh_preserves_zip(self):
@@ -280,7 +307,8 @@ class DistributionTests(unittest.TestCase):
 
     def test_older_delivery_adds_adjacent_html_without_changing_zip(self):
         archive = self.package()
-        runtime = {'romfs/nativeNX/plugins/test.nro': b'validated-runtime\x00\x01'}
+        runtime = {'romfs/nativeNX/plugins/test.nro': b'validated-runtime\x00\x01',
+                   'manifest.txt': (self.root / 'build/sample-mod/manifest.txt').read_bytes()}
         archive.write_bytes(distribution.make_zip(runtime, self.mod,
                                                 {'README.md': (archive.parent / 'README.md').read_bytes()}))
         (archive.parent / 'NOTICES.html').unlink()
