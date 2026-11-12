@@ -152,7 +152,8 @@ A release lives at `build/NAME/releases/VERSION/`, with versioned ZIP, named
 runtime folder, README.md, README.html, GAMEBANANA_README.html, NOTICES.txt,
 NOTICES.html, release manifest and SHA256SUMS. The ZIP contains only README.md
 beside the named runtime folder. The README is identical inside/outside the ZIP;
-runtime folders contain no guides/notices/manifests. Keep notices and HTML outside
+runtime folders contain no guides/notices/release manifests; a mod may
+ship `manifest.txt` (`mod_name`, `version`, `author(s)`) beside `romfs/` for mod managers. Keep notices and HTML outside
 ZIPs. Support refreshes back up the prior release and preserve runtime bytes.
 Archive superseded releases outside active releases.
 A renamed mod sets `archive_stem` in `DISTRIBUTION.json`, and its archive starts with that stem. Its

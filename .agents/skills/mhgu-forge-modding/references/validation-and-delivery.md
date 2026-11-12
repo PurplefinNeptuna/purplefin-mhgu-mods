@@ -40,7 +40,7 @@ python3 scripts/mod_distribution.py check
 
 The full `check` is required before readiness or commit. `--source-only` is not a readiness check. Use mod-local packaging when building an independent export. Follow the current command's help for support refresh options.
 
-A release under `build/NAME/releases/VERSION/` has versioned ZIP, named runtime folder, README.md/HTML/GameBanana HTML, notices text/HTML, manifest, and SHA256SUMS. The ZIP contains README.md beside the named runtime folder. That README matches its adjacent copy. Runtime folders contain payloads only, with `romfs/nativeNX/...`, `exefs/`, or `cheats/<build-id>.txt` directly inside. HTML, legal notices, receipts, and checksums stay outside the ZIP.
+A release under `build/NAME/releases/VERSION/` has versioned ZIP, named runtime folder, README.md/HTML/GameBanana HTML, notices text/HTML, manifest, and SHA256SUMS. The ZIP contains README.md beside the named runtime folder. That README matches its adjacent copy. Runtime folders contain payloads only, with `romfs/nativeNX/...`, `exefs/`, or `cheats/<build-id>.txt` directly inside, plus an optional mod-manager `manifest.txt` (`mod_name`, `version`, `author(s)`). HTML, legal notices, receipts, and checksums stay outside the ZIP.
 
 ## Player guides and legal records
 

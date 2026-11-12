@@ -135,8 +135,9 @@ def spec_for(mod, root=ROOT):
     require(isinstance(payloads, dict) and payloads, f'No declared payloads: {mod}')
     for path, record in payloads.items():
         parts = relative(path).parts
-        require(parts[0] in ('romfs', 'exefs', 'cheats') and len(parts) > 1,
-                f'Runtime files must start at romfs/, exefs/ or cheats/: {path}')
+        # manifest.txt beside romfs/ is the mod managers' name/version/author record.
+        require((parts[0] in ('romfs', 'exefs', 'cheats') and len(parts) > 1) or parts == ('manifest.txt',),
+                f'Runtime files must start at romfs/, exefs/ or cheats/, or be manifest.txt: {path}')
         require(relative(path).name.lower() not in
                 ('readme.md', 'readme.html', 'gamebanana_readme.html', 'notices.txt', 'notices.html',
                  'release-manifest.json', 'sha256sums'),
