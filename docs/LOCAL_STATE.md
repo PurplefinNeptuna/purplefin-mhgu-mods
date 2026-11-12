@@ -46,7 +46,7 @@ The rollback for a current build that has no run of its own.
 | Please do Better | r29 | `build/please-do-better/candidates/r29/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Village Quests in Hub | r6 | `build/village-quests-in-hub/candidates/r6/` |
-| WishFinder | r58 test build (r56 accepted) | `build/wishfinder/candidates/r58/`, `r56/` |
+| WishFinder | r59 test build (r56 accepted) | `build/wishfinder/candidates/r59/`, `r56/` |
 | WishFinder bridge for KatSmithy | r17 | `build/wishfinder-katsmithy-bridge/candidates/r17/` |
 | WishFinder bridge for My Weapon Tree | r7 | `build/wishfinder-mwt-bridge/candidates/r7/` |
 | World Sharpness Gauge | r70 (r68 on Eden and Ryubing) | `build/world-sharpness-gauge/candidates/r70/`, `r68/` |
