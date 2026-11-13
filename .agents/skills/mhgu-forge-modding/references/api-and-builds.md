@@ -85,6 +85,7 @@ A plugin can export plain C functions for another plugin (WishFinder: `wishfinde
 - A plugin that exports only Forge's callbacks (My Weapon Tree) cannot be looked up by symbol. Walk `svcQueryMemory` for an R-X mapping starting with an NRO header (`NRO0` at +0x10) whose build ID at +0x40 matches, pin that exact build, and check the whole range is mapped readable before every read of its memory. Then read its data by fixed offsets (the bridge's DEVELOPMENT.md has a layout table); a host test that loads the real NRO at base 0 checks the offsets and relocated tables.
 - Keep the logic in a `core` crate that both the plugin and the host test build (`mods/wishfinder-mwt-bridge/core/src/lib.rs`).
 - Look a partner up by name, never by folder prefix or position.
+- A library that collects registrations (Purple-lib, `mods/purple-lib/API.md`): Forge calls each plugin's `forge_onLoad` and `forge_onInit` in turn and starts `forge_onUpdate` only afterwards (`tools/forge-local/source/forge/plugin.cpp`), so clients register in their `forge_onInit`, the exports must work before the library's own init, and the library closes registration at its first update.
 
 ## Standalone workflow
 
