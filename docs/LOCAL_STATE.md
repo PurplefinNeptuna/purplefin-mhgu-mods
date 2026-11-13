@@ -19,8 +19,8 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Please do Better | r33 | DEVELOPMENT | Loaded and registered on Eden and MHGU Recomp, not itemized (r31 accepted) |
-| Purple-lib | r15 | DEVELOPMENT | Works on Eden and MHGU Recomp (page help screens) |
-| Purple-lib Tester | r9 | DEVELOPMENT | Works on Eden and MHGU Recomp |
+| Purple-lib | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
+| Purple-lib Tester | r9 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
 | WishFinder (was Wishlist) | r68 | READY_TO_DISTRIBUTE, release | Accepted on MHGU Recomp in French and English. Needs Key Quest Markers r20+ |
@@ -46,7 +46,8 @@ The rollback for a current build that has no run of its own.
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
 | Multiplayer Roaming | r15 | `build/online-roaming/candidates/r15/` |
 | Please do Better | r31 (r30 on Ryubing and MHGU Recomp) | `build/please-do-better/candidates/r31/`, `r30/` |
-| Purple-lib | r6 (r4 on Ryubing and MHGU Recomp) | `build/purple-lib/candidates/r6/`, `r4/` |
+| Purple-lib | r15 | `build/purple-lib/candidates/r15/` |
+| Purple-lib Tester | r9 | `build/purple-lib-tester/candidates/r9/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Village Quests in Hub | r6 | `build/village-quests-in-hub/candidates/r6/` |
 | WishFinder | r68 (accepted) | `build/wishfinder/candidates/r68/` |
