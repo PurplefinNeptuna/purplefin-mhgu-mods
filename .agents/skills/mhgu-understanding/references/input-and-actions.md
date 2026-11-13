@@ -32,6 +32,10 @@ Player+0x13c4 is weapon pointer; weapon ID+0x4d4 uses 0 GS, 1 SnS, 2 Hammer, 3 L
 
 The combat gate reproduces `0x3a5ed0(selector5, thirdArg1)` using byte at `*main[0x188ad90]+0x50`. States 4, 5, 6, 7, 9 block combat; 8 does not. Imported mState+0x4c is another field. Treat entry/exit transitions as state changes, including hold quarantine until release.
 
+## Target camera tap
+
+From Lock-on Target (`mods/lock-on-target/DEVELOPMENT.md` Findings). The local hunter is also reachable as `sFestaUnit` (cell `0x2126f48`) +0x58. Tap logic `0x27e970(hunter)` has one caller, `0x2a7b74` in the hunter update `0x2a79cc`. It reads held/pressed +0x13f4/+0x13f8 (masked with `0x65f8ec()`), hold time f32 +0x1450, and a tap window f32 +0x145c in frames: a press with the window closed sets 12.0, and `0x53aa84(hunter, &timer, 1.0)` counts it down by frame time (`timer -= hunter[+0x1c] * step`, 1/60 s units). It sets bits 0, 24 (unless session +0x6f == 1) and 6 of the request bitset +0x1434 (`0x285ea0` set, `0x285ec4` clear). The Eden cheat that writes the window works only because Eden's cheat engine writes 12 times a second, so the window keeps running out; written every frame, it never fires.
+
 ## Native processing order
 
 `0x2a79cc` copies input, preprocesses modifiers, applies Arts, checks mode/camera gates, then classifies shared/weapon commands. Player logical held/previous/pressed halfwords are +0x13f4/+0x13f6/+0x13f8; full/high-bit fields +0x13fc/+0x1400/+0x1404. Prior presses +0x13fa/+0x1408 are already logical and must not be remapped twice.

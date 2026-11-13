@@ -81,10 +81,12 @@ build it and extract into the scratchpad.
 | --- | --- |
 | How do I go from a question to a verified offset? | [Research playbook](references/research-playbook.md) |
 | Where is the code/data? Ghidra, DTI, IDs and resource search details | [Discovery and evidence](references/discovery-and-evidence.md) |
-| How do GUI resources, properties, trees, maps and caches work? | [Native GUI](references/native-gui.md) |
+| How do GUI resources, properties, trees, maps and caches work? Which screens and rows are already mapped (counter, smithy, HUD, start menu, item pouch, rewards, popup, button guide)? | [Native GUI](references/native-gui.md) |
 | Where are sharpness points, tiers, tables and the sharpness HUD row? | [Sharpness](references/sharpness.md) |
-| How do key quests, urgents, completion and progression relate? | [Quests and progression](references/quests-and-progression.md) |
-| Which input representation/player/state is this? Button glyph IDs and the button config bytes? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
+| How do key quests, urgents, completion and progression relate? How does the game list quests, fill the counter's rank and star pages, find downloaded event quests, record a clear online? | [Quests and progression](references/quests-and-progression.md) |
+| What rewards, carves, captures, breaks, gathering and fishing does a quest give, and from which files? Definitive Edition quests? | [Quest files](references/quest-files.md) |
+| Online sessions, member state, who spawns for whom, hunter data, travel codes and exits? | [Multiplayer and areas](references/multiplayer-and-areas.md) |
+| Which input representation/player/state is this? Button glyph IDs and the button config bytes? Target camera tap? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
 | Where do damage, HP loss, ownership, hitzones and camera matrices come from? | [Damage and cameras](references/damage-and-cameras.md) |
 | How do Luck, reward pages, quantities and appraisal work? | [Rewards and Luck](references/rewards-and-luck.md) |
 | Where are equipment box slots, weapon crafting rows and armor series names? | [Equipment and crafting](references/equipment-and-crafting.md) |

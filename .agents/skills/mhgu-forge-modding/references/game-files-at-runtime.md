@@ -62,8 +62,8 @@ under 1 MiB in one update.
 
 ## Texts in the game's language
 
-- The game's language is byte `+0xa5` of the session object behind cell
-  `0x1838bb4`, as `cQuestData::getMessage` `0x37a2e4` reads it (WishFinder
+- The game's language is byte `+0xa5` of the session (cell `0x188ca48`,
+  reached through GOT word `0x1838bb4`), as `cQuestData::getMessage` `0x37a2e4` reads it (WishFinder
   `native.rs` `language`). Values and folder codes are in the understanding
   resources reference.
 - Read GMD strings from `resident_<code>.arc` (or the language's own archive)

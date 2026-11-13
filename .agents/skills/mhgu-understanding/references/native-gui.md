@@ -44,6 +44,26 @@ Reproduce identity checks using `mods/key-quest-markers/scripts/gui_layout.py:Gu
 
 Keyframes (hud0, 2026-10-19). The object×sequence table at header +176 has 16-byte records, object-major, one record per object per sequence: flag byte +0, init-param count +2, keyed-param count +3, frame length u16 +6, init-param index +8, keyed-param index +12. Keyed params at header +184 are 24 bytes: value type +4, key count +5, owning object ID +8, name +12, key index +16, value offset +20. The key table is at header **+264** (+244 is `messageOffset`; both read 48,000 in hud0 only because it has no messages). Each key is 8 bytes with its frame in the first u16. A check over all 1972 dumped `.gui` files found the keyed-param word at +8 always equal to the owning object's ID, so it is not an interpolation mode.
 
+## Known screens and trees
+
+Every GUI tree a mod here has mapped. Sizes are each row's own; never copy one row's to another (the Forge skill's native GUI extensions reference sizes any row from its live numbers).
+
+| Screen / row | Resource and animation | Tree | Reached through | Detail |
+| --- | --- | --- | --- | --- |
+| Quest counter, quest row | `counter.gui` (`eng\GUI\05_meeting_p\count\counter`) animation 20 | 12 objects, 15 sequences, 9 drawables, no cache prefix. Null index 1/ID 14, icon texture 2/ID 12, request texture 3/ID 20, title `cGUIObjMessage` 4/ID 6. Atlas 21 is `HD_cmn_icon_GSM_NOMIP` | Row builder `0x616cb0` (7 args), from parent `0x54d030`, which rebuilds every row each frame the list shows. Row instances 16..23 | `mods/key-quest-markers/DEVELOPMENT.md` |
+| Quest counter, rank and star rows | `counter.gui` animation 1 (`Anm_list_v00..07`) | 18 objects, 9 sequences, 14 drawables; Null ID 14 at the quest row's place, texture ID 7 (index 5) under it | Counter list draw `0x782af8` runs the rank, star or quest row builder for the page; instances 8..14 and 24 | [Quests and progression](quests-and-progression.md#counter-pages-and-their-rows), `work/wishfinder/COUNTER_PAGES.md` |
+| Smithy list rows | `shop_menu.gui` animation 25 | Root plus `Tex_icon` (index 1, ID 2, 34x34 at -7,-2), `Mes_name`, `Mes_num`, `Mes_runk`, all directly under the root; 4 sequences, 4 drawables, no prefix. Atlas `HD_lobby00` is ID 9 | Smithy UI object slot 2 (`*(this+0x34)+8`), `cUIOFacilityShopMenu`, update `0x58b908` draws row i on instance `0x16254dc[i]` (7+i) | `mods/wishfinder/DEVELOPMENT.md` Smithy |
+| Quest HUD sharpness row | `hud0.gui` animation ID 4 (`sharp`), table row 7 | Resource: 4 objects, 15 sequences, 3 drawables. Runtime halfwords at row+8 read 3 and 16, and the draw block has an animation prefix. Bar, glow and edge are siblings under the controller | Draw walker `0xa494a0`; capture the instance whose +0xdc is the controller | [Sharpness](sharpness.md) |
+| Start menu | `uUIStartMenu` (lobby `uUILobbyStartMenu` vtable `0x177e424`, quest `uUIQuestStartMenu` `0x177aeb8`) | Top index +0x4c (5 Hunter's Notes), submenu row +0x50, page step +0x58, rows +0xb0 (8-byte {u8 enabled, u32 text}, count +0xb4 = 7), help lines +0xc8 (12 bytes, count +0xcc) | Slots 0x9c fill, 0xb0 "has a submenu", 0x8c help, 0x78 close, 0x68 run page | `mods/wishfinder/DEVELOPMENT.md` Hunter's Notes |
+| Item Pouch screen | `cUIOItemPouch`, start menu slot 4 (vtable `0x1770b50`), controller at menu +0x220 | Eight rows at +0x62 + row*6 {u16 item, s16 count, u8 usable, u8}; title `char*` +0xb8; description window +0x9c (shared with other screens); side menu +0xa4 | Open `0x1869ec`, close `0x188bec`; draw slot 0x4c `0x5bb5ac` | As above |
+| Reward (result) screen | Result lists, group records stride 0x28 | Root ID at `list+group*0x28+0x160`, node-ID arrays at +0x16c; frame colours are sequence data (`0xf4242` plus a variant) | Holder lookup `0x546f84`; refresh `0x623c68` only assigns icons and visibility | `mods/please-do-better/DEVELOPMENT.md` Native slot and frame bindings |
+| Centre popup | `cUIOInfoWindow`, UI object 1 | Lines grouped up to six | `0x65ddc4(0, 99, text, 0)`; group `0x65dce4`/`0x65dd24` | `mods/wishfinder/DEVELOPMENT.md` Arrival popups |
+| Button guide | UI object 5 | Ten per-button slots +0x248 (UI instances, not text), four extras +0x228 {s32 icon, char* label} | Presets `0x65e794(preset, flags)`, extra `0x65e8cc(icon, label)` | WishFinder Button guide; icons in [Input and actions](input-and-actions.md#button-names-and-icons) |
+
+UI objects 1 and 5 belong to the UI manager in cell `0x1899458`, reached as `0x65cb3c(0x55d2b4(*cell, 0), n)` (wrappers load the cell through GOT word `0x1838bd8`). `0x65cb3c(ui, n)` also gets a screen's own UI object n (the counter's quest list is `0x65cb3c(counter, 2)`, holder +0x24).
+
+Part helpers used on list screens: text `0x56e808(screen, instance, part, char*)`, visibility `0x56e530(screen, instance, part, on)`, item icon `0x56e62c`, equipment icon `0x56ea38(screen, instance, 1, record, 0, 1)`, rarity `0x56e704`, colour `0x56e6fc(screen, instance, part, palette index)`, node position `0x545a04(screen+0x24, node)`. A list screen's fill often sets a name only when the row's item changed, so a mod's text goes through the setter on every refill.
+
 ## Classes and identities
 
 | Object | Verified identity / role |
