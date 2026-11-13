@@ -19,7 +19,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Please do Better | r29 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
-| Purple-lib | r2 | DEVELOPMENT | Not run (r1 inactive on Eden) |
+| Purple-lib | r2 | DEVELOPMENT | Works on Eden, Ryubing and MHGU Recomp (reported, not accepted) |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
 | WishFinder (was Wishlist) | r68 | READY_TO_DISTRIBUTE, release | Accepted on MHGU Recomp in French and English. Needs Key Quest Markers r20+ |
