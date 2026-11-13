@@ -46,6 +46,8 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   Quote log values verbatim; a number that is not in the log is invented. Quote
   the tester's requirement verbatim too, and build to those words rather than a
   paraphrase. An empty search counts only after the tool finds a known positive.
+- **Every language.** A change to a mod's user-facing text goes into every language
+  file it ships, in the same change.
 - **Research first.** Search saved Ghidra/DTI before gameplay code:
   `./scripts/tool.sh research find QUERY --kind functions` (or symbols/types/dti);
   `research xref`, `word`, `dis` and `vtable` read the checked main directly.

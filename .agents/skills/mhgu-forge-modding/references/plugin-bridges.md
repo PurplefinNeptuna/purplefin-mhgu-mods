@@ -82,6 +82,10 @@ records sit in the data segment and point into ro.
 - A value the API hands over and something else later compares (a WishFinder key) needs its two ends
   read: which screens build it and what level base each uses.
 
+## Share one list between plugins
+
+When several plugins and the player add to one list, record who added each entry and remove only what nobody else holds. WishFinder keeps chain ends (`target`), the player's own entries (`own`) and plugin adds not yet classed (`fresh`, settled after an update with no requests); removing a chain end takes only steps that are not targets, not own and needed by no other target (`mods/wishfinder/core/src/store.rs`). A list without these marks loses a step the player listed alone when a chain that shares it goes. Test with the real data and the real producer, not a fake: two chains that share their first steps, removed in either order, with a shared step listed alone first, across a save and reload (WishFinder `weapon_path.rs` `two_chains_sharing_their_first_steps`).
+
 ## A plugin that guards its hook sites
 
 Some plugins check the first words of each site before they hook it and refuse when the

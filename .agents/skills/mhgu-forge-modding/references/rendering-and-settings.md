@@ -20,6 +20,12 @@ Damage Numbers keeps valid damage when impact/camera/projection is unavailable b
 
 Memory: a plugin's `malloc`/`free` resolve to main's exports, so Forge, every plugin, ImGui and the game share one heap. Forge's NVN backend keeps each ImGui texture twice, its RGBA32 pixels and a GPU pool from `aligned_alloc` (`source/forge/graphics/allocator.cpp`), so a texture costs 8 bytes a texel of that heap, and ImGui bakes every font size used into Forge's shared glyph atlas for the session. The backend frees a texture in `WantDestroy` once `UnusedFrames` > 0 (`imgui_impl_nvn.cpp`), and ImGui counts `UnusedFrames` only for its own atlases: a plugin freeing a user texture sets both itself, after the frames that drew it, then unregisters and destroys it once the status reads `Destroyed` (WishFinder `welcome::release`).
 
+## Fonts and text fit
+
+Each runtime has its own default font. MHGURecomp gives the overlay Forge's Roboto Medium only when some mod layer ships `nativeNX/forge/fonts/Roboto-Medium.ttf`; otherwise it uses `AddFontDefaultVector`, which is wider (`runtime/forge.c` `overlay_start`, `runtime/overlay.cpp` in `tools/MHGURecomp-source/`). So text laid out to Roboto's widths can overflow there. Measure each string with `CalcTextSize` at the size you draw it, wrap or step down through fixed sizes until it fits (WishFinder `welcome::popup`: 28, 24, else 16), and check the longest language. WishFinder's welcome harness (`work/wishfinder/welcome-harness/run.py`, `FONT=default`) renders a page with that fallback font for comparison.
+
+Pictures of native screens show only what the explanation needs. The tester asked WishFinder to drop every imitated page number from its pictures ("the < 1 / 4 > imitation is buggy on other recomp, please remove that because that isnt needed"); the window's own page count stays.
+
 ## Session settings and persistence
 
 The workspace default is one primary plugin-specific INI, explicit Save, and defaults for missing/invalid primary input. Never create/read/recover/delete `_backup` configs. Reset and editing normally affect session/draft state until the mod's Save/Apply policy completes. Preserve session settings on failure and report save status without claiming old disk bytes are intact after a failed write.

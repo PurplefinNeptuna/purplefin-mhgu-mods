@@ -23,6 +23,8 @@ Forge loads every NRO first, then runs each `forge_onLoad`/`forge_onInit` in the
 
 At `forge_onInit` every plugin is already loaded, so look another plugin up then. A hook installed in the first `forge_onUpdate` comes after every plugin's `forge_onInit` hooks, so it is the outermost on its site whatever the order.
 
+`forge_onUpdate`'s argument is `sMain::mDeltaTime` (main+0x68, `forge_plugin_onUpdateHook` in `tools/forge-local/source/forge/plugin.cpp`), a frame count, not seconds: 2.0 a frame at 30 fps. Scale timers by it as frames.
+
 ## Chaining onto another plugin's hook
 
 An entry hook that only runs code before or after the original needs no guard against another plugin's Forge hook on the same entry. It must not refuse the site, list it as occupied, or disable itself when a later plugin covers its branch. Forge copies the foreign `ldr pc,[pc,#-4]` and its literal into the new trampoline as a pair, and that pair is position-independent, so the call runs newest hook, older hook, then the game's function from target+8.
