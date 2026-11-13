@@ -62,6 +62,14 @@ navigation every frame (`imgui_impl_nvn.cpp`, `UpdateGamepadNav`). Its
 its buttons with Forge's input, not ImGui navigation: Purple-lib Tester's action
 window does, as WishFinder's welcome window does.
 
+On original Forge (Switch, Eden, Ryujinx) ImGui's gamepad navigation is fed every
+frame, menu open or not, and Y is ImGui's `NavGamepadMenu` key
+(`imgui_impl_nvn.cpp` maps `ForgeButton_Y` to `ImGuiKey_GamepadFaceLeft`;
+`imgui_internal.h`: "Toggle menu layer. Hold to enable Windowing"): holding Y
+opens ImGui's window switcher and L/R move the focus between windows
+(`imgui.cpp` `NavUpdateWindowing`). Keep Y out of a plugin window's controls; the
+input hold does not stop it, since ImGui reads Forge's input.
+
 ## Choosing a button
 
 - **Scope the hotkey to a screen.** The game uses every button somewhere. Ship
