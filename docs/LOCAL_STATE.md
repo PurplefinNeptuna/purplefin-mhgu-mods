@@ -18,7 +18,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
-| Please do Better | r33 | DEVELOPMENT | Loaded and registered on Eden and MHGU Recomp, not itemized (r31 accepted) |
+| Please do Better | r34 | DEVELOPMENT | Not run (help moved to its Mod Options page; r31 accepted) |
 | Purple-lib | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Purple-lib Tester | r9 | DEVELOPMENT, not for distribution | Works on Eden and MHGU Recomp |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
