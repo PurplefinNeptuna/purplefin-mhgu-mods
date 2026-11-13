@@ -78,7 +78,7 @@ The accepted shape (World Sharpness Gauge) is the controller over a mask over th
 
 A node's rect does not limit its drawing (a zero-width +`0xe0` and +`0xf0` landed and the copy painted anyway). The render state's scissor does. A mask's enter (main+`0xa4ba94`, slot 0x38) sets it and its exit (main+`0xa4bcdc`, slot 0x40) restores it, for everything walked between them. It clips at 1:1 and never scales what it covers.
 
-A scissor stays in the game's pixels when something moves the HUD's quads after the game draws them. gu-native (an Android and Windows port with its own Forge) rewrites each HUD quad's matrix in its renderer and moves a status-area scissor not at all (source: its `exec.c` `scissor_rect`, commit `c7fc45a`). To cut a sprite so the cut moves with it, cut its geometry at its draw: the texture draw main+`0xa4fc9c` uploads `node+0x10` (main+`0xa4fd10`/`0xa4fd38`) and rebuilds the UVs from the `[u1, v1, u2, v2]` window later in the same call (main+`0xa4fe44`), so scale m[0], move m[12] and set the window. The quad's local x span is the float authored width at +`0xb4` with anchor +`0xa0 & 3` (0: `0..w`, 1: centred, 2: `-w..0`; main+`0xa4ff1c..0xa4ffb4`), not the layout width at +`0xd8`. Then set the window through the setter before the original, then put m[0] and m[12] back (bytes; World Sharpness Gauge r69 `crop_span`, runtime unverified). A mask with +`0xa4` bit 0 clear applies and restores no scissor (main+`0xa4bbe0`, main+`0xa4bce4`).
+A scissor stays in the game's pixels when something moves the HUD's quads after the game draws them, so a cut that must follow a sprite is not a scissor: see [HUD movers](#hud-movers-gu-native-and-uiscale). A mask with +`0xa4` bit 0 clear applies and restores no scissor (main+`0xa4bbe0`, main+`0xa4bce4`); World Sharpness Gauge keeps its masks at +`0xa4` = 2 only to place things.
 
 Build a `cGUIObjScissorMask` (0xd0 bytes) with factory main+`0xa4b6cc`: no arguments, object in r0, allocated through its own DTI. Give it a marker at +`0x50` and a sibling's +`0x74`/+`0x78`. Then, in a hook on the enter handler filtered by that marker, write on every enter:
 
@@ -112,6 +112,54 @@ Unread: what writes `sGUI`+`0x1c`, so whether `0xb38004` does anything at runtim
 Draw slot 0x3c (main+`0xa4fc9c`) calls `0xa4feb4`, which copies the UVs from +`0x10c..+0x118` and the corner colours from +`0xa4..+0xb0` into the vertex record only while `global+0x98 & (+0xc0 >> 24) & 7` is nonzero, then clears those bits. Only slot 0x50 (main+`0xa4fc68`) sets them.
 
 So use the setter. `mTextureRect` `0xa4fb58(node, *f32[4])` returns at once when the floats match, otherwise stores them, calls slot 0x28 when `+0x108 & 0x30`, and tail-calls slot 0x50. Calling it every frame is cheap. A raw write to +`0x10c` reads back perfectly and never repaints: the copy kept the band the first build left while a read-back showed the write landing on all 73 fill lines. Inference: raw colour writes after the first build are inert the same way, so use the `VertexColor*` setters. Position and authored-size writes after the build were also inert (`pos=90.0 0.0 size=0.7 24.0` with `rect=110 38 238 166`, mechanism unread), so move geometry with a mask.
+
+## HUD movers (gu-native and UIScale)
+
+Two things move HUD quads after the game has drawn them. Any placement a mod
+computes from node fields, rects or the node's own matrix is then the
+unmoved place.
+
+| Mover | What it does | Source |
+| --- | --- | --- |
+| gu-native's renderer | Rewrites every GUI quad's uploaded matrix, anchored by that quad's own layer and position; moves the game's scissor only vertically | gu-native `runtime/nvn/vulkan/exec.c`, the `pos_z = m[14]` read and `scissor_rect` (local `9a1aef7`; first read at `c7fc45a`) |
+| UIScale (KatLib) | Edits a sprite in the uploaded matrix block at `*(ctx+4)+0x18bc` after publishers main+`0xa4eb9c`/`0xa3e3b0`. The node's `+0x10` stays unscaled. Its own `+0xe0` rewrite refreshes only on a rebuild | World Sharpness Gauge *Following a rescaled bar* |
+
+gu-native's rule, per quad: the anchor (left, right or centre; top, bottom or
+centre) comes from layer `m[14]` and position `m[12]`/`m[13]` on the 1280x720
+canvas, with special cases (layer 103 status HUD at y < 500 goes left/top, the
+item bar right/bottom, layer 105 the minimap). The quad is scaled by
+`s = (16/9)/aspect` and `sy = aspect/(16/9)`, so at exactly 16:9 nothing moves
+except what the touch layout moves (item bar, Arts, target). The scissor moves
+only vertically at 16:10 (`ui_scissor_v`) or is relaxed for the item bar, never
+with the status pieces.
+
+Rules:
+
+1. **Cut a sprite in its own geometry, at its draw.** The texture draw
+   main+`0xa4fc9c` uploads `node+0x10` (main+`0xa4fd10`/`0xa4fd38`) and rebuilds
+   the UVs from the `[u1, v1, u2, v2]` window later in the same call
+   (main+`0xa4fe44`). In a hook on it: scale m[0], move m[12], set the window
+   through the setter, call the original, then put m[0] and m[12] back. The
+   quad's local x span is the float authored width at +`0xb4` with anchor
+   +`0xa0 & 3` (0: `0..w`, 1: centred, 2: `-w..0`; main+`0xa4ff1c..0xa4ffb4`),
+   not the layout width at +`0xd8`. A mover then moves the cut with the sprite
+   (World Sharpness Gauge `crop_span`; accepted on MHGURecomp, not run on
+   gu-native).
+2. **Read where a sprite really went after the original draw**, from the
+   uploaded block. Words 0, 1, 4, 5, 12 and 13 equal to the node's mean a plain
+   draw; an unchanged block address means nothing was uploaded. This sees
+   UIScale; it cannot see gu-native, which moves the quad later, on the host.
+3. **A node you add moves by its own position, not its parent's,** on
+   gu-native (inference from the per-quad rule above). Keep added nodes on the
+   same layer and inside the same position band as the part they belong to, or
+   they split from it on a non-16:9 screen.
+4. **An ImGui overlay never moves with the HUD.** Do not place ImGui drawing
+   from HUD node positions if it must line up on gu-native. World-space
+   overlays are a separate problem: [Runtimes](runtimes.md#imgui-on-each-host).
+5. **Test what you can reach.** Nobody here runs gu-native. UIScale on
+   MHGURecomp is the reachable mover: run the quest with a non-default scale, and
+   ask the tester to drag the element in UIScale's editor (a live drag is still
+   unconfirmed for World Sharpness Gauge). Report gu-native as source-only.
 
 ## Survive a row's end
 

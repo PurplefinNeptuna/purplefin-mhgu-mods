@@ -7,7 +7,11 @@ description: Find and interpret Monster Hunter Generations Ultimate 1.4.0 Switch
 
 Research MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
 `FB08F1D20FD1204FE7070672777F869B`. Offsets belong to this exact executable,
-not other game versions. Knowledge dated 2026-11-01.
+not other game versions. Knowledge dated 2026-11-13.
+
+This skill is **what the game does**: code, fields, formats, IDs. How a plugin
+uses those facts (hooks, GUI insertion, input handling, reading files, host
+differences) is in the companion `mhgu-forge-modding` skill.
 
 ## Start here
 
@@ -80,11 +84,11 @@ build it and extract into the scratchpad.
 | How do GUI resources, properties, trees, maps and caches work? | [Native GUI](references/native-gui.md) |
 | Where are sharpness points, tiers, tables and the sharpness HUD row? | [Sharpness](references/sharpness.md) |
 | How do key quests, urgents, completion and progression relate? | [Quests and progression](references/quests-and-progression.md) |
-| Which input representation/player/state is this? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
+| Which input representation/player/state is this? Button glyph IDs and the button config bytes? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
 | Where do damage, HP loss, ownership, hitzones and camera matrices come from? | [Damage and cameras](references/damage-and-cameras.md) |
 | How do Luck, reward pages, quantities and appraisal work? | [Rewards and Luck](references/rewards-and-luck.md) |
 | Where are equipment box slots, weapon crafting rows and armor series names? | [Equipment and crafting](references/equipment-and-crafting.md) |
-| Which tools/formats edit a resource, which wiki `.bt` templates match real files? | [Resources and tooling](references/resources-and-tooling.md) |
+| Which tools/formats edit a resource, which wiki `.bt` templates match real files? ARC, GMD and texture layouts, language codes? | [Resources and tooling](references/resources-and-tooling.md) |
 | Original local paths and topic-to-source coverage | [Workspace and sources](references/workspace-and-sources.md) |
 
 For native GUI plans as well as implementation, read [Native GUI](references/native-gui.md).

@@ -1,13 +1,18 @@
 ---
 name: mhgu-forge-modding
-description: Develop, change, debug, build, package and release native ARM32 Forge plugins (.nro) for Monster Hunter Generations Ultimate 1.4.0 on Switch, Eden, Ryujinx and MHGURecomp (PC). Step-by-step playbooks for new plugins, behaviour changes, user bug reports, adding hooks, consolidation after acceptance, promotion and doc refreshes, plus reference material on Forge/forge-rs APIs, hooks, native GUI insertion, ImGui rendering, settings and release evidence.
+description: Develop, change, debug, build, package and release native ARM32 Forge plugins (.nro) for Monster Hunter Generations Ultimate 1.4.0 on Switch, Eden, Ryujinx and MHGURecomp (PC). Step-by-step playbooks for new plugins, behaviour changes, user bug reports, adding hooks, consolidation after acceptance, promotion and doc refreshes, plus reference material on Forge/forge-rs APIs, hooks, native GUI insertion, ImGui rendering, input and keybinds, reading game files and textures, differences between Switch, emulators, MHGURecomp and gu-native, settings and release evidence.
 ---
 
 # MHGU Forge Modding
 
 Target: MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
 `FB08F1D20FD1204FE7070672777F869B`. Loader: stock Forge 1.5.1 (Fexty's fork),
-forge-rs 1.5.0. Knowledge dated 2026-11-01.
+forge-rs 1.5.0. Knowledge dated 2026-11-13.
+
+This skill is **how a plugin does things**: builds, hooks, GUI insertion,
+rendering, input, files, hosts, delivery. What the game itself does (offsets,
+fields, formats, IDs) is in the companion `mhgu-understanding` skill. When a
+fact here needs a game detail, it links there instead of copying it.
 
 ## Start here
 
@@ -16,7 +21,8 @@ forge-rs 1.5.0. Knowledge dated 2026-11-01.
    hashes).
 2. Pick the matching procedure in [Playbooks](references/playbooks.md) and
    follow it step by step. Each step names the exact command or file.
-3. Open a topic reference below only when a step needs it.
+3. Open a topic reference below only when a step needs it. Before shipping
+   anything, run the checklist in [Runtimes](references/runtimes.md).
 4. Finish with the playbook's commit steps and report template.
 
 ## Game data
@@ -105,6 +111,15 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Sizing a row's map or cache with fixed numbers | Another plugin may have added children first. Size both from the live tree ([Native GUI extensions](references/native-gui-extensions.md#a-row-another-plugin-also-extends)). |
 | Appending a GUI child without growing the object map | The game indexes the map by the tree count and crashes. Grow map and draw cache together. |
 | Freeing or zeroing a row's draw block prefix when growing it | Objects animate through `+0x64` pointers into it. Copy the prefix and move those pointers first ([Native GUI extensions](references/native-gui-extensions.md)). |
+| Using `Input::is_button_pressed` in `forge_onUpdate` or a game hook | Forge updates input once per rendered frame, so the edge repeats or is lost. Read `is_button_down` and keep your own previous state there ([Input and keybinds](references/input-and-keybinds.md)). |
+| Expecting Forge to hide a press from the game | It never does. Blank the game's pad records after `sPad::move` while your window owns input (WishFinder's welcome window). |
+| Telling Switch players to open Forge's menu with a button | Stock Forge 1.5.1 opens it with a keyboard key only (F9). Give console players another way to change a setting. |
+| Importing MHGURecomp's extra calls (`forge_input_getMouse`, `setKeybind`, `isMenuOpen`) | Stock Forge does not export them, so the import check fails on Switch and emulators. No optional-import method is researched. |
+| Placing ImGui drawing from HUD node positions, or cutting a HUD sprite with a scissor | gu-native and UIScale move HUD quads after the game draws them. Use the sprite's own geometry at its draw ([HUD movers](references/native-gui-extensions.md#hud-movers-gu-native-and-uiscale)). |
+| Treating Forge's `io.DisplaySize` as the game's picture | It is the swapchain (Switch), the window surface (MHGURecomp) or the whole window with a letterboxed picture inside (gu-native) ([Runtimes](references/runtimes.md#imgui-on-each-host)). |
+| Writing through `ImDrawList` `VtxBuffer.Data` or other `ImVector` data | On MHGURecomp and gu-native those read 0 (guest mirrors), so the write hits the null page. Pass offsets to ImGui calls. |
+| Creating ImGui objects every frame without destroying them | MHGURecomp shares one 8192-slot mirror pool among all plugins; when it fills, every plugin's drawing stops. Count with `mods/imgui-meter`. |
+| Shipping a texture or table extracted from the game | Read it from the user's `app:/nativeNX/` at run time, sized from the file header, because other mods may replace it ([Game files at runtime](references/game-files-at-runtime.md)). |
 | Using `i32::saturating_add`/`saturating_sub` | They compile to QADD/QSUB, which Ryubing 1.3.3 cannot run, and `-dsp` does not stop them in ARM mode. Use plain or u32-capped arithmetic and gate the build ([Diagnostics](references/diagnostics.md)). |
 | Laying out ImGui text to Roboto's widths only | MHGURecomp falls back to a wider font. Measure and fall back to smaller sizes ([Rendering](references/rendering-and-settings.md#fonts-and-text-fit)). |
 | Fixing `check` failures by editing release folders by hand | Use `package NAME --refresh-support` for doc-only changes. |
@@ -155,6 +170,9 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Add game-owned GUI objects or extend a native menu | [Native GUI extensions](references/native-gui-extensions.md) |
 | Read another plugin's memory when it has no API (bridges) | [Plugin bridges](references/plugin-bridges.md) |
 | ImGui, fonts/textures, damage overlay, INIs, save mounts | [Rendering and settings](references/rendering-and-settings.md) |
+| What differs on Switch, Eden, Ryubing, MHGURecomp and gu-native (instructions, SVCs, ImGui display, input, HUD movers) | [Runtimes](references/runtimes.md) |
+| Forge input, hotkeys, owning a press, the button guide, Forge's menu key, MHGURecomp mouse/keybind calls | [Input and keybinds](references/input-and-keybinds.md) |
+| Reading RomFS files, ARC entries, text and textures from a plugin; turning them into ImGui textures | [Game files at runtime](references/game-files-at-runtime.md) |
 | Tests, exports, packaging, legal/support files, commits | [Validation and delivery](references/validation-and-delivery.md) |
 | Failed initialization, logs, historical failures, physical Switch | [Diagnostics](references/diagnostics.md) |
 | Workspace paths, evidence locations, source coverage | [Workspace and sources](references/workspace-and-sources.md) |

@@ -95,6 +95,39 @@ IFRIT wrappers handle Opus/DSP/Capcom ADPCM encoding. Match channel count, sampl
 
 An encoded tone/header check establishes encoding, not music-loop/STQR correctness. The Windows batch hub is not the Linux entrypoint. Existing wrappers use private Wine paths and explicit path translation.
 
+## Formats a plugin reads
+
+Verified by WishFinder's readers over the 1.4.0 RomFS (and Definitive Edition
+2.0.0), with host tests on real files. How a plugin opens, streams and caches
+them: `mhgu-forge-modding` [Game files at runtime](../../mhgu-forge-modding/references/game-files-at-runtime.md).
+
+| Format | Layout |
+| --- | --- |
+| ARC version 17 | 12-byte header: `ARC\0`, u16 version 17, u16 count. Then `count` 80-byte entries: 64-byte name, u32 type hash, u32 packed size, u32 flags, u32 offset. Each entry is one zlib stream; unpacked size is `flags & 0x1fffffff` (all 14,154 entries checked) |
+| GMD text | `GMD\0`; string count at +0x18, strings' byte size at +0x20; the strings are NUL-separated at the end of the file, UTF-8 |
+| `rTexture` (TEX) | `TEX\0`, 24-byte header. Byte 13 is the format: `0x07` RGBA8, `0x13` BC1, `0x17` BC3. The word at +8 holds mip count (bits 0..5), width (6..18) and height (19..31). Level 0 follows |
+| Texture layout | Tegra block-linear: GOBs of 64 bytes by 8 rows, 16 GOBs to a block, over texels (RGBA8) or 4x4 blocks (BC) |
+
+Language folders and the game's language byte (session `+0xa5`, read by
+`cQuestData::getMessage` `0x37a2e4`):
+
+| Byte | Folder code |
+| --- | --- |
+| 2 | `fre` |
+| 3 | `spa` |
+| 4 | `ger` |
+| 5 | `ita` |
+| 7 | `chT` |
+| 8 | `chS` |
+| anything else | `eng` |
+
+Texture facts for reuse: the item icon atlas `HD_cmn_icon_GSM_NOMIP` in
+`resident_<code>.arc` is RGBA8 with 48-texel cells, and some cells differ by
+language (cell 9 in German, Italian and Spanish). `HD_questCounter_BM_NOMIP` and
+`HD_lobby00_BM_NOMIP` are BC3. A mod may replace an atlas with a larger one
+(Modern Weapon Controls doubles the icon atlas), so read sizes from the header.
+Forge's Roboto has no CJK glyphs; the game's own font is `font_festa.gfd`.
+
 ## Tool limits and evidence
 
 `START_TOOLS.sh` and `scripts/tool.sh` own launcher commands. Pax browses ARC/textures, ImHex edits bytes, Revil converts supported formats, GIMP edits imagery, Blender inspects models, and Audacity edits audio. 010Editor `.bt` files are format references for ImHex, not executable ImHex templates. Private runtimes avoid changing host packages: Kuriimu2's matching .NET 3.1.32 starts its GUI, while a .NET 9 substitution crashed it; ImHex requires its private 0700 runtime path; Pax uses private LLVM 19 libraries. In another environment re-establish prerequisites rather than copying absolute paths.

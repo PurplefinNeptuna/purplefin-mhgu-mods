@@ -16,6 +16,14 @@ Where those views come from: `sFestaPad::move` `0x3ddf1c` (object vtable `0x1754
 
 sUserInfo cell `0x1897f78` supplies settings. Control byte+0x446c=2 means displayed Control Type 3, and original shoulder assignment+0x446e=0. Native R accessor `0x65f93c` returns 0x40 for assignment 0, else 0x800. Its PC-relative prologue was deliberately not hooked.
 
+How a plugin uses Forge input, hotkeys and blocking: `mhgu-forge-modding` [Input and keybinds](../../mhgu-forge-modding/references/input-and-keybinds.md).
+
+## Button names and icons
+
+The game draws a button glyph from message table 18, `buttonName` (`resident_<lang>.arc`), joined to a label through CommonMsg 13. IDs: 4 `PAD_L`, 5 `PAD_R`, 14 `PAD_START`, 15 `PAD_SELECT`, 128 `PAD_ZL`, 129 `PAD_ZR`, 130 `ANALOG_LB`, 131 `ANALOG_RB`, 132 `ANALOG_RS`. Which glyph a right-stick click shows in game is unverified (WishFinder uses 131).
+
+The icon follows the player's button config, so read it, do not assume it: the start menu's R label (`0x678214`) picks 5 or 129 through `0x65f858`, which reads the shoulder swap byte +0x446e. The guide presets choose L or ZL, R or ZR by byte +0x446c (preset flags `0x1000`/`0x2000`; other flags `0x400` X, `0x800` Y, `0x8000` START). The guide's layout and extra entries: `mods/wishfinder/DEVELOPMENT.md` section Button guide.
+
 ## Find the local player and weapon
 
 Read session pointer cell `0x188ca48`, then local hunter index+0x30 in range 0..3. Read sPlayer cell `0x1885b58`, then player pointer+0x1c+4*index. Never obtain that index from sUserInfo. Native helpers `0x3f8398`/`0x276278` support this chain. Validate each mapping and pointer.
