@@ -14,9 +14,9 @@ The maintained Damage Numbers plugin observes finalized native outcomes and copi
 | `0x16dd7c` | Interior melee HZV tap before register restoration |
 | `0x16dc6c` | Melee HZV entry, monster association |
 | `0x178660` | Shot HZV calculation, copied after return |
-| `0x0a2664` | Poison tick (hook 8): reads pending `work+0x5d66` after return |
-| `0x0aac54` | Blast detonation (hook 9): reads the blast table s16 +0xc at entry |
-| `0x09978c` | Mount finisher inside monster update (hook 10): r4 amount, `[sp+60]` work block |
+| `0x0a2664` | Poison tick: reads pending `work+0x5d66` after return |
+| `0x0aac54` | Blast detonation: reads the blast table s16 +0xc at entry |
+| `0x09978c` | Mount finisher inside monster update: r4 amount, `[sp+60]` work block |
 
 Typical nesting is collision 0, melee 6/tap 5, final damage 1. All five hit handlers are reached from the collision function, so its scope encloses every hit. Join final damage to the closest matching collision/monster scope, then pop only the returning scope. Camera viewport 3/tap 4 is a separate route. The Forge skill owns the assembly/TLS lifetime procedure.
 
@@ -41,9 +41,9 @@ Hits do not subtract HP directly: main+`0x9d6f8` adds each hit to a part counter
 | Damage | Native path | How it is observed |
 | --- | --- | --- |
 | Kinsect | The w13 shell hit setup main+`0x4816c0` calls the shared shell hit initialiser (vtable +0x140, main+`0x4a2790`) with subtype 1, then rewrites the entry: +0x10 = 6, +0xc = kinsect, +0x6e = 0, +0x70 = owner hunter (main+`0x4a1b6c`) | Collision path; tags (6, 1, 0) with a known owner are Attack |
-| Poison | Tick main+`0xa2664` clears `work+0x5d66`; while `work+0x5e08 & 2` it advances the timer `work+0x5ca8` and at each interval stores the poison table's s16 +0xc in `work+0x5d66`. Its tail branch at `0xa2740` returns through LR; its caller is `0xc8ddc` (2,056 bytes) | Read `work+0x5d66` after the tick returns (hook 8) |
-| Blast | Detonation main+`0xaac54` gets the blast table `(*(monster+0x75ec)+100)+0x54` (getter main+`0x71078`), returns early when null, else resets the blast point and adds the table's s16 +0xc to the part counter directly, bypassing `0x9d6f8` | Read the same table at entry (hook 9) |
-| Mount | Hits on a ridden monster (main+`0x812a8`: ride action states or category 0xd) go to main+`0x170adc`, which adds them to the rider's mount gauge (main+`0x2f6778`), not HP. In category 0xd the monster update reaches main+`0x99764`, loads a fixed amount from monster data +0x8c (x1.5 when singleton query main+`0x49938` returns >= 2), subtracts it at `0x9979c` and sets action 0x2b. Mount point `work+0x5d9a` (DTI `nori_dmg_point`, updated by main+`0xa3528`). | r4 (amount) and `[sp+60]` (work block) at `0x9978c` (hook 10). "Finisher" is an inference; no string names the branch |
+| Poison | Tick main+`0xa2664` clears `work+0x5d66`; while `work+0x5e08 & 2` it advances the timer `work+0x5ca8` and at each interval stores the poison table's s16 +0xc in `work+0x5d66`. Its tail branch at `0xa2740` returns through LR; its caller is `0xc8ddc` (2,056 bytes) | Read `work+0x5d66` after the tick returns |
+| Blast | Detonation main+`0xaac54` gets the blast table `(*(monster+0x75ec)+100)+0x54` (getter main+`0x71078`), returns early when null, else resets the blast point and adds the table's s16 +0xc to the part counter directly, bypassing `0x9d6f8` | Read the same table at entry |
+| Mount | Hits on a ridden monster (main+`0x812a8`: ride action states or category 0xd) go to main+`0x170adc`, which adds them to the rider's mount gauge (main+`0x2f6778`), not HP. In category 0xd the monster update reaches main+`0x99764`, loads a fixed amount from monster data +0x8c (x1.5 when singleton query main+`0x49938` returns >= 2), subtracts it at `0x9979c` and sets action 0x2b. Mount point `work+0x5d9a` (DTI `nori_dmg_point`, updated by main+`0xa3528`). | r4 (amount) and `[sp+60]` (work block) at `0x9978c`. "Finisher" is an inference; no string names the branch |
 | Map-fired shells | `0x4a2790` rewrites owner fields only for hunters, Palicoes and monsters. Shells of the map's `uStageShellOwner` (character type 9, main+`0x51c440` -> main+`0x53985c`) keep secondary kind 2 with the shell at +0x70; the rail cannon (`uShellSt006`, main+`0x497040`) is one | Owner `*(*(shell+0x136c)+0xc)` with type 9: tags (2, any, 2) are Object damage |
 | Ballista | Tags (2, 8, 0) with the hunter at +0x70 | Already Object |
 
@@ -80,8 +80,8 @@ Static research, not run (`work/damage-numbers/siege-weapons-research.md`; main-
 - uShellPlcom_008 slot 0x16c (main+0x462da8) calls hit setup with subtype 8.
   Result: tags (2, 8, 0), hit+0x70 = hunter.
 - Damage Numbers: owner resolves to the hunter; source_outcome gives
-  Object, which is shown for every player. Hits use the main handler, so hook 1
-  captures them. uShellPlcom_009 has no hit setup found (it tracks a monster at
+  Object, which is shown for every player. Hits use the main handler, so the final-damage
+  site captures them. uShellPlcom_009 has no hit setup found (it tracks a monster at
   +0x15a8); it may not deal damage itself.
 
 ### Stage-owned shells (not linked to a player)
@@ -92,7 +92,7 @@ Static research, not run (`work/damage-numbers/siege-weapons-research.md`; main-
   0x191, 0x193, 0x195, 0x196, 0x199 with that owner.
 - Type 9 is not handled by main+0x4a2790, so hits keep tags (2, subtype, 2)
   with +0x70 = the shell. uShellSt002 uses subtype 8 (main+0x492668).
-- Damage Numbers shows these as object damage since r35 (owner type 9, map-fired shells).
+- Damage Numbers shows these as object damage (owner type 9, map-fired shells).
 
 ### Per weapon
 
@@ -129,14 +129,10 @@ Use the applied visible size, not Forge's ImGui DisplaySize. MHGU can present a 
 
 The native rectangle must be origin-aligned, positive, and within 2% of display aspect. Native width/height can differ from display under resolution scaling. Requiring equal dimensions incorrectly rejects valid scaling. Conversely, a same-aspect offscreen view can pass this guard, so it does not prove presentation-target ownership.
 
-r27 represents failed/nonfinite impact capture as unavailable position while retaining scope/return-chain integrity. A genuine captured `(0,0,0)` remains valid. Missing/stale/invalid camera and clipped/behind-camera projection use centre fallback with ordinary animation/overlap. Invalid display dimensions still suppress drawing. Do not replace a failed read with world origin.
+Represent a failed or non-finite impact capture as an unavailable position while retaining scope/return-chain integrity. A genuine captured `(0,0,0)` remains valid. Missing/stale/invalid camera and clipped/behind-camera projection use centre fallback with ordinary animation/overlap. Invalid display dimensions still suppress drawing. Do not replace a failed read with world origin.
 
 ## Presentation and validation limits
 
-Styles Wilds, Rise, Classic share ownership/tint rules and stable stored IDs. Rise weak colour is `#F0B41E`, normal `#FFFFFF`, confirmed bounce `#808080`; critical effects remain independent. Placement reserves peak animation/glyph bounds and caches per-hit offsets so later numbers do not jitter. Text advance and actual visible ink bounds serve different purposes.
-
-Host tests cover nesting, missing positions, real origin, matrices, clipping, 720p/900p/1080p/1440p, styles, concurrency, and context lifetime. ARM fixtures exercise compiled gateways with clobbering helpers; renderer fixtures compare actual ImGui commands/pixels. Neither identifies a live reporter's camera or proves GPU/game behavior.
-
-The user accepted r27 on Eden/Linux 2026-10-15; exact candidate bytes were promoted. r28 to r35 add the crop and the non-hit damage sources above without a new gameplay run. A third-party r3 placement report remains unreproduced. For an authorized reproduction, compare a stationary hit/camera at 1.0× and 1.25×, then camera rotation and each style, preserving video, fresh log, and matched loader/plugin/assets. Do not claim every fallback branch was manually accepted.
+Damage Numbers' styles, colours, placement and test coverage are that mod's contract: `mods/damage-numbers/DEVELOPMENT.md`. Host and ARM fixtures prove neither a live reporter's camera nor GPU output. To reproduce a placement report, compare a stationary hit with a stationary camera at 1.0x and 1.25x, then rotate the camera, with video, a fresh log and matched loader, plugin and asset hashes.
 
 Sources: `mods/damage-numbers/src/{signatures.rs,gateway.S,runtime.rs,render.rs}`, `core/src/{capture.rs,mailbox.rs,lib.rs,presentation.rs}`, tests, `DEVELOPMENT.md`, `EVIDENCE.json`; read-only projection research under `work/damage-numbers/projection-r27/native/` when present.

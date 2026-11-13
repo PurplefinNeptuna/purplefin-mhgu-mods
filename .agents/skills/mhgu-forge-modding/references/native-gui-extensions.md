@@ -27,13 +27,13 @@ Initialize geometry, material, texture, visibility, parent/owner/resource links 
 The Key Quest Markers badge (`create()` in `mods/key-quest-markers/src/gui.rs`) is the only standalone Texture node that has drawn in-game. Build a new one with every step it takes, in this order, and name the native code that makes any skipped step unnecessary:
 
 1. Allocate 304 bytes through alloc+`0x20` with `(bytes, 16, dti id)`, zero the block, then run constructor main+`0xa4f60c` with the storage in r0.
-2. Write +`0x50` (a private ID), +`0x74` (owner) and +`0x78` (resource). World Sharpness Gauge also needed a live sibling's +`0x64`, because the `Texture` resolve scans `*(obj+0x64)+0xe8` (main+`0xb80fd0`). Without it, its r46 copy was refused at the texture step.
+2. Write +`0x50` (a private ID), +`0x74` (owner) and +`0x78` (resource). World Sharpness Gauge also needed a live sibling's +`0x64`, because the `Texture` resolve scans `*(obj+0x64)+0xe8` (main+`0xb80fd0`). Without it, the copy is refused at the texture step.
 3. Run the 12 style setters, each with two integer arguments. Names are from the saved DTI; values are the badge's: `BlendState` `0xa4dc24`=1, `ControlPoint` `0xa4a9f4`=0, `FixFrame` `0xa47a94`=0, `Mask` `0xa4dca0`=0, `Priority` `0xa47a04`=2, `ReferencePosition` `0xa4aa24`=1, `ReferenceRotation` `0xa4aa5c`=1, `ReferenceScaleX/Y/Z` `0xa4aa94`/`0xa4aac8`/`0xa4aafc`=3, `Reverse` `0xa4dc54`=0, `SamplerState` `0xa4fa5c`=0. A zeroed block leaves every `Reference*` property at 0. These are the badge's values: a copy of another sprite takes that sprite's sampler, the low nibble of +`0x108` (the sharpness bar's is 2; a copy left on 0 filtered its edges differently).
 4. Run `Texture` `0xa4faf0` last; it returns early while +`0x78` is 0. Then set `mTextureRect` through `0xa4fb58` with a pointer to four floats, and keep using that setter afterwards (see "A texture caches its quad").
 
 The constructor's own defaults include +`0x54` = `0x020a0001` and +`0xb4`/+`0xb8` = 32.0 (main+`0xa4d0d8`). Reading those words back proves only that the constructor ran, not that the node draws. +`0x80`/+`0x84` and +`0xb4`/+`0xb8` are local values, not screen pixels. A node's rect at +`0xe0` is not its sprite either: the sharpness bar is authored 88x24 with an x scale of 1.0, its rect is 128x128, and its ink was measured ending at 200 px inside the rect's 110..238. No mapping from atlas columns to rect pixels was ever derived, so measure geometry on screen and store it as a fraction of the rect (P7 step 2).
 
-An untested alternative is to copy a live sibling of the same class byte for byte, then replace the ID, clear the +`0x68`/+`0x6c`/+`0x70` links and the animation binding, and link the copy with the native linker. No mod has run this, and the class has no clone function: its vtable slot 0x00 (main+`0xa4f6a4`) is not a constructor, and calling it on a fresh block froze the game (r45).
+An untested alternative is to copy a live sibling of the same class byte for byte, then replace the ID, clear the +`0x68`/+`0x6c`/+`0x70` links and the animation binding, and link the copy with the native linker. No mod has run this, and the class has no clone function: its vtable slot 0x00 (main+`0xa4f6a4`) is not a constructor, and calling it on a fresh block froze the game.
 
 When a new node becomes the parent of existing nodes, the draw walker main+`0xa494a0` decides the result. It descends +0x68, moves along +0x6c, and when a sibling is 0 it pops to that node's +0x70. It writes a node's exit entry only when a pop lands on that node. So a moved node's old sibling link and its parent link both decide whether the new parent's exit entry is ever written. Run a walker port over the tree after your writes before you trust it (playbook P2 step 5). An enter entry with no matching exit leaves masks and other state active for every draw that follows.
 
@@ -50,7 +50,7 @@ The count getter `0xa38ffc` counts the linked tree, while cleanup `0x5456e4` ind
 
 ### A row another plugin also extends
 
-Key Quest Markers and WishFinder both add children to the quest counter row, and either may insert first. So the 13-pointer map and 168-byte cache above hold only for a row with no other additions: size both from the live tree each time. WishFinder takes the map as the live count `0xa38ffc` plus two and the cache as (the resource's drawables + nodes beyond the resource's own + 2) × 16 + 8, counting every added node as drawable, so a foreign non-drawable node only over-allocates. Key Quest Markers r19 and earlier read the map and cache at fixed sizes and crashed beside WishFinder when WishFinder inserted first. Find your own nodes by their private ID (+`0x50`), never by index.
+Key Quest Markers and WishFinder both add children to the quest counter row, and either may insert first. So the 13-pointer map and 168-byte cache above hold only for a row with no other additions: size both from the live tree each time. WishFinder takes the map as the live count `0xa38ffc` plus two and the cache as (the resource's drawables + nodes beyond the resource's own + 2) × 16 + 8, counting every added node as drawable, so a foreign non-drawable node only over-allocates. A build that read the map and cache at fixed sizes crashed beside WishFinder when WishFinder inserted first. Find your own nodes by their private ID (+`0x50`), never by index.
 
 ### Size any row from its own numbers
 
@@ -188,14 +188,14 @@ WishFinder's Hunter's Notes row opens the game's Item Pouch screen with its own 
 - **A shared window keeps its last user's state.** The description window is shared with other screens, so place it on every refill or it stays where the last screen left it.
 - **Give the screen back.** On close, and whenever the screen draws with your title while your page is not open, reset the title and blank the rows.
 - **Some game data is empty in a quest.** The equipment message table cell `0x1856b1c` is 0 in a quest, so names and descriptions come back empty there; copy them outside quests and use the copies.
-- **The game's language** is session byte +`0xa5`, as `cQuestData::getMessage` `0x37a2e4` reads it (2 French, 3 Spanish, 4 German, 5 Italian, 7 Traditional and 8 Simplified Chinese, else English). Keep every published string alive: the game's UI holds its address.
+- **Follow the game's language** (session byte +`0xa5`; values in `mhgu-understanding` [Resources and tooling](../../mhgu-understanding/references/resources-and-tooling.md#formats-a-plugin-reads)). Keep every published string alive: the game's UI holds its address.
 
 ## Button guide and popups
 
-- **Guide extras.** The bottom-right guide has four free extra entries {icon, label} beside ten per-button slots. The per-button slots hold UI instances, not text, so custom text goes only in an extra (`0x65e8cc`). No game call drops one extra (`0x6437d8` drops all four), so free your own entry by hand, matched by your label's address, and lay the guide out again with its current preset; the game's entries stay. Choose L/R or ZL/ZR icons by the game's swap byte, as the start menu does.
-- **Centre popup.** `0x65ddc4(0, 99, text, 0)` queues a line on `cUIOInfoWindow`; DialogMsg 99 is `%s` inside a colour tag in all seven languages, and the text is formatted when the popup builds, so keep it static. `0x65dce4`/`0x65dd24` group up to six lines in one popup; a refused request returns -1, so retry it on the next update.
+Game facts (presets, extras, layout, popup requests and groups): `mhgu-understanding` [Menus and screens](../../mhgu-understanding/references/menus-and-screens.md#button-guide).
 
-Details: `mods/wishfinder/DEVELOPMENT.md` sections Button guide and Arrival popups.
+- **Guide text goes in an extra** (`0x65e8cc`); per-button slots hold UI instances, not text. No game call drops one extra, so free your own entry by hand, matched by your label's address, and lay the guide out again with its current preset; the game's entries stay. Pick L/R or ZL/ZR icons by the shoulder-swap byte, as the start menu does.
+- **Popup lines are static strings**: the game formats the argument when the popup builds, so keep it alive. Group up to six lines per popup, and retry a refused request (-1) on the next update.
 
 ## Material, geometry, and title fitting
 
@@ -203,20 +203,43 @@ Decode `INIT_PARAM` kinds 17/18 as immediate boolean/u32 values. Treating them a
 
 For clipping, establish both the mask writer and consuming material/draw, their coordinate space and order, cache invalidation and mask reset/restoration before unrelated HUD draws. Parenting a Mask1 object alone proves none of those. Test empty, partial and full fill with unchanged texture proportions, aligned effect layers and preserved outlines as required. A resource fallback must meet the same continuous-fill contract and preserve unrelated entries.
 
-Reuse loaded texture descriptors and native logical atlas coordinates. The audited fixture uses texture 22, white lobby emblem rectangle `(136,344,198,406)`. Logical coordinates need not match physical HD image pixels. Validate the live descriptor, dimensions, and texture pointer. This ships no extracted texture or replacement ARC. The English HD archive is a build fixture; user confirmation on 2026-10-15 establishes r17 working with base game and optional HD.
+Reuse texture descriptors the row already loaded and native logical atlas coordinates; logical coordinates need not match physical HD image pixels. Validate the live descriptor, dimensions and texture pointer, and ship no extracted texture or replacement ARC.
 
-Accepted original-emblem geometry: 32×32, Y 3, X 365 for a free request slot or X 329 before an occupied bubble. The original request object ID 20/index 3 occupies X 365..397. Its actual visibility comes from +`0x54` bit 0 after the native update. Preserve the four-pixel gap and title widths 299/263. Earlier 24px, outside-row, small-emblem, yellow, and purple variants are historical.
+Place a decoration from the row's own objects and their live visibility (+`0x54` bit 0 after the native update), not from fixed offsets. Key Quest Markers' badge geometry, title widths and colours are its contract: `mods/key-quest-markers/DEVELOPMENT.md`.
 
 Title binding 4/ID 6 is `cGUIObjMessage`, CRC `0x2fb82eae`, size 352. It is not `cGUIObjText` size 384. Derive fixture classes and getDTI from the real resource. Common setter addresses alone do not prove a subclass. Native Size/AutoScale setters need the glyph-cache dirty bit at +`0xf0` bit 16. Restore the original title size/AutoScale before a reusable row can exit early on missing metadata.
 
 Do not apply the title Size `0xa53528` or AutoScale `0xa53348` contract to Texture objects. Saved Texture DTI's Size entry has a getter and no setter. Check callback direction, actual class fields, native body and ABI before choosing a property operation. Getter-only metadata does not rule out a different verified geometry path.
 
-Current r17 colours are Green `#006305`, Red `#A30000`, Grey `#808080`, with custom saved RGB preserved. Copy the three applied atomics once per row; do no file I/O or settings locking in the hook.
+Copy any applied settings (colours and the like) out once per row; do no file I/O or settings locking in the hook.
 
 ## Verify the full route
 
 Trace handshake, original trampoline, hook entry, resource identity, attachment, classification, material dispatch, geometry, and visible output. Existing ARM fixtures execute native construction, getDTI, setters, prepaint, Texture Draw, quad generation, traversal, and cleanup. They caught wrong subclasses and mask branches that simpler draw-callback doubles missed.
 
 Mocked GPU commands/allocations establish no actual clipping or pixels. Manual acceptance checks opening, scrolling, selection, request overlap, confirmation, closing/reopening, and scene transitions. Preserve successful payload hashes. A visible bit or successful plugin load does not establish a working GUI.
+
+
+## Common mistakes
+
+| Mistake | Correct approach |
+| --- | --- |
+| Using Forge `malloc` for game GUI objects | Use the class DTI's MT allocator so the native destructor frees it correctly. |
+| Sizing a row's map or cache with fixed numbers | Another plugin may have added children first. Size both from the live tree ([Native GUI extensions](#a-row-another-plugin-also-extends)). |
+| Appending a GUI child without growing the object map | The game indexes the map by the tree count and crashes. Grow map and draw cache together. |
+| Freeing or zeroing a row's draw block prefix when growing it | Objects animate through `+0x64` pointers into it. Copy the prefix and move those pointers first (see above). |
+| Reading tree shape from a `.gui` file's child index | The runtime links (+0x68 child, +0x6c sibling, +0x70 parent) are authoritative. In hud0 `sharp`, the three textures are siblings directly under the controller. |
+| Copying another row's or mod's layout (cache size, flag bits, map aliases) and calling it "proven" | Only native code that reads the field for this class proves it. Label everything else as inference in code comments too. |
+| Keeping a captured instance after a quest or scene ends | Clear it at the destruction path. An unchanged address does not prove the object is still alive. |
+| Assuming how long a HUD object lives | Measure it. The sharpness gauge's row lasts a quest and other objects are unmeasured, so keep a liveness check, drop every captured address when it fails, and redo per-row setup on the next object. The cGUIObjRoot slot 0x04 destructor fired in no saved log, so do not rely on it (`mhgu-understanding` Rules). |
+| Using a timer, frame counter or "no sample for N calls" as proof that an object is still alive (or already gone) | Write to or free a game object only while a native lookup made in the same callback finds it, or before a hooked teardown runs. Without that, leave the restore code out (the game's destructor owns what is linked into its tree) and report the missing teardown path. |
+| Reparenting nodes with hand-written +0x68/+0x6c/+0x70 links | List every link the walker and the native teardown follow on each moved node and on its old neighbours, and say where each new value comes from. Prefer the native linkers `0xa48460` and `0xa4844c`, and end the old chain: a node reachable twice is freed twice (see above). Prove the tree with a walker port over the post-write state (playbook P2 step 5). |
+| Checking a row's liveness only from a callback that row owns | A freed node's handler stops being called, so the check goes silent. Check read-only from a callback that keeps running (the draw walker), and write only where the game hands over a live object. |
+| Re-reading the row after insertion with gates written for the tree before it | Each per-frame path after a write must accept the tree your write produced. Fixture it (playbook P2 step 5). |
+| Deriving draw geometry from a node rect whose relation to the drawn sprite is unproven, or citing a setter probe as proof of clipping | Label such geometry inference. Shared render state read at an arbitrary moment proves only that the setter ran, not that it was active during the target draw. |
+| Leaving out steps of an in-repo precedent (such as the KQM badge's construction) | Compare your code with the precedent field by field. Name every skipped step and the native code that makes it unnecessary (see above). |
+| Logging the values you wrote and calling that placement evidence | Read back the game's own output (rect +`0xe0`, matrix +`0x10..+0x4c`, size) at the next callback, after the native layout has run. A constructor default read back proves only that the constructor ran, and a field you wrote reads back whether or not anything consumes it. |
+| Writing screen pixels into a node's local position or size | Those fields are local, and later writes to them may be inert. Move geometry with a mask, and treat a node's rect as a layout box, not as its sprite. |
+| Interpreting a screenshot | Name each HUD element in the photo and confirm it with the user or a baseline shot of the accepted build (the Dual Blades demon gauge was once misread as the mod's own node for three builds). A user's correction about one element does not extend to others. An artefact that appears or disappears between builds is evidence; never discard it. |
 
 Sources: `mods/wishfinder/DEVELOPMENT.md` and `src/{gui.rs,native.rs,hooks.rs}`; `mods/key-quest-markers/src/{gui.rs,native.rs,offers.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py,arm.py}`, `research/theme-colours.json`, `DEVELOPMENT.md`, `EVIDENCE.json`; `mods/world-sharpness-gauge/src/insert.rs` and its `DEVELOPMENT.md`; `docs/RESEARCH.md`.  Native addresses in the mask, cache and flag sections were rechecked against the original bytes on 2026-11-01.

@@ -60,18 +60,7 @@ Every GUI tree a mod here has mapped. Sizes are each row's own; never copy one r
 | Centre popup | `cUIOInfoWindow`, UI object 1 | Lines grouped up to six | `0x65ddc4(0, 99, text, 0)`; group `0x65dce4`/`0x65dd24` | `mods/wishfinder/DEVELOPMENT.md` Arrival popups |
 | Button guide | UI object 5 | Ten per-button slots +0x248 (UI instances, not text), four extras +0x228 {s32 icon, char* label} | Presets `0x65e794(preset, flags)`, extra `0x65e8cc(icon, label)` | WishFinder Button guide; icons in [Input and actions](input-and-actions.md#button-names-and-icons) |
 
-Rank and star row detail (`work/wishfinder/COUNTER_PAGES.md`):
-
-Both pages switch the list (`cUIOQuestList`, holder `+0x24`) to GUI identity 4 (`0x546f28`/`0x56e61c`).
-`counter.gui` (KQM's English HD fixture; parser in KQM r17 `scripts/gui_layout.py`):
-- Rank rows: instances 8..12 (`0x616164` table: 8, 9, 10, 11, 12).
-- Star rows: instances 8..14 and 24 (`0x1635118`), named `Anm_list_v00..v07`; stamps 36..43 (`0x1635138`).
-- Both play animation 1: 18 objects, 9 sequences, 14 drawables. Index 0 root ID 1; index 1 Null ID 14
-  at X -548 (as the quest row's); its direct children: messages ID 11 (64,10), 6 (36,11), 13 (40,9);
-  textures ID 7 (index 5, at 0,0) and 16 (index 7); Nulls 19 (316,22) and 21 (375,22).
-  So a `Layout` {animation 1, 18, 9, 14, source (5, 7), parent 14, atlas 21} fits; position unchosen.
-- Quest rows are `Anm_list_S00..S07` (instances 16..23, animation 20), as `gui::QUEST_ROW`.
-- `read_rows` takes consecutive instances; star rows need the 8..14, 24 list.
+Counter list rows (`counter.gui`, checked on the English HD fixture with `mods/key-quest-markers/scripts/gui_layout.py`). Rank and star pages switch the list (`cUIOQuestList`, holder +0x24) to GUI identity 4 (`0x546f28`/`0x56e61c`). Rank rows use instances 8..12 (`0x616164`'s table); star rows 8..14 and 24 (`0x1635118`, `Anm_list_v00..v07`), stamps 36..43 (`0x1635138`); quest rows are `Anm_list_S00..S07`, instances 16..23, animation 20. Rank and star rows play animation 1: index 0 root ID 1; index 1 Null ID 14 at X -548 (as the quest row's), whose direct children are messages ID 11 (64,10), 6 (36,11), 13 (40,9), textures ID 7 (index 5, at 0,0) and 16 (index 7), and Nulls 19 (316,22) and 21 (375,22). Star row instances are not consecutive.
 
 UI objects 1 and 5 belong to the UI manager in cell `0x1899458`, reached as `0x65cb3c(0x55d2b4(*cell, 0), n)` (wrappers load the cell through GOT word `0x1838bd8`). `0x65cb3c(ui, n)` also gets a screen's own UI object n (the counter's quest list is `0x65cb3c(counter, 2)`, holder +0x24).
 
@@ -206,11 +195,11 @@ The optional Forge skill's GUI-extension reference owns the allocation/publicati
 
 ## Coordinates, colours, and drawing
 
-Loaded texture 22 identifies the audited white lobby emblem at logical rectangle `(136,344,198,406)`. Logical resource coordinates can differ from HD image pixels. The r17 reference draws 32×32 at Y 3 and X 365/329 according to request visibility; title widths 299/263 preserve the gap. These are counter-specific geometry values, not general GUI constants.
+Loaded texture 22 is the white lobby emblem at logical rectangle `(136,344,198,406)` in the counter row's atlas; logical resource coordinates can differ from HD image pixels. The badge geometry Key Quest Markers draws there is in its DEVELOPMENT.md.
 
 Size/AutoScale updates also need title +0xf0 bit 16 to rebuild glyph caches. Parent/root transform and sorting dirty state must be updated after structural changes. Some float setters use hard-VFP s-register arguments.
 
-The resource theme audit traces Gathering Green `#006305` and objective Red `#A30000` to native properties. The objective instance overrides its shared Message template. Slaying category Red `#CC0000` is a separate colour. Current badge user labels are Green/Red/Grey, with completed Grey `#808080`. Historical yellow/purple badge palettes are superseded.
+The resource theme audit traces Gathering Green `#006305` and objective Red `#A30000` to native properties. The objective instance overrides its shared Message template. Slaying category Red `#CC0000` is a separate colour.
 
 Reward screen frames: layout setup `0x623a6c` starts sequence `0xf4242` plus a variant on the group's background root (`0x56e538` -> `0x546c74` -> root `0xa3896c`, which restarts only on a different ID); that colours Base rows red and Wound/Cap rows blue. A Base frame's corners hold `0xa02337dc` (R 0xdc, G 0x37, B 0x23, alpha 0xa0) over a light texture, so a white vertex colour shows the texture itself. The cursor's yellow cell comes from a path not yet read. Shaders: `root.arc` holds one shader resource of 58,841,740 bytes unpacked, past what a 24-bit size helper allows (ARC sizes are `flags & 0x1fffffff`); loader `0xce1fbc` checks SPK magic, version 0x26 and shader version `0xb2d34c60`. The exact GUI vertex program and constant-buffer bindings are unresolved.
 
@@ -218,7 +207,7 @@ Reward world-quad helper `0xa4b390` combines anchors +0xa0, size +0xb4, matrix +
 
 For screen-space work: texture draw `0xa4fc9c` reaches `0xa4fe50` after it builds a quad's vertices. GUI publishers `0xa4eb9c` and `0xa3e3b0` supply model matrices and `0xa397d4` the globals (CBGUIMatrix 0x2d7, CBGUIGlobal 0x2d6 at renderer +0x18bc/+0x18b4). The sentinel rectangle is read through relocated GOT main+`0x183f2b0` (offline main+`0x191eaa0`). The game's NVN present wrapper ends at `0x86a330` (`mov r0,r12; bx r3`); `0x86a28c` records the acquired resource at owner +0x48cc, whose NVN texture is resource +0x3c. Downsample gateways `0xbbfb08`/`0xbbfb44` (GOT main+`0x18418f8`) never ran for reward geometry. A Forge hook inside `0xa4fc9c` leaves that per-draw function interpreted for the session on MHGURecomp, so recolour a reward frame natively instead: its per-vertex setter `0xa4e0b8` stores +0xa4 + 4 * vertex and marks the quad dirty, and nothing rewrites a frame's colour until the next reward screen (Please do Better). Host renderers read that uploaded model matrix too: gu-native rewrites each GUI quad's matrix by its own layer `m[14]` and canvas position `m[12]`/`m[13]`, and UIScale edits the block in place; what that means for a plugin is in the Forge skill's native GUI extensions, section HUD movers.
 
-Verify constructor, setters, material dispatch, quad output, traversal, and destruction using original ARM bodies. GPU doubles prove no actual pixels/clipping. Counter r17 visible acceptance is scoped to dated Eden/Linux user reports with optional HD, not every menu/language/platform.
+Verify constructor, setters, material dispatch, quad output, traversal, and destruction using original ARM bodies. GPU doubles prove no actual pixels/clipping. Visible acceptance of the counter row is scoped to dated Eden/Linux user reports with optional HD, not every menu/language/platform.
 
 For a fill/clipping proposal, trace mask production, the consuming draw/material, coordinate transforms, ordering, cached commands and mask reset before unrelated draws. A Mask1 child does not establish that its parent or siblings consume the mask. Changing Size/scale alone can distort a textured shape. Verify geometry and sampling together, including effect layers and an uncut outline where required. Use empty, partial and full ratios to expose incorrect clipping, then require real pixels for visual acceptance. Reusing discrete resource frames must still satisfy a requested continuous fill.
 

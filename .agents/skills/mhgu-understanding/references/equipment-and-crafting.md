@@ -180,7 +180,7 @@ From WishFinder (`mods/wishfinder/DEVELOPMENT.md` sections Hooks and Smithy). `u
 | `sItem::getItemData` `0x194228`, `rGUIMessage::getMessage` `0xb84114` | Item name: data+8 times two, on the table at cell `0x18583ac` |
 | `0x54ff2c` | Owned count = pouch `0x19c21c` (`*0x18584b8`) plus box `0x199048` (`*0x1858438`); both only read |
 
-The smithy row list is a native GUI tree ([Native GUI](native-gui.md#known-screens-and-trees)). `uUIBlackSmith` is 12,824 bytes. Smithy buttons: A 0x2000, B 0x4000, X 0x1000, Y 0x8000; `0x65f808` returns Options (8, or 1 when `sUserInfo+0x446d` is nonzero) and `0x65f830` Help, the reverse; Options is Resort when +0x5c is 2..6 and Show Skills in `0x6f5064` (also read at `0x6f5b50`, `0x6f5bd8`, `0x707884`; 5 of 47 callers read). `0x70a30c` is only the upgrade preview. A row label set through `0x56e808` -> `0x547564` takes a plain `char*` (strlen), so a plugin's static string works. Pad menu bits in that word: Select 0x1 and Start 0x8 verified by `0x65f808`/`0x65f830` (`0x65f808` starts with PC-relative loads, so do not hook it); L3 0x2 and R3 0x4 are inference from table `0x162aa24`, and no smithy handler, preview slot or cursor mode (table `0x162d0c0`) tests 0x2 or 0x4. Finish keys a craft reports: kind, the row's 0-based level, category and number in one word (`00140012` craft, `01140012` upgrade, `42140012` the game's own upgrade screen).
+The smithy row list is a native GUI tree ([Native GUI](native-gui.md#known-screens-and-trees)). `uUIBlackSmith` is 12,824 bytes. Smithy buttons: A 0x2000, B 0x4000, X 0x1000, Y 0x8000; `0x65f808` returns Options (8, or 1 when `sUserInfo+0x446d` is nonzero) and `0x65f830` Help, the reverse; Options is Resort when +0x5c is 2..6 and Show Skills in `0x6f5064` (also read at `0x6f5b50`, `0x6f5bd8`, `0x707884`; 5 of 47 callers read). `0x70a30c` is only the upgrade preview. A row label set through `0x56e808` -> `0x547564` takes a plain `char*` (strlen), so a plugin's static string works. Pad menu bits in +0x6c are listed in [Input and actions](input-and-actions.md); no smithy handler, preview slot or cursor mode (table `0x162d0c0`) tests L3 0x2 or R3 0x4, and `0x65f808` starts with PC-relative loads, so do not hook it. Finish keys a craft reports: kind, the row's 0-based level, category and number in one word (`00140012` craft, `01140012` upgrade, `42140012` the game's own upgrade screen).
 
 **Item limit.** `[[[main+0x18583a8] + 0x1c] + 0x64] - 1` is the loaded `rItemData`'s last ID, the bound lookup `0x192530` uses: 2990 on 1.4.0 (2991 records), 3055 records with Definitive Edition.
 
@@ -196,7 +196,7 @@ Static reading from `work/wishfinder/PLAN.md`: the game's detail-panel getters a
   bits 0..4, level counted from 0 in bits 5..9) and +6 (number), plus +8 by `0xdb09c` (a variant number, 0 = use +6),
   and none calls a virtual on the record, so a zeroed 44-byte buffer with +4 and +6 set is enough (constructor
   `0xdaba4` and `reset` `0xdac14` exist if a full object is ever needed). Each looks the item up through `sEquip`
-  (`0x13f03c` -> `0x13c208`, cell `0x1856b18`, as Wishlist's names do) and, for per-level values, the table object's
+  (`0x13f03c` -> `0x13c208`, cell `0x1856b18`) and, for per-level values, the table object's
   virtual +0xd8(level). Paired with their labels in the game's detail panel `0x57f5ac` (message file 1 is
   `CommonMsg`, 9 is `StartMenuMsg`):
 
@@ -218,10 +218,10 @@ Static reading from `work/wishfinder/PLAN.md`: the game's detail-panel getters a
   for items 2638 on, or null outside the table: +4 slots, +5 / +6 skill types, +7 / +8 points (signed), DTI names.
 - Skill names: `0x4cf018(*(*0x1896c20 + 0x13c), type)` returns a 24-byte record whose +4 is a message index;
   `getMessage` `0xb84114` on the table at cell `0x1896c28` with index * 2 (the item panel at 0x62aefc does this).
-- Item names and descriptions: `getMessage` on cell `0x18583ac` (Wishlist's `ITEM_TEXT_CELL`) with `data+8` * 2 for the
+- Item names and descriptions: `getMessage` on cell `0x18583ac` with `data+8` * 2 for the
   name and * 2 + 1 for the description (the game's own `0x72ccc0` ORs in the 1).
 - Rarity is stored one below what the game shows (itemData +5: Antidote Jwl 2 stores 4, shows 5; armor Bulldrome 0,
-  shows 1); whether a getter already adds the 1 is checked when the panel is built.
+  shows 1); whether a getter already adds the 1 is unread.
 
 Cross-check fixtures from the RomFS (for tests, not shipped): `decoData.deco` record item-2638 = {slots, skill A,
 points A, skill B, points B}, Antidote Jwl 2 `02 01 03 04 ff` = slots 2, Poison +3, Stun -1 as in the screenshot;

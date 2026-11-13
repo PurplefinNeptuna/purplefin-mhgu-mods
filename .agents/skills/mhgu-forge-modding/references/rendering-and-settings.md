@@ -2,7 +2,7 @@
 
 ## Choose the rendering path
 
-Use the native game tree for decorations that must follow an existing menu's transforms, visibility, selection, and destruction. Use Forge's ImGui callbacks for settings and independent overlays. Key Quest Markers renders badges natively and uses ImGui only for settings. Damage Numbers and current Please do Better use Forge overlays. Older Please do Better native texture/downsample experiments are retired: valid geometry was observed without those downsample hooks executing in the reported run.
+Use the native game tree for decorations that must follow an existing menu's transforms, visibility, selection, and destruction. Use Forge's ImGui callbacks for settings and independent overlays. Key Quest Markers renders badges natively and uses ImGui only for settings. Damage Numbers and current Please do Better use Forge overlays.
 
 An overlay that must line up with a HUD part breaks wherever the HUD is moved after the game draws it (gu-native, UIScale): use a native node there ([HUD movers](native-gui-extensions.md#hud-movers-gu-native-and-uiscale)). An overlay that follows the 3D world must find the game's picture inside Forge's display, which differs per host, and must not write through ImGui buffer pointers ([Runtimes](runtimes.md#imgui-on-each-host)).
 
@@ -24,7 +24,7 @@ Memory: a plugin's `malloc`/`free` resolve to main's exports, so Forge, every pl
 
 ## Fonts and text fit
 
-Each runtime has its own default font. MHGURecomp gives the overlay Forge's Roboto Medium only when some mod layer ships `nativeNX/forge/fonts/Roboto-Medium.ttf`; otherwise it uses `AddFontDefaultVector`, which is wider (`runtime/forge.c` `overlay_start`, `runtime/overlay.cpp` in `tools/MHGURecomp-source/`). So text laid out to Roboto's widths can overflow there. Measure each string with `CalcTextSize` at the size you draw it, wrap or step down through fixed sizes until it fits (WishFinder `welcome::popup`: 28, 24, else 16), and check the longest language. WishFinder's welcome harness (`work/wishfinder/welcome-harness/run.py`, `FONT=default`) renders a page with that fallback font for comparison.
+Each host has its own default font ([Runtimes](runtimes.md#imgui-on-each-host)); MHGURecomp's fallback is wider than Roboto, so text laid out to Roboto's widths can overflow. Measure each string with `CalcTextSize` at the size you draw it, wrap or step down through fixed sizes until it fits (WishFinder `welcome::popup`: 28, 24, else 16), and check the longest language. WishFinder's welcome harness (`work/wishfinder/welcome-harness/run.py`, `FONT=default`) renders a page with that fallback font for comparison.
 
 Pictures of native screens show only what the explanation needs. The tester asked WishFinder to drop every imitated page number from its pictures ("the < 1 / 4 > imitation is buggy on other recomp, please remove that because that isnt needed"); the window's own page count stays.
 
@@ -38,9 +38,7 @@ The stock Rust helpers have relevant limits: ScopedMount panics on failure, Read
 
 **Damage Numbers exception:** its explicitly requested upstream `config::load`, default-file creation, ScopedMount, and Writer behavior is retained. It uses IniSerialize/IniDeserialize, per-field validation/defaults, and an explicit settings Save. Do not replace that accepted policy with the other mods' custom storage design during unrelated work.
 
-Key Quest Markers keeps drafts/load state under a Forge mutex and publishes RGB atomics only after Save & apply succeeds. Editing/resetting marks loading complete so delayed storage availability cannot overwrite the user's choices. Each colour is six hexadecimal digits, native alpha 255.
-
-Please do Better stores `[PleaseDoBetter]`, `force_miraculous`, and `reward_multiplier=1..5`. Unsupported old/headerless forms default to natural Luck/1x. The user requested no migration. One atomic mode record is latched before reward generation; changing the slider cannot rescale an already generated result.
+Each mod's own settings contract (keys, ranges, Save & apply behaviour) is in its DEVELOPMENT.md; Key Quest Markers and Please do Better are worked examples of the checked-storage pattern above.
 
 ## Logs
 

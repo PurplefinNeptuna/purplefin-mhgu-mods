@@ -100,6 +100,5 @@ Layout and the update procedure: `mods/wishfinder-mwt-bridge/DEVELOPMENT.md`,
 | Eden cheat engine | Writes 12 times a second (`CHEAT_ENGINE_NS = 1000000000 / 12`), so a cheat that relies on a value running out between writes works on Eden and not on MHGURecomp, which writes every frame | As above |
 | HD Project | Replaces atlases (not `HD_cmn_icon_GSM_NOMIP`) and `common_eng.arc`; Eden takes the alphabetically first of two replacements, so never ship a competing ARC: insert natively instead. Merge order Base -> HD Project -> Z_Balanced -> others | `mods/key-quest-markers/DEVELOPMENT.md`, `mods/modern-weapon-controls/DEVELOPMENT.md`, `docs/CLEANUP_HD_PROJECT.md` |
 | Modern Weapon Controls (ours) | Ships a double-size `HD_cmn_icon_GSM_NOMIP` (1024x2048), so read atlas sizes from the header | `mods/wishfinder/DEVELOPMENT.md` |
-| Wishlist | Key Quest Markers r20 ran beside it on Eden |
 | Faster Field Hunter | Uses the centre popup and popup icons; leads from its code are in `mhgu-understanding` menus-and-screens | `work/wishfinder/POPUP_PLAN.md` | `mods/key-quest-markers/DEVELOPMENT.md` |
 | MHGURecomp's own Village feature | Runs beside Village Quests in Hub (with its `hpscale.c`); the tester reports our mod fixes some of its problems | `mods/village-quests-in-hub/DEVELOPMENT.md` |

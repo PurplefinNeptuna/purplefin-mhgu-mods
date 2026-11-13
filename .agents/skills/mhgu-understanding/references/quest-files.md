@@ -21,7 +21,7 @@ Deeper notes: `mods/wishfinder/DEVELOPMENT.md` section Quest table, and
 | Gathering | `loc/arc/stage/map_com/mNN.arc`, type `25fd693f` | `IPL\0`; {count1, size1} at 0x10, {count2, size2} at 0x1c; (offset, count) tables at 0x24 and 0x24+size1, offsets relative to their table; entries {rate, count, u16 item} |
 | Gathering areas | Same map ARC, `stage\mNNd\mNNd` (`_easy`, `_tuto`), type `52776ab1` | `IPS\0`, see *Gathering areas* |
 | Fishing | `loc/arc/quest.arc` `quest/fishData`, type `3e0e02fc` | 625 records of 24 bytes: map, area, kind, level, 20 u8 rates |
-| Captures and breaks | `loc/arc/result.arc` `quest\bui\bui_s0..4`, type `0ab54515` (`rBui`) | f32 2.0, u32 count, then 462-byte records (below) |
+| Captures and breaks | `loc/arc/result.arc` `quest\bui\bui_s0..4`, type `0x0ab54515` (`rBui`) | f32 2.0, u32 count, then 462-byte records (below) |
 
 Which file a quest uses by rank:
 

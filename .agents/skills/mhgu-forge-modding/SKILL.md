@@ -66,7 +66,7 @@ build it and extract into the scratchpad.
 **Always**
 - Give every runtime change a new version `rN`. Old candidates and releases stay byte-for-byte.
 - Verify every offset against the original NSO bytes before using it.
-- Before writing a native field by hand, find what reads it and what gates that read. If a setter exists, use it. A field that reads back your value has only been stored; three separate rounds of World Sharpness Gauge (r14 to r24, r53 to r55, r59 to r61) wrote fields nothing consumed.
+- Before writing a native field by hand, find what reads it and what gates that read. If a setter exists, use it. A field that reads back your value has only been stored; World Sharpness Gauge wrote fields nothing consumed in three separate rounds.
 - Use Forge headers and APIs first. When you must go lower, write the verified gap next to the code.
 - Keep PIC and `-nostartfiles` / `-Wl,-z,text` in every Rust/GCC NRO target.
 - Install hooks all-or-nothing, with signature checks before any write and rollback on failure. A pre/post-only entry hook accepts another plugin's Forge hook over its first eight bytes ([Chaining](references/hooks-and-lifetimes.md#chaining-onto-another-plugins-hook)).
@@ -100,6 +100,8 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 
 ## Common mistakes
 
+Topic-specific mistakes live with their topic: native GUI in [Native GUI extensions](references/native-gui-extensions.md#common-mistakes), hosts, input and ImGui in [Runtimes](references/runtimes.md#common-mistakes). The rows below hold for every task.
+
 | Mistake | Correct approach |
 | --- | --- |
 | Rebuilding a release to "promote" it | Promotion ships the existing candidate bytes unchanged (playbook P5). |
@@ -107,21 +109,7 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Hooking a function that starts with `ldr rX,[pc,#N]` | PC-relative instructions break when copied. Pick another site. |
 | Refusing to load because another plugin hooked the same entry | A pre/post-only hook chains onto it. Read the whole function to confirm the hook is only that, then accept the foreign hook. |
 | Reading the local player index from sUserInfo | Use session `0x188ca48` +0x30 (input-and-actions in mhgu-understanding). |
-| Using Forge `malloc` for game GUI objects | Use the class DTI's MT allocator so the native destructor frees it correctly. |
-| Sizing a row's map or cache with fixed numbers | Another plugin may have added children first. Size both from the live tree ([Native GUI extensions](references/native-gui-extensions.md#a-row-another-plugin-also-extends)). |
-| Appending a GUI child without growing the object map | The game indexes the map by the tree count and crashes. Grow map and draw cache together. |
-| Freeing or zeroing a row's draw block prefix when growing it | Objects animate through `+0x64` pointers into it. Copy the prefix and move those pointers first ([Native GUI extensions](references/native-gui-extensions.md)). |
-| Using `Input::is_button_pressed` in `forge_onUpdate` or a game hook | Forge updates input once per rendered frame, so the edge repeats or is lost. Read `is_button_down` and keep your own previous state there ([Input and keybinds](references/input-and-keybinds.md)). |
-| Expecting Forge to hide a press from the game | It never does. Blank the game's pad records after `sPad::move` while your window owns input (WishFinder's welcome window). |
-| Telling Switch players to open Forge's menu with a button | Stock Forge 1.5.1 opens it with a keyboard key only (F9). Give console players another way to change a setting. |
-| Importing MHGURecomp's extra calls (`forge_input_getMouse`, `setKeybind`, `isMenuOpen`) | Stock Forge does not export them, so the import check fails on Switch and emulators. No optional-import method is researched. |
-| Placing ImGui drawing from HUD node positions, or cutting a HUD sprite with a scissor | gu-native and UIScale move HUD quads after the game draws them. Use the sprite's own geometry at its draw ([HUD movers](references/native-gui-extensions.md#hud-movers-gu-native-and-uiscale)). |
-| Treating Forge's `io.DisplaySize` as the game's picture | It is the swapchain (Switch), the window surface (MHGURecomp) or the whole window with a letterboxed picture inside (gu-native) ([Runtimes](references/runtimes.md#imgui-on-each-host)). |
-| Writing through `ImDrawList` `VtxBuffer.Data` or other `ImVector` data | On MHGURecomp and gu-native those read 0 (guest mirrors), so the write hits the null page. Pass offsets to ImGui calls. |
-| Creating ImGui objects every frame without destroying them | MHGURecomp shares one 8192-slot mirror pool among all plugins; when it fills, every plugin's drawing stops. Count with `mods/imgui-meter`. |
 | Shipping a texture or table extracted from the game | Read it from the user's `app:/nativeNX/` at run time, sized from the file header, because other mods may replace it ([Game files at runtime](references/game-files-at-runtime.md)). |
-| Using `i32::saturating_add`/`saturating_sub` | They compile to QADD/QSUB, which Ryubing 1.3.3 cannot run, and `-dsp` does not stop them in ARM mode. Use plain or u32-capped arithmetic and gate the build ([Diagnostics](references/diagnostics.md)). |
-| Laying out ImGui text to Roboto's widths only | MHGURecomp falls back to a wider font. Measure and fall back to smaller sizes ([Rendering](references/rendering-and-settings.md#fonts-and-text-fit)). |
 | Fixing `check` failures by editing release folders by hand | Use `package NAME --refresh-support` for doc-only changes. |
 | Pointing release `notices` at a `vendor/` license file | Fetched vendor is untracked. Copy the license into `licenses/` and list that path. |
 | Comparing NROs built in different folders | Rust NROs embed absolute source paths. Build both at one path ([Rust dependencies](references/api-and-builds.md#rust-dependencies)). |
@@ -129,30 +117,17 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Concluding from an old log or a folder listing | Read the newest log and match installed hashes first (playbook P3). |
 | Assuming a test double proves pixels | GPU commands are doubles. Visible output needs a user run. |
 | Shipping one candidate per failed gate, adjusting the gate each time | Check each gate assumption against the logged values (playbook P3 step 4). After two gate failures in a row, return to static research. |
-| Reading tree shape from a `.gui` file's child index | The runtime links (+0x68 child, +0x6c sibling, +0x70 parent) are authoritative. In hud0 `sharp`, the three textures are siblings directly under the controller. |
-| Copying another row's or mod's layout (cache size, flag bits, map aliases) and calling it "proven" | Only native code that reads the field for this class proves it. Label everything else as inference in code comments too. |
-| Keeping a captured instance after a quest or scene ends | Clear it at the destruction path. An unchanged address does not prove the object is still alive. |
-| Assuming how long a HUD object lives | Measure it. The sharpness gauge's row lasts a quest and other objects are unmeasured, so keep a liveness check, drop every captured address when it fails, and redo per-row setup on the next object. The cGUIObjRoot slot 0x04 destructor fired in no saved log, so do not rely on it (`mhgu-understanding` Rules). |
-| Using a timer, frame counter or "no sample for N calls" as proof that an object is still alive (or already gone) | Write to or free a game object only while a native lookup made in the same callback finds it, or before a hooked teardown runs. Without that, leave the restore code out (the game's destructor owns what is linked into its tree) and report the missing teardown path. |
-| Reparenting nodes with hand-written +0x68/+0x6c/+0x70 links | List every link the walker and the native teardown follow on each moved node and on its old neighbours, and say where each new value comes from. Prefer the native linkers `0xa48460` and `0xa4844c`, and end the old chain: a node reachable twice is freed twice ([Native GUI extensions](references/native-gui-extensions.md)). Prove the tree with a walker port over the post-write state (playbook P2 step 5). |
-| Checking a row's liveness only from a callback that row owns | A freed node's handler stops being called, so the check goes silent. Check read-only from a callback that keeps running (the draw walker), and write only where the game hands over a live object. |
-| Re-reading the row after insertion with gates written for the tree before it | Each per-frame path after a write must accept the tree your write produced. Fixture it (playbook P2 step 5). |
 | Explaining a "looks like vanilla" report with a theory that makes the feature invisible by construction | The user's eyes decide the "visible on screen" stage. A positive log with a negative visual report means the log measures the wrong thing, or the run never reached values where the effect shows. Test with forced values. |
 | Testing a visual mechanism only with live data | Build a forced-value candidate first, with extremes the eye cannot miss (for example 0/25/50/100%). Connect live data after the user sees each step, then remove the forced path with P7. |
-| Rebuilding once per guess at a visual value | If no native model gives the value, ship a session-only tuner (P3 step 4). r33 to r36 measured photos across four builds; r39's panel found the accepted endpoints in one run. |
-| Working from a task's paraphrase of the tester | Copy the tester's words into the plan and `TESTING.md`, and check the build against those. r60 was built to a rewording that had the requirement backwards. |
+| Rebuilding once per guess at a visual value | If no native model gives the value, ship a session-only tuner (P3 step 4): one run with a tuner found what four builds of photo measuring did not. |
+| Working from a task's paraphrase of the tester | Copy the tester's words into the plan and `TESTING.md`, and check the build against those. A rewording once had the requirement backwards. |
 | Leaving test controls, probes, "record" helpers and their log lines in after the user accepts | Every experiment is scaffolding. Run P7 after acceptance: delete what nothing live reads, fix stale names and messages. |
 | Storing a value the user dialled in as absolute screen pixels | Store it relative to the rect it was measured on (offset or fraction), with a host test reproducing the accepted output. |
 | Justifying each line with what run rN printed | A comment states the current contract. The evidence lives in EVIDENCE.json and Git. |
 | Putting tester steps, log-line guides or stage-code tables in README.md | README.md is for mod users. Put tester material in `mods/NAME/TESTING.md` and the report. |
 | Prepending a new "Current state:" paragraph per version, or extending it with "rN is rM with…" | Replace the one paragraph (150 words, enforced by `scripts/doc_rules.py`). Run logs do not go in DEVELOPMENT.md: put the fact in its section and a refuted approach in "Do not". |
 | Changing a user's design decision so a candidate looks different | Design decisions belong to the user. Report the blocker and ask; never hide, drop or swap a designed element to get a visible change. |
-| Deriving draw geometry from a node rect whose relation to the drawn sprite is unproven, or citing a setter probe as proof of clipping | Label such geometry inference. Shared render state read at an arbitrary moment proves only that the setter ran, not that it was active during the target draw. |
-| Leaving out steps of an in-repo precedent (such as the KQM badge's construction) | Compare your code with the precedent field by field. Name every skipped step and the native code that makes it unnecessary ([Native GUI extensions](references/native-gui-extensions.md)). |
-| Logging the values you wrote and calling that placement evidence | Read back the game's own output (rect +`0xe0`, matrix +`0x10..+0x4c`, size) at the next callback, after the native layout has run. A constructor default read back proves only that the constructor ran, and a field you wrote reads back whether or not anything consumes it. |
 | Reading numbers from a log that prints float fields as raw bits | Log floats as floats. Quote log values verbatim; a number that is not in the log is invented. |
-| Writing screen pixels into a node's local position or size | Those fields are local, and later writes to them may be inert. Move geometry with a mask, and treat a node's rect as a layout box, not as its sprite. |
-| Interpreting a screenshot | Name each HUD element in the photo and confirm it with the user or a baseline shot of the accepted build (the Dual Blades demon gauge was misread as the mod's own node across r47 to r49). A user's correction about one element does not extend to others. An artefact that appears or disappears between builds is evidence; never discard it. |
 | Explaining a mismatch with the first story that fits | Find data that would disprove it, then look. "One level low on three weapons, because the weapon in hand is not read" cannot be true of three weapons; a save file showed the field counts from 0. |
 | Mixing bases across a boundary | Game box bits and smithy row `+9` count from 0, RomFS `mLevel` and the screen from 1. Convert once, at the boundary, and say so in the signature's comment. |
 | Calling a plugin API once per item in one update and ignoring the answer | Read the queue size first. An 8-slot mailbox dropped most of a 15-step line, and the success tone still played. |

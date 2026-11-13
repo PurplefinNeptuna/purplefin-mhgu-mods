@@ -103,7 +103,7 @@ Worked example, WishFinder and KatSmithy (`work/wishfinder-katsmithy-bridge/PLAN
 bridge needs the smithy node the player stands on. KatSmithy guards `0x6f1ae8`,
 `0x6f31d8`, `0x55e4f8` and `0x2831e0`. Hooking the window factory `0x55e4f8` to capture
 the window would be option 3 on a second guarded site. WishFinder's own hook at `0x6f1ae8`
-already chains after KatSmithy's (r10: KatSmithy logged `guard OK` and `installed` for all
+already chains after KatSmithy's (KatSmithy logs `guard OK` and `installed` for all
 four), so WishFinder exports `wishfinder_smithy_node` and the bridge takes no hook: option 1.
 The guard evidence is then that no `GUARD MISMATCH` line appears in the run's log.
 

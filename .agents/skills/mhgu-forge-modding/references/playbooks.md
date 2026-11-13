@@ -119,8 +119,7 @@ user explicitly asks for that exact action in this task.
    `Gameplay NOT RUN`.
 8. **Review the premise before asking for a run.** Re-read what this version
    assumes against the decompile or bytes, and against the tester's own words.
-   If it fails, withdraw the candidate and say why. That review found five
-   defects in r13 and withdrew r58 and r61 without spending a run.
+   If it fails, withdraw the candidate and say why; this has saved whole runs.
 9. `python3 scripts/mod_distribution.py package NAME`, then `... check`.
 10. Commit and report.
 
@@ -138,8 +137,7 @@ Do not change code until step 5.
    replaces it each launch). Copy it to
    `work/NAME/runs/rN-<emulator>-<YYYY-MM-DD>.txt` before anything else,
    because the next launch overwrites it. Eden also keeps only a rolling
-   100 MiB window, so a long session can lose a build's lines while it runs:
-   r58 to r61 were gone from the log r62 was read from, and r52's was never kept.
+   100 MiB window, so a long session can lose a build's lines while it runs.
    Ask for a copy after every run, and for the tester's exact words.
 3. **Match the bytes.** `sha256sum` the installed NRO/assets (read-only) and
    compare with `DISTRIBUTION.json` payload hashes and the candidate folder.
@@ -270,8 +268,8 @@ Run this when the user accepts a behaviour (or closes a phase) and before the
 next feature or a P5 promotion. Experiments add code; this playbook removes it.
 It is a P2 change with a new `rNEW`. Visible behaviour stays the same: anything
 that must change position or format gets a host test showing identical output
-on the accepted values. Never combine it with a behaviour change. r60 did, and
-deleted its read-backs in the same build the tester then rejected. Before
+on the accepted values. Never combine it with a behaviour change: a rejected build then has no
+read-backs left to diagnose it. Before
 stripping, confirm the accepted candidate stays under `build/NAME/candidates/rN/` and list it in `docs/LOCAL_STATE.md`,
 because `rNEW`'s bytes will not be the accepted ones (P5 says what to ask next).
 

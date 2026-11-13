@@ -75,10 +75,11 @@ What to do:
 
 ## Input on each host
 
+When input updates and where an edge is valid: [Input and keybinds](input-and-keybinds.md#timing-where-an-edge-is-valid).
+
 | | Switch, Eden, Ryubing | MHGURecomp | gu-native |
 | --- | --- | --- | --- |
 | Source | `nn::hid`: handheld, else player 1 (`input.cpp`) | The host pad state; keyboard from SDL | Same HLE code (`forge.c`) |
-| When it updates | In `ImGui_ImplNVN_NewFrame`, once per presented frame | Before Forge draws, after the game's updates: a plugin sees the last frame's state | Same HLE code |
 | Forge menu key | `[menu] key` in Forge's `config.ini`, default F9 (66), keyboard only | Insert (73) by default, the same ini key if a mod ships Forge's config, or "Open the Forge menu" in the port's Mods tab | Not read |
 | Game input while Forge's menu is open | Still reaches the game | Blocked: the game gets no controller input (README) | Not read |
 | Extra calls | None | Mouse, keybind and `forge_graphics_isMenuOpen` ([Input and keybinds](input-and-keybinds.md#mhgurecomp-extras)) | `forge_graphics_isMenuOpen` only, at `9a1aef7` |
@@ -91,6 +92,22 @@ three ship an all-zero build ID. MHGU Definitive Edition 2.0.0 is an IPS plus a
 `subsdk1`; its words inside your windows are listed per mod (Village Quests in
 Hub, WishFinder). Load order rules per host are in
 [Hooks and lifetimes](hooks-and-lifetimes.md).
+
+
+## Common mistakes
+
+| Mistake | Correct approach |
+| --- | --- |
+| Using `Input::is_button_pressed` in `forge_onUpdate` or a game hook | Forge updates input once per rendered frame, so the edge repeats or is lost. Read `is_button_down` and keep your own previous state there ([Input and keybinds](input-and-keybinds.md)). |
+| Expecting Forge to hide a press from the game | It never does. Blank the game's pad records after `sPad::move` while your window owns input (WishFinder's welcome window). |
+| Telling Switch players to open Forge's menu with a button | Stock Forge 1.5.1 opens it with a keyboard key only (F9). Give console players another way to change a setting. |
+| Importing MHGURecomp's extra calls (`forge_input_getMouse`, `setKeybind`, `isMenuOpen`) | Stock Forge does not export them, so the import check fails on Switch and emulators. No optional-import method is researched. |
+| Placing ImGui drawing from HUD node positions, or cutting a HUD sprite with a scissor | gu-native and UIScale move HUD quads after the game draws them. Use the sprite's own geometry at its draw ([HUD movers](native-gui-extensions.md#hud-movers-gu-native-and-uiscale)). |
+| Treating Forge's `io.DisplaySize` as the game's picture | It is the swapchain (Switch), the window surface (MHGURecomp) or the whole window with a letterboxed picture inside (gu-native) ([Runtimes](#imgui-on-each-host)). |
+| Writing through `ImDrawList` `VtxBuffer.Data` or other `ImVector` data | On MHGURecomp and gu-native those read 0 (guest mirrors), so the write hits the null page. Pass offsets to ImGui calls. |
+| Creating ImGui objects every frame without destroying them | MHGURecomp shares one 8192-slot mirror pool among all plugins; when it fills, every plugin's drawing stops. Count with `mods/imgui-meter`. |
+| Using `i32::saturating_add`/`saturating_sub` | They compile to QADD/QSUB, which Ryubing 1.3.3 cannot run, and `-dsp` does not stop them in ARM mode. Use plain or u32-capped arithmetic and gate the build ([Diagnostics](diagnostics.md)). |
+| Laying out ImGui text to Roboto's widths only | MHGURecomp falls back to a wider font. Measure and fall back to smaller sizes ([Rendering](rendering-and-settings.md#fonts-and-text-fit)). |
 
 Sources: `tools/forge-local/source/forge/{input.cpp,graphics.cpp,config.c}`;
 `tools/MHGURecomp-source/{README.md,runtime/forge.c,runtime/forge_imgui.c,runtime/overlay.cpp,runtime/kernel.c}`

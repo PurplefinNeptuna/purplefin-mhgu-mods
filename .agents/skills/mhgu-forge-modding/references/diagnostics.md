@@ -10,7 +10,7 @@ Follow the failing stage: module load/imports, metadata/init, signature checks, 
 
 | Symptom / historical baseline | Cause or strongest finding | Response |
 | --- | --- | --- |
-| NRO load crashes while applying dynamic relocations | r17/r27 Rust NROs each had six executable-text relocation targets from GCC startup routines despite PIC | Follow [NRO relocation requirements](api-and-builds.md#rust-nro-relocation-requirements): exclude GCC startup objects, enforce `-z text`, inspect final destinations and preserve linker output |
+| NRO load crashes while applying dynamic relocations | Rust NROs linked with GCC's startup objects carry six executable-text relocation targets despite PIC | Follow [NRO relocation requirements](api-and-builds.md#rust-nro-relocation-requirements): exclude GCC startup objects, enforce `-z text`, inspect final destinations and preserve linker output |
 | `FATAL: interp: unsupported neon 3diff` on MHGURecomp | Recomp interprets NRO code, and `three_diff` in its `runtime/interp.c` (`tools/MHGURecomp-source/`) accepts only VMULL, VMLAL and VMLSL. LLVM vectorizes a widening u32-to-u64 add over an array into `VADDW` | Disassemble the NRO text at the logged address minus the plugin's load address, and write the loop so it does not widen, or remove it. Scan the built NRO for `vaddw` before a Recomp run |
 | `FATAL: unimplemented svc 0x4b` on MHGURecomp | Recomp's `runtime/kernel.c` (`tools/MHGURecomp-source/`) has no CreateCodeMemory or ControlCodeMemory (0x4B, 0x4C), and an unknown SVC aborts the game instead of returning an error. Only a plugin with a private CodeMemory arena reaches this | Use Forge's hooks, whose trampolines Recomp provides. Plugins that use only SVCs 0x6, 0x29 and 0x5F run there |
 | `Failed to load plugin ...: 0x00000616` on Eden | Result module 22 (RO) description 3, which reads as already loaded. The loader keys modules on the NRO build ID at header +0x40, and KatLib, UIScale and BetterBox all ship an all-zero ID, so only one of them loads (`ResultAlreadyLoaded` in `references/eden/src/core/hle/service/ro/ro_results.h`) | Compare build IDs across the plugins folder. Ship every plugin with a unique build ID |
@@ -42,7 +42,7 @@ Run-independent noise in Eden logs, not evidence against a plugin unless somethi
 
 A row's death reads as words turning to freed-heap fill at unchanged addresses: `0x727272`, `0xffffff`, `0xffeaeaea`, `0xff7f7f7f`, `0x4d4d4d`. A rect of `0 0 0 0` comes first. A captured pointer whose word reads one of these is gone, and live relinked pointers there mean the row is mid-teardown (r28).
 
-To measure a photo, use the log as the ruler: fit the image scale on two logged box edges, then read the ink against it (r35 gave 1.4 image px per GUI px, r41's fit landed within 1 to 2 image px on all four crops). Downscaled crops carry a few px of noise, so don't treat a single measurement as a mechanism.
+To measure a photo, use the log as the ruler: fit the image scale on two logged box edges, then read the ink against it (one photo gave 1.4 image px per GUI px, r41's fit landed within 1 to 2 image px on all four crops). Downscaled crops carry a few px of noise, so don't treat a single measurement as a mechanism.
 
 ## Read a Ryubing crash
 

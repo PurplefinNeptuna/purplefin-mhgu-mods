@@ -69,7 +69,7 @@ After `cargo forge new NAME`, add these settings to the generated mod target bef
 
 Validate the final ELF and converted NRO: reject `DT_TEXTREL` and `DF_TEXTREL`, and check that every dynamic relocation write targets writable data/BSS. A relocation table stored in read-only memory is normal; the destination of each write determines safety. Keep the NRO checks in the mod's verifier and record exact hashes. C/C++ NRO builds need the same writable-destination invariant; `-nostdlib` already excludes default startup objects when that is their existing recipe.
 
-The 2026-10-18 r18/r28 rebuilds removed all six executable-text relocations from each NRO, passed their existing host/ARM fixtures and full distribution checks, and retained gameplay/assets apart from build identification. These are static/build results, not physical Switch acceptance. Evidence: `mods/key-quest-markers/research/hardware-link.json` and `mods/damage-numbers/research/hardware-link.json`.
+Excluding GCC's startup objects removes all six executable-text relocations from an NRO with no other change; that is a build result, not physical Switch acceptance. Evidence: `mods/key-quest-markers/research/hardware-link.json` and `mods/damage-numbers/research/hardware-link.json`.
 
 ## Lawrence's hardware-test loader
 
