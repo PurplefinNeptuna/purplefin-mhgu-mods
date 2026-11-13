@@ -52,4 +52,6 @@ Use the offline wiki's CFileIndex to connect an internal resource name to its co
 
 Trace a resource from ARC entry/name/type to its native loader and runtime consumers. For behavioral questions, find the runtime call and compare input/output rather than editing a table based on a suggestive name. The wiki includes MHXX material and WIP fields; mark those as research leads until verified on the supplied MHGU resource.
 
+The GNU build-ID note in main is at `0x172e52c` (namesz 4, descsz 16, type 3), the ID itself at `0x172e53c`. Main SHA-256 `b3935415499549adaf4c0e89822831daa175cfd456a7990791c79be3997645ef`; loaded-memory SHA-256 `24c208c395c65727b21b5fa91af8381396e70cf421b0fcfee0345d8743298110`.
+
 Sources: `docs/RESEARCH.md`, `scripts/{research_tools.py,mhgu_binary.py,dti_dumper.py}`, `scripts/ghidra/`, saved summary/provenance, `mods/dti-dumper-support/README.md`, `references/MHGU-Modding.wiki/`, and `references/MHGU-Modding/`. [Workspace and sources](workspace-and-sources.md) provides snapshot revisions and machine paths.

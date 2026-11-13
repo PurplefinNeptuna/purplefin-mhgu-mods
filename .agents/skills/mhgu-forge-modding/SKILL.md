@@ -173,6 +173,7 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | What differs on Switch, Eden, Ryubing, MHGURecomp and gu-native (instructions, SVCs, ImGui display, input, HUD movers) | [Runtimes](references/runtimes.md) |
 | Forge input, hotkeys, owning a press, the button guide, Forge's menu key, MHGURecomp mouse/keybind calls | [Input and keybinds](references/input-and-keybinds.md) |
 | Reading RomFS files, ARC entries, text and textures from a plugin; turning them into ImGui textures | [Game files at runtime](references/game-files-at-runtime.md) |
+| Coexisting with Definitive Edition, KatLib/KatSmithy/UIScale, My Weapon Tree, DPS Meter, HD Project and others | [Other mods](references/other-mods.md) |
 | Tests, exports, packaging, legal/support files, commits | [Validation and delivery](references/validation-and-delivery.md) |
 | Failed initialization, logs, historical failures, physical Switch | [Diagnostics](references/diagnostics.md) |
 | Workspace paths, evidence locations, source coverage | [Workspace and sources](references/workspace-and-sources.md) |

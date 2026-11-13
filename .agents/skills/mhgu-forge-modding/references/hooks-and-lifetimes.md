@@ -42,6 +42,10 @@ Check stacking with a real foreign hook on the entry at install, not with any lo
 
 What changes is narrow. The window still compares every byte past the first eight, and the build checks stay, so a different game build is still refused. Only the exact pair `e51ff004` plus any literal is accepted in those eight bytes; any other difference is a mismatch. Run the P4 step 3 relocation check against the original NSO bytes, and compare the trampoline against the live words captured just before hooking. `window_matches` in `mods/world-sharpness-gauge/core/src/lib.rs` is the current form, with a fixture covering all four cases. Copy it, since no mod builds against a sibling.
 
+## Sites Forge itself owns
+
+Stock Forge 1.5.1 hooks `0x3da8fc`, `0xb8692c`, `0x887810` and `0x88784c` plus its dynamic graphics bootstrap (Modern Weapon Controls `DEVELOPMENT.md`). Do not hook them. Damage Numbers holds `0x170968`, `0x9d6f8`, `0x2a87a8`, `0xb8909c`, `0x885844`, `0x16dd7c`, `0x16dc6c` and `0x178660`; chain on its entry hooks, never its interior taps.
+
 ## On MHGURecomp
 
 Recomp runs the game as compiled code and plugins in an interpreter, and implements Forge's hook and patch calls itself (`runtime/forge.c`, `dispatch.c` in its source). Only Forge calls change code there: a plugin's own stores into `main` are never seen. A hook at a function entry redirects the compiled function; its trampoline calls the whole function. A hook inside a function makes Recomp interpret that whole function for the session, so a gateway may jump back to any address inside it. A jump into the middle of a function that is still compiled is fatal (`no function at %x`). Recomp refuses Thumb targets, sites outside a function, and sites under eight bytes before the next function.
@@ -72,7 +76,7 @@ Hard-VFP native setters can take floats in s-registers. An `extern "C"` integer/
 
 Damage capture saves a 328-byte frame: continuation scratch 0, CPSR/FPSCR 8/12, d16 through d31 at 16, d0 through d15 at 144, r0 through r12/LR at 272. Around hooks record the caller before replacing LR, then pop the matching scope on return. Camera/HZV taps read registers before displaced code destroys the values. The exact frame belongs to this implementation.
 
-Release mutable TLS borrows before invoking the native original, which may reenter the same hook. Never hold a Rust mutable reference across that path. Quest offers use a stack-owned frame containing UI identity and at most sixteen copied IDs, connected to nested row calls by SDK TLS. A guard restores the previous value, including on nested entry. No resource pointer/frame escapes the synchronous update.
+Release mutable TLS borrows before invoking the native original, which may reenter the same hook. Never hold a Rust mutable reference across that path. Quest offers use a stack-owned frame containing UI identity and at most sixteen copied IDs, connected to nested row calls by SDK TLS (sdk `GetCurrentThread` `0x9d56c`, `GetTlsValue`/`SetTlsValue` `0x9d7f8`/`0x9d80c`; none writes GE). A guard restores the previous value, including on nested entry. No resource pointer/frame escapes the synchronous update.
 
 Damage uses static mailboxes independent of TLS teardown: 16 producers, 256 records each, 64 capture scopes. A producer owns its slot and the consumer owns its cursor. Atomic words/publication tickets reject torn reads; overflow and pool exhaustion have bounded pass-through/drop behavior. Keep copied numeric evidence, not borrowed game objects, in asynchronous render queues.
 

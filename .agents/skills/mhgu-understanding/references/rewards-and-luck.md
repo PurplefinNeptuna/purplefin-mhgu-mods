@@ -8,9 +8,41 @@ Main count `0x381fec` retains quest guarantees, RemAddFrameA/B, meal checks 0x10
 
 The maintained force mode changes only the audited conditional Miraculous checks at `0x3822dc` and `0x4d17f4`. Natural mode calls the original helper with original state. Forced mode supplies the cheat-equivalent result while preserving audited LR/register/flag behavior. Do not globally falsify every skill query or assume all reward paths use Luck.
 
+Exact instruction sites (Please do Better `DEVELOPMENT.md`):
+
+| Site | Instruction / role |
+| --- | --- |
+| `0x3822dc` | `bl 0xe0da0; mov r5,#31`: conditional Miraculous check |
+| `0x4d17f4` | `bl 0x26fe08; mov r5,#1`: second cheat check |
+| `0x3820d0` | `and r0,#31; cmp r5,r0`: main comparison |
+| `0x3820b4` | `mov r5,r0; cmp r4,#7`: selected threshold and initial main count |
+| `0x382edc`, `0x382efc`, `0x382f1c`, `0x382f3c`, `0x382f5c`, `0x382f7c` | `mov r7,#2..7; cmp r6,r0`: the secondary comparisons |
+| `0x381fec` | Main count entry: `push {r4,r5,r6,lr}` then a PC-relative literal load (literal at main+`0x382100`), so a trampoline cannot copy it; resume at `0x381ff4` |
+| `0x384848` / `0x384408` | Result update / destruction |
+
+## Which rewards a quest guarantees
+
+`getMainRewards` `0x381d30` and `generateRewards` `0x38211c`: a flag-1 or flag-4 frame forces its first entry into the first slot whatever its weight, so a displayed weight is not the chance. Sub `0x382c18` never forces and needs the subquest. Extra `0x38236c` sets slots and a condition by frame flag (meanings marked inference rest on quest names; the writers are unread):
+
+| Flag | Slots | Condition | Meaning |
+| --- | --- | --- | --- |
+| 1 | forced first | | Guaranteed (first nonzero-weight entry, in rem1 or rem2) |
+| 3 | 1 | None | Always rolled; guaranteed when its nonzero-weight entries are one item, item 0 excluded |
+| 5 | 3 | `sQuest+0x52` is 0 or 3 | Not repelled |
+| 48 | 2 | Same | Not repelled |
+| 6..15 | 1 | `+0x98` >= 1..10 | Inference: targets hunted |
+| 16..24 | 1 | `+0x99` >= 10..50 by 5 | Inference: small monsters culled |
+| 25..35 | 1 | `+0x9a` >= 10..90 | Delivered items (`0x3b3db0` sums share-box counts) |
+| 36 / 37 | 1 | `+0x1742` == 0 / == 1 | Inference: arena result |
+| 38..47 | 1 | Average of two questPlus percentages >= 10..100, and not repelled | Inference: damage dealt |
+
+`0x3aeda4` sets `+0x52` to 2 when monster HP falls to `mGekitaiHp`, so 1 and 2 mean repelled. Reward file layouts: [Quest files](quest-files.md). Source: `mods/wishfinder/DEVELOPMENT.md` section Reward rules.
+
 ## Capture attribution by array/index
 
 UI builder `0x3874e0` copies generated four-byte `(u16 item, u16 amount)` entries. Audited copy windows begin `0x3875bc`, `0x3878e0`, `0x387b00`, `0x388084`, targeting known player arrays/indices. Item IDs can repeat with different quantities. Attribution uses observed generation, exact caller/copy destination, snapshots, and index, not a search for the first matching ID.
+
+The four copies, with their end (exclusive), source register and destination: `0x3875bc..0x387680` r7 to `*(ui+0x5c)` slots 0..7 and `0x3878e0..0x3879a4` r7 to the same (both after main wrapper `0x381d30`); `0x387b00..0x387bc4` r6 to `*(ui+0x5c)+32` slots 8..15 (direct main generation); `0x388084..0x388144` r5 to `*(ui+0x64)+32` slots 8..15 (after secondary `0x382e1c`). State 1's `0x384af0` can grow the main reward array to 16 or 48 entries before its call `0x384fc0` reaches builder `0x3874e0`; copy loops `0x384bf0..0x384c24` and `0x384c7c..0x384cb0` keep indices, then free the old allocation.
 
 Native list copy `0x623c08` copies min(source count, capacity) by index. Items are inline at list +0x60; that field is not an item-array pointer. Flags at +0x120 come from a separate descriptor. Result update `0x384848` observes reward states 2..5 at +0x3c; departure/destruction invalidates provenance. If array growth frees the old allocation, snapshot before original execution and verify the new prefix without rereading freed memory.
 

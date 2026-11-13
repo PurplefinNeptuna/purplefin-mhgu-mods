@@ -20,7 +20,7 @@ Forge scans `app:/nativeNX/plugins` for `.nro`, registers module hashes, loads m
 | --- | --- |
 | `forge_onLoad` | `void(PluginInitParam*)`, fill metadata |
 | `forge_onInit` | `void()`, initialize plugin |
-| `forge_onUpdate` | `void(float dt)`, after original game update |
+| `forge_onUpdate` | `void(float dt)`, after `sFestaMain::move` (`0x3da8fc`) returns. `dt` is `sMain::mDeltaTime` (main+0x68), a frame count: 2.0 per frame at 30 fps, not seconds. Runs in plugin load order |
 | `forge_onImGuiInit` | `void(void* ctx, void* alloc, void* free)` |
 | `forge_onImGuiRender` | `void()`, only while Forge's own window is open with its "Plugin UI" header expanded (`source/forge/graphics.cpp`); a settings panel, never an overlay |
 | `forge_onImGuiFreeRender` | `void()`, every frame, plugins in load order; overlays and anything drawn over the game or another plugin |

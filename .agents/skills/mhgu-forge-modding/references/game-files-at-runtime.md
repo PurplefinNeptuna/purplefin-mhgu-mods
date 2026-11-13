@@ -45,8 +45,8 @@ Rules:
   before the context is restored.
 - Check sizes before allocating; refuse short reads and ranges past the file.
 - Give zlib Forge's `malloc`/`free` (`zalloc`/`zfree`) so its state is on the
-  shared heap whatever the SDK's default is. `DecompressZlib` needs a 64 KiB
-  work buffer and fails safely when it is short; it reports no length.
+  shared heap whatever the SDK's default is. `DecompressZlib` (sdk `0x42024`, worker `0x42054`, window bits 15) needs a 64 KiB
+  work buffer (bump-allocated by sdk `0x41ee0`, NULL past its end) and fails safely when it is short; it reports no length.
 - Do file work from `forge_onUpdate` or a worker step, never in a hook or a
   render callback. Split a large build over updates (WishFinder's quest table:
   about 1,850 files over about 232 updates) and show progress.

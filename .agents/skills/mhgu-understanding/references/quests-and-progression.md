@@ -15,7 +15,7 @@ All addresses below are main-relative on verified Switch 1.4.0.
 | sQuest +0xb4 | Loaded group-resource pointer |
 | Resource +0x64 / +0x6c | Count / record-array pointer |
 | Record stride 12 | Quest ID+4, category byte+8, alternative byte+9 |
-| cQuestData +0x10c bit 0 | Historical rank-up urgent identity |
+| cQuestData +0x10c bit 0 | Rank-up urgent flag (`mFlag` bit 0, loader `0x37539c` reads it as u16); matches group categories 24..46 (28 urgents among 1,302 records). Special encounters 47..54 have it clear (flags 0x300/0x308) |
 | `0x523da4`, sUserInfo +0x42c | Actual group-index completion reader/bitfield |
 | `0x523d00`, sUserInfo +0x100 | New/acknowledgement state, separate from completion |
 | Cell `0x18979f0` | Separate progression-record pointer |
@@ -70,12 +70,12 @@ Bytes unless marked upstream (MHGURecomp's source; its addresses are these plus 
 | Area type | Session cell `0x188ca48` (through GOT word `0x1838bb4`), byte +0x4c | 0 Hub, 1..6 villages, 7 Pub (upstream). A quest writes 255 there (`0x6be048`, old value kept at +0x50); `0x6be09c` restores it |
 | List job | Start `0x3b7fd8`, thread `0x3b7cf8`, loop `0x3b7de8`, finished `0x3b8070` | Frees and reallocates the 3456-byte list at +0x24, reads the area byte once. +0x28 count, +0x2c cursor, +0x30 state (0 load, 1 wait, 2 finished); at most 32 unready, 864 total. Starting a job destroys a running one's thread object |
 | Filter | `0x3b8090(list, quest, type)`, one caller `0x3b7ea8` | Decides whether a quest is listed for the area type (`cmp r2,#7`) |
-| Quest file | `loc\quest\questData\questData_%07d` (`0x1563ab7`), DTI `rQuestData` cell `0x188ab98` | Loaded through `sResource::create(this, dti, path, mode)` (vtable +0x30, `0xbcad18`): mode bit 0 blocking, bit 1 async. A cached hit raises the count at +0x48 |
-| Lookup | `0x3ba50c(selector, quest)`, 19 callers | Skips an entry until its +0x50 bit 0 is set (loaded), then compares record +8 |
-| Selector | Cell `0x188ae38` | Holds the lists, urgent pools and Special Permit groups below |
-| Categories | Build `0x3b85d8`, fill `0x3bb318`, get `0x3bc96c` (reads area byte +0x4c, range 0..7), rebuild `0x3ba8fc` | Quest lists per category; pool index for an urgent depends only on quest-ID ranges (`0x3bc5f0`), so host and client agree |
+| Quest file | `loc\quest\questData\questData_%07d` (`0x1563ab7`), DTI `rQuestData` cell `0x188ab98` (GOT `0x183c984`), resource manager cell `0x2126a64` (GOT `0x1839450`), read in the job at `0x3b7e64`/`0x3b7e58` | Loaded through `sResource::create(this, dti, path, mode)` (vtable +0x30, `0xbcad18`): mode bit 0 `loadBlocking` `0xbcb0d0`, bit 1 `loadAsync` `0xbcb6bc`. A cached hit raises the count at +0x48. An async load is not ready when `create` returns |
+| Lookup | `0x3ba50c(selector, quest)`, 19 callers | The scan at `0x3ba56c` skips an entry until its +0x50 bit 0 is set (loaded), then compares record +8 |
+| Selector | Cell `0x188ae38` (GOT `0x1838d74`, caller `0xfdb8`) | Holds the lists, urgent pools and Special Permit groups below |
+| Categories | Build `0x3b85d8`, fill `0x3bb318`, get `0x3bc96c` (reads area byte +0x4c, range 0..7), rebuild `0x3ba8fc` (caller `0x6bcafc`) | Quest lists per category; pool index for an urgent depends only on quest-ID ranges (`0x3bc5f0`), so host and client agree |
 
-Availability `0x54af8c(id, 0xff, 0)` returns 1 for DLC IDs (`0x3b9870`). For other quests it asks the progression script `0x3b2174`, whose module is at +0x8d0 of the cell behind it: with the module unloaded it answers 0 unless its +0x8dc cache holds the flag. So the result depends on when it is asked. `aResult` slot 7 `0x6a1fd4` loads the module and slot 9 `0x8e48` unloads it. `aVillage` loads it at `0x10618` and unloads it at `0x106a0`. An area load's list job can run while the module is still unloaded (inference from the stage's slot order; no run has logged it). It also needs the special encounter bits (above). It reads the local save, never the host's.
+Availability `0x54af8c(id, 0xff, 0)` returns 1 for DLC IDs (`0x3b9870`). For other quests it asks the progression script `0x3b2174`, whose module is at +0x8d0 of the cell behind it: with the module null, `0x3d7ee4` writes answer 0 at `0x3d7ffc` unless its +0x8dc cache holds the flag. The special-encounter bit at owner +0x35d4 is saved by `0x51d94c`, and which record of a pair a save enables differs by save. So the result depends on when it is asked. `aResult` slot 7 `0x6a1fd4` loads the module and slot 9 `0x8e48` unloads it. `aVillage` loads it at `0x10618` and unloads it at `0x106a0`. An area load's list job can run while the module is still unloaded (inference from the stage's slot order; no run has logged it). It also needs the special encounter bits (above). It reads the local save, never the host's.
 
 ## Counter pages and their rows
 
@@ -92,11 +92,91 @@ Availability `0x54af8c(id, 0xff, 0)` returns 1 for DLC IDs (`0x3b9870`). For oth
 
 Rank and star pages draw their rows with `counter.gui` animation 1 (see [Native GUI](native-gui.md#known-screens-and-trees)).
 
+### Counter page internals
+
+From `work/wishfinder/COUNTER_PAGES.md` (read from main; accepted in WishFinder r59 on Eden).
+
+#### Which quests a page lists
+
+- `0x54b994(ctrl, info, page, mode, first)` fills one page of eight quest rows (rows `page*8 .. page*8+7`)
+  and returns how many quests passed. Callers: `0x54b834` (village `0x6e4554`, hub `0x782108`/`0x782268`)
+  and the counter's step `0x54c130` (`0x54ca08`/`0x54ca30`).
+- List number = `info+7` + 1, with special pages remapped: 19 -> 0x17, 14 -> 20 + `info+0x1177`,
+  15 -> 15/16/17 by `info+0x59`, 16 counts filled slots `info+0x1104..0x1140` instead (inference: the
+  downloaded/event page). `mode == 1` picks from `0x121312 >> (8 * info+0x1176)` instead.
+- The quest catalogue (manager in the GOT cell the code loads at `0x54bb78`):
+  - `0x3bc9f8(mgr, list)`: count, u16 at `mgr + 0x38 + list*2`.
+  - `0x3bc96c(mgr, list)`: list < 24; 396-byte record (99 u32 quest IDs) at `[mgr+0x34] + 396 * idx`,
+    idx an s8 from a 24-byte row chosen by the s8 at `+76` of another manager (0..7; inference: game
+    mode, village vs hub); negative idx gives 0.
+- Per quest the filler keeps it only when available, the same test as `0x54af8c(quest, category, info)`:
+  - category 14 with `info+0x1177 == 1`: `0x3bd150` must equal `info+0x11e6` (inference: Hunt of the Day group);
+  - `0x3b9870`: quest ID's millions digit is 1 (event/DLC IDs, 1xxxxxx) -> available;
+  - else `0x3b2174(quest)` -> `0x3d7e90(mgr, &out, quest)`, the progression query (cached per quest at
+    `+0x8e0`, count `+0x8dc`, top bit the answer), must be 1;
+  - then, if the quest is one of the 51 special encounter entries (`0x162cde4` area), its enable bit at
+    owner `+0x35d4` decides.
+  This is what hides a 4-star quest whose chain hasn't started. Key Quest Markers already calls
+  `0x54af8c` with category 0xff.
+
+#### Row builders (cUIOQuestList, vtable 0x1774b98)
+
+The hub draw at `0x782af8` switches on the list kind byte `+0x3c` (1..11):
+- 5, 7, 11: quest rows, `0x54d030` -> `0x616cb0` (WishFinder's existing hook).
+- 1: `0x616164`; 8: `0x6176d4`; 9: `0x617a7c`; 10: `0x617dd8`.
+- 2..4: `0x616574`, after reading eight row bytes `+0x9d..+0xa4` (255 empty; 13, 14, 16 special).
+The counter is `uUIQuestCounter` (DTI vtable `0x177e2d4`): update `0x781e34` (slot 9) runs the state
+dispatcher `0x781e60`, then this draw for states 1..2; draw `0x781bb0` (slot 18). Counter state `+0x3c`:
+1 rank page, 2 star page, 5 quest list (village-quests-in-hub DEVELOPMENT.md, upstream for the meanings).
+So kind 1 / `0x616164` is the rank page and kinds 2..4 / `0x616574` the star page (inference from that
+mapping; matches the eight row bytes and the Event row on the star page). The village counter is the same
+class (village-quests-in-hub switches it in place); `0x6e3f64` belongs to the class at vtable `0x177d7e4`
+(DTI `uUIArenaCounter`).
+
+#### How the game chooses rank and star rows
+
+`0x783074(counter, info)` (the state-0 row rebuild, hooked by village-quests-in-hub) does the same test
+we need, per row:
+- Hub (`0x508924(?, 2)` is 1) checks codes 3 (High) and 4 (G, when `0x5078e4` allows); otherwise the
+  village's code 2; each through the same slot test as `0x784964` (table below), then the Special Permit
+  sub-lists and list 23.
+So a star row lit by the game already has at least one available quest; marks must use the same test.
+List number for a row = row byte + 1, with the special remaps listed above.
+
+#### Rank codes and their stars
+
+Rank rows: `info+0x1171+row` is the row's label, not a star code (r57's Eden log: village `[4 0 1 5 6]`
+Training, Low, High, Hunt of the Day; pub `[0 1 2 3 5]` Low, High, G Rank, Special Permit, Hunt of the Day).
+`info+0x116c+row` 0 means locked. The confirm `0x7838c0` maps label to star code `info+0x59`: Low 0/1, High 2/3
+(village/hub by `0x508924(_, 2)`), G 4; Special Permit -> page 17, Training -> 14, Hunt of the Day -> 19 (list 23).
+- `0x78484c(counter, code, rows)` (pure apart from `rows`) writes the star page's normal rows: star slots
+  from the s8 {min, max} pairs at `0x162cdc5 + 4 * code`, max capped per code (jump table: 0 -> 5,
+  1 -> 3, 2 -> 10, 3 -> 7, 4 -> 14), stopping at the first slot `0x784964` refuses; returns the count.
+  | Code | Slots | Stars | Unlock bit in the save block `+0x500` |
+  | --- | --- | --- | --- |
+  | 0 | 0..5 | Village 1..6 | slot 0 always; `0x1650a70[s-1]` = 10, 15, 24, 28, 33 |
+  | 1 | 0..2 | Hub Low 1..3 | slot 0 always; `104 + 4(s-1)` |
+  | 2 | 6..9 | Village 7..10 | `0x1650a70[s-1]` = 1008, 1025, 1035, 1052 |
+  | 3 | 3..6 | Hub High 4..7 | `104 + 4(s-1)` |
+  | 4 | 10..13 | G 1..4 | `0x159775c[s-10]` = 1400, 1405, 1409, 1413 |
+  `0x784964` also needs one quest of list `0x1650a2f[s]` (= s + 1) passing `0x54af8c(q, 0xff, 0)`.
+  The table's two special bytes: 16 (urgent) everywhere, 15 (Event) for codes 1, 3, 4.
+- Event lists 15..17 are empty until the row is opened (`0x54dcac` -> `0x3bc234(selector, code)` fills from
+  the downloaded event set `[[0x188ad90]+0xb4]`, rule: millions digit 1, ten-thousands digit not 2,
+  `(id/100)%100` 0/1/10 for codes 1/3/4). r57's log: G Event 0/0 before opening, 46/46 after.
+- Urgent pool per code: index `[0,2,1,3,4][code]` (`0x1650aa0`), IDs at `selector+104+64*i`, count u16 `+424+2*i`.
+- Star page `0x783b48(counter, info, flag)`: rows `info+0x61..+0x68` (255 empty), count `info+0x60`;
+  normal rows from `0x78484c(counter, info+0x59, rows)`, then two special rows from the byte table
+  (GOT at `0x783bd8`) `[code * 4 + 2..3]`: 14 or 15 written as is, 16 only when the urgent pool
+  `info+0x1104` (count `info+0x1144`, at most 16) holds an available, uncleared quest.
+- Row byte -> list for a quest page (`0x54b994`): slot + 1; 14 -> 20 + `info+0x1177`; 15 -> 15, 16 or 17
+  by rank code 1, 3 or 4 (the per-rank Event row); 16 -> the urgent pool; 19 -> 23.
+
 ## Downloaded event quests
 
 The game lists event quests (lists 15..17) only while their row is open: `0x54dcac` starts a save job (`0x3dfa2c`), then `0x3bc234(selector, code)` lists the job's set at `[[0x188ad90] + 0xb4]`. That set is empty at any other time, so a plugin cannot read it from memory to see every event quest.
 
-They live in the game's save file `system`. Header word 0x30 gives a shared section (`0xb281`), whose +0x4618 starts 200 slots of 0x1c00 bytes, each `{u32 quest, u32 size, ARC}`. A tester's save had 165 used, 46 of them G rank, and the game lists those 46. Offset and slot count were read from saves, not from code, so count a slot only when it holds the ARC magic and an event ID. Listing rule (`0x3bc234`): millions digit 1, ten-thousands digit not 2, and `(id / 100) % 100` is 0, 1 or 10 for star codes 1, 3, 4. Reading the save read-only from a plugin: [Game files at runtime](../../mhgu-forge-modding/references/game-files-at-runtime.md). Source: `mods/wishfinder/core/src/quests.rs` (`event_slot`, `event_on`), `src/config.rs` `read_event_quests`.
+They live in the game's save file `system`. Header word 0x30 gives a shared section (`0xb281`), whose +0x4618 starts 200 slots of 0x1c00 bytes, each `{u32 quest, u32 size, ARC}`. A tester's save had 165 used, 46 of them G rank, and the game lists those 46. The rest of `system`: three hunter sections of 0x11f8c4 bytes at 0x18cc78, 0x2ac53c, 0x3cbe00; end word 0x1c = 0x4eb898. No code constant was found for 0x4618 or 0xf899 (movw search). Offset and slot count were read from saves, not from code, so count a slot only when it holds the ARC magic and an event ID. Listing rule (`0x3bc234`): millions digit 1, ten-thousands digit not 2, and `(id / 100) % 100` is 0, 1 or 10 for star codes 1, 3, 4. Reading the save read-only from a plugin: [Game files at runtime](../../mhgu-forge-modding/references/game-files-at-runtime.md). Source: `mods/wishfinder/core/src/quests.rs` (`event_slot`, `event_on`), `src/config.rs` `read_event_quests`.
 
 ## Recording a clear online
 
@@ -109,7 +189,7 @@ Result routine `0x384af0` calls `0x388d40`, which writes completion with `0x523f
 | C | `0x3ae768` | sQuest+0xb8 bit 19: the 4MMNN family (MM 1..18, NN 1..16) from `0x3b5bb4(id)`, unnamed |
 | D | `0x3a3424` | Request quest: `mRequestVillage` in {5, 6, 7, 8, 12} and `0x54af8c(id, 0xff, 0) != 1` |
 
-So an online joiner never records a rank-up urgent's clear. Source: `mods/shared-urgent-quests/DEVELOPMENT.md`.
+The write is at `0x388e40`. Other completion writers: script opcodes 0x33/0x34 in `0x3d17f8`, one fixed quest 0x41d in `0x50d494`, a bulk block in `0x521d4c`. After the write the native follow-up is `0x5106f8` (stores +0x3d4 when newly cleared), `0x50cbd0(…, sUserInfo)`, `0xb91be0`; whether HR-up and unlocks follow from that alone is unknown (`work/urgent-share/FINDINGS.md`). `0x388d40` is called unconditionally from `0x384af0` (+0x49c), and the gate window is `0x388d70..0x388ddc`. The host-only branch in `0x3afd54` uses the same host test (+0xd56/+0xd57). So an online joiner never records a rank-up urgent's clear. Source: `mods/shared-urgent-quests/DEVELOPMENT.md`.
 
 ## Investigate a new quest discrepancy
 

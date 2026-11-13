@@ -150,6 +150,87 @@ its tree level in none, because that mod rewrites the displayed rows and the lev
 Inference, not shown in bytes: the `.wpd` row of a level 1 that also has a `.wcd` row is a create-from-base-weapon path rather than the step a chain starts from (the rule `mods/wishfinder/scripts/generate_weapon_path.py` builds on). Armor recipes are
 `armorCreateA00..A04` (see the Resources and tooling reference for the 42-byte records).
 
+## Smithy window and its code
+
+From WishFinder (`mods/wishfinder/DEVELOPMENT.md` sections Hooks and Smithy). `uUIBlackSmith` update `0x6f1ae8` (vtable `0x177d988` slot 0x24) is the one per-frame entry; KatSmithy guards it, so read [Other mods](../../mhgu-forge-modding/references/other-mods.md) before hooking it.
+
+| Field | Meaning |
+| --- | --- |
+| +4 byte 0 | State: 1 menu, 2 submenu, 3 weapon or armor list `0x6f31d8`, 5 decorations `0x6f5064`, 6 `0x6f5940`, 7 upgrade `0x6f7220` |
+| +5, +6 | Sub-states. The list has focus at state 3 or 5 with +5 = 0, and state 7 with +5 = 0x19 and +6 = 0 (`0x7045dc`) |
+| +0x44 | Row confirmed |
+| +0x4c / +0x4d | Menu index / submenu index |
+| +0x68 | Saved list position, written as `page << 3`, read on rebuild sub-state 9 |
+| +0x6c / +0x70 / +0x74 | Pad pressed / repeat / held, copied from `sFestaPad` +0x6bfc / +0x6c34 / +0x6bf4 each update |
+| +0x1f64 | Row cursor (`0x54edec(+0x1f64, 4, 1, 0)` sets up the menu); page at +0x1f74 |
+| +0x2d14, +0x2d18 + i*8 | Top menu text table {flag word, text pointer} |
+| +0x5c | Category: 1..5 armor head..legs, 6 talisman/decorations, 7 + table for weapons. Set at `0x6f2c90` (weapons from byte table `0x1650022` by +0x4d, else +0x4d + 1); Upgrade copies the box item's type at `0x6f7e2c`. 2..6 gates armor's Resort; 1 picks the head preview |
+| +0x6c | Copy of the menu-pressed pad word `sFestaPad+0x6bfc` |
+| +0x1f71 | Cursor's row on the page |
+| +0x28d4 + row * 0x30 | Row: +2 number, +9 level from 0, +0x14 four {u16 item, u8 count at +2} every 4 bytes. A decoration row (builder `0x6fdb84`) has +2 the item, +4 the recipe index into the table at window +0x1f18 (`0x4c0e60`: count +0x64, 20-byte objects at +0x6c, item from virtual +0x18), +9 zero |
+
+| Code | Role |
+| --- | --- |
+| `0x6fbcfc` | Pays and consumes for a confirmed row; called by craft `0x6fb224` and upgrade `0x70301c` |
+| `0x6fdf14` | Decoration: consumes, pays, adds the item; called from `0x6f513c` |
+| `0x6fd690` | Box-space check before confirm, so a hook on the pay functions sees only crafts that proceed |
+| `0x709a08`, `0x709d54` under `0x709824` | Consume one item at a time; unread |
+| `0x54f260(0, n)` | Smithy sounds: 1 accept, 2 cancel, 3 deny. 43 (taken for `lb_sys_chat_reception`) played nothing |
+| `0x13c208(sEquip, category, number)` then virtual +0xbc(level) / +0xc0(level) | Equipment name / description; +0x1c rarity. Text table cell `0x1856b1c`, 0 in a quest |
+| `sItem::getItemData` `0x194228`, `rGUIMessage::getMessage` `0xb84114` | Item name: data+8 times two, on the table at cell `0x18583ac` |
+| `0x54ff2c` | Owned count = pouch `0x19c21c` (`*0x18584b8`) plus box `0x199048` (`*0x1858438`); both only read |
+
+The smithy row list is a native GUI tree ([Native GUI](native-gui.md#known-screens-and-trees)). `uUIBlackSmith` is 12,824 bytes. Smithy buttons: A 0x2000, B 0x4000, X 0x1000, Y 0x8000; `0x65f808` returns Options (8, or 1 when `sUserInfo+0x446d` is nonzero) and `0x65f830` Help, the reverse; Options is Resort when +0x5c is 2..6 and Show Skills in `0x6f5064` (also read at `0x6f5b50`, `0x6f5bd8`, `0x707884`; 5 of 47 callers read). `0x70a30c` is only the upgrade preview. A row label set through `0x56e808` -> `0x547564` takes a plain `char*` (strlen), so a plugin's static string works. Pad menu bits in that word: Select 0x1 and Start 0x8 verified by `0x65f808`/`0x65f830` (`0x65f808` starts with PC-relative loads, so do not hook it); L3 0x2 and R3 0x4 are inference from table `0x162aa24`, and no smithy handler, preview slot or cursor mode (table `0x162d0c0`) tests 0x2 or 0x4. Finish keys a craft reports: kind, the row's 0-based level, category and number in one word (`00140012` craft, `01140012` upgrade, `42140012` the game's own upgrade screen).
+
+**Item limit.** `[[[main+0x18583a8] + 0x1c] + 0x64] - 1` is the loaded `rItemData`'s last ID, the bound lookup `0x192530` uses: 2990 on 1.4.0 (2991 records), 3055 records with Definitive Edition.
+
+**Loaded smithy tables.** `0x152960(0, file ID)` is the smithy's own lookup (`0x6f0870`): file table `0x15a0ce0`, then the resource manager's find `0xbcba9c` (`sResource` vtable `0x1795948` slot 0x38), which never loads and returns a loaded resource with +0x48 raised, or 0; release through `0x887660` (slot 0x3c, `0xbc8414`), as the window's destructor `0x6f02fc` does. File IDs are `~crc32` of the path: `weaponCreateW..` 0xf4a4.., `armorCreateA00..04` 0xf4b2.., `decoCreate` 0xf4b7, `weaponProcessW..` 0xf4b8.., `armorProcessA00` 0xf4c6 (`arc/facility/blacksmith.arc`, loaded with a town area), `weaponNNBaseData` 0xdde4.. (`loc/arc/resident.arc`). Count +0x64, records at `[+0x6c]`. DTI sizes: `cWeaponCreateData` 44 (`mLv` +4, `mNo` +6, `mItem` +10, `mNum` +18), `cWeaponProcessData` 36 (`mNo` +4, `mLv` +6, `mItem` +8, `mNum` +16), `cArmorCreateData` 48 (`mNo[4]` +4, `mItem` +14, `mNum` +22), `cWeaponNNBaseData` 40 (`mDeriveLv[5]` +28, `mDeriveID[5]` +33; +26/+31 for tables 04 and 06, `cLongWeaponBase`). The loose `nativeNX/table/` files equal the archive entries (47 of 47).
+
+Do not: sum a smithy row's three piece slots into a cost (337 item IDs there, none shared with the 1,733 in the four item slots, and the runtime row has none); read a gear pack at `sPlayer::Instance + 0x7c` (unverified, read `kind=255`).
+
+## Equipment stats, decorations and skills
+
+Static reading from `work/wishfinder/PLAN.md`: the game's detail-panel getters and table objects, with RomFS cross-checks.
+
+- Equipment, through the game's own detail-panel getters on a `cFestaEquip`. They read only the record's +4 (type in
+  bits 0..4, level counted from 0 in bits 5..9) and +6 (number), plus +8 by `0xdb09c` (a variant number, 0 = use +6),
+  and none calls a virtual on the record, so a zeroed 44-byte buffer with +4 and +6 set is enough (constructor
+  `0xdaba4` and `reset` `0xdac14` exist if a full object is ever needed). Each looks the item up through `sEquip`
+  (`0x13f03c` -> `0x13c208`, cell `0x1856b18`, as Wishlist's names do) and, for per-level values, the table object's
+  virtual +0xd8(level). Paired with their labels in the game's detail panel `0x57f5ac` (message file 1 is
+  `CommonMsg`, 9 is `StartMenuMsg`):
+
+  | Getter | Value | Label |
+  | --- | --- | --- |
+  | `0xdb7e0` | Attack, weapons (type 7..21) | CommonMsg 0x36 "Attack" |
+  | `0xdb88c` | Affinity, weapons | StartMenuMsg 0x105 "Affinity" |
+  | `0xdbe74` | Defense: armor through the table's +0x120(level), weapons through the level object's +0x2c | CommonMsg 0x38 "Defense" |
+  | `0xdb984(record, i)`, `0xdba5c(record, i)` | Element type and value, i = 0, 1 | CommonMsg 0x37 "Elem." |
+  | `0xdbf78(record, i)` | Armor and talisman value i through the table's +0x150 (resistance, inference) | |
+
+- Raw table objects, when a getter is missing. Every weapon family's level object has the same virtual interface,
+  each reading its own offsets: +0x28 attack, +0x2c defense, +0x30 affinity, +0x34 element value, +0x38 slots (checked
+  on families 00, 08, 10 and 04, the 15, 17, 31 and 100-byte layouts). Armor table objects (`cArmorNNBase`, record
+  pointer at +4, runtime layout `cArmorSeriesBase` 140 bytes, DTI field names): +0x1c rarity (`mRare` +0x73), +0x28
+  base defense (`mDef` +0x76), +0x2c this part's slots (`mHeadSlotNum` +0x78 on the head class), +0xf8..+0x108 the five
+  resistances (signed bytes +30..+34), +0x148(i) / +0x14c(i) this part's skill i type and points.
+- Decorations: `0x194230(sItem, item)` (25 direct callers; sItem cell `0x18583a8`) returns the 12-byte `cDecoBase`
+  for items 2638 on, or null outside the table: +4 slots, +5 / +6 skill types, +7 / +8 points (signed), DTI names.
+- Skill names: `0x4cf018(*(*0x1896c20 + 0x13c), type)` returns a 24-byte record whose +4 is a message index;
+  `getMessage` `0xb84114` on the table at cell `0x1896c28` with index * 2 (the item panel at 0x62aefc does this).
+- Item names and descriptions: `getMessage` on cell `0x18583ac` (Wishlist's `ITEM_TEXT_CELL`) with `data+8` * 2 for the
+  name and * 2 + 1 for the description (the game's own `0x72ccc0` ORs in the 1).
+- Rarity is stored one below what the game shows (itemData +5: Antidote Jwl 2 stores 4, shows 5; armor Bulldrome 0,
+  shows 1); whether a getter already adds the 1 is checked when the panel is built.
+
+Cross-check fixtures from the RomFS (for tests, not shipped): `decoData.deco` record item-2638 = {slots, skill A,
+points A, skill B, points B}, Antidote Jwl 2 `02 01 03 04 ff` = slots 2, Poison +3, Stun -1 as in the screenshot;
+`skillTypeData_eng.gmd` text 2*i (1 Poison, 4 Stun); `armorSeriesData.asd` (127-byte file records) Rathalos S (446)
+res 4/0/-2/0/-4, head slots 0; Bulldrome (44) res 0/2/-2/1/0, arm slots 1; `armorBuildData.abd` per-level increases
+give 58+8+8+8 = 82 (Rathalos Helm S level 4) and 12+4+4+4+8 = 32 (Bulldrome Braces level 5), the screenshots' values;
+`itemData_eng.gmd` name 2*id, description 2*id+1. Weapon level files: families 00..03, 07, 13 are 15 bytes in the wiki
+`w00d_lvl` order; the others differ, which the runtime interface hides.
+
 ## Armor names
 
 `armorSeriesData_eng` holds ten strings per series number: five piece names in part order, then five descriptions. Matching a piece name within its part gives one series for 5,405 names and two for 232 (Mosgharl Vizor: series 76 and 694); none match zero or more than two. Treat a piece as owned when either series is in the box for that part.

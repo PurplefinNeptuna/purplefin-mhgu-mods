@@ -22,6 +22,22 @@ A tier is a per-weapon band of points, not a percentage. In runs, 250 points cro
 
 A hunter changes weapon at the box, never mid-quest (tester). A weapon with no sharpness, such as a bowgun, has no gauge row at all, and the HUD is also absent in the hub and during loading screens.
 
+More code, read from the bytes for World Sharpness Gauge:
+
+| Address | Meaning |
+| --- | --- |
+| `0x26893c` | `uPlayerBase::getSharpnessType`, returns `mSharpnessType` |
+| `0xf4724` | Level object slot 0x80, threshold lookup: the u16 at `row + 4 + 2*i` of the row slot 0x20 picks, through the data singleton (`0x13f290`, then `0x12db78`) |
+| `0x62bb0c` | Gauge colour driver (slot 0x3c of widget vtable `0x1776300`, vtable word `0x177633c`): tier through vtable +0x1fc, clamped to 6, indexes sequence table `0x1638ecc`, or `0x1638ee8` while `player+0x2844 & 0x200` (Heavy Polish); stores the sequence at +0x50 and applies it through `0x546c74` -> `0xa3896c` |
+| `0x61912c` | HUD widget driver; its case 8 reads +0x2784 through vtable +0x1a0, not the tier |
+| `0x2ac990` | `ChallengeSheath`: a random gain on a condition, current points only |
+| `0x27bcd0` | Another gate in the chain, unexercised |
+| `0x27c7ec` detail | Case 1 loads `*(player+0x13c4)` and reads byte +0x4d4, answering 1 for the values `(v-4) & 7` that bit mask 0x47 selects (`0x27c844..0x27c86c`) |
+| `0x27b918` setters | Only `0x259aec` (`uOtomoLobby`) and `0x275bd4` (`uPlayerPreview`, when param byte +0x4d4 is 15) set it; both are 10064-byte lobby classes |
+| `0xe1eec` | Also reached from the player update path `0x27b9c8`; rerunning it does not move `mMaxSharpness`, so take the maximum from `mMaxSharpness` only |
+
+`adjustSharpness` fires event 0x1c (tier down), 0x1d (tier up) or 0x1e (reached the maximum) through vft+0x3ac; 14 call sites apply positive amounts (whetstones and the like). The base data is reached by `FUN_00aa8814(&mpPlParam->mStatusParam, 0)` then `FUN_00b0803c` over the singleton pair at `DAT_00c65ec0 + 0xc65e54` (Ghidra names). `/DTI_Types/WpDatEntry` (68 bytes): `Sharpness` +21, `SharpnessQuality` +22, `WeaponId` +58, `WeaponNameId` +60. `mCmdTblId` at player +9388 identifies the weapon's command table: 1000 Long Sword, 2000..2033 Dual Blades, 9999 none (bowgun).
+
 ## RomFS tables
 
 All in the dump's `nativeNX/loc/arc/resident.arc`.

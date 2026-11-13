@@ -50,15 +50,28 @@ Every GUI tree a mod here has mapped. Sizes are each row's own; never copy one r
 
 | Screen / row | Resource and animation | Tree | Reached through | Detail |
 | --- | --- | --- | --- | --- |
-| Quest counter, quest row | `counter.gui` (`eng\GUI\05_meeting_p\count\counter`) animation 20 | 12 objects, 15 sequences, 9 drawables, no cache prefix. Null index 1/ID 14, icon texture 2/ID 12, request texture 3/ID 20, title `cGUIObjMessage` 4/ID 6. Atlas 21 is `HD_cmn_icon_GSM_NOMIP` | Row builder `0x616cb0` (7 args), from parent `0x54d030`, which rebuilds every row each frame the list shows. Row instances 16..23 | `mods/key-quest-markers/DEVELOPMENT.md` |
+| Quest counter, quest row | `counter.gui` (`eng\GUI\05_meeting_p\count\counter`) animation 20 | 12 objects, 15 sequences, 9 drawables, no cache prefix. Null index 1/ID 14, icon texture 2/ID 12, request texture 3/ID 20, title `cGUIObjMessage` 4/ID 6. Atlas 21 is `HD_cmn_icon_GSM_NOMIP` | Row builder `0x616cb0` (7 args), from parent `0x54d030`, which rebuilds every row each frame the list shows (reached from the counter's update, vtable `0x177d808` slot 0x24 `0x6e243c`). Row instances 16..23 | `mods/key-quest-markers/DEVELOPMENT.md` |
 | Quest counter, rank and star rows | `counter.gui` animation 1 (`Anm_list_v00..07`) | 18 objects, 9 sequences, 14 drawables; Null ID 14 at the quest row's place, texture ID 7 (index 5) under it | Counter list draw `0x782af8` runs the rank, star or quest row builder for the page; instances 8..14 and 24 | [Quests and progression](quests-and-progression.md#counter-pages-and-their-rows), `work/wishfinder/COUNTER_PAGES.md` |
 | Smithy list rows | `shop_menu.gui` animation 25 | Root plus `Tex_icon` (index 1, ID 2, 34x34 at -7,-2), `Mes_name`, `Mes_num`, `Mes_runk`, all directly under the root; 4 sequences, 4 drawables, no prefix. Atlas `HD_lobby00` is ID 9 | Smithy UI object slot 2 (`*(this+0x34)+8`), `cUIOFacilityShopMenu`, update `0x58b908` draws row i on instance `0x16254dc[i]` (7+i) | `mods/wishfinder/DEVELOPMENT.md` Smithy |
 | Quest HUD sharpness row | `hud0.gui` animation ID 4 (`sharp`), table row 7 | Resource: 4 objects, 15 sequences, 3 drawables. Runtime halfwords at row+8 read 3 and 16, and the draw block has an animation prefix. Bar, glow and edge are siblings under the controller | Draw walker `0xa494a0`; capture the instance whose +0xdc is the controller | [Sharpness](sharpness.md) |
 | Start menu | `uUIStartMenu` (lobby `uUILobbyStartMenu` vtable `0x177e424`, quest `uUIQuestStartMenu` `0x177aeb8`) | Top index +0x4c (5 Hunter's Notes), submenu row +0x50, page step +0x58, rows +0xb0 (8-byte {u8 enabled, u32 text}, count +0xb4 = 7), help lines +0xc8 (12 bytes, count +0xcc) | Slots 0x9c fill, 0xb0 "has a submenu", 0x8c help, 0x78 close, 0x68 run page | `mods/wishfinder/DEVELOPMENT.md` Hunter's Notes |
-| Item Pouch screen | `cUIOItemPouch`, start menu slot 4 (vtable `0x1770b50`), controller at menu +0x220 | Eight rows at +0x62 + row*6 {u16 item, s16 count, u8 usable, u8}; title `char*` +0xb8; description window +0x9c (shared with other screens); side menu +0xa4 | Open `0x1869ec`, close `0x188bec`; draw slot 0x4c `0x5bb5ac` | As above |
+| Item Pouch screen | `cUIOItemPouch`, start menu slot 4 (vtable `0x1770b50`), controller at menu +0x220; rows are `menu_itemPouch.gui` `Anm_mesM00..07`, ids 17..24, instance table `0x1770bb0` (exactly eight; more needs new instances) | Eight rows at +0x62 + row*6 {u16 item, s16 count, u8 usable, u8}; title `char*` +0xb8; description window +0x9c (shared with other screens); side menu +0xa4 | Open `0x1869ec`, close `0x188bec`; draw slot 0x4c `0x5bb5ac` | As above |
 | Reward (result) screen | Result lists, group records stride 0x28 | Root ID at `list+group*0x28+0x160`, node-ID arrays at +0x16c; frame colours are sequence data (`0xf4242` plus a variant) | Holder lookup `0x546f84`; refresh `0x623c68` only assigns icons and visibility | `mods/please-do-better/DEVELOPMENT.md` Native slot and frame bindings |
 | Centre popup | `cUIOInfoWindow`, UI object 1 | Lines grouped up to six | `0x65ddc4(0, 99, text, 0)`; group `0x65dce4`/`0x65dd24` | `mods/wishfinder/DEVELOPMENT.md` Arrival popups |
 | Button guide | UI object 5 | Ten per-button slots +0x248 (UI instances, not text), four extras +0x228 {s32 icon, char* label} | Presets `0x65e794(preset, flags)`, extra `0x65e8cc(icon, label)` | WishFinder Button guide; icons in [Input and actions](input-and-actions.md#button-names-and-icons) |
+
+Rank and star row detail (`work/wishfinder/COUNTER_PAGES.md`):
+
+Both pages switch the list (`cUIOQuestList`, holder `+0x24`) to GUI identity 4 (`0x546f28`/`0x56e61c`).
+`counter.gui` (KQM's English HD fixture; parser in KQM r17 `scripts/gui_layout.py`):
+- Rank rows: instances 8..12 (`0x616164` table: 8, 9, 10, 11, 12).
+- Star rows: instances 8..14 and 24 (`0x1635118`), named `Anm_list_v00..v07`; stamps 36..43 (`0x1635138`).
+- Both play animation 1: 18 objects, 9 sequences, 14 drawables. Index 0 root ID 1; index 1 Null ID 14
+  at X -548 (as the quest row's); its direct children: messages ID 11 (64,10), 6 (36,11), 13 (40,9);
+  textures ID 7 (index 5, at 0,0) and 16 (index 7); Nulls 19 (316,22) and 21 (375,22).
+  So a `Layout` {animation 1, 18, 9, 14, source (5, 7), parent 14, atlas 21} fits; position unchosen.
+- Quest rows are `Anm_list_S00..S07` (instances 16..23, animation 20), as `gui::QUEST_ROW`.
+- `read_rows` takes consecutive instances; star rows need the 8..14, 24 list.
 
 UI objects 1 and 5 belong to the UI manager in cell `0x1899458`, reached as `0x65cb3c(0x55d2b4(*cell, 0), n)` (wrappers load the cell through GOT word `0x1838bd8`). `0x65cb3c(ui, n)` also gets a screen's own UI object n (the counter's quest list is `0x65cb3c(counter, 2)`, holder +0x24).
 
@@ -74,6 +87,27 @@ Part helpers used on list screens: text `0x56e808(screen, instance, part, char*)
 | Request texture | Index 3/ID 20, existing request-bubble visibility |
 | `cGUIObjMessage` | 352 bytes, title index 4/ID 6, CRC `0x2fb82eae` |
 | `cGUIObjText` | 384 bytes, a different class from the title |
+
+`cGUIObjMessage` operations (title of the counter row; source: `mods/key-quest-markers/DEVELOPMENT.md`):
+
+| Operation | Address / contract |
+| --- | --- |
+| AutoScale setter | `0xa53348`, two integers, preserves all but +0xf0 bit 0. Dispatch `0xa42374..0xa423cc`, clamp `0xa449c0` |
+| AutoWrap setter | `0xa53324`, two integers, +0xf8 bits 18..19; enum 0 disables wrapping |
+| Size setter | `0xa53528`, object and float2 pointer, writes +0xc8/+0xcc |
+| FontSize invalidation tail | `0xa5350c`, ORs +0xf0 bit 16 |
+| Cached-layout refresh | `0xa53aa8` checks bit 16, calls virtual +0x70, then clears it |
+| Message type getter | `0xa56ab8`, GOT input main+`0x183f0b0` |
+
+Size and AutoScale do not invalidate cached glyphs: set +0xf0 bit 16 after a real layout change. The counter title's own values are width 355, height 38, AutoScale 0, AutoWrap 0. The `cGUIObjText` subclass (CRC `0x313f6cc4`, 384 bytes) is a different class.
+
+Allocation and ownership, read from the bytes for the counter row:
+
+- The object map uses `cGUIInstance`'s MT allocator (alloc1 at vft+0x1c, GOT slot `0x18422b4`): built by `0xa38bc0`, destroyed by `0xa38b58`/`0xa38828`. `0xa38828` passes instance+0x6c to `0xa38bc0`, which writes that cGUI owner into every child +0x74.
+- Map readers besides cleanup `0x5456e4`: `0x546360`, `0x547a14`, `0x548438`. Count getter `0xa38ffc` calls tree traversal `0xa47d2c` and adds the root.
+- The row's draw cache allocator/free (virtual +0x58/+0x5c, `0x540c08`/`0x540c38`) and root destructor `0xa48668` read the same allocator DTI GOT slot `0x183ef98`, so a replacement cache from that allocator is freed correctly.
+- `cGUIObjTexture` DTI vtable main+`0x178ff90`: destructors `0x32c` and `0xa568a8`, factory `0xa4f550`, null +0x0c; placement constructor `0xa4f60c`, Polygon base `0xa4d0d8`.
+- GUI part helpers: identity `0x546f28`, visibility `0x56e530`, colour `0x56e6fc` (four integer arguments; colour writes all four vertices). The row builder sets the request's visibility through `0x56e530`/`0x545630` -> `0xa47950`, so +0x54 bit 0 is the displayed state right after the builder returns.
 
 Derive fixture class CRC/getDTI from the selected resource. Shared setter addresses do not identify an exact subclass. A test using the same wrong class assumption can pass while the real title guard rejects every row.
 
@@ -116,6 +150,52 @@ Flag word +0x54, read from the bytes on 2026-11-01. The constructor default `0x0
 | 22 | Byte +0x56 bit 6. The texture's enter skips its scissor branch when set (`0xa4e670`). |
 | 25 | Drawable. The walker emits enter and exit records on it; byte +0x57 bit 1 is the same bit. |
 
+Code map for HUD rows (World Sharpness Gauge `DEVELOPMENT.md`): walker `0xa494a0` is called by `bl` from `0xa39664` (instance draw `0xa39300`) and tail-branched from `0xa56a20`; controller setup `0xa49b28`; mask enter `0xa4ba94` (vtable word `0x178fb3c`) and exit `0xa4bcdc` (`0x178fb44`, restores the clip saved at +0xc0..+0xcc); mask Enable `0xa4ba20` and Size `0xa4ba40`; linkers `0xa48460`/`0xa4844c` (called from `0xa38dd8`/`0xa38dfc`); destructors: root `0xa486fc` (frees the cache, then its child chain), mask `0xa56758`; mask factory `0xa4b6cc` via the class table at `0x178ff04`; texture vtable slots 0x00 `0xa4f6a4` (not a constructor), 0x04 `0xa4f77c`, 0x38 `0xa4e628`, 0x74 `0xa4f420`. A row's map is allocated in `FUN_01401bc0` (allocation `0xa38c14`) and freed in `setAnimationId` (`0xa38880`, `0xa382c8`) through GOT slot `0x18422b4` (DTI registered as `cGUIInstance` at `0xa3c03c`).
+
+Draw block prefix: a row with sequences starts its draw block (root +0xa4) with `sequences * 12` bytes of animation tracks. Row setup loads the block at `0xa38cfc`, and `0xa484c4` stores each object's slice at +0x64 and the object's address at +8 of each track. Row update `0xa4915c` walks the first `row+4` map entries and, for an object with bit 23, evaluates its tracks through +0x64 at `0xb349c0` (freed under it: crash at `0xb349c0` from `0xa49238`/`0xa4923c`).
+
+Pitfalls read from the bytes and runs: vtable words are already main-relative (`0x85628`, `0x86420`, `0x866a4`, `0x8677c` are the Ghidra base subtracted by mistake); flag `0x00400000` is byte +0x56 bit 6, the walker's exit clears bit 18 (`0xfffbffff`), byte +0x57 bit 1 is drawable bit 25, and word index +0x33 is +0xcc (`Mask`), not a kind word; magenta is symmetric, so prove colour order with an asymmetric colour (the sharpness bar's yellow `0xff5efaff` shows `0xAABBGGRR`); a build that wrote a texture quad every frame also faulted in the game's own update (`strb r1,[r4,#0xcb00]` at `0x1014604`, r4 = 0, from `0xf28238`), mechanism unread.
+
+Threads (static reading of 1.4.0 main, `work/world-sharpness-gauge/THREAD_RESEARCH.md`; no run has logged a thread). Chain from Forge's update to the draw walker, each link read from bytes or a decompile:
+
+1. `tools/forge-local/source/forge/plugin.cpp` `forge_plugin_onUpdateHook` wraps main+0x3da8fc: it calls the
+   original, then each plugin's `forge_onUpdate`, on the same call stack.
+2. `sFestaMain::move` (main+0x3da8fc) calls field +0x38250's slot 0x1c inline. That field is allocated at
+   0x44bb18 bytes in `sFestaMain::DTI::newInstance`, the size of `sFestaRender`. Its slot 0x1c main+0x3deb8c
+   branches to main+0xbc2904.
+3. main+0xbc2904 calls slot 0x34 of the global at 0x2126f48 inline at main+0xbc2a94 and main+0xbc2c2c,
+   passing its draw context. The same global is read at main+0x3ea0e0 by sFestaUnit's slot 0x34, main+0x3ea0b0.
+4. main+0x3ea0b0 loops the unit groups and calls each unit's slot 0x30 directly, no job.
+5. uGUI's slot 0x30 main+0x919760 calls its slot 0x58 or 0x5c at main+0x919854. Those end in branches to
+   main+0xa34070 (main+0x919ce0, main+0x91a050).
+6. main+0xa34070 calls instance slot 0x3c at main+0xa341c8. cGUIInstAnimation's slot 0x3c is main+0xa39300,
+   whose `bl` at main+0xa39664 is the walker main+0xa494a0.
+7. The walker's only other direct branch, main+0xa56a20, is a vtable slot (word at main+0x178fc18) that forwards a
+   node's +0xcc controller to the walker: a nested walk, reached from inside a walk.
+
+So the walker, `check_liveness` and the mask's enter run inside `sFestaMain::move`, and `insert::run` runs after it
+returns, on the same thread.
+
+Other threads:
+
+- sRender's own thread: created in main+0xbbca50, entry main+0xbbd7fc, frame body main+0xbbe9c8, handoff events at
+  +0x1c4 and +0x1e0. Its body issues graphics calls. None of the sUnit slot 0x34 sites is in it.
+- Worker queue: main+0xba67b4 enqueues, workers are made in main+0xba45c0. `sFestaMain::move` queues one job per
+  frame at main+0x3dadd4, entry main+0x3daf88: fields +0x382ec, +0x38364, +0x38314, +0x38318. By allocation size
+  those are sPop 232, sOtodokeService 88, sShell 30108 and sUIObject 56 (inference from size). Nothing was seen
+  that waits for this job, so it can overlap `forge_onUpdate`.
+- sUIObject's slot 0x1c main+0x65c108 prunes its list and calls entries' slot 0x04, so it destroys objects on that
+  job. The class list is `cUIO*`; uGUI's parents are uFestaGUI, uGUI, uCoord.
+- main+0xba62a8 runs batches and waits for them: synchronous, so it does not extend past its caller.
+
+Not closed:
+
+- 13 more functions call sUnit's slot 0x34 (main+0x8aa280 .. main+0x9ad854), and 10 other slot 0x3c call sites sit
+  in main+0xa3d6d0 .. main+0xa54650. Their callers were not traced to a thread entry.
+- Whether a gauge row's owner is a `cUIO*` object on the sUIObject job. The area-change teardown path is still
+  unproven (see the understanding skill's Rules), so a destructor overlapping `insert::run` is not excluded.
+- Confirmation needs a test build that records the current thread in the walker and compares it in `forge_onUpdate`.
+
 Draw walker `0xa494a0`: with root +0x8c bit 0 set, it rebuilds an 8-byte record list, `(0,node)` on entry when drawable, `(1,node)` on exit, `(2,…)` to end. It descends +0x68, follows +0x6c, pops to +0x70 on a zero sibling, and stops when the next node is the root. It then consumes the list in order: kind 0 calls slots 0x38 and 0x3c, kind 1 calls slot 0x40. Slot 0x38 on a texture is `0xa4e628`, on a scissor mask `0xa4ba94`.
 
 Object +0x74 does not point to the animation instance. Native factory `0xa38bc0` establishes owner/resource links. Holder lookup uses the primary table at +0xf8/count +0x298 and the alternate table +0x294 for higher indices. Counter row instances 16..23 have their own maps/root objects.
@@ -131,6 +211,8 @@ Loaded texture 22 identifies the audited white lobby emblem at logical rectangle
 Size/AutoScale updates also need title +0xf0 bit 16 to rebuild glyph caches. Parent/root transform and sorting dirty state must be updated after structural changes. Some float setters use hard-VFP s-register arguments.
 
 The resource theme audit traces Gathering Green `#006305` and objective Red `#A30000` to native properties. The objective instance overrides its shared Message template. Slaying category Red `#CC0000` is a separate colour. Current badge user labels are Green/Red/Grey, with completed Grey `#808080`. Historical yellow/purple badge palettes are superseded.
+
+Reward screen frames: layout setup `0x623a6c` starts sequence `0xf4242` plus a variant on the group's background root (`0x56e538` -> `0x546c74` -> root `0xa3896c`, which restarts only on a different ID); that colours Base rows red and Wound/Cap rows blue. A Base frame's corners hold `0xa02337dc` (R 0xdc, G 0x37, B 0x23, alpha 0xa0) over a light texture, so a white vertex colour shows the texture itself. The cursor's yellow cell comes from a path not yet read. Shaders: `root.arc` holds one shader resource of 58,841,740 bytes unpacked, past what a 24-bit size helper allows (ARC sizes are `flags & 0x1fffffff`); loader `0xce1fbc` checks SPK magic, version 0x26 and shader version `0xb2d34c60`. The exact GUI vertex program and constant-buffer bindings are unresolved.
 
 Reward world-quad helper `0xa4b390` combines anchors +0xa0, size +0xb4, matrix +0x10, direction bit 0x40 at +0x56, and hard-VFP scale s0. A scissor mask's enter calls the same builder with its own node and its +0xa8/+0xac size, so its box starts at its own +0x40/+0x44 translation. Scissor `0xa37c1c` applies draw offsets/scales and viewport intersections, writes the render target's scissor at target +0xe4..+0xf0 and stores the request at context +0xd0..+0xdc (one Eden run read the box at x1.5 there); sentinel fallback is at `0xbc12d8..0xbc1364`. A computed world quad does not establish framebuffer coordinates. The exact shader/constant-buffer route remained unresolved in that experiment.
 
