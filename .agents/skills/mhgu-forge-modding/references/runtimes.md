@@ -80,7 +80,7 @@ When input updates and where an edge is valid: [Input and keybinds](input-and-ke
 | | Switch, Eden, Ryubing | MHGURecomp | gu-native |
 | --- | --- | --- | --- |
 | Source | `nn::hid`: handheld, else player 1 (`input.cpp`) | The host pad state; keyboard from SDL | Same HLE code (`forge.c`) |
-| Forge menu key | `[menu] key` in Forge's `config.ini`, default F9 (66), keyboard only | Insert (73) by default, the same ini key if a mod ships Forge's config, or "Open the Forge menu" in the port's Mods tab | Not read |
+| Forge menu key | `[menu] key` in Forge's `config.ini`: Insert (73) in the shipped `data/config.ini`, F9 (66) only if no ini is found; keyboard only. Ryujinx needs "Direct Keyboard Access" in its input settings | Insert (73) by default, the same ini key if a mod ships Forge's config, or "Open the Forge menu" in the port's Mods tab | Not read |
 | Game input while Forge's menu is open | Still reaches the game | Blocked: the game gets no controller input (README) | Not read |
 | Extra calls | None | Mouse, keybind and `forge_graphics_isMenuOpen` ([Input and keybinds](input-and-keybinds.md#mhgurecomp-extras)) | `forge_graphics_isMenuOpen` only, at `9a1aef7` |
 
@@ -100,7 +100,7 @@ Hub, WishFinder). Load order rules per host are in
 | --- | --- |
 | Using `Input::is_button_pressed` in `forge_onUpdate` or a game hook | Forge updates input once per rendered frame, so the edge repeats or is lost. Read `is_button_down` and keep your own previous state there ([Input and keybinds](input-and-keybinds.md)). |
 | Expecting Forge to hide a press from the game | It never does. Blank the game's pad records after `sPad::move` while your window owns input (WishFinder's welcome window). |
-| Telling Switch players to open Forge's menu with a button | Stock Forge 1.5.1 opens it with a keyboard key only (F9). Give console players another way to change a setting. |
+| Telling Switch players to open Forge's menu with a button | Stock Forge 1.5.1 opens it with a keyboard key only (Insert in its shipped config). Give console players another way to change a setting. |
 | Importing MHGURecomp's extra calls (`forge_input_getMouse`, `setKeybind`, `isMenuOpen`) | Stock Forge does not export them, so the import check fails on Switch and emulators. No optional-import method is researched. |
 | Placing ImGui drawing from HUD node positions, or cutting a HUD sprite with a scissor | gu-native and UIScale move HUD quads after the game draws them. Use the sprite's own geometry at its draw ([HUD movers](native-gui-extensions.md#hud-movers-gu-native-and-uiscale)). |
 | Treating Forge's `io.DisplaySize` as the game's picture | It is the swapchain (Switch), the window surface (MHGURecomp) or the whole window with a letterboxed picture inside (gu-native) ([Runtimes](#imgui-on-each-host)). |

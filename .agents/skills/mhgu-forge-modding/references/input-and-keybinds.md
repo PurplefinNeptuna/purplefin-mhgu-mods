@@ -78,8 +78,10 @@ at all; on Switch and the emulators it still does. Ignore your hotkeys while
 ## Forge's own menu
 
 Stock Forge 1.5.1 toggles its window on a **keyboard** key only:
-`[menu] key` in `nativeNX/forge/config.ini`, default 66 (F9)
-(`graphics.cpp` `Graphics::render`, `config.c`). A Switch player with no
+`[menu] key` in `nativeNX/forge/config.ini`. The `data/config.ini` Forge ships
+sets 73 (Insert); 66 (F9) is only the fallback when no ini is read (`graphics.cpp`
+`Graphics::render`, `config.c`, `include/forge/input.h`). On Ryujinx the key
+reaches the game only with "Direct Keyboard Access" on (Forge's README). A Switch player with no
 keyboard cannot open it, so a setting a player must reach on console needs
 another way in (an in-game row, an ini). MHGURecomp opens it with Insert (73)
 by default or from "Open the Forge menu" on its settings' Mods tab, and closes it

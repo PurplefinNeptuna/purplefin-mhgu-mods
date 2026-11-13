@@ -6,6 +6,15 @@ import subprocess
 import zlib
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
+# ARC 17 unpacked size: the low 29 bits of the entry's flags word, as WishFinder's
+# reader checks on all 14,154 entries of 1.4.0 and Definitive Edition 2.0.0; the top 3 bits are flags.
+SIZE_MASK = 0x1fffffff
+
+
+def checked_size(n):
+    require(n <= SIZE_MASK, f'Resource too large for an ARC entry: {n}')
+    return n
+
 def digest(data):
     return hashlib.sha256(data).hexdigest()
 
@@ -35,7 +44,7 @@ def read_arc(path):
         data = decoder.decompress(packed) + decoder.flush()
         require(decoder.eof and not decoder.unused_data and not decoder.unconsumed_tail,
                 f'Invalid compressed block: {key}')
-        require(len(data) == flags & 0xffffff, f'Invalid resource size: {key}')
+        require(len(data) == flags & SIZE_MASK, f'Invalid resource size: {key}')
         entries[key] = dict(index=index, raw=raw, offset=offset, size=size,
                             flags=flags, packed=packed, data=data)
     ranges = sorted((e['offset'], e['offset'] + e['size']) for e in entries.values())
@@ -55,7 +64,7 @@ def repack(blob, baseline, selected):
         out.extend(donor['packed'])
         table = 12 + entry['index'] * 80
         struct.pack_into('<III', out, table + 68, len(donor['packed']),
-                         (entry['flags'] & 0xff000000) | len(donor['data']), offset)
+                         (entry['flags'] & ~SIZE_MASK & 0xffffffff) | checked_size(len(donor['data'])), offset)
         cursor = entry['offset'] + entry['size']
     out.extend(blob[cursor:])
     return bytes(out)
