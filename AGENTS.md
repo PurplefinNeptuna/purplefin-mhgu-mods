@@ -171,8 +171,9 @@ checks in `scripts/doc_rules.py` (current-state length, version chains, previous
   Build steps are in docs/TOOLS.md. The user starts it with
   `/mnt/storage2/Programs/Ryubing-1.3.3/run.sh`, which copies the Eden save in
   and, after exit, back to Eden (Eden backups in `save-backups/eden/`), and
-  copies each Eden mod folder's `exefs`/`romfs` into Ryubing's mods with Eden's
-  enabled state in `portable/games/0100770008dd8000/mods.json`. Never
+  copies each Eden mod folder's `exefs`/`romfs` into Ryubing's mods. Enabled
+  state in `portable/games/0100770008dd8000/mods.json` is Ryubing's own; only a
+  mod new to that file starts with Eden's state. Never
   symlink the save: LibHac deletes and renames slot `0` on every commit.
 - Ryujinx-Nextendo: `/mnt/storage2/Programs/Ryujinx-nextendo/portable/Logs/` and
   `portable/mods/contents/0100770008dd8000/` under that installation. By the
@@ -184,13 +185,15 @@ checks in `scripts/doc_rules.py` (current-state length, version chains, previous
   `mods/load_order.txt`; saves are in `~/.local/share/MHGURecomp/save/save_0/`.
   The user starts it with `/mnt/storage2/Programs/MHGURecomp/run.sh`, which
   copies the Eden save in and back (backups in `save-backups/eden/`), copies
-  each Eden mod's `romfs` into `mods/` except those in its `EXCLUDE` list, and
-  writes Eden's enabled state into `load_order.txt`. Its log is
+  each Eden mod's `romfs` into `mods/` except those in its `EXCLUDE` list.
+  Enabled state in `load_order.txt` is Recomp's own (`EXCLUDE` mods forced
+  off); only a mod new to that file starts with Eden's state. Its log is
   `recomplog.txt` beside the executable, replaced each run: `run.sh` tees the
   launcher and game output there, so the game's own `log.txt` is not written.
-- So Eden's `load/` folder is the one mod set for all three emulators: a mod
-  added or disabled there reaches Ryubing and MHGURecomp at their next
-  `run.sh` launch.
+- So Eden's `load/` folder is the one source of mod files for all three
+  emulators: a mod added or updated there reaches Ryubing and MHGURecomp at
+  their next `run.sh` launch. Enabling or disabling a mod in Eden does not
+  reach a host that already lists it; toggle it in that host.
 
 Folder presence proves no activation, and library contents are not installed
 mods. After a reported run or failure, read that emulator's latest log and

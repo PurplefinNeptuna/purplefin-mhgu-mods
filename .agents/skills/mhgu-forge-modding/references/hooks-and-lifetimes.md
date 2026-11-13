@@ -18,7 +18,7 @@ Forge loads every NRO first, then runs each `forge_onLoad`/`forge_onInit` in the
 
 - Eden: `.nro` file name in byte order (`references/eden/src/core/file_sys/fsmitm_romfsbuild.cpp` sorts every path); the mod folder name only decides file conflicts.
 - Ryubing: mod folders in the host's directory listing order (`ModLoader.cs` `EnumerateDirectories`, unsorted; LibHac's RomFsBuilder keeps insertion order), files sorted inside each folder. NTFS lists by name, so on Windows it is folder-name order; ext4 lists by hash, so on Linux and Steam Deck it is arbitrary but stable. `games/<id>/mods.json` supplies only the enabled flag, never the order.
-- MHGURecomp: `mods/load_order.txt` top to bottom; a folder it does not list loads after the listed ones, by name. With no file, every folder loads by name, those starting `_` last (`runtime/modorder.c` in `tools/MHGURecomp-source/`). The user's `run.sh` rewrites the file from Eden's enabled state.
+- MHGURecomp: `mods/load_order.txt` top to bottom; a folder it does not list loads after the listed ones, by name. With no file, every folder loads by name, those starting `_` last (`runtime/modorder.c` in `tools/MHGURecomp-source/`). The user's `run.sh` adds mods new to the file with Eden's enabled state and leaves listed ones as they are.
 - dreamSort (GameBanana tool 20124) renames enabled folders `01_name`, `02_name`, disabled ones `~name`, and rewrites `mods.json`. That orders Ryubing on Windows only.
 
 At `forge_onInit` every plugin is already loaded, so look another plugin up then. A hook installed in the first `forge_onUpdate` comes after every plugin's `forge_onInit` hooks, so it is the outermost on its site whatever the order.
