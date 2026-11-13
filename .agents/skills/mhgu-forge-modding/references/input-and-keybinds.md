@@ -53,6 +53,15 @@ On MHGURecomp, while Forge's own menu is open the game gets no controller input
 at all; on Switch and the emulators it still does. Ignore your hotkeys while
 `isMenuVisible()` is true.
 
+On MHGURecomp (0.16.1, `runtime/overlay.cpp`: `g_open = open || g_settings_open`,
+then `if (!g_open) pad = {}`), ImGui gets no controller input while its overlay
+(its settings or the Forge menu) is closed; real Forge feeds ImGui's gamepad
+navigation every frame (`imgui_impl_nvn.cpp`, `UpdateGamepadNav`). Its
+`forge_input_isDown`/`isPressed` read the pad every frame either way
+(`runtime/forge.c`, `input_frame`). So a plugin's own free-render window reads
+its buttons with Forge's input, not ImGui navigation: Purple-lib Tester's action
+window does, as WishFinder's welcome window does.
+
 ## Choosing a button
 
 - **Scope the hotkey to a screen.** The game uses every button somewhere. Ship

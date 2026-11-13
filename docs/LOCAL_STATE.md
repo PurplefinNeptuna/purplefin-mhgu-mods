@@ -20,7 +20,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Multiplayer Roaming (`online-roaming`) | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Please do Better | r33 | DEVELOPMENT | Not run (r31 accepted on Eden; r30 on Ryubing and MHGU Recomp) |
 | Purple-lib | r11 | DEVELOPMENT | Not run (r6 accepted on Eden; r4 on Ryubing and MHGU Recomp) |
-| Purple-lib Tester | r4 | DEVELOPMENT | Not run (needs Purple-lib r11) |
+| Purple-lib Tester | r5 | DEVELOPMENT | Not run (needs Purple-lib r11) |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
 | WishFinder (was Wishlist) | r68 | READY_TO_DISTRIBUTE, release | Accepted on MHGU Recomp in French and English. Needs Key Quest Markers r20+ |
