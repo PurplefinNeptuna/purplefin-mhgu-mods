@@ -650,6 +650,24 @@ literal=<script>&
         self.save_spec()
         self.rejected(lambda: distribution.check(self.root))
 
+    def test_purple_lib_client_copy_must_keep_the_record_layout_and_export_names(self):
+        record = ('#[repr(C)]\n/// Doc.\npub struct Help {\n    pub size: u32,\n'
+                  '    pub title: Option<extern "C" fn(context: *mut c_void, language: u32) -> *const c_char>,\n}\n')
+        self.write('mods/purple-lib/core/src/api.rs', (record + record.replace('Help', 'Options')
+                                                       + record.replace('Help', 'OptionRow')).encode())
+        self.write('mods/purple-lib/link/exported.txt', b'{ global: purplelib_api_version; purplelib_add_help; local: *; };')
+        client = 'const NAME: &[u8] = b"purplelib_api_version";\n' + record.replace('context: ', '').replace('language: ', '')
+        self.write('mods/purple-lib/examples/rust/client.rs', client.encode())
+        self.write('mods/other/src/client.rs', client.encode())
+        self.assertEqual(len(distribution.purple_lib_clients(self.root)), 2)
+        self.write('mods/other/src/client.rs', client.replace('pub size: u32', 'pub size: u16').encode())
+        self.rejected(lambda: distribution.purple_lib_clients(self.root))
+        self.write('mods/other/src/client.rs', (client + '// purplelib_add_helps\n').encode())
+        self.rejected(lambda: distribution.purple_lib_clients(self.root))
+        self.write('mods/other/src/client.rs', client.encode())
+        self.write('mods/purple-lib/examples/rust/client.rs', b'// no records\n')
+        self.rejected(lambda: distribution.purple_lib_clients(self.root))
+
 
 if __name__ == '__main__':
     unittest.main()

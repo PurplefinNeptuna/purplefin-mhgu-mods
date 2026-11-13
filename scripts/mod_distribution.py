@@ -563,6 +563,47 @@ def readme_version(spec, root=ROOT):
         require(not stale, f'README names {span!r} but the version is {spec["version"]}: {spec["mod"]}')
 
 
+def api_records(text):
+    """The fields of the Purple-lib API records a Rust file declares: {struct: [(name, type)]}, with
+    argument names dropped from callback types so only the layout is compared."""
+    records = {}
+    for name in ('OptionRow', 'Options', 'Help'):
+        body = re.search(r'#\[repr\(C\)\](?:\s*(?:///[^\n]*|#\[[^\n]*))*\s*pub struct ' + name + r' \{(.*?)\n\}', text, re.S)
+        if body:
+            records[name] = [(field, re.sub(r'\b\w+: ', '', kind).replace(' ', ''))
+                             for field, kind in re.findall(r'^\s*pub (\w+): (.+),$', body[1], re.M)]
+    return records
+
+
+def purple_lib_clients(root=ROOT):
+    """Every mod carries its own copy of Purple-lib's records and export names, because no mod may
+    build from a sibling. Refuse a copy whose record layout or export names differ from
+    Purple-lib's own, and return the files compared."""
+    library = root/'mods/purple-lib'
+    if not (library/'core/src/api.rs').is_file():
+        return []
+    expected = api_records((library/'core/src/api.rs').read_text())
+    require(set(expected) == {'OptionRow', 'Options', 'Help'}, 'Purple-lib API records not found in core/src/api.rs')
+    exports = set(re.findall(r'purplelib_\w+', (library/'link/exported.txt').read_text()))
+    compared = []
+    for source in sorted((root/'mods').glob('*/**/*.rs')):
+        parts = source.relative_to(root/'mods').parts
+        if {'vendor', 'target'} & set(parts) or parts[:2] in (('purple-lib', 'core'), ('purple-lib', 'src')):
+            continue
+        text = source.read_text()
+        unknown = set(re.findall(r'purplelib_\w+', text)) - exports
+        require(not unknown, f'Not a Purple-lib export: {sorted(unknown)} in {source.relative_to(root)}')
+        if 'purplelib_api_version' not in text:
+            continue
+        for name, fields in api_records(text).items():
+            require(fields == expected[name],
+                    f'{name} differs from mods/purple-lib/core/src/api.rs: {source.relative_to(root)}')
+            compared.append((str(source.relative_to(root)), name))
+    require(any(path.startswith('mods/purple-lib/examples/') for path, _ in compared),
+            'Purple-lib client check found no records in its own Rust example')
+    return compared
+
+
 def check(root=ROOT, source_only=False):
     result = []
     for directory in ([root] if (root/'mod.json').is_file() else sorted((root/'mods').iterdir())):
@@ -586,6 +627,7 @@ def check(root=ROOT, source_only=False):
                         f'Superseded/unregistered release entries must be archived: {releases}')
         result.append((mod, spec['status'], archive))
     require(result, 'No mod records found')
+    purple_lib_clients(root)
     if not source_only:
         registered = {mod for mod, _, _ in result}
         for releases in (root / 'build').glob('*/releases'):
