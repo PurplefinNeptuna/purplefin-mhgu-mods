@@ -13,7 +13,6 @@ loads the same Forge NROs.
 | Multiplayer Roaming | r15 | [Install](mods/online-roaming/README.md) |
 | Please do Better | r31 | [Install](mods/please-do-better/README.md) |
 | Purple-lib | r15 | [Install](mods/purple-lib/README.md) |
-| Purple-lib Tester | r9 | [Install](mods/purple-lib-tester/README.md) |
 | Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
 | Village Quests in Hub | r6 | [Install](mods/village-quests-in-hub/README.md) |
 | WishFinder | r68 | [Install](mods/wishfinder/README.md) |
