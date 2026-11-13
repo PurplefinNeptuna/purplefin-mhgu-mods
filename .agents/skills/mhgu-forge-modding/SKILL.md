@@ -102,6 +102,7 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 | Refusing to load because another plugin hooked the same entry | A pre/post-only hook chains onto it. Read the whole function to confirm the hook is only that, then accept the foreign hook. |
 | Reading the local player index from sUserInfo | Use session `0x188ca48` +0x30 (input-and-actions in mhgu-understanding). |
 | Using Forge `malloc` for game GUI objects | Use the class DTI's MT allocator so the native destructor frees it correctly. |
+| Sizing a row's map or cache with fixed numbers | Another plugin may have added children first. Size both from the live tree ([Native GUI extensions](references/native-gui-extensions.md#a-row-another-plugin-also-extends)). |
 | Appending a GUI child without growing the object map | The game indexes the map by the tree count and crashes. Grow map and draw cache together. |
 | Freeing or zeroing a row's draw block prefix when growing it | Objects animate through `+0x64` pointers into it. Copy the prefix and move those pointers first ([Native GUI extensions](references/native-gui-extensions.md)). |
 | Using `i32::saturating_add`/`saturating_sub` | They compile to QADD/QSUB, which Ryubing 1.3.3 cannot run, and `-dsp` does not stop them in ARM mode. Use plain or u32-capped arithmetic and gate the build ([Diagnostics](references/diagnostics.md)). |

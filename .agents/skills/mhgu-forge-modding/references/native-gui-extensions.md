@@ -1,6 +1,6 @@
 # Extend the game's native GUI
 
-This recipe is established for the quest counter row in MHGU Switch 1.4.0. It is a retained game-owned tree, with resource animation bindings and cached draw commands. Other menus need their own count, ownership, and destructor audit. For resource decoding and object layouts, use the optional companion `mhgu-understanding` native GUI reference.
+This recipe is established for the quest counter row in MHGU Switch 1.4.0 (Key Quest Markers, WishFinder) and the smithy's list rows (WishFinder). It is a retained game-owned tree, with resource animation bindings and cached draw commands. Other menus need their own count, ownership, and destructor audit. For resource decoding and object layouts, use the optional companion `mhgu-understanding` native GUI reference.
 
 ## Plan a different menu before adapting the recipe
 
@@ -47,6 +47,10 @@ Appending a child requires both storage expansions:
 The map uses the instance's MT allocator. Cache allocation must match the native cache-free/destructor path. Fully prepare replacement allocations, publish aliases/cache/tree coherently, mark sorting/transform/draw state dirty, and free replaced storage at the verified point. The native root/instance recursively destroy the child, map, cache, and graphics allocations. No extra destructor hook is required for this audited static addition.
 
 The count getter `0xa38ffc` counts the linked tree, while cleanup `0x5456e4` indexes the runtime map to that count. A 13-node tree with a twelve-entry map froze the game. Enlarging only the cache does not fix it. Original resource descriptors, first twelve animation bindings, and sequences remain unchanged. An animated addition may need another design.
+
+### A row another plugin also extends
+
+Key Quest Markers and WishFinder both add children to the quest counter row, and either may insert first. So the 13-pointer map and 168-byte cache above hold only for a row with no other additions: size both from the live tree each time. WishFinder takes the map as the live count `0xa38ffc` plus two and the cache as (the resource's drawables + nodes beyond the resource's own + 2) × 16 + 8, counting every added node as drawable, so a foreign non-drawable node only over-allocates. Key Quest Markers r19 and earlier read the map and cache at fixed sizes and crashed beside WishFinder when WishFinder inserted first. Find your own nodes by their private ID (+`0x50`), never by index.
 
 ### Size any row from its own numbers
 
@@ -117,6 +121,34 @@ The sharpness gauge's row lasts a quest (inference, see Lifecycle in `mods/world
 - Write only where the game hands over a live object. In the mask's enter, when the links are gone, turn the mask off and drop the addresses. Left alone, it keeps applying its last box.
 - Every HUD instance calls the walker, so capture the pair whose instance +`0xdc` is the controller you identified, not the last one seen. The walker has two entries: `0xa39300` calls it at `0xa39664`, and `0xa56a14` tail-branches with node +`0xcc`.
 
+## Art, colour and paired nodes
+
+- The game multiplies the vertex colour (`0xa4e0b8`, `0xAABBGGRR`) with the texel, so tintable art must be white or grey. Coloured art (WishFinder tried the yellow flag on `HD_lobby00`) cannot take a source colour.
+- Use an atlas the row's resource already loads, and check the cell in every language's atlas: item icon cell 9 (ore) is drawn differently in the German, Italian and Spanish `HD_cmn_icon_GSM_NOMIP` than in English. Modern Weapon Controls replaces that atlas with a double-size copy, so take the size from the texture header (`mhgu-understanding` resources reference).
+- Nodes that only work together (WishFinder's shadow and pin) are created together or not at all, on one rect. Link the one painted first first, and give both a Priority above the row's own (the counter row uses 0..2, WishFinder 3 and 4) so the `0xa4915c` re-sort keeps that order.
+- A row that does not need the decoration gets no children, so the native tree stays the game's own on every other row.
+
+Worked example: `mods/wishfinder/DEVELOPMENT.md` sections Quest row and Smithy (the smithy's `cUIOFacilityShopMenu` rows are `shop_menu.gui` animation 25, four drawables, no cache prefix).
+
+## Reuse a game screen as a new page
+
+WishFinder's Hunter's Notes row opens the game's Item Pouch screen with its own rows (`mods/wishfinder/DEVELOPMENT.md` section Hunter's Notes has every address). The method:
+
+- **Add the menu row in the game's own structures.** Hook the fill (write your row after the original), the "has a submenu" sizer (grow the cursor through the game's own resize call), and the help reader. Read each reader's bounds first: the start menu's help reader indexes its array by cursor row with no bound, so write the extra row only when the array really has room.
+- **Run the screen's open and close, never its step**, so nothing refills it from the game's data. The page runner hook replaces the original for your row only, because the game's open step would turn an unknown row into row 0. That makes it the one hook that does not stack under the chaining rule, and only for that row.
+- **Use setters, not the game's fill.** The pouch fill sets a name only when the row's item changed, so names go through the text setter each refill.
+- **A shared window keeps its last user's state.** The description window is shared with other screens, so place it on every refill or it stays where the last screen left it.
+- **Give the screen back.** On close, and whenever the screen draws with your title while your page is not open, reset the title and blank the rows.
+- **Some game data is empty in a quest.** The equipment message table cell `0x1856b1c` is 0 in a quest, so names and descriptions come back empty there; copy them outside quests and use the copies.
+- **The game's language** is session byte +`0xa5`, as `cQuestData::getMessage` `0x37a2e4` reads it (2 French, 3 Spanish, 4 German, 5 Italian, 7 Traditional and 8 Simplified Chinese, else English). Keep every published string alive: the game's UI holds its address.
+
+## Button guide and popups
+
+- **Guide extras.** The bottom-right guide has four free extra entries {icon, label} beside ten per-button slots. The per-button slots hold UI instances, not text, so custom text goes only in an extra (`0x65e8cc`). No game call drops one extra (`0x6437d8` drops all four), so free your own entry by hand, matched by your label's address, and lay the guide out again with its current preset; the game's entries stay. Choose L/R or ZL/ZR icons by the game's swap byte, as the start menu does.
+- **Centre popup.** `0x65ddc4(0, 99, text, 0)` queues a line on `cUIOInfoWindow`; DialogMsg 99 is `%s` inside a colour tag in all seven languages, and the text is formatted when the popup builds, so keep it static. `0x65dce4`/`0x65dd24` group up to six lines in one popup; a refused request returns -1, so retry it on the next update.
+
+Details: `mods/wishfinder/DEVELOPMENT.md` sections Button guide and Arrival popups.
+
 ## Material, geometry, and title fitting
 
 Decode `INIT_PARAM` kinds 17/18 as immediate boolean/u32 values. Treating them as section offsets concealed the real material state. `Mask=0` is normal colour drawing; Mask 1 enters mask-writing even when Visible and vertex colours are correct.
@@ -139,4 +171,4 @@ Trace handshake, original trampoline, hook entry, resource identity, attachment,
 
 Mocked GPU commands/allocations establish no actual clipping or pixels. Manual acceptance checks opening, scrolling, selection, request overlap, confirmation, closing/reopening, and scene transitions. Preserve successful payload hashes. A visible bit or successful plugin load does not establish a working GUI.
 
-Sources: `mods/key-quest-markers/src/{gui.rs,native.rs,offers.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py,arm.py}`, `research/theme-colours.json`, `DEVELOPMENT.md`, `EVIDENCE.json`; `mods/world-sharpness-gauge/src/insert.rs` and its `DEVELOPMENT.md`; `docs/RESEARCH.md`.  Native addresses in the mask, cache and flag sections were rechecked against the original bytes on 2026-11-01.
+Sources: `mods/wishfinder/DEVELOPMENT.md` and `src/{gui.rs,native.rs,hooks.rs}`; `mods/key-quest-markers/src/{gui.rs,native.rs,offers.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/{resource.py,native_adapter.py,arm.py}`, `research/theme-colours.json`, `DEVELOPMENT.md`, `EVIDENCE.json`; `mods/world-sharpness-gauge/src/insert.rs` and its `DEVELOPMENT.md`; `docs/RESEARCH.md`.  Native addresses in the mask, cache and flag sections were rechecked against the original bytes on 2026-11-01.

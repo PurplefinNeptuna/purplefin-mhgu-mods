@@ -8,7 +8,7 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 | --- | --- |
 | New or changed mod, builds, settings/INIs, packaging, release READMEs | docs/DEVELOPMENT.md, then the mod's AGENTS.md and DEVELOPMENT.md |
 | Forge plugin code, hooks, ABI, NRO builds, GUI insertion | `.agents/skills/mhgu-forge-modding/SKILL.md` (step-by-step: its `references/playbooks.md`) |
-| Game code, Ghidra/DTI, resources, IDs, native GUI research | `.agents/skills/mhgu-understanding/SKILL.md` (step-by-step: its `references/research-playbook.md`), docs/RESEARCH.md, Key Quest Markers DEVELOPMENT.md for GUI |
+| Game code, Ghidra/DTI, resources, IDs, native GUI research | `.agents/skills/mhgu-understanding/SKILL.md` (step-by-step: its `references/research-playbook.md`), docs/RESEARCH.md, Key Quest Markers DEVELOPMENT.md for GUI rows, WishFinder DEVELOPMENT.md for menus, screens and the button guide |
 | Toolbox (START_TOOLS.sh, scripts/tool.sh), ARC/GMD/Kuriimu2, models | docs/TOOLS.md |
 | HD Project resources, merge order, ownership | docs/CLEANUP_HD_PROJECT.md |
 | User-facing prose (READMEs, guides) | `.agents/skills/humanizer/SKILL.md` and the release README standard in docs/DEVELOPMENT.md |
