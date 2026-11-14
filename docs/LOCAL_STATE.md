@@ -18,7 +18,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
-| Please do Better | r37 | DEVELOPMENT | Not run (Purple-lib API version 3; r36 registers on Eden and MHGU Recomp, r31 accepted) |
+| Please do Better | r37 | READY_TO_DISTRIBUTE, release | MHGU Recomp with Purple-lib r17 (r36 registers on Eden too) |
 | Purple-lib | r17 | DEVELOPMENT | Works on Eden and MHGU Recomp (API version 3); r16 is the last release |
 | Purple-lib Tester | r10 | DEVELOPMENT, not for distribution | Works on Eden and MHGU Recomp with Purple-lib r17 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
@@ -45,7 +45,7 @@ The rollback for a current build that has no run of its own.
 | Lock-on Target | r2 | `build/lock-on-target/candidates/r2/` |
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
 | Multiplayer Roaming | r15 | `build/online-roaming/candidates/r15/` |
-| Please do Better | r31 (r30 on Ryubing and MHGU Recomp) | `build/please-do-better/candidates/r31/`, `r30/` |
+| Please do Better | r37 (r31 on Eden, r30 on Ryubing) | `build/please-do-better/candidates/r37/`, `r31/`, `r30/` |
 | Purple-lib | r17 (r16 release ZIP) | `build/purple-lib/candidates/r17/`, `r16/` |
 | Purple-lib Tester | r10 | `build/purple-lib-tester/candidates/r10/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
