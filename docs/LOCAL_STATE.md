@@ -23,7 +23,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Purple-lib Tester | r13 | DEVELOPMENT, not for distribution | Works on MHGU Recomp with Purple-lib r20 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
-| WishFinder (was Wishlist) | r69 | DEVELOPMENT, candidate | Accepted in Korean on Eden and MHGU Recomp; r68 is the release. Needs Key Quest Markers r20+ |
+| WishFinder (was Wishlist) | r69 | READY_TO_DISTRIBUTE, release | Accepted in Korean on Eden and MHGU Recomp. Needs Key Quest Markers r20+ |
 | WishFinder bridge for KatSmithy | r17 | READY_TO_DISTRIBUTE, release | Accepted on MHGU Recomp with KatSmithy of 2026-11-11 |
 | WishFinder bridge for My Weapon Tree | r8 | READY_TO_DISTRIBUTE, release | Accepted on Eden with My Weapon Tree 0.60 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
