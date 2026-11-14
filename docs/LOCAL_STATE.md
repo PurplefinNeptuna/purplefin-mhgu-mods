@@ -17,7 +17,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Key Quest Markers | r20 | READY_TO_DISTRIBUTE, release | Eden, unitemized |
 | Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
-| Multiplayer Roaming (`online-roaming`) | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
+| Multiplayer Roaming (`online-roaming`) | r16 | DEVELOPMENT, candidate | NOT RUN (r15 accepted on Eden and MHGU Recomp) |
 | Please do Better | r37 | READY_TO_DISTRIBUTE, release | MHGU Recomp with Purple-lib r17 (r36 registers on Eden too) |
 | Purple-lib | r20 | READY_TO_DISTRIBUTE, release | MHGU Recomp (128 sets, list); r18 on Eden too |
 | Purple-lib Tester | r13 | DEVELOPMENT, not for distribution | Works on MHGU Recomp with Purple-lib r20 |

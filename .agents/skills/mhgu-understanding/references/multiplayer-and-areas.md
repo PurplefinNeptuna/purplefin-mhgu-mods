@@ -26,7 +26,7 @@ All main-relative on 1.4.0, read from the bytes; "inference" marks what the byte
 | State 115 stores result 3 in `ui+0x54` when it is 0 | `0x1d86fc` | Bytes |
 | Destination menu, place picked: state 0x14 and op 14 | `0x794034` | Bytes |
 | Menu state 0x14 polls `ui+0x54`: 3 writes the travel code, 4 goes back to the lobby's group | `0x793bd0` | Bytes |
-| Destination groups `+0x6b0` 0..3 hold the villages and bedrooms, and group 2's third choice is the ranch; group 6 leads to area 6. Which place is which is inference from the user's list and the menu's shape | `0x793bf8`, `0x794110`, table `0x159f170` | Bytes, inference |
+| Destination groups `+0x6b0` 0..3 hold the villages and bedrooms, and group 2's third choice is the ranch; group 6 is the Soaratorium (area 6), its choices on screen Soaratorium, Your Room and Lab. Which village is which is inference from the user's list and the menu's shape | `0x793bf8`, `0x794110`, table `0x159f170` | Bytes, inference; group 6 from the user's screenshots |
 | Transition state 0 asks op 15 for any class but `aVillage00Online` (`0x184c910`) and `aVillage07Online` (`0x184ccf0`), through the decoder, so a request with code 0 asks nothing | `0x6bd7d0..0x6bd83c` | Bytes |
 | A walking exit stores its record at `sVillage+0x2d0`, with its ID at `+0x2e0` and 1 at `+0x2e1`. With the flag on, any ID but 3, 4, 25, 26 or 255 asks op 14 with code 0. Without it, the same exit takes the path above and asks nothing | setter `0x50cb48`, gate `0x6bd7a4..0x6bd7cc`, `0x6bdd60..0x6bdd84` | Bytes |
 | Exit ID to destination: 2 the current village or area 1, 3 Hub, 4 Hub preparation, 25 Pub, 26 Pub preparation, 7 area 5, 27 and 28 area 6. 5 goes to transition state 9, unread | table `0x6bdb58`, `0x6bdbe4..0x6bdc74` | Bytes |
@@ -56,7 +56,7 @@ All main-relative on 1.4.0, read from the bytes; "inference" marks what the byte
 | The four op 14 callers are the transition, the destination menu, the lobby menu's other lobby and page 11 | `0x6bd83c`, `0x794060`, `0x79520c`, `0x7979ac` | Bytes |
 | Transition state 1 polls `ui+0x54`: 3 or 4 continues | `0x6bd850` | Bytes |
 | Op 15 has one caller. The 17 callers of `0x1ced60` pass 1, 3, 4, 8, 9, 10, 11, 14, 15, 16, 17 and 18 | `0x6bd83c` | Bytes, `research xref` |
-| Travel codes: 5,6 area 1; 7,8 area 2; 9,10 area 3; 11,12 area 4; 13 area 5; 14..16 area 6. 1,4 Hub and 17,20 Pub pick the online class from the flag | decoder `0x6bff98` | Bytes |
+| Travel codes: 5,6 area 1; 7,8 area 2; 9,10 area 3; 11,12 area 4; 13 area 5; 14..16 area 6 sub-areas 0..2. 1,4 Hub and 17,20 Pub pick the online class from the flag; every other code has one fixed class | decoder `0x6bff98` | Bytes |
 | Lobby menu: only choosing the lobby the session is not in calls op 14. From anywhere else, a live session writes the code directly. So a trip back needs no leave skip, and the native way out of a session stays | `0x795020..0x7951e0`, `0x79537c` | Bytes; matches the user's report that the lobby can't be switched online |
 | Common scene load publishes own member state: 1 at sub-area 0 of a lobby, else 2. Slot 0x18 of `aVillage01`..`06` all branch to it | `0xfc1c`, `0x102a0` | Bytes |
 | Lobby to preparation area uses the same transition with a live session, passing a different mode to `0x4dad64`. Scene exit clearing other hunters' units is inference from that and the user's report; the destroy call is not traced | `0x6bd8c4` | Bytes, inference |
