@@ -112,7 +112,7 @@ rejected hit tags in a siege quest would settle them.
 
 ## Camera snapshot and projection
 
-Within viewport scope, +0x24 points to a camera whose audited vtable is main+`0x1730d0c`. Check mappings/class and copy view/projection arrays and rectangle while native arguments are alive. Never retain matrix pointers for the render callback. Record the camera/viewport and actual display dimensions when diagnosing resolution-dependent placement.
+Within viewport scope, +0x24 points to the camera: `uQuestCamera` (vtable main+`0x1730d0c`) in quests, `uVillageCamera` (main+`0x1730e10`) in the village (saved DTI; both `uFestaCamera`, as is `uSubSceneCamera` main+`0x1730d90`). Damage Numbers accepts the first two. Accepting the village camera is static evidence until a run logs the preview anchored in the world there. Check mappings/class and copy view/projection arrays and rectangle while native arguments are alive. Never retain matrix pointers for the render callback. Record the camera/viewport and actual display dimensions when diagnosing resolution-dependent placement.
 
 The perspective builder main+`0x7c617c` stores `cot(fov/2)/aspect` at `[0]` and `cot(fov/2)` at `[5]`, so `[5]/[0]` is the picture's shape; it leaves m[8]/m[9] at 0 (a host upscaler may write jitter there). Calling the native projection main+`0x18a48` from `forge_onUpdate` instead of capturing in the viewport scope was measured and rejected: 6 of 64 hits within 2 px, median 7.2 px, max 102.4 px, growing with camera motion (`work/damage-numbers/projection-call/RESEARCH.md`).
 
