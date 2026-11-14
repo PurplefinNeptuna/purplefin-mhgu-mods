@@ -16,6 +16,8 @@ of it.
   `src/platform.rs`), then call its version function first. Do not use `nn::ro::LookupSymbol`:
   it resolves only the game's own modules and finds nothing in a loaded plugin, and Forge
   exports no plugin symbol lookup (`mods/wishfinder/API.md`).
+- Purple-lib is not looked up at all: a mod exports `purplelib_on_register` and Purple-lib
+  calls it ([API and builds](api-and-builds.md#a-library-that-calls-its-clients-purple-lib)).
 - A plugin that exports nothing is found by its NRO build ID: walk `svcQueryMemory` for an
   R-X mapping whose first bytes are an NRO header (`NRO0` at +0x10) with the expected
   build ID at +0x40. Refuse any other build; offsets differ per build.
