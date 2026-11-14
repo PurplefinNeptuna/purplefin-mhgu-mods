@@ -627,7 +627,30 @@ def purple_lib_clients(root=ROOT):
     return compared
 
 
-def check(root=ROOT, source_only=False):
+def staged_names(root=ROOT):
+    return subprocess.run(['git', 'diff', '--cached', '--name-only', '-z'], cwd=root, check=True,
+                          capture_output=True).stdout.decode().split('\0')
+
+
+def staged_mods(root=ROOT):
+    """The mods the commit being made touches: those with a staged path under mods/NAME/."""
+    return {name.split('/')[1] for name in staged_names(root) if name.startswith('mods/') and name.count('/') >= 2}
+
+
+def packages_to_check(root=ROOT):
+    """The mods whose packages `check --touched` verifies: the touched ones, or None (every mod)
+    when the commit stages this checker or the scaffold mods are built from, which can change
+    whether any mod's package passes."""
+    if any(name.startswith(('scripts/mod_distribution.py', 'scripts/standalone_mods.py', 'templates/'))
+           for name in staged_names(root)):
+        return None
+    return staged_mods(root)
+
+
+def check(root=ROOT, source_only=False, only=None):
+    """Every mod's records and, unless `source_only`, its packages. With `only`, a set of mod names,
+    packages and build/ entries are checked for those mods alone, so a mod rebuilt by other work in
+    progress does not block a commit that leaves it alone."""
     result = []
     for directory in ([root] if (root/'mod.json').is_file() else sorted((root/'mods').iterdir())):
         if not directory.is_dir():
@@ -638,11 +661,12 @@ def check(root=ROOT, source_only=False):
                 f'Retired mod must be removed from the workspace: {directory.name}')
         readme_version(spec, root)
         archive = None
-        if spec['status'] in READY and not source_only:
+        packages = not source_only and (only is None or mod in only)
+        if spec['status'] in READY and packages:
             archive = verify_release(spec, root)
-        elif spec['status'] == 'DEVELOPMENT' and spec.get('candidate_builder') and not source_only:
+        elif spec['status'] == 'DEVELOPMENT' and spec.get('candidate_builder') and packages:
             archive = verify_candidate(spec, root)
-        if not source_only:
+        if packages:
             releases = local(root, f'build/{mod}/releases')
             if releases.exists():
                 allowed = {spec['version']} if spec['status'] in READY else set()
@@ -654,23 +678,32 @@ def check(root=ROOT, source_only=False):
     if not source_only:
         registered = {mod for mod, _, _ in result}
         for releases in (root / 'build').glob('*/releases'):
+            if only is not None and releases.parent.name in registered - only:
+                continue
             require(releases.parent.name in registered,
                     f'Release directory has no registered mod: {releases}')
         for archive in (root / 'build').rglob('*.zip'):
             parts = archive.relative_to(root / 'build').parts
+            if only is not None and parts[0] in registered - only:
+                continue
             require(len(parts) >= 3 and parts[0] in registered and parts[1] in ('releases', 'candidates'),
                     f'ZIP must be under a registered mod\'s releases/ or candidates/: {archive}')
     return result
 
 
 def check_staged(root=ROOT):
-    """Reject records/support that were left out of the actual commit."""
+    """Check the commit as staged: every mod's records in the index, and for each mod the commit
+    touches, that its records and support are staged as they are on disk. Other mods may have
+    unstaged work in progress."""
+    touched = staged_mods(root)
     with tempfile.TemporaryDirectory(prefix='mhgu-distribution-index-') as temporary:
         staged = Path(temporary)
         subprocess.run(['git', 'checkout-index', '--all', f'--prefix={staged}/'],
                        cwd=root, check=True, capture_output=True)
         records = check(staged, source_only=True)
         for mod, status, _ in records:
+            if mod not in touched:
+                continue
             spec = spec_for(mod, staged)
             names = [f'mods/{mod}/DISTRIBUTION.json']
             if status in READY:
@@ -689,6 +722,7 @@ def main():
     checker = commands.add_parser('check', help='Check every current mod, including future directories')
     checker.add_argument('--source-only', action='store_true', help='Validate tracked records without generated artifacts')
     checker.add_argument('--staged', action='store_true', help='Validate the actual Git index and staged support sources')
+    checker.add_argument('--touched', action='store_true', help='Check packages only for the mods the staged commit touches')
     packager = commands.add_parser('package', help='Package approved, pinned inputs after mod-specific validation')
     packager.add_argument('mod')
     packager.add_argument('--refresh-support', action='store_true')
@@ -697,12 +731,14 @@ def main():
     initializer.add_argument('--kind', choices=('plugin','resource','cheat','tool'), default='plugin')
     args = parser.parse_args()
     if args.command == 'check':
-        require(not (args.source_only and args.staged), 'Choose --source-only or --staged')
-        records = check_staged() if args.staged else check(source_only=args.source_only)
+        require(sum((args.source_only, args.staged, args.touched)) <= 1, 'Choose one of --source-only, --staged or --touched')
+        records = (check_staged() if args.staged else
+                   check(only=packages_to_check()) if args.touched else check(source_only=args.source_only))
         for mod, status, archive in records:
             print(f'{mod}: {status}' + (f' | {archive.relative_to(ROOT)}' if archive else ''))
         suffix = ' (staged source records)' if args.staged else (
-            ' (source only; packages not checked)' if args.source_only else '')
+            ' (source only; packages not checked)' if args.source_only else
+            ' (packages of the mods this commit touches)' if args.touched else '')
         print(f'PASS: {len(records)} mod records{suffix}')
     elif args.command == 'package':
         archive = package(args.mod, refresh_support=args.refresh_support)

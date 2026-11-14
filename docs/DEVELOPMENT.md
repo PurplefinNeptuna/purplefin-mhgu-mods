@@ -135,7 +135,10 @@ results; preserve limitations for Linux, Windows, Eden, Ryujinx and hardware.
 Use `python3 scripts/mod_distribution.py package NAME` after mod-specific tests,
 then `python3 scripts/mod_distribution.py check` before committing or claiming
 readiness. Source-only checks do not establish readiness. Preserve the tracked
-pre-commit check and other hooks.
+pre-commit check and other hooks. The hook checks the whole index, but packages, records on disk
+and doc rules only for what the commit stages (`check --touched`), so several mods can be worked
+on at once; stage a mod's whole change together. Staging `scripts/mod_distribution.py`,
+`scripts/standalone_mods.py` or `templates/` checks every mod's package.
 
 DEVELOPMENT candidates package only after registration. Set the candidate
 version in `mod.json`, then add these fields to `DISTRIBUTION.json`:

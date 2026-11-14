@@ -205,6 +205,39 @@ class DistributionTests(unittest.TestCase):
         git('add', 'mods')
         distribution.check_staged(self.root)
 
+    def test_git_gate_checks_only_the_mods_a_commit_touches(self):
+        def git(*args):
+            subprocess.run(['git', *args], cwd=self.root, check=True, capture_output=True)
+        other = copy.deepcopy(self.spec)
+        other.update(mod='other-mod', package_name='other-mod', archive='other-mod-r1.zip',
+                     readme='mods/other-mod/README.md', notices=['mods/other-mod/NOTICE.txt'])
+        self.write('mods/other-mod/README.md', b'Install other-mod alongside Forge.\n')
+        self.write('mods/other-mod/NOTICE.txt', b'MIT license example.\n')
+        self.write('mods/other-mod/DISTRIBUTION.json', distribution.json_bytes(other))
+        git('init', '-q')
+        git('add', 'mods')
+        git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'base')
+        # Work in progress on other-mod, left unstaged, and a broken package of it on disk.
+        other['reason'] = 'Being changed by other work'
+        self.write('mods/other-mod/DISTRIBUTION.json', distribution.json_bytes(other))
+        self.write('build/other-mod/releases/stale/x.txt', b'unregistered release entry\n')
+        self.write('mods/sample-mod/README.md', b'Install sample-mod alongside Forge, updated.\n')
+        git('add', 'mods/sample-mod')
+        self.assertEqual(distribution.staged_mods(self.root), {'sample-mod'})
+        distribution.check_staged(self.root)
+        self.rejected(lambda: distribution.check(self.root, only={'other-mod'}))
+        # A commit that touches other-mod is checked as before.
+        self.write('mods/other-mod/README.md', b'Install other-mod alongside Forge, updated.\n')
+        git('add', 'mods/other-mod/README.md')
+        self.rejected(lambda: distribution.check_staged(self.root))
+        # Staging the checker itself checks every mod's package, but not other mods' unstaged records.
+        git('reset', '-q', 'mods/other-mod/README.md')
+        self.write('scripts/mod_distribution.py', b'# fixture\n')
+        git('add', 'scripts')
+        self.assertIsNone(distribution.packages_to_check(self.root))
+        self.assertEqual(distribution.staged_mods(self.root), {'sample-mod'})
+        distribution.check_staged(self.root)
+
     def test_missing_support_and_corrupt_zip_are_rejected(self):
         for name in ('NOTICES.html', 'NOTICES.txt', 'README.md', 'release-manifest.json', 'SHA256SUMS', 'sample-mod-r1.zip'):
             with self.subTest(name=name):

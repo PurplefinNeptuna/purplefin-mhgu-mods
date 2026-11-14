@@ -1,7 +1,10 @@
 #!/bin/sh
 set -eu
-# "Writing project docs" in AGENTS.md. shortcut: reads the working tree, not the index, as check does; use the index if partial staging ever matters.
-docs=$(git ls-files AGENTS.md README.md 'docs/*.md' 'mods/*.md' '.agents/skills/mhgu-*.md' 'templates/*.md' | grep -v /vendor/)
+# "Writing project docs" in AGENTS.md, for the docs this commit stages, so another mod's docs
+# being edited at the same time do not block it. shortcut: reads the working tree, not the index;
+# use the index if partial staging ever matters.
+docs=$(git diff --cached --name-only --diff-filter=ACMR -- AGENTS.md README.md 'docs/*.md' 'mods/*.md' '.agents/skills/mhgu-*.md' 'templates/*.md' | grep -v /vendor/ || true)
+if [ -n "$docs" ]; then
 if echo "$docs" | grep -E '^(mods/[^/]+/DEVELOPMENT|docs/[^/]+)\.md$' | xargs grep -nE '^#+ .*\br[0-9]{1,3}\b'; then
     echo 'Doc rule: state the fact in its section, not under a per-run heading.' >&2
     exit 1
@@ -13,6 +16,7 @@ if [ -n "$over" ]; then
     exit 1
 fi
 echo "$docs" | xargs python3 scripts/doc_rules.py
+fi
 python3 scripts/mod_distribution.py check --staged
-python3 scripts/mod_distribution.py check
+python3 scripts/mod_distribution.py check --touched
 git diff --cached --check
