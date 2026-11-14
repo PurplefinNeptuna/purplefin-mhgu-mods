@@ -19,7 +19,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r15 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Please do Better | r37 | READY_TO_DISTRIBUTE, release | MHGU Recomp with Purple-lib r17 (r36 registers on Eden too) |
-| Purple-lib | r19 | DEVELOPMENT, candidate | Works on MHGU Recomp (API version 4); r18 last accepted |
+| Purple-lib | r19 | READY_TO_DISTRIBUTE, release | MHGU Recomp (API version 4); r18 on Eden too |
 | Purple-lib Tester | r12 | DEVELOPMENT, not for distribution | Works on MHGU Recomp with Purple-lib r19 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
@@ -46,7 +46,7 @@ The rollback for a current build that has no run of its own.
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
 | Multiplayer Roaming | r15 | `build/online-roaming/candidates/r15/` |
 | Please do Better | r37 (r31 on Eden, r30 on Ryubing) | `build/please-do-better/candidates/r37/`, `r31/`, `r30/` |
-| Purple-lib | r18 | `build/purple-lib/candidates/r18/`, `r17/`, `r16/` |
+| Purple-lib | r19 | `build/purple-lib/candidates/r19/`, `r18/`, `r17/`, `r16/` |
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Village Quests in Hub | r6 | `build/village-quests-in-hub/candidates/r6/` |
