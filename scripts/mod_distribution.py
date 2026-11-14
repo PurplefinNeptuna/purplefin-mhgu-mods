@@ -567,7 +567,7 @@ def api_records(text):
     """The fields of the Purple-lib API records a Rust file declares: {struct: [(name, type)]}, with
     argument names dropped from callback types so only the layout is compared."""
     records = {}
-    for name in ('OptionRow', 'Options', 'Help'):
+    for name in ('OptionRow', 'Options', 'Help', 'Api'):
         body = re.search(r'#\[repr\(C\)\](?:\s*(?:///[^\n]*|#\[[^\n]*))*\s*pub struct ' + name + r' \{(.*?)\n\}', text, re.S)
         if body:
             records[name] = [(field, re.sub(r'\b\w+: ', '', kind).replace(' ', ''))
@@ -576,24 +576,29 @@ def api_records(text):
 
 
 def purple_lib_clients(root=ROOT):
-    """Every mod carries its own copy of Purple-lib's records and export names, because no mod may
-    build from a sibling. Refuse a copy whose record layout or export names differ from
-    Purple-lib's own, and return the files compared."""
+    """Every mod carries its own copy of Purple-lib's records, function table and names, because no
+    mod may build from a sibling. Refuse a copy whose layout or names differ from Purple-lib's own,
+    and return the files compared. A copy is a file that names `purplelib_api_version` or the
+    function a mod exports for Purple-lib to call (`CLIENT_EXPORT` in core/src/api.rs)."""
     library = root/'mods/purple-lib'
     if not (library/'core/src/api.rs').is_file():
         return []
-    expected = api_records((library/'core/src/api.rs').read_text())
-    require(set(expected) == {'OptionRow', 'Options', 'Help'}, 'Purple-lib API records not found in core/src/api.rs')
-    exports = set(re.findall(r'purplelib_\w+', (library/'link/exported.txt').read_text()))
+    api = (library/'core/src/api.rs').read_text()
+    expected = api_records(api)
+    require(set(expected) == {'OptionRow', 'Options', 'Help', 'Api'}, 'Purple-lib API records not found in core/src/api.rs')
+    client_export = re.search(r'CLIENT_EXPORT: &\[u8\] = b"(purplelib_\w+)"', api)
+    require(client_export, 'Purple-lib CLIENT_EXPORT not found in core/src/api.rs')
+    markers = {'purplelib_api_version', client_export[1]}
+    exports = set(re.findall(r'purplelib_\w+', (library/'link/exported.txt').read_text())) | markers
     compared = []
     for source in sorted((root/'mods').glob('*/**/*.rs')):
         parts = source.relative_to(root/'mods').parts
         if {'vendor', 'target'} & set(parts) or parts[:2] in (('purple-lib', 'core'), ('purple-lib', 'src')):
             continue
         text = source.read_text()
-        unknown = set(re.findall(r'purplelib_\w+', text)) - exports
-        require(not unknown, f'Not a Purple-lib export: {sorted(unknown)} in {source.relative_to(root)}')
-        if 'purplelib_api_version' not in text:
+        found = set(re.findall(r'purplelib_\w+', text))
+        require(found <= exports, f'Not a Purple-lib export: {sorted(found - exports)} in {source.relative_to(root)}')
+        if not found & markers:
             continue
         for name, fields in api_records(text).items():
             require(fields == expected[name],
