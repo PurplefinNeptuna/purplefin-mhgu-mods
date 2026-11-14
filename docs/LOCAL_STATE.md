@@ -30,9 +30,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
 
 Ryujinx and Switch hardware are unconfirmed for every mod unless its
-`EVIDENCE.json` says otherwise. An open device report remains: Damage Numbers
-placement on real Switch and Android handheld (reported against r28, no hashes
-supplied).
+`EVIDENCE.json` says otherwise.
 
 ## Last gameplay-accepted builds
 
