@@ -131,6 +131,14 @@ def spec_for(mod, root=ROOT):
                 and not name.endswith('.zip'), f'Invalid support filename: {name}')
         relative(name)
         read(root, source)
+    # archives: extra ZIPs shipped beside the mod's archive, built from tracked files
+    # ({"kit.zip": {"path/in/zip": "source"}}), such as Purple-lib's API kit.
+    for name, entries in spec.get('archives', {}).items():
+        require('/' not in name and name.endswith('.zip') and name != spec.get('archive')
+                and name not in spec.get('support', {}) and entries, f'Invalid extra archive: {name}')
+        for inner, source in entries.items():
+            relative(inner)
+            read(root, source)
     payloads = spec.get('payloads')
     require(isinstance(payloads, dict) and payloads, f'No declared payloads: {mod}')
     for path, record in payloads.items():
@@ -370,6 +378,10 @@ def gamebanana_readme_html(blob, profile):
 def make_zip(payloads, package_name, support):
     entries = {f'{package_name}/{name}': blob for name, blob in payloads.items()}
     entries.update(support)
+    return zip_bytes(entries)
+
+
+def zip_bytes(entries):
     stream = io.BytesIO()
     with zipfile.ZipFile(stream, 'w') as archive:
         for name, blob in sorted(entries.items()):
@@ -394,6 +406,8 @@ def expected_files(spec, root=ROOT):
                'NOTICES.html': notices_html(notices)}
     zipped = make_zip(payloads, spec['package_name'], {p: support[p] for p in ARCHIVED_SUPPORT})
     support.update({name: read(root, source) for name, source in spec.get('support', {}).items()})
+    support.update({name: zip_bytes({inner: read(root, source) for inner, source in entries.items()})
+                    for name, entries in spec.get('archives', {}).items()})
     evidence = {p: digest(read(root, p)) for p in
                 spec['evidence']['static'] + spec['evidence'].get('manual', [])}
     files = {f'{spec["package_name"]}/{p}': b for p, b in payloads.items()}
@@ -536,7 +550,8 @@ def package(mod, root=ROOT, refresh_support=False):
                 'Existing ZIP differs from its runtime/documentation; preserve/migrate it explicitly')
         require(refresh_support, 'Support files changed; use --refresh-support to back up and refresh them')
         require(actual.keys() <= files.keys() and files.keys() - actual.keys() <=
-                {'README.html', 'GAMEBANANA_README.html', 'NOTICES.html'},
+                {'README.html', 'GAMEBANANA_README.html', 'NOTICES.html', *spec.get('support', {}),
+                 *spec.get('archives', {})},
                 'Missing/unexpected files in release; preserve/migrate them explicitly')
         stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
         backup = local(root, f'backups/{mod}/distribution-support/{stamp}/{spec["version"]}')
@@ -657,6 +672,7 @@ def check_staged(root=ROOT):
             names = [f'mods/{mod}/DISTRIBUTION.json']
             if status in READY:
                 names += [spec['readme'], *spec['notices'], *spec.get('support', {}).values()]
+                names += [s for entries in spec.get('archives', {}).values() for s in entries.values()]
                 names += [p for p in spec['evidence'].get('manual', []) if p.startswith('mods/')]
             for name in names:
                 require(read(staged, name) == read(root, name),

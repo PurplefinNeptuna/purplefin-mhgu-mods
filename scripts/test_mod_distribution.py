@@ -244,6 +244,24 @@ class DistributionTests(unittest.TestCase):
         self.rejected(lambda: self.package(refresh_support=True))
         self.assertEqual(original, distribution.inventory(archive.parent))
 
+    def test_extra_archive_is_built_from_sources_and_added_by_refresh(self):
+        archive = self.package()
+        old = distribution.inventory(archive.parent)
+        self.write('mods/sample-mod/API.md', b'API for other mods.\n')
+        self.spec['archives'] = {'sample-mod-api-r1.zip': {'docs/API.md': 'mods/sample-mod/API.md'}}
+        self.save_spec()
+        self.rejected(self.package)
+        self.package(refresh_support=True)
+        self.assertEqual(archive.read_bytes(), old['sample-mod-r1.zip'])
+        with zipfile.ZipFile(archive.parent / 'sample-mod-api-r1.zip') as zipped:
+            self.assertEqual(zipped.namelist(), ['docs/API.md'])
+            self.assertEqual(zipped.read('docs/API.md'), b'API for other mods.\n')
+        distribution.check(self.root)
+        for bad in ('sample-mod-r1.zip', 'kit.txt'):
+            self.spec['archives'] = {bad: {'docs/API.md': 'mods/sample-mod/API.md'}}
+            self.save_spec()
+            self.rejected(lambda: distribution.check(self.root, source_only=True))
+
     def test_support_refresh_requires_flag_and_verified_backup(self):
         archive = self.package()
         old = distribution.inventory(archive.parent)
