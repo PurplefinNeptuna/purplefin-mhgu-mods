@@ -12,7 +12,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 
 | Mod | Current | Status | Runtime |
 | --- | --- | --- | --- |
-| Damage Numbers | r48 | READY_TO_DISTRIBUTE, release | r47 runs on MHGU Recomp with Purple-lib r20 |
+| Damage Numbers | r48 | READY_TO_DISTRIBUTE, release | Runs on MHGU Recomp with Purple-lib r20 |
 | ImGui Meter | r1 | DEVELOPMENT | Ran on MHGU Recomp, unitemized |
 | Key Quest Markers | r20 | READY_TO_DISTRIBUTE, release | Eden, unitemized |
 | Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
@@ -40,7 +40,7 @@ The rollback for a current build that has no run of its own.
 
 | Mod | Build | Where |
 | --- | --- | --- |
-| Damage Numbers | r47 (r38 on Eden) | `build/damage-numbers/candidates/r47/`, `r42/`, `r38-accepted/` |
+| Damage Numbers | r48 (r38 on Eden) | `build/damage-numbers/releases/r48/`, `candidates/r47/`, `r42/`, `r38-accepted/` |
 | Key Quest Markers | r20 | `build/key-quest-markers/candidates/r20/` |
 | Lock-on Target | r2 | `build/lock-on-target/candidates/r2/` |
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
