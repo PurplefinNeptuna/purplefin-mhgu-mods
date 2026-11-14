@@ -17,7 +17,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Key Quest Markers | r20 | READY_TO_DISTRIBUTE, release | Eden, unitemized |
 | Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
-| Multiplayer Roaming (`online-roaming`) | r16 | DEVELOPMENT, candidate | NOT RUN (r15 accepted on Eden and MHGU Recomp) |
+| Multiplayer Roaming (`online-roaming`) | r16 | READY_TO_DISTRIBUTE, release | Multiplayer, user report; Eden and MHGU Recomp installed |
 | Please do Better | r37 | READY_TO_DISTRIBUTE, release | MHGU Recomp with Purple-lib r17 (r36 registers on Eden too) |
 | Purple-lib | r20 | READY_TO_DISTRIBUTE, release | MHGU Recomp (128 sets, list); r18 on Eden too |
 | Purple-lib Tester | r13 | DEVELOPMENT, not for distribution | Works on MHGU Recomp with Purple-lib r20 |
@@ -42,7 +42,7 @@ The rollback for a current build that has no run of its own.
 | Key Quest Markers | r20 | `build/key-quest-markers/candidates/r20/` |
 | Lock-on Target | r2 | `build/lock-on-target/candidates/r2/` |
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
-| Multiplayer Roaming | r15 | `build/online-roaming/candidates/r15/` |
+| Multiplayer Roaming | r16 | `build/online-roaming/candidates/r16/` |
 | Please do Better | r37 (r31 on Eden, r30 on Ryubing) | `build/please-do-better/candidates/r37/`, `r31/`, `r30/` |
 | Purple-lib | r20 | `build/purple-lib/candidates/r20/`, `r19/`, `r18/`, `r17/`, `r16/` |
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
