@@ -12,7 +12,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 
 | Mod | Current | Status | Runtime |
 | --- | --- | --- | --- |
-| Damage Numbers | r43 | DEVELOPMENT, source only | Not run; r42 last accepted |
+| Damage Numbers | r43 | DEVELOPMENT, candidate | Not run; r42 last accepted |
 | ImGui Meter | r1 | DEVELOPMENT | Ran on MHGU Recomp, unitemized |
 | Key Quest Markers | r20 | READY_TO_DISTRIBUTE, release | Eden, unitemized |
 | Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
