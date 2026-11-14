@@ -593,7 +593,8 @@ def api_records(text):
 def purple_lib_clients(root=ROOT):
     """Every mod carries its own copy of Purple-lib's records, function table and names, because no
     mod may build from a sibling. Refuse a copy whose layout or names differ from Purple-lib's own,
-    and return the files compared. A copy is a file that names `purplelib_api_version` or the
+    and return the files compared. A client's `Api` may be the start of Purple-lib's: an older API
+    version's table. A copy is a file that names `purplelib_api_version` or the
     function a mod exports for Purple-lib to call (`CLIENT_EXPORT` in core/src/api.rs)."""
     library = root/'mods/purple-lib'
     if not (library/'core/src/api.rs').is_file():
@@ -616,8 +617,10 @@ def purple_lib_clients(root=ROOT):
         if not found & markers:
             continue
         for name, fields in api_records(text).items():
-            require(fields == expected[name],
-                    f'{name} differs from mods/purple-lib/core/src/api.rs: {source.relative_to(root)}')
+            # The table only grows at its end, so a client built for an older API version keeps a
+            # shorter copy of `Api`; every other record matches exactly.
+            same = fields == expected[name] or (name == 'Api' and fields and fields == expected[name][:len(fields)])
+            require(same, f'{name} differs from mods/purple-lib/core/src/api.rs: {source.relative_to(root)}')
             compared.append((str(source.relative_to(root)), name))
     require(any(path.startswith('mods/purple-lib/examples/') for path, _ in compared),
             'Purple-lib client check found no records in its own Rust example')
