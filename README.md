@@ -6,7 +6,7 @@ loads the same Forge NROs.
 
 | Mod | Release | Guide |
 | --- | --- | --- |
-| Damage Numbers | r42 | [Install](mods/damage-numbers/README.md) |
+| Damage Numbers | r48 | [Install](mods/damage-numbers/README.md) |
 | Key Quest Markers | r20 | [Install](mods/key-quest-markers/README.md) |
 | Lock-on Target | r2 | [Install](mods/lock-on-target/README.md) |
 | Modern Weapon Controls | r15 | [Install](mods/modern-weapon-controls/README.md) |
