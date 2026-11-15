@@ -23,9 +23,9 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Purple-lib Tester | r13 | DEVELOPMENT, not for distribution | Works on MHGU Recomp with Purple-lib r20 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
-| WishFinder (was Wishlist) | r69 | READY_TO_DISTRIBUTE, release | Accepted in Korean on Eden and MHGU Recomp. Needs Key Quest Markers r20+ |
-| WishFinder bridge for KatSmithy | r17 | READY_TO_DISTRIBUTE, release | Accepted on MHGU Recomp with KatSmithy of 2026-11-11 |
-| WishFinder bridge for My Weapon Tree | r8 | READY_TO_DISTRIBUTE, release | Accepted on Eden with My Weapon Tree 0.60 |
+| WishFinder (was Wishlist) | r70 | DEVELOPMENT, candidate | Not run (API table for the bridges); r69 accepted in Korean on Eden and MHGU Recomp. Needs Key Quest Markers r20+ |
+| WishFinder bridge for KatSmithy | r18 | DEVELOPMENT, candidate | Not run (needs WishFinder r70); r17 accepted on MHGU Recomp with KatSmithy of 2026-11-11 |
+| WishFinder bridge for My Weapon Tree | r9 | DEVELOPMENT, candidate | Not run (needs WishFinder r70); r8 accepted on Eden with My Weapon Tree 0.60 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
 
@@ -48,7 +48,7 @@ The rollback for a current build that has no run of its own.
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Village Quests in Hub | r6 | `build/village-quests-in-hub/candidates/r6/` |
-| WishFinder | r68 (accepted) | `build/wishfinder/candidates/r68/` |
+| WishFinder | r69 | `build/wishfinder/candidates/r69/`, `r68/` |
 | WishFinder bridge for KatSmithy | r17 | `build/wishfinder-katsmithy-bridge/candidates/r17/` |
 | WishFinder bridge for My Weapon Tree | r8 | `build/wishfinder-mwt-bridge/candidates/r8/` |
 | World Sharpness Gauge | r70 (r68 on Eden and Ryubing) | `build/world-sharpness-gauge/candidates/r70/`, `r68/` |

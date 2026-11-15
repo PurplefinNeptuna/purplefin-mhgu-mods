@@ -3,7 +3,7 @@
 A bridge is a plugin that reads another plugin's memory and passes what it finds to one
 of ours, when the other plugin has no API. The worked example is
 `mods/wishfinder-mwt-bridge`: it reads My Weapon Tree's wish list and calls WishFinder's
-`wishfinder_sync`. Its DEVELOPMENT.md has the exact layout and the update procedure; this
+`sync`, from the table WishFinder hands it. Its DEVELOPMENT.md has the exact layout and the update procedure; this
 page has the method. Prefer an API in the other plugin: a bridge breaks on every release
 of it.
 
@@ -11,13 +11,14 @@ of it.
 
 - Every NRO is loaded before any `forge_onInit`, so look plugins up in `forge_onInit` or
   later, never by load order ([Plugin order](hooks-and-lifetimes.md#plugin-order)).
-- Our plugins export C functions: read each name from that plugin's NRO symbol table in its
-  loaded mapping (`mods/wishfinder-mwt-bridge/core/src/lib.rs::nro_symbol`, driven by
-  `src/platform.rs`), then call its version function first. Do not use `nn::ro::LookupSymbol`:
-  it resolves only the game's own modules and finds nothing in a loaded plugin, and Forge
-  exports no plugin symbol lookup (`mods/wishfinder/API.md`).
-- Purple-lib is not looked up at all: a mod exports `purplelib_on_register` and Purple-lib
-  calls it ([API and builds](api-and-builds.md#a-library-that-calls-its-clients-purple-lib)).
+- Our libraries are not looked up at all: a mod exports `wishfinder_on_register` or
+  `purplelib_on_register`, and WishFinder (r70 and later) or Purple-lib calls it with a table of
+  its functions ([API and builds](api-and-builds.md#a-library-that-calls-its-clients-purple-lib),
+  `mods/wishfinder/API.md`). Do not use `nn::ro::LookupSymbol`: it resolves only the game's own
+  modules and finds nothing in a loaded plugin, and Forge exports no plugin symbol lookup.
+- A third-party plugin that exports a function of its own can be found by that name in
+  its NRO symbol table (`mods/wishfinder-katsmithy-bridge/core/src/lib.rs::nro_symbol` finds
+  KatLib's `katlib_version`).
 - A plugin that exports nothing is found by its NRO build ID: walk `svcQueryMemory` for an
   R-X mapping whose first bytes are an NRO header (`NRO0` at +0x10) with the expected
   build ID at +0x40. Refuse any other build; offsets differ per build.
