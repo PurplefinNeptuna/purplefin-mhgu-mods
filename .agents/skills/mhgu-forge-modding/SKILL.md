@@ -142,7 +142,7 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 | Step-by-step procedures | [Playbooks](references/playbooks.md) |
 | Loader, Rust/C++ APIs, metadata, ABI, standalone builds, plugin-to-plugin exports | [API and builds](references/api-and-builds.md) |
 | Detours, trampolines, flags, TLS, transactions, rollback | [Hooks and lifetimes](references/hooks-and-lifetimes.md) |
-| Add game-owned GUI objects or extend a native menu | [Native GUI extensions](references/native-gui-extensions.md) |
+| Add game-owned GUI objects or extend a native menu; show a game window on another screen or in a quest | [Native GUI extensions](references/native-gui-extensions.md) |
 | Put a mod's settings in the game's Options (Mod Options) or its topics in the game's help | `mods/purple-lib/API.md`; working clients and the rules in [API and builds](references/api-and-builds.md#a-library-that-calls-its-clients-purple-lib) |
 | Read another plugin's memory when it has no API (bridges) | [Plugin bridges](references/plugin-bridges.md) |
 | ImGui, fonts/textures, damage overlay, INIs, save mounts | [Rendering and settings](references/rendering-and-settings.md) |

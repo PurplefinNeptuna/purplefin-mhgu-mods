@@ -190,6 +190,19 @@ WishFinder's Hunter's Notes row opens the game's Item Pouch screen with its own 
 - **Some game data is empty in a quest.** The equipment message table cell `0x1856b1c` is 0 in a quest, so names and descriptions come back empty there; copy them outside quests and use the copies.
 - **Follow the game's language** (session byte +`0xa5`; values in `mhgu-understanding` [Resources and tooling](../../mhgu-understanding/references/resources-and-tooling.md#formats-a-plugin-reads)). Keep every published string alive: the game's UI holds its address.
 
+## Borrow a game window on another screen
+
+WishFinder shows the smithy's Req. Materials window beside its Hunter's Notes list, in town and in a quest (`mods/wishfinder/src/native.rs` `materials_open`, `materials_show`, `materials_close`; natives in `mhgu-understanding` [Menus and screens](../../mhgu-understanding/references/menus-and-screens.md#ui-objects-outside-their-screen)). The method, in the order that worked:
+
+1. **Take the window apart statically first.** Find its class by DTI, then read four things from its vtable: which layout file it asks for, which instance it binds, what its draw reads (the data block, the dirty flag) and which message texts it fetches. Find the screen code that fills that block and copy how each field is derived. A window that only reads a block behind a pointer is the easy case; one that reads its screen's fields is not.
+2. **Let the game build it.** Call the game's object factory with the class's DTI instead of allocating and wiring an object by hand: it creates, binds, registers for drawing and gives the object the destructor that matches. Compare the DTI's name and the new object's vtable before touching either.
+3. **Load what the factory expects.** The factory finds a layout only if it is already loaded, and a facility's layout is loaded only inside that facility. Load it yourself by path through the resource manager just before the factory call, then release your own reference once the object holds one. Check the path's hash against the game's file table offline, for every language folder, before a run.
+4. **Feed it the way its screen does.** Point its data pointer at your own static block, fill the records with the same lookups, set its dirty flag, and show or hide it with the game's calls. Destroy it through its own deleting destructor when your page closes, every way the page can close.
+5. **Make it survive a quest.** A quest loads less: message files and name tables that exist in town are missing. Find out which with a run, never by assuming. The game's text setter blanks a label for a missing text, so the window still works; copy the texts while they are loaded (at each town arrival, not only when your page opens, so a player who goes straight to a quest has them) and set the copies after the window's own draw, which would otherwise clear them. Run that draw yourself right after filling, so it does not happen later and undo your texts.
+6. **Probe before polishing.** The first build logged one line with a flag per step (texts, class, factory, resource manager, layout, made). Three runs then named each missing piece in turn: the layout not loaded in the menu, then the texts not loaded in a quest. Keep the line until the feature is accepted.
+
+What the runs refuted: the layout does not load with the town (it loads with the smithy), and a missing title text does not crash the draw.
+
 ## Button guide and popups
 
 Game facts (presets, extras, layout, popup requests and groups): `mhgu-understanding` [Menus and screens](../../mhgu-understanding/references/menus-and-screens.md#button-guide).

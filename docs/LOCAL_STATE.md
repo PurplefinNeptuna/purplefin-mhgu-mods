@@ -23,7 +23,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Purple-lib Tester | r14 | DEVELOPMENT, not for distribution | Not run (8 extra sets); r13 on MHGU Recomp with Purple-lib r20 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
-| WishFinder (was Wishlist) | r82 | DEVELOPMENT, candidate | Not run (Req. Materials window in a quest too; r81 showed it in the village and hub); r76 accepted on Eden and MHGU Recomp with the Help topic. Needs Key Quest Markers r20+ |
+| WishFinder (was Wishlist) | r82 | DEVELOPMENT, candidate | Eden and MHGU Recomp: Req. Materials window in town and quest, Mod Options page, Help topic; r76 accepted on Eden and MHGU Recomp with the Help topic. Needs Key Quest Markers r20+ |
 | WishFinder bridge for KatSmithy | r18 | READY_TO_DISTRIBUTE, release | MHGU Recomp with KatSmithy and WishFinder r72 |
 | WishFinder bridge for My Weapon Tree | r10 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.65 and WishFinder r72 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
@@ -48,7 +48,7 @@ The rollback for a current build that has no run of its own.
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Village Quests in Hub | r6 | `build/village-quests-in-hub/candidates/r6/` |
-| WishFinder | r76 | `build/wishfinder/candidates/r76/`, `r72/`, `r69/` |
+| WishFinder | r82 | `build/wishfinder/candidates/r82/`, `r76/`, `r72/` |
 | WishFinder bridge for KatSmithy | r18 | `build/wishfinder-katsmithy-bridge/candidates/r18/`, `r17/` |
 | WishFinder bridge for My Weapon Tree | r10 | `build/wishfinder-mwt-bridge/candidates/r10/`, `r8/` |
 | World Sharpness Gauge | r70 (r68 on Eden and Ryubing) | `build/world-sharpness-gauge/candidates/r70/`, `r68/` |
