@@ -25,7 +25,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
 | WishFinder (was Wishlist) | r83 | DEVELOPMENT, candidate | Not run (r82 consolidated); r82 accepted on Eden and MHGU Recomp: Req. Materials window in town and quest; r76 accepted on Eden and MHGU Recomp with the Help topic. Needs Key Quest Markers r20+ |
 | WishFinder bridge for KatSmithy | r18 | READY_TO_DISTRIBUTE, release | MHGU Recomp with KatSmithy and WishFinder r72 |
-| WishFinder bridge for My Weapon Tree | r10 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.65 and WishFinder r72 |
+| WishFinder bridge for My Weapon Tree | r11 | DEVELOPMENT, candidate | Not run (My Weapon Tree 0.67); r10 accepted on Eden with My Weapon Tree 0.65 and WishFinder r72 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
 
