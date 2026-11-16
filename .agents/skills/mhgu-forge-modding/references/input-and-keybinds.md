@@ -128,4 +128,4 @@ Sources: `tools/forge-local/source/forge/{input.cpp,graphics.cpp,config.c}`,
 `tools/MHGURecomp-source/runtime/forge.c` (commit `dafb590`);
 `mods/wishfinder/DEVELOPMENT.md` (Welcome window, Button guide),
 `mods/village-quests-in-hub/{DEVELOPMENT.md,src/lib.rs}`,
-`mods/wishfinder-katsmithy-bridge/DEVELOPMENT.md`.
+`mods/wishfinder-katsmithy-bridge/DEVELOPMENT.md` (retired; in Git at `2888d72`).

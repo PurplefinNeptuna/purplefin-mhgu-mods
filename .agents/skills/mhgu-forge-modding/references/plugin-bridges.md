@@ -17,7 +17,7 @@ of it.
   `mods/wishfinder/API.md`). Do not use `nn::ro::LookupSymbol`: it resolves only the game's own
   modules and finds nothing in a loaded plugin, and Forge exports no plugin symbol lookup.
 - A third-party plugin that exports a function of its own can be found by that name in
-  its NRO symbol table (`mods/wishfinder-katsmithy-bridge/core/src/lib.rs::nro_symbol` finds
+  its NRO symbol table (`mods/wishfinder-katsmithy-bridge/core/src/lib.rs::nro_symbol`, retired; in Git at `2888d72`, found
   KatLib's `katlib_version`).
 - A plugin that exports nothing is found by its NRO build ID: walk `svcQueryMemory` for an
   R-X mapping whose first bytes are an NRO header (`NRO0` at +0x10) with the expected
@@ -118,4 +118,4 @@ pins one build ID), and KatSmithy also renamed its file
 If the user gives up version-agnostic instead, pin the build ID and read as little as possible. A bss word has no file bytes
 but is readable at run time. Prefer a word the plugin derives from the value, so a check can reject a wrong build: KatSmithy's
 selection detector `game + 0x1eef*id + 0x19919*level` fits one level or none. Have a finder script print the offsets for any
-build (`mods/wishfinder-katsmithy-bridge/scripts/kat_layout.py`).
+build (`mods/wishfinder-katsmithy-bridge/scripts/kat_layout.py`, retired; in Git at `2888d72`).

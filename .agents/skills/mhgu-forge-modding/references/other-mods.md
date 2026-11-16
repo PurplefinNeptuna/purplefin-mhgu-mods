@@ -73,8 +73,9 @@ No released source; read from their NROs, inis, logs and our runs.
     stick axis rotates the preview; the click is free).
   - It borrows a weapon id for one frame for the preview, so read its node from
     `forge_onUpdate` and require the same value twice.
-  - Our bridge reads two bss words and hooks its `ImDrawList_AddRectFilled`
-    GOT slot for one pinned build: `mods/wishfinder-katsmithy-bridge/DEVELOPMENT.md`;
+  - Our bridge (now retired: KatSmithy 8f93b and later call WishFinder themselves) read two
+    bss words and hooked its `ImDrawList_AddRectFilled` GOT slot for one pinned build:
+    `mods/wishfinder-katsmithy-bridge/DEVELOPMENT.md` (retired; in Git at `2888d72`);
     everything read from that build (draw helpers, tree records, armor cells) is
     in `work/wishfinder-katsmithy-bridge/FINDINGS.md`.
 

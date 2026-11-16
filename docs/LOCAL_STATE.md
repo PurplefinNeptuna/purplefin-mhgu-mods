@@ -24,7 +24,6 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
 | WishFinder (was Wishlist) | r83 | DEVELOPMENT, candidate | Not run (r82 consolidated); r82 accepted on Eden and MHGU Recomp: Req. Materials window in town and quest; r76 accepted on Eden and MHGU Recomp with the Help topic. Needs Key Quest Markers r20+ |
-| WishFinder bridge for KatSmithy | r18 | READY_TO_DISTRIBUTE, release | MHGU Recomp with KatSmithy and WishFinder r72; frozen: KatSmithy supports WishFinder itself |
 | WishFinder bridge for My Weapon Tree | r11 | DEVELOPMENT, candidate | Synced on Eden with My Weapon Tree 0.67 and WishFinder r83, no verdict; r10 accepted on Eden with My Weapon Tree 0.65 and WishFinder r72 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
@@ -49,7 +48,6 @@ The rollback for a current build that has no run of its own.
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Village Quests in Hub | r6 | `build/village-quests-in-hub/candidates/r6/` |
 | WishFinder | r82 | `build/wishfinder/candidates/r82/`, `r76/`, `r72/` |
-| WishFinder bridge for KatSmithy | r18 | `build/wishfinder-katsmithy-bridge/candidates/r18/`, `r17/` |
 | WishFinder bridge for My Weapon Tree | r10 | `build/wishfinder-mwt-bridge/candidates/r10/`, `r8/` |
 | World Sharpness Gauge | r70 (r68 on Eden and Ryubing) | `build/world-sharpness-gauge/candidates/r70/`, `r68/` |
 
