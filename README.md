@@ -16,7 +16,7 @@ loads the same Forge NROs.
 | Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
 | Village Quests in Hub | r6 | [Install](mods/village-quests-in-hub/README.md) |
 | WishFinder | r72 | [Install](mods/wishfinder/README.md) |
-| WishFinder bridge for My Weapon Tree | r10 | [Install](mods/wishfinder-mwt-bridge/README.md) |
+| WishFinder bridge for My Weapon Tree | r11 | [Install](mods/wishfinder-mwt-bridge/README.md) |
 | World Sharpness Gauge | r70 | [Install](mods/world-sharpness-gauge/README.md) |
 
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Current
