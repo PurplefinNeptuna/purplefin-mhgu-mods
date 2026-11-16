@@ -13,7 +13,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Mod | Current | Status | Runtime |
 | --- | --- | --- | --- |
 | Damage Numbers | r48 | READY_TO_DISTRIBUTE, release | Runs on MHGU Recomp with Purple-lib r20 |
-| ImGui Meter | r3 | DEVELOPMENT | NOT RUN (r1 ran on MHGU Recomp, unitemized) |
+| ImGui Meter | r4 | DEVELOPMENT | NOT RUN; r3 cut Eden to 37 fps (r1 ran on MHGU Recomp, unitemized) |
 | Key Quest Markers | r20 | READY_TO_DISTRIBUTE, release | Eden, unitemized |
 | Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
