@@ -25,7 +25,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
 | WishFinder (was Wishlist) | r72 | DEVELOPMENT, candidate | Not run (CJK font kept on close: Recomp crash; API table, API kit); r69 accepted in Korean on Eden and MHGU Recomp. Needs Key Quest Markers r20+ |
 | WishFinder bridge for KatSmithy | r18 | DEVELOPMENT, candidate | Not run (needs WishFinder r70); r17 accepted on MHGU Recomp with KatSmithy of 2026-11-11 |
-| WishFinder bridge for My Weapon Tree | r9 | DEVELOPMENT, candidate | Not run (needs WishFinder r70); r8 accepted on Eden with My Weapon Tree 0.60 |
+| WishFinder bridge for My Weapon Tree | r10 | DEVELOPMENT, candidate | Not run (My Weapon Tree 0.65; needs WishFinder r70+); r8 accepted on Eden with My Weapon Tree 0.60 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
 
