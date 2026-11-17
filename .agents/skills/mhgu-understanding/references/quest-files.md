@@ -28,7 +28,7 @@ Which file a quest uses by rank:
 - `bui_sN` by `cQuestData::mHagiLv` is the game's own lookup (`0x3a3874`).
 - `hagi_sN` by `mHagiLv` (1 low, 2 high, 4 G, 3 arena) is inference from a census fit and the names; its reader is unread.
 - The gathering file by `mPickLv` is the game's: 0 easy, 1 low, 2 high, 3 tuto, 4..6 clct1..3, 9 g.
-- The fish level matching `mFishingLv` is inference by the same census. So is fish rate index i being item 362+i: table `0x164bb14` starts 362, 362, 363, 363, and no code reference to it was found.
+- The fish level matching `mFishingLv` is inference by the same census. Fish rate index i is item `main+0x162a7b0`[i], 20 u16s: 362..366, 375 (Wanchovy), 367..374, 2064..2068 (Goldenfish, Silverfish, Brocadefish, King Brocadefish, Premium Sashimi), 382 (Guardfish). Its reader is unread; the table matches Kiranico's per-area rates for Whetfish, Popfish, Gastronome Tuna, Ancient Fish, Small Goldenfish and Guardfish, which 362+i does not.
 
 ## Carves, drops and shed items
 
