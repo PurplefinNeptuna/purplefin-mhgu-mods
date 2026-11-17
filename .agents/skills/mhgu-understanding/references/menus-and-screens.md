@@ -97,7 +97,18 @@ A game window is a `cUIObject` class with its own layout file, and the game can 
 
 ## Smithy top menu
 
-`cUIOShopTopPanel` update `0x592ffc` loops over exactly 7 panels and shows a row while its index is below the cursor's count; `shop_top.gui` has `Anm_panel01..07`. The smithy menu sets up its cursor with `0x54edec(+0x1f64, 4, 1, 0)`. A fifth row's confirm does nothing (`uVar9 != 3` falls through), and its help text would read the next table's entry, because the help table is indexed by cursor.
+`uUIBlackSmith` state 1 (`0x6f1ae8` case 1). Labels: block at window `+0x2d14` (byte style 7 for the top menu, 8..10 for
+submenus; u16 `+0x2d16` 0 top, 1 submenu), then `{u32 flags, char* text}` rows at `+0x2d18 + row*8`, room for 7 before
+`+0x2d50`; the open `0x6f0f84` fills four from table 14 (`LbShop_EqMakeMsg`) ids at `0x1630988`: 1, 16, 22, 23.
+`cUIOShopTopPanel` update `0x592ffc` (`shop_top.gui`, `Anm_panel01..07`) shows panels while the index is below the
+cursor's rows on the page, sets each text through `0x56e808` (plain `char*`) and greys a row with flag bit 1. The cursor
+is `+0x1f64`; `0x54edec(cursor, rows, mode, keep)` keeps the row (clamped) only with `keep` 1. The only writers of
+state 1 (every byte store to `+4` in `0x6f0000..0x70c000` checked) are the open, B from a submenu and the return from
+Upgrade Equipment, and each sets four rows with `0x54edec(+0x1f64, 4, 1, 0)`. A stores `page * rows + row` in `+0x4c`:
+0, 1, 3 open a submenu, 2 Upgrade Equipment, any other index does nothing. Cursor moves call the help bar with
+`{u16 message, s16 kind}` from `0x16500cc` by row: 61, 73, 80, 112, then 62 "Select a weapon category." for a fifth
+row. Source: `work/wishfinder/SMITHY_MENU_FINDINGS.md`. WishFinder r86 adds a fifth row this way; whether the fifth
+panel lays out cleanly has not run.
 
 ## Button guide
 
