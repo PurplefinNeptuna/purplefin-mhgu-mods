@@ -117,7 +117,11 @@ whose two texts `0x58cb8c` sets only when header byte `+0x2d51` has 0x20 (the ar
 nothing in the update sets that pane's visibility (`0x56e528(object, pane, shown)`). The equipment panel (slot 5,
 `cUIOEquipDetail`) pages with its own cursor at window `+0x1f88` (bound by `0x57e938`): the list handler steps it with
 the repeat word only when the row cursor's step answers no 0xf0 bit (`0x6f48f0`), then redraws the preview
-(`0x6f9b18(window, 0)`). Slot 7 (`cUIOShopSmithType`) is the "Currently: Blademaster/Gunner" box. Guide preset 0x34,
+(`0x6f9b18(window, 0)`). The list fill sizes it (`0x6f57f4`): pages `0x57edac(record, 0, 0x8048)` for the sPlayer
+(`0x1885b58`) gear entry `0xdf814(0x277454(sPlayer) + 4, 0xdae68(type))`, then `0x54edec(+0x1f88, pages, 5, 0)`;
+cursor mode 5 reads 0x100/0x200 (L and R), modes 2 and 3 read 0x80/0x20 (stick left and right), table `0x162d0c0`.
+`0x57e65c(panel, mode)` picks the panel's arrow icons: entering a list sets 1 (L and R, `0x6f2d60`), the decoration
+screens 2 (the stick). Both stay as the last screen left them, so a screen of one's own sets them. Slot 7 (`cUIOShopSmithType`) is the "Currently: Blademaster/Gunner" box. Guide preset 0x34,
 which the lists set, is {0x11, 0x10, 0x1a, 0x27} in table `0x1639d5c`; preset 2 is {0x11, 0x10}.
 
 ## Button guide
