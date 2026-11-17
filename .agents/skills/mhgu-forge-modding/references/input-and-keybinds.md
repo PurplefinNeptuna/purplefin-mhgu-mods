@@ -56,7 +56,7 @@ the game this way:
    views after `sFestaPad::move` `0x3ddf1c` (cur and pressed 0, released = prev,
    repeats +0x6c34/+0x6c3c 0) and the menu view's words during `0x792728`. Its
    outer layer runs before every plugin hook, so a plugin hook sees what it
-   wrote. Purple-lib r22 does this (`mods/purple-lib/src/input.rs`); not run yet.
+   wrote. Purple-lib r22 does this (`mods/purple-lib/src/input.rs`); a held window kept the game still on Eden and MHGURecomp 0.17.5 (user report), the town path untested.
 
 On MHGURecomp, while Forge's own menu is open the game gets no controller input
 at all; on Switch and the emulators it still does. Ignore your hotkeys while
