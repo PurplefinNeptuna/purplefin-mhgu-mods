@@ -48,6 +48,15 @@ the game this way:
    limit), so the closing press does not reach the game.
 4. End the block if no frame renders for a while (60 pad updates), so a hidden
    window cannot lock the game.
+5. On MHGURecomp 0.17 with game actions on (`[Actions] Enable=1`, its default),
+   the records are not enough: its outer hooks on the view translators
+   `0x3de4b0`/`0x3de4f8` replace their answer with its own bindings' buttons, and
+   it writes town actions into the menu view around the town avatar's controls
+   `0x792728` (`runtime/hle/input_view.c`, 0.17.5/0.17.6 source). Also empty both
+   views after `sFestaPad::move` `0x3ddf1c` (cur and pressed 0, released = prev,
+   repeats +0x6c34/+0x6c3c 0) and the menu view's words during `0x792728`. Its
+   outer layer runs before every plugin hook, so a plugin hook sees what it
+   wrote. Purple-lib r22 does this (`mods/purple-lib/src/input.rs`); not run yet.
 
 On MHGURecomp, while Forge's own menu is open the game gets no controller input
 at all; on Switch and the emulators it still does. Ignore your hotkeys while

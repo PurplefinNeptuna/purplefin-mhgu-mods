@@ -99,7 +99,7 @@ Hub, WishFinder). Load order rules per host are in
 | Mistake | Correct approach |
 | --- | --- |
 | Using `Input::is_button_pressed` in `forge_onUpdate` or a game hook | Forge updates input once per rendered frame, so the edge repeats or is lost. Read `is_button_down` and keep your own previous state there ([Input and keybinds](input-and-keybinds.md)). |
-| Expecting Forge to hide a press from the game | It never does. Blank the game's pad records after `sPad::move` while your window owns input (WishFinder's welcome window). |
+| Expecting Forge to hide a press from the game | It never does. Blank the game's pad records after `sPad::move` while your window owns input, and on MHGURecomp 0.17 the input views too ([Input and keybinds](input-and-keybinds.md), blocking step 5). |
 | Telling Switch players to open Forge's menu with a button | Stock Forge 1.5.1 opens it with a keyboard key only (Insert in its shipped config). Give console players another way to change a setting. |
 | Importing MHGURecomp's extra calls (`forge_input_getMouse`, `setKeybind`, `isMenuOpen`) | Stock Forge does not export them, so the import check fails on Switch and emulators. No optional-import method is researched. |
 | Placing ImGui drawing from HUD node positions, or cutting a HUD sprite with a scissor | gu-native and UIScale move HUD quads after the game draws them. Use the sprite's own geometry at its draw ([HUD movers](native-gui-extensions.md#hud-movers-gu-native-and-uiscale)). |
