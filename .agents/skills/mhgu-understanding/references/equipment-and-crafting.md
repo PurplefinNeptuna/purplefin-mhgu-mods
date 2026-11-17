@@ -173,12 +173,15 @@ From WishFinder (`mods/wishfinder/DEVELOPMENT.md` sections Hooks and Smithy). `u
 | --- | --- |
 | `0x6fbcfc` | Pays and consumes for a confirmed row; called by craft `0x6fb224` and upgrade `0x70301c` |
 | `0x6fdf14` | Decoration: consumes, pays, adds the item; called from `0x6f513c` |
+| `0x70301c(window)` | Upgrade of one box record, then the pay step at `0x7035d0`; called from `0x702de8` and by KatSmithy's direct upgrade with the window still in state 3 (its log, `ARM-WIN W+4=00000003`). Record choice below the table |
 | `0x6fd690` | Box-space check before confirm, so a hook on the pay functions sees only crafts that proceed |
 | `0x709a08`, `0x709d54` under `0x709824` | Consume one item at a time; unread |
 | `0x54f260(0, n)` | Smithy sounds: 1 accept, 2 cancel, 3 deny. 43 (taken for `lb_sys_chat_reception`) played nothing |
 | `0x13c208(sEquip, category, number)` then virtual +0xbc(level) / +0xc0(level) | Equipment name / description; +0x1c rarity. Text table cell `0x1856b1c`, 0 in a quest |
 | `sItem::getItemData` `0x194228`, `rGUIMessage::getMessage` `0xb84114` | Item name: data+8 times two, on the table at cell `0x18583ac` |
 | `0x54ff2c` | Owned count = pouch `0x19c21c` (`*0x18584b8`) plus box `0x199048` (`*0x1858438`); both only read |
+
+**Upgrade record.** `0x70301c` sets its box index once (`uxth r8` at `0x703068`): `u16 +0x20c0 * +0x20be * +0x20bf + (+0x20be * +0x20bd + +0x20bc) & 0xff`, low 16 bits. It reads the record with `0x143894(box, 0, index)` (box: GOT `0x1839394` names cell `0x1856fe8`), and every branch writes it back with `0x1431f8(box, 0, index, record)` at `0x7035c0`; an empty record skips the write and only pays.
 
 The smithy row list is a native GUI tree ([Native GUI](native-gui.md#known-screens-and-trees)). `uUIBlackSmith` is 12,824 bytes. Smithy buttons: A 0x2000, B 0x4000, X 0x1000, Y 0x8000; `0x65f808` returns Options (8, or 1 when `sUserInfo+0x446d` is nonzero) and `0x65f830` Help, the reverse; Options is Resort when +0x5c is 2..6 and Show Skills in `0x6f5064` (also read at `0x6f5b50`, `0x6f5bd8`, `0x707884`; 5 of 47 callers read). `0x70a30c` is only the upgrade preview. A row label set through `0x56e808` -> `0x547564` takes a plain `char*` (strlen), so a plugin's static string works. Pad menu bits in +0x6c are listed in [Input and actions](input-and-actions.md); no smithy handler, preview slot or cursor mode (table `0x162d0c0`) tests L3 0x2 or R3 0x4, and `0x65f808` starts with PC-relative loads, so do not hook it. Finish keys a craft reports: kind, the row's 0-based level, category and number in one word (`00140012` craft, `01140012` upgrade, `42140012` the game's own upgrade screen).
 

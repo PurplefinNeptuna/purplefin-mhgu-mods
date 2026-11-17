@@ -65,7 +65,8 @@ No released source; read from their NROs, inis, logs and our runs.
     ours placed first disables its smithy. Install on top of it instead.
   - Unguarded sites built as immediates: `0x3de4f8` (nav), `0x6f7220` (upgrade
     screen driver), `0xbc0e98` (preview viewport), `0x86d34c` (pad poll),
-    `0x6f2c90` (category setter), `0x70301c` (upgrade pay). Its earlier
+    `0x6f2c90` (category setter), `0x70301c` (the upgrade, called directly from its tree
+    with the window still in the Forge list's state 3, so the screen does not describe the upgrade). Its earlier
     `smithyrise.nro` also hooked `0x86e1b4`, `0x86d588`, `0x86d7b4`, `0x86dc98`,
     `0x1c33c`, `0x1c358`, `0xa3da50`, `0xa37988` and `0xa4f420`.
   - Its ini (`katsmithy.ini` in the save folder) keeps `nav_direct`,
