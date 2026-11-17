@@ -110,6 +110,16 @@ Upgrade Equipment, and each sets four rows with `0x54edec(+0x1f64, 4, 1, 0)`. A 
 row. Source: `work/wishfinder/SMITHY_MENU_FINDINGS.md`. WishFinder r86 adds a fifth row this way; whether the fifth
 panel lays out cleanly has not run.
 
+The list screen (state 3; `research dis`). The list object (slot 2, `cUIOFacilityShopMenu`, update `0x58b908`, reached
+only from vtable `0x176e8ac` slot 0x4c through `0x58b8f0`) rewrites its header every frame: pane 5 text 1 through
+`0x56fc58`, a message from the 12-byte table entry picked by header byte `+0x2d5d`. Its "Displaying" bar is pane 16,
+whose two texts `0x58cb8c` sets only when header byte `+0x2d51` has 0x20 (the armor filter, label table 2 id 67);
+nothing in the update sets that pane's visibility (`0x56e528(object, pane, shown)`). The equipment panel (slot 5,
+`cUIOEquipDetail`) pages with its own cursor at window `+0x1f88` (bound by `0x57e938`): the list handler steps it with
+the repeat word only when the row cursor's step answers no 0xf0 bit (`0x6f48f0`), then redraws the preview
+(`0x6f9b18(window, 0)`). Slot 7 (`cUIOShopSmithType`) is the "Currently: Blademaster/Gunner" box. Guide preset 0x34,
+which the lists set, is {0x11, 0x10, 0x1a, 0x27} in table `0x1639d5c`; preset 2 is {0x11, 0x10}.
+
 ## Button guide
 
 UI object 5 of the manager in cell `0x1899458`, reached as every guide wrapper does: `0x65cb3c(0x55d2b4(*cell, 0), 5)` (the wrappers load the cell through GOT word `0x1838bd8`).
