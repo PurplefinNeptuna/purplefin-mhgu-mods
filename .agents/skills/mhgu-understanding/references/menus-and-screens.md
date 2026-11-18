@@ -112,16 +112,16 @@ panel lays out cleanly has not run.
 
 The list screen (state 3; `research dis`). The list object (slot 2, `cUIOFacilityShopMenu`, update `0x58b908`, reached
 only from vtable `0x176e8ac` slot 0x4c through `0x58b8f0`) rewrites its header every frame: pane 5 text 1 through
-`0x56fc58`, a message from the 12-byte table entry picked by header byte `+0x2d5d`. Its "Displaying" bar is pane 16,
-whose two texts `0x58cb8c` sets only when header byte `+0x2d51` has 0x20 (the armor filter, label table 2 id 67);
-nothing in the update sets that pane's visibility (`0x56e528(object, pane, shown)`). The equipment panel (slot 5,
+`0x56fc58`, a message from the 12-byte table entry picked by header byte `+0x2d5d`. Pane 16 is the kind 2 card
+(below); its texts 5 and 4 are the "Displaying" label and filter, which `0x58cb8c` sets only when header byte `+0x2d51`
+has 0x20 (label table 2 id 67). Visibility is `0x56e528(object, pane, shown)`. The equipment panel (slot 5,
 `cUIOEquipDetail`) pages with its own cursor at window `+0x1f88` (bound by `0x57e938`): the list handler steps it with
 the repeat word only when the row cursor's step answers no 0xf0 bit (`0x6f48f0`), then redraws the preview
 (`0x6f9b18(window, 0)`). The list fill sizes it (`0x6f57f4`): pages `0x57edac(record, 0, 0x8048)` for the sPlayer
 (`0x1885b58`) gear entry `0xdf814(0x277454(sPlayer) + 4, 0xdae68(type))`, then `0x54edec(+0x1f88, pages, 5, 0)`;
 cursor mode 5 reads 0x100/0x200 (L and R), modes 2 and 3 read 0x80/0x20 (stick left and right), table `0x162d0c0`.
 `0x57e65c(panel, mode)` picks the panel's arrow icons: entering a list sets 1 (L and R, `0x6f2d60`), the decoration
-screens 2 (the stick). Both stay as the last screen left them, so a screen of one's own sets them. Slot 7 (`cUIOShopSmithType`) is the "Currently: Blademaster/Gunner" box. The card under the rows (selected entry's icon, name, rarity, owned) is drawn by `0x58c754` from the list update, only while bit 3 of the header block's flags +0xc (window +0x2d5c) is clear (`0x58c04c`); it shows the pane of the block's kind +2 when the selected row's display flags (+6) are nonzero and bit 0 is clear. The lists set bit 3 in their other states (`0x6f2cb8`, `0x6f32e4`, `0x6f45bc`) and clear it on each selection (`0x6f4318`, before `0x6f8648`). Guide preset 0x34,
+screens 2 (the stick). Both stay as the last screen left them, so a screen of one's own sets them. Slot 7 (`cUIOShopSmithType`) is the "Currently: Blademaster/Gunner" box. The card under the rows (selected entry's icon, name, rarity, owned) is drawn by `0x58c754` from the list update, only while bit 3 of the header block's flags +0xc (window +0x2d5c) is clear (`0x58c04c`); it shows the pane of the block's kind +2 (panes 15, 28, 16, 29, 31 for kinds 0..4, table `0x1630630`) when the selected row's display flags (+6) are nonzero and bit 0 is clear. The lists set bit 3 in their other states (`0x6f2cb8`, `0x6f32e4`, `0x6f45bc`) and clear it on each selection (`0x6f4318`, before `0x6f8648`). `0x6f8648` writes kind 2 and +1 = 0x20 for types 2..6, kind 1 for type 1 and weapons; the decoration header `0x6f8a08` writes kind 2 and 0x20, so armor below the head and decorations share pane 16. Guide preset 0x34,
 which the lists set, is {0x11, 0x10, 0x1a, 0x27} in table `0x1639d5c`; preset 2 is {0x11, 0x10}.
 
 ## Button guide
