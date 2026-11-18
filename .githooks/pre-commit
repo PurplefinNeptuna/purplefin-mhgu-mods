@@ -17,6 +17,7 @@ if [ -n "$over" ]; then
 fi
 echo "$docs" | xargs python3 scripts/doc_rules.py
 fi
+git diff --cached --name-only --diff-filter=ACMR -z | xargs -0 -r python3 scripts/code_rules.py --staged
 python3 scripts/mod_distribution.py check --staged
 python3 scripts/mod_distribution.py check --touched
 git diff --cached --check

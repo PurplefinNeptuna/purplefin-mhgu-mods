@@ -78,6 +78,22 @@ Stop earlier only when a missing input or an unresolved native contract blocks
 the next step. Name the blocker and what would remove it. When a tool refuses,
 read the error and the code that raised it before treating it as a rule.
 
+## Source file size
+
+A hand-written source file (Rust, C, C++, Python, shell, assembly, JS) stays under 600 lines
+and holds one topic: one screen, one table, one hook family. When a change would push a file
+past 600, split it first, as its own commit with no behaviour change, and then make the change.
+Split along the topics the file already has (`mods/wishfinder/src/native/` is the model: a
+`mod.rs` with the shared state and helpers, then one file per screen) and never into numbered
+parts. Tests follow the same rule: one test file per area.
+
+`scripts/code_size_limits.json` lists the files that were already longer, each with its length
+as a ceiling. A listed file may shrink but not grow; when it shrinks, lower its entry in the
+same commit, and remove the entry once the file is under 600. Never raise an entry or add a
+new one. `scripts/code_rules.py` checks this in the pre-commit hook (`python3
+scripts/code_rules.py` checks every tracked file). Generated and third-party trees (`vendor/`,
+`tools/`, mdBook's `book/html/`, rendered test assets) are exempt.
+
 ## Native implementation rules
 
 Search saved Ghidra/DTI before gameplay work; see [research](RESEARCH.md).

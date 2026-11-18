@@ -47,6 +47,9 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   Quote log values verbatim; a number that is not in the log is invented. Quote
   the tester's requirement verbatim too, and build to those words rather than a
   paraphrase. An empty search counts only after the tool finds a known positive.
+- **Short source files.** Under 600 lines, one topic per file. A change that would pass
+  that splits the file first, in its own behaviour-neutral commit. Files already longer
+  may only shrink ("Source file size" in docs/DEVELOPMENT.md; the pre-commit hook checks).
 - **Every language.** A change to a mod's user-facing text goes into every language
   file it ships, in the same change.
 - **Research first.** Search saved Ghidra/DTI before gameplay code:
