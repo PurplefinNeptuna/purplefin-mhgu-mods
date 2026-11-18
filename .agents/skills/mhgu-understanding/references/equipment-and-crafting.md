@@ -150,6 +150,11 @@ its tree level in none, because that mod rewrites the displayed rows and the lev
 Inference, not shown in bytes: the `.wpd` row of a level 1 that also has a `.wcd` row is a create-from-base-weapon path rather than the step a chain starts from (the rule `mods/wishfinder/scripts/generate_weapon_path.py` builds on). Armor recipes are
 `armorCreateA00..A04` (see the Resources and tooling reference for the 42-byte records).
 
+Value-material rows (`mCategory` set, `mRank` the value required; RomFS `nativeNX/table/`, 1.4.0): weapon crafts
+(`.wcd` +22) 0 of 1152 rows; armor crafts (`.acrd` +26) 340 of 2720, categories 13 and 14 most often (60 + 15 rows each)
+with value 8 or 5; weapon upgrades (`.wpd` +16) 5685 of 10911; armor upgrades (`.apd` +22) 1506 of 5162; kinsect
+level-ups (`insectProcess.wpd` +16) 0 of 204. Decoration rows (`decoCreate.dcd`) are 16 bytes; whether one holds a category is unread.
+
 ## Smithy window and its code
 
 From WishFinder (`mods/wishfinder/DEVELOPMENT.md` sections Hooks and Smithy). `uUIBlackSmith` update `0x6f1ae8` (vtable `0x177d988` slot 0x24) is the one per-frame entry; KatSmithy guards it, so read [Other mods](../../mhgu-forge-modding/references/other-mods.md) before hooking it.
