@@ -102,5 +102,5 @@ Edition's IPS hooks that site and claims only its own ids (WishFinder
 *Other mods in the checked windows*), so check the record's id, size and
 texture word.
 
-Sources: `mods/wishfinder/{DEVELOPMENT.md,src/config.rs,src/settings.rs,core/src/quest_build.rs,core/src/texture.rs,core/src/imitation.rs}`,
+Sources: `mods/wishfinder/{DEVELOPMENT.md,src/config.rs,src/settings/mod.rs,src/settings/builds.rs,core/src/quest_build.rs,core/src/texture.rs,core/src/imitation.rs}`,
 `mods/damage-numbers/DEVELOPMENT.md` (asset files), `tools/forge-local/source/forge/graphics/imgui_impl_nvn.cpp`.

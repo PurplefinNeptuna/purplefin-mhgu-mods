@@ -66,7 +66,8 @@ if __name__ == '__main__':
     # A listed file that was deleted or moved leaves its entry behind.
     gone = [p for p in limits if not (ROOT / p).exists()]
     found = [f'{p}: no longer exists; remove its entry' for p in gone]
-    found += list(problems({p: count(p, staged) for p in files}, limits))
+    # A tracked file deleted in the working tree has nothing to count.
+    found += list(problems({p: count(p, staged) for p in files if staged or (ROOT / p).exists()}, limits))
     for p in found:
         print(p, file=sys.stderr)
     if found:
