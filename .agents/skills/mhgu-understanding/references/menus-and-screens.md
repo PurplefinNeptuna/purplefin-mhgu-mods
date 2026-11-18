@@ -121,7 +121,7 @@ the repeat word only when the row cursor's step answers no 0xf0 bit (`0x6f48f0`)
 (`0x1885b58`) gear entry `0xdf814(0x277454(sPlayer) + 4, 0xdae68(type))`, then `0x54edec(+0x1f88, pages, 5, 0)`;
 cursor mode 5 reads 0x100/0x200 (L and R), modes 2 and 3 read 0x80/0x20 (stick left and right), table `0x162d0c0`.
 `0x57e65c(panel, mode)` picks the panel's arrow icons: entering a list sets 1 (L and R, `0x6f2d60`), the decoration
-screens 2 (the stick). Both stay as the last screen left them, so a screen of one's own sets them. Slot 7 (`cUIOShopSmithType`) is the "Currently: Blademaster/Gunner" box. Guide preset 0x34,
+screens 2 (the stick). Both stay as the last screen left them, so a screen of one's own sets them. Slot 7 (`cUIOShopSmithType`) is the "Currently: Blademaster/Gunner" box. The card under the rows (selected entry's icon, name, rarity, owned) is drawn by `0x58c754` from the list update, only while bit 3 of the header block's flags +0xc (window +0x2d5c) is clear (`0x58c04c`); it shows the pane of the block's kind +2 when the selected row's display flags (+6) are nonzero and bit 0 is clear. The lists set bit 3 in their other states (`0x6f2cb8`, `0x6f32e4`, `0x6f45bc`) and clear it on each selection (`0x6f4318`, before `0x6f8648`). Guide preset 0x34,
 which the lists set, is {0x11, 0x10, 0x1a, 0x27} in table `0x1639d5c`; preset 2 is {0x11, 0x10}.
 
 ## Button guide
