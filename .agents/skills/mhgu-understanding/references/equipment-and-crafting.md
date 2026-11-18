@@ -191,6 +191,8 @@ The smithy row list is a native GUI tree ([Native GUI](native-gui.md#known-scree
 
 Do not: sum a smithy row's three piece slots into a cost (337 item IDs there, none shared with the 1,733 in the four item slots, and the runtime row has none); read a gear pack at `sPlayer::Instance + 0x7c` (unverified, read `kind=255`).
 
+**Row price and owned count.** A list row's price is its block +0x10 (+0x28e4 + row*0x30); the header fill `0x6f8648` copies it to the display record +8, and the confirm steps (`0x6f44a8`, `0x6f4cb8`, `0x6f536c`) read it into +0x7c. With the table object `0x13c208(type, number)`: the craft list fill (`0x6f56c4`) charges, at row level 0 (+9, from 0), twice slot +0x20 for armor (types up to 5) and v + v/2 for a weapon; above level 0 it charges 1000 for armor and twice +0x158(level, flag, extra) for a weapon, flag and extra being 1 and 0x2134 for type 16 number 47 and type 21 number 26. The upgrade list fill (`0x700180`) charges +0x158(target level) for a weapon and +0x158(current level) for armor (types up to 6), not doubled. A decoration costs its item record's +0x20 (`0x6fdd54`, 200 without a record). Both lists charge 1000 without a table object. The card's owned count (header +6, `0x2d56`) is `0x142de4(box, 0, type, number)`, every level together.
+
 ## Equipment stats, decorations and skills
 
 Static reading from `work/wishfinder/PLAN.md`: the game's detail-panel getters and table objects, with RomFS cross-checks.
