@@ -15,6 +15,8 @@ import sys
 import tempfile
 import zipfile
 
+import mod_manifest as mod_manifest_rules
+
 ROOT = Path(__file__).resolve().parents[1]
 STATES = {'DEVELOPMENT', 'LOCAL_ONLY', 'RETIRED', 'READY_TO_DISTRIBUTE', 'PUBLISHED'}
 READY = {'READY_TO_DISTRIBUTE', 'PUBLISHED'}
@@ -143,9 +145,9 @@ def spec_for(mod, root=ROOT):
     require(isinstance(payloads, dict) and payloads, f'No declared payloads: {mod}')
     for path, record in payloads.items():
         parts = relative(path).parts
-        # manifest.txt beside romfs/ is the mod managers' name/version/author record.
-        require((parts[0] in ('romfs', 'exefs', 'cheats') and len(parts) > 1) or parts == ('manifest.txt',),
-                f'Runtime files must start at romfs/, exefs/ or cheats/, or be manifest.txt: {path}')
+        # manifest.json (manifest.txt before it) beside romfs/ is the mod managers' record.
+        require((parts[0] in ('romfs', 'exefs', 'cheats') and len(parts) > 1) or parts in (('manifest.json',), ('manifest.txt',)),
+                f'Runtime files must start at romfs/, exefs/ or cheats/, or be manifest.json: {path}')
         require(relative(path).name.lower() not in
                 ('readme.md', 'readme.html', 'gamebanana_readme.html', 'notices.txt', 'notices.html',
                  'release-manifest.json', 'sha256sums'),
@@ -504,20 +506,11 @@ def verify_candidate(spec, root=ROOT):
     return directory / spec['archive']
 
 
-AUTHOR = 'PurplefinNeptuna'
-
-
-def manifest_txt(spec, root=ROOT):
-    """Every newly built candidate or release ships manifest.txt beside romfs/ for mod managers:
-    mod_name, version (this one) and author(s) (AUTHOR), each as key="value" on its own line."""
-    record = spec['payloads'].get('manifest.txt')
-    require(record, f'Ship manifest.txt beside romfs/ (docs/DEVELOPMENT.md, Releases): {spec["mod"]}')
-    lines = [re.fullmatch(r'(mod_name|version|author\(s\))="([^"\n]*)"', line)
-             for line in read(root, record['source']).decode('utf-8').splitlines() if line.strip()]
-    fields = dict(m.groups() for m in lines if m)
-    require(all(lines) and len(lines) == 3 and fields.get('mod_name')
-            and fields.get('version') == spec['version'] and fields.get('author(s)') == AUTHOR,
-            f'manifest.txt must hold mod_name, version="{spec["version"]}" and author(s)="{AUTHOR}": {spec["mod"]}')
+def mod_manifest(spec, root=ROOT):
+    """Every newly built candidate or release ships manifest.json beside romfs/ (scripts/mod_manifest.py)."""
+    errors = mod_manifest_rules.check(spec, lambda source: read(root, source))
+    require(not errors, f'manifest.json for {spec["mod"]} {spec["version"]} (docs/DEVELOPMENT.md, Releases): '
+            + '; '.join(errors))
 
 
 def package(mod, root=ROOT, refresh_support=False):
@@ -527,7 +520,7 @@ def package(mod, root=ROOT, refresh_support=False):
         # producing files. This path never changes distribution approval/status.
         builder = relative(spec['candidate_builder'])
         folder = root if (root / 'mod.json').is_file() else root / 'mods' / mod
-        manifest_txt(spec, root)
+        mod_manifest(spec, root)
         subprocess.run([sys.executable, folder / builder, 'package'], cwd=folder, check=True)
         return verify_candidate(spec, root)
     require(spec['status'] in READY, f'Mod is not approved for distribution: {mod}')
@@ -535,7 +528,7 @@ def package(mod, root=ROOT, refresh_support=False):
     directory = release_dir(spec, root)
     actual = inventory(directory)
     if not actual:
-        manifest_txt(spec, root)  # existing releases from before the rule keep their bytes
+        mod_manifest(spec, root)  # existing releases from before the rule keep their bytes
     if actual and actual != files:
         # Runtime stays immutable; the archived README can change with support refresh.
         runtime = [p for p in files if p.startswith(spec['package_name'] + '/')]
@@ -641,7 +634,7 @@ def packages_to_check(root=ROOT):
     """The mods whose packages `check --touched` verifies: the touched ones, or None (every mod)
     when the commit stages this checker or the scaffold mods are built from, which can change
     whether any mod's package passes."""
-    if any(name.startswith(('scripts/mod_distribution.py', 'scripts/standalone_mods.py', 'templates/'))
+    if any(name.startswith(('scripts/mod_distribution.py', 'scripts/mod_manifest.py', 'scripts/standalone_mods.py', 'templates/'))
            for name in staged_names(root)):
         return None
     return staged_mods(root)

@@ -172,10 +172,29 @@ runtime folder, README.md, README.html, GAMEBANANA_README.html, NOTICES.txt,
 NOTICES.html, release manifest and SHA256SUMS. The ZIP contains only README.md
 beside the named runtime folder. The README is identical inside/outside the ZIP;
 runtime folders contain no guides/notices/release manifests. Every new candidate or
-release ships `manifest.txt` beside `romfs/` for mod managers, one `key="value"` per line:
-`mod_name` (the README title), `version` (this version) and `author(s)="PurplefinNeptuna"`.
-Register it in `payloads`; `package` refuses a new candidate or release without it, and
-releases packaged before the rule keep their bytes. Keep notices and HTML outside
+release ships `manifest.json` beside `romfs/` for mod managers, with exactly these keys in order:
+
+```json
+{
+  "manifest_version": 1,
+  "id": "PurplefinNeptuna/NAME",
+  "version": "0.N.0",
+  "name": "README title",
+  "authors": ["PurplefinNeptuna"],
+  "description": "One sentence on what the mod does.",
+  "gamebananalink": "",
+  "requires": {"PurplefinNeptuna/purple-lib": ">=0.20.0"},
+  "conflicts": {},
+  "load": {"after": [], "before": []}
+}
+```
+
+`version` is this version rN written as `0.N.0`, and ranges in `requires` use the same
+form. `gamebananalink` is `""` until the mod has a GameBanana page. Ids are `author/mod`.
+Register it in `payloads`; `package` refuses a new candidate or release without it
+(`scripts/mod_manifest.py`). The 8 mods whose current version shipped the old `manifest.txt`
+re-package that version with it and ship `manifest.json` from their next version;
+releases packaged before either rule keep their bytes. Keep notices and HTML outside
 ZIPs. Support refreshes back up the prior release and preserve runtime bytes.
 Archive superseded releases outside active releases.
 A renamed mod sets `archive_stem` in `DISTRIBUTION.json`, and its archive starts with that stem. Its
@@ -184,8 +203,10 @@ ID, folders and runtime keep the old name, so the runtime bytes don't change.
 ### Starting a new version
 
 1. Search the mod for the old version (`grep -rnw OLD mods/NAME`) and update
-   every copy: `mod.json`, `manifest.txt` and any build/path scripts, plugin labels and test
-   expectations that repeat it. Ignore unrelated hits such as register names.
+   every copy: `mod.json`, `manifest.json` and any build/path scripts, plugin labels and test
+   expectations that repeat it. Ignore unrelated hits such as register names. A mod still
+   on `manifest.txt` replaces it with `manifest.json` in the source, `build.py`, `verify.py`
+   and `payloads`.
 2. If the old version is READY_TO_DISTRIBUTE or PUBLISHED, copy
    `build/NAME/releases/OLD/` to `backups/accepted/NAME/OLD-before-CHANGE/release/`.
    Beside it, put the committed `DEVELOPMENT.md`, `DISTRIBUTION.json`,

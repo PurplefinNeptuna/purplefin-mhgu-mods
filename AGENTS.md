@@ -90,10 +90,10 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 - **Versions.** Runtime changes get a new version, and so does any change to what
   `package` ships, a new data file included. Wire a new payload into build, verify and
   package only in the phase that ships it. `DISTRIBUTION.json` is authoritative.
-- **manifest.txt.** Every new candidate or release ships `manifest.txt` beside
-  `romfs/` with `mod_name="…"`, `version="rN"` and `author(s)="PurplefinNeptuna"`,
-  registered as a payload; `mod_distribution.py package` refuses one without it.
-  Releases packaged before this rule keep their bytes.
+- **manifest.json.** Every new candidate or release ships the mod-manager
+  `manifest.json` beside `romfs/`, registered as a payload (format: "Releases" in
+  docs/DEVELOPMENT.md; rules: `scripts/mod_manifest.py`); `package` refuses one
+  without it. Only each mod's last `manifest.txt` version re-packages with it.
 
 ## Getting work done
 
