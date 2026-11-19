@@ -190,6 +190,33 @@ WishFinder's Hunter's Notes row opens the game's Item Pouch screen with its own 
 - **Some game data is empty in a quest.** The equipment message table cell `0x1856b1c` is 0 in a quest, so names and descriptions come back empty there; copy them outside quests and use the copies.
 - **Follow the game's language** (session byte +`0xa5`; values in `mhgu-understanding` [Resources and tooling](../../mhgu-understanding/references/resources-and-tooling.md#formats-a-plugin-reads)). Keep every published string alive: the game's UI holds its address.
 
+## Add pages to a game's paged panel
+
+WishFinder adds pages after the game's to the quest detail panel (at the receptionist and the multiplayer quest board)
+and to the start menu's Quest Info in town and in a quest; accepted in all four on Eden and MHGU Recomp (r131;
+`mods/wishfinder/src/native/quest_page.rs`, `quest_info.rs`; natives in `mhgu-understanding`
+[Quests and progression](../../mhgu-understanding/references/quests-and-progression.md#quest-detail-pages-counter-quest-board-quest-info)).
+
+1. **List the owners from the code, not from screenshots.** Search the callers of the window's functions; every
+   owner sizes the page cursor itself and may count pages differently (Quest Info: 3 in town, 4 in a quest). A
+   screenshot's dialogue line is a help text, not a screen: the "counter Quest Info" one build assumed does not exist.
+2. **Find the page cursor, every sizer and the draw.** The page is a cursor row or page
+   ([Menus and screens](../../mhgu-understanding/references/menus-and-screens.md#page-cursor)); the game's draw handles
+   its own pages only, so a later row draws nothing. Read whether the sizers run per frame or on events: a per-frame
+   re-size would hold the row at 0.
+3. **Hook after the draw** (an entry hook that stacks). Size the cursor to the game's pages plus yours only when the
+   count differs, with the setter the owner uses: `0x54edec` with keep 1 clamps the row, `0x54ee34` resets the page.
+4. **Draw your page through a game page.** Run the game's fill of a similar page (header, title and group come out
+   right), then hide its rows and write your texts through the part setters, from static buffers.
+5. **One text block.** Message objects do not clip, so all lines go into one text joined by `\r\n`; two text boxes
+   gave the first line a different colour and spacing. Colour it with `<COL RRGGBBAA>` when the slot's own colour is
+   wrong. Set the lines per page from a screenshot of your page, one owner at a time.
+6. **Give back what no game page sets.** Rule lines, band objects and texts the game never touches stay hidden after
+   your page; remember which window hid them and show them again on its next game page. A band set (`TexSet`) is one
+   object: to keep one band, show another page's single-band object at the same place and hide the rest of that page.
+7. **Read the quest the way the game does on each owner**, and confirm a field's type by a game reader before using
+   it: `sQuest +0xa4` is a `cQuestData`, not the `rQuestData` its name suggested.
+
 ## Borrow a game window on another screen
 
 WishFinder shows the smithy's Req. Materials window beside its Hunter's Notes list, in town and in a quest (`mods/wishfinder/src/native.rs` `materials_open`, `materials_show`, `materials_close`; natives in `mhgu-understanding` [Menus and screens](../../mhgu-understanding/references/menus-and-screens.md#ui-objects-outside-their-screen)). The method, in the order that worked:
@@ -237,6 +264,8 @@ Mocked GPU commands/allocations establish no actual clipping or pixels. Manual a
 
 | Mistake | Correct approach |
 | --- | --- |
+| Taking a pointer field's type from its DTI name | Find a game function that reads it: `sQuest` `mpQuestData` is the `cQuestData` itself, and `getData` on it read quest ID 0 (WishFinder r130). |
+| Testing a lookup with an input whose wrong reading looks like a valid one | An in-quest case with a quest that lists nothing passed while the lookup read nothing. Choose inputs where a wrong reading gives a different output. |
 | Using Forge `malloc` for game GUI objects | Use the class DTI's MT allocator so the native destructor frees it correctly. |
 | Sizing a row's map or cache with fixed numbers | Another plugin may have added children first. Size both from the live tree ([Native GUI extensions](#a-row-another-plugin-also-extends)). |
 | Appending a GUI child without growing the object map | The game indexes the map by the tree count and crashes. Grow map and draw cache together. |

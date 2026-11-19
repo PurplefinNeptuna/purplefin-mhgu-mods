@@ -38,6 +38,12 @@ Exact instruction sites (Please do Better `DEVELOPMENT.md`):
 
 `0x3aeda4` sets `+0x52` to 2 when monster HP falls to `mGekitaiHp`, so 1 and 2 mean repelled. Reward file layouts: [Quest files](quest-files.md). Source: `mods/wishfinder/DEVELOPMENT.md` section Reward rules.
 
+**Chance per draw.** WishFinder's quest pages show a reward's chance as its weight over the sum of its frame's live
+weights (weight above 0; an item 0 row counts, since it rolls nothing), rounded, at least 1, the best of the quest's
+`rem1`, `rem2`, `add1`, `add2` and `sub` frames (`mods/wishfinder/core/src/quest_record.rs` `percent`, held by
+`tests/table.py`; the quest table stores it, version 4). It is not the chance of the reward screen: a frame draws once
+per slot it fills (inference from the slot counts above), and the forced first entry ignores its weight.
+
 ## Capture attribution by array/index
 
 UI builder `0x3874e0` copies generated four-byte `(u16 item, u16 amount)` entries. Audited copy windows begin `0x3875bc`, `0x3878e0`, `0x387b00`, `0x388084`, targeting known player arrays/indices. Item IDs can repeat with different quantities. Attribution uses observed generation, exact caller/copy destination, snapshots, and index, not a search for the first matching ID.

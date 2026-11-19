@@ -83,6 +83,17 @@ Start menu object 31 is `cUIOOptionWindowForGame` (vtable `0x1772c88`, 144 bytes
 
 The page that owns a list writes each row through `cUIObject` setters (text `0x56e808`, visibility `0x56e530`, colour `0x56e6fc`, number `0x56fde0`, item icon and name `0x56e62c`). The text setter reaches `0x547564`, which `strlen`s a plain `char*`, so a plugin's static string works. The generic `cUIOListWindow` (152 bytes) reads only per-row colour bytes from an 8-byte vector at +0x50 and a cursor at +0x54.
 
+## Page cursor
+
+The game's list and page cursor (36 bytes, set up by `0x54ed74`; read in `0x54edec`, `0x54ee34`, `0x54ee98`): `+0xd`
+row (u8), `+0xe` rows per page, `+0x10` page (u16), `+0x12` pages (u16), `+0x14` rows (u16), `+0x18` row mode, `+0x1c`
+page mode, `+0x20` set to 1 by each setter (inference: a changed flag). `0x54edec(c, rows, row mode, keep)` sets rows and rows per page and, with `keep` 1, clamps the
+row to the new count (else row 0). `0x54ee34(c, n, page mode)` sets the row count and the page count and sets the page
+to 0. `0x54ee98(c, pad)` moves it and wraps through the cursor's own getter (vtable `+0x2c`), so a count written by
+these setters is the one L/R and the D-pad walk. `0x54ecc0(c, page)` sets the page. Screens that page with L/R keep the
+page as the row of a one-row-per-page cursor (quest detail panels) or as its page (Quest Info, read through the
+cursor's virtual `+0x24`). Owners in [Quests and progression](quests-and-progression.md#quest-detail-pages-counter-quest-board-quest-info).
+
 ## UI objects outside their screen
 
 A game window is a `cUIObject` class with its own layout file, and the game can make one from any screen. Read in bytes and run by WishFinder r82 on Eden and MHGU Recomp (village, hub and quest); notes in `work/wishfinder/REQ_MATERIALS.md`.

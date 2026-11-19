@@ -15,8 +15,11 @@ File formats (ARC, GMD, `rTexture`, block-linear) are game facts and live in
   double-size Modern Weapon Controls icon atlas. Take sizes from the file
   header, never from the base game, and expect extra rows.
 - A table built from the files is cached beside the save
-  (`savedata:/wishfinder_quests.bin`) with a fingerprint of every file read
-  (path and size), and rebuilt when it changes.
+  (`savedata:/WishFinder/wishfinder_quests.bin`) with a fingerprint of every
+  file read (path and size) and of the table and cache versions
+  (`quest_build::Fingerprint`), and rebuilt when either changes: a new table
+  format (WishFinder's version 4 added reward percents) raises the versions,
+  so saved tables are built again without the user deleting anything.
 - When the game already holds the data in memory, read it there instead.
   But some tables are empty in a quest (equipment message cell `0x1856b1c`
   is 0 in a quest), so copy what you need outside quests.
