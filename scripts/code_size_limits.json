@@ -19,7 +19,7 @@
   "mods/shared-urgent-quests/scripts/mod_distribution.py": 613,
   "mods/village-quests-in-hub/scripts/mod_distribution.py": 613,
   "mods/wishfinder-mwt-bridge/scripts/mod_distribution.py": 613,
-  "mods/wishfinder/core/src/quest_build.rs": 1509,
+  "mods/wishfinder/core/src/quest_build.rs": 1441,
   "mods/wishfinder/scripts/mod_distribution.py": 613,
   "mods/wishfinder/src/gui.rs": 608,
   "mods/wishfinder/src/welcome.rs": 994,
