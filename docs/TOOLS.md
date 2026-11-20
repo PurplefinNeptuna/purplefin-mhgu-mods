@@ -58,6 +58,7 @@ are ignored research clones, made by hand from the listed upstream.
 | hactool | `tools/hactool-source/` (https://github.com/SciresM/hactool.git) |
 | Eden | `references/eden/` (https://git.eden-emu.dev/eden-emu/eden.git) |
 | Ryujinx-Nextendo | `references/ryujinx-nextendo/` (https://github.com/NextendoNetwork/Ryujinx-Nextendo.git) |
+| MHGU Definitive Edition 3.0.0 | `references/MHGU-Definitive-Edition/` (shallow clone of https://github.com/Scrimas/MHGU-Definitive-Edition at tag `v3.0.0`, commit `cf91bd5`; WishFinder's `core/src/definitive_edition.rs` comes from its `allocations.toml`). Installed mod files: `/mnt/storage2/Programs/MHGU-DE/mod/` |
 | Ryubing | same checkout, remote `ryubing` (https://git.ryujinx.app/projects/Ryubing.git), tag `ryubing-1.3.3` = upstream `1.3.3`, commit `e2143d43b` |
 
 Ryubing 1.3.3 is built from `git archive ryubing-1.3.3` into
