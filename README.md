@@ -15,7 +15,7 @@ loads the same Forge NROs.
 | Purple-lib | r22 | [Install](mods/purple-lib/README.md) |
 | Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
 | Village Quests in Hub | r6 | [Install](mods/village-quests-in-hub/README.md) |
-| WishFinder | r132 | [Install](mods/wishfinder/README.md) |
+| WishFinder | r135 | [Install](mods/wishfinder/README.md) |
 | WishFinder bridge for My Weapon Tree | r11 | [Install](mods/wishfinder-mwt-bridge/README.md) |
 | World Sharpness Gauge | r70 | [Install](mods/world-sharpness-gauge/README.md) |
 
