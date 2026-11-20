@@ -27,7 +27,7 @@ File formats (ARC, GMD, `rTexture`, block-linear) are game facts and live in
 ## Files: Forge first, then the SDK
 
 Forge 1.5.1's `fs` module has the counted save mount, the RomFS and save mount
-points, `forge_fs_fileExists`, and forge-rs adds `mt::fs` file readers, but no directory listing, offset read, free-space query
+points, `forge_fs_fileExists`, and forge-rs adds `mt::fs` file readers. Forge 2.0.0 adds `forge_fs_openFile`, `getFileSize`, `readFile(handle, offset, …)` and `closeFile` (forge-rs `forge::fs::File`, `read_into`). Neither has writing, directory listing, free-space query
 or decompression. For those, call the game's `sdk` exports, by mangled name
 (`config.rs` has the set): `nn::fs::OpenFile/ReadFile/GetFileSize/CloseFile`,
 `OpenDirectory/ReadDirectory/CloseDirectory`, `GetFreeSpaceSize`,

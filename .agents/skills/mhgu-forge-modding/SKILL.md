@@ -6,8 +6,8 @@ description: Develop, change, debug, build, package and release native ARM32 For
 # MHGU Forge Modding
 
 Target: MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
-`FB08F1D20FD1204FE7070672777F869B`. Loader: stock Forge 1.5.1 (Fexty's fork),
-forge-rs 1.5.0. Knowledge dated 2026-11-13.
+`FB08F1D20FD1204FE7070672777F869B`. Loader: stock Forge 2.0.0 (Fexty's fork),
+forge-rs 2.0.0; mods not yet moved target 1.5.1 and 1.5.0. Knowledge dated 2026-11-13.
 
 This skill is **how a plugin does things**: builds, hooks, GUI insertion,
 rendering, input, files, hosts, delivery. What the game itself does (offsets,
@@ -33,7 +33,7 @@ before extracting, unpacking or editing it.
 | Location | What it holds | Use it for |
 | --- | --- | --- |
 | `/mnt/storage2/Programs/MHGURecomp/data/romfs/` | Every game resource (ARC archives in `nativeNX/arc/`, GUI, tables, per-language text), 12 GB, no code. MHGURecomp's copy of the 1.4.0 RomFS; files checked so far match the earlier Eden dump (WishFinder's `quests.bin` rebuilds byte for byte, and Modern Weapon Controls' pinned `hunter_note_eng.arc` hash matches). | Finding and reading resources: `rg --files DUMP/romfs \| rg NAME` |
-| `work/shared/game-exefs/` | The 1.4.0 code only: `main` (the game), `sdk`, `subsdk0`, `rtld`, `main.npdm`. `forge` is Forge 1.5.1's `subsdk9`, not game code. | Instruction bytes and signatures. Read `main` with `scripts/mhgu_binary.py` `main_image()`, which refuses any other version. |
+| `work/shared/game-exefs/` | The 1.4.0 code only: `main` (the game), `sdk`, `subsdk0`, `rtld`, `main.npdm`. `forge` is Forge 2.0.0's `subsdk9` (1.5.1's is in `work/shared/forge-1.5.1/`), not game code. | Instruction bytes and signatures. Read `main` with `scripts/mhgu_binary.py` `main_image()`, which refuses any other version. |
 | `work/research-tooling/` | Saved Ghidra project/export and DTI index built from that `main` | Search first: `./scripts/tool.sh research find QUERY --kind functions` |
 | `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` | Sealed base game (v0) | Rarely needed: an original the dump lacks |
 | `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` | Sealed 1.4.0 update, about 193 MiB (v262144; Eden logs it as "v0.4.0"). Mostly a RomFS patch: a binary delta that only works applied onto the base RomFS, not a folder of files. | Rarely needed. Its resource changes are in the dump and its code is in `game-exefs/`; nothing else is missing. |

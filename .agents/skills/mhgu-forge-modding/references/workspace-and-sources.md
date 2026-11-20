@@ -36,7 +36,7 @@ Useful evidence locations: `work/shared/game-exefs/`, `work/shared/forge-1.5.1/`
 
 ## Source baselines
 
-Forge 1.5.1 commit `b23e114a23f41c9a8e2fd34b2f4df2a2102d0ee1`; forge-rs 1.5.0 commit `d1865b68e9b194eb3eacc8bd71bbf601a5fac63e`. Native offsets target main SHA-256 `b3935415499549adaf4c0e89822831daa175cfd456a7990791c79be3997645ef`, build `FB08F1D20FD1204FE7070672777F869B`.
+Forge 2.0.0 commit `fd03ecb4c4ad16a02edb508c5a9b7731b84008d3`; forge-rs 2.0.0 commit `112e0e032ad72db992870989384aba65331978c2` (mods not yet moved: Forge 1.5.1 `b23e114`, forge-rs 1.5.0 `d1865b6`). Native offsets target main SHA-256 `b3935415499549adaf4c0e89822831daa175cfd456a7990791c79be3997645ef`, build `FB08F1D20FD1204FE7070672777F869B`.
 
 Per-mod versions and acceptance scope are in `docs/LOCAL_STATE.md`, `DISTRIBUTION.json` and `EVIDENCE.json`; this file does not repeat them.
 

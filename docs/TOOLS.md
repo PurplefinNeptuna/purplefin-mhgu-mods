@@ -54,9 +54,9 @@ with its revision in `references/provenance.json`.
 
 | Source | Checkout |
 | --- | --- |
-| Forge 1.5.1 | `tools/forge-local/`, submodule of https://github.com/Fexty12573/forge.git |
-| MHGURecomp 0.15.1 | `references/MHGURecomp/` (blobless sparse clone of https://github.com/morerokk/MHGURecomp at tag `0.15.1`: `runtime`, `tools`, `docs`, `third_party/cimgui/imgui`; `tools/` is gitignored) |
-| forge-rs 1.5.0 | `tools/forge-rs/`, submodule of https://github.com/Fexty12573/forge-rs.git |
+| Forge 2.0.0 | `tools/forge-local/`, submodule of https://github.com/Fexty12573/forge.git |
+| MHGURecomp 0.18.0 | `references/MHGURecomp/` (blobless sparse clone of https://github.com/morerokk/MHGURecomp at tag `0.18.0`: `runtime`, `tools`, `docs`, `third_party/cimgui/imgui`; `tools/` is gitignored) |
+| forge-rs 2.0.0 | `tools/forge-rs/`, submodule of https://github.com/Fexty12573/forge-rs.git |
 | hactool | `tools/hactool-source/` (https://github.com/SciresM/hactool.git) |
 | Eden | `references/eden/` (https://git.eden-emu.dev/eden-emu/eden.git) |
 | Ryujinx-Nextendo | `references/ryujinx-nextendo/` (https://github.com/NextendoNetwork/Ryujinx-Nextendo.git) |
@@ -76,7 +76,7 @@ any executable named `Ryujinx` through the user's `3x` profile; launch with
 
 `./scripts/tool.sh forge-rs status` checks source and converter fingerprints.
 The pinned cargo-forge converter remains 1.4.1; it builds the self-contained
-1.5.0 Rust bindings used by the mods. Source updates do not install loaders.
+2.0.0 Rust bindings offline (all features), and the 1.5.0 bindings vendored by mods not yet moved. Source updates do not install loaders.
 
 Offline MHGU references/wiki are `references/MHGU-Modding/` and
 `references/MHGU-Modding.wiki/`; their source revisions are in

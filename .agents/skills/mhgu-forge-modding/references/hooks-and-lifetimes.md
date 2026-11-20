@@ -44,7 +44,7 @@ What changes is narrow. The window still compares every byte past the first eigh
 
 ## Sites Forge itself owns
 
-Stock Forge 1.5.1 hooks `0x3da8fc`, `0xb8692c`, `0x887810` and `0x88784c` plus its dynamic graphics bootstrap (Modern Weapon Controls `DEVELOPMENT.md`). Do not hook them. Damage Numbers holds `0x170968`, `0x9d6f8`, `0x2a87a8`, `0xb8909c`, `0x885844`, `0x16dd7c`, `0x16dc6c` and `0x178660`; chain on its entry hooks, never its interior taps.
+Stock Forge 1.5.1 and 2.0.0 hook `0x3da8fc`, `0xb8692c`, `0x887810` and `0x88784c` plus its dynamic graphics bootstrap (Modern Weapon Controls `DEVELOPMENT.md`). Do not hook them. Damage Numbers holds `0x170968`, `0x9d6f8`, `0x2a87a8`, `0xb8909c`, `0x885844`, `0x16dd7c`, `0x16dc6c` and `0x178660`; chain on its entry hooks, never its interior taps.
 
 ## On MHGURecomp
 
@@ -54,7 +54,7 @@ An entry whose first two words read PC-relative data cannot run from Forge's cop
 
 ## Pool and publication behavior
 
-At pinned Forge 1.5.1, `hook.c` owns at most two 16 KiB CodeMemory chunks. Slots align to eight bytes and are never reused. A normal eight-byte ARM displacement needs a 16-byte trampoline. Damage Numbers' eleven hooks use 176 bytes; the two quest-badge hooks use 32 bytes. Context hooks also allocate a 44-byte stub, rounded to 48, in addition to any original trampoline.
+At Forge 1.5.1 and 2.0.0 (`hook.c` unchanged between them), `hook.c` owns at most two 16 KiB CodeMemory chunks. Slots align to eight bytes and are never reused. A normal eight-byte ARM displacement needs a 16-byte trampoline. Damage Numbers' eleven hooks use 176 bytes; the two quest-badge hooks use 32 bytes. Context hooks also allocate a 44-byte stub, rounded to 48, in addition to any original trampoline.
 
 Forge requires simultaneous RW/RX aliases and rejects the permission-transition JIT fallback. Slots remain Forge-owned for process lifetime, including after a later plugin installation failure. Dropping a Rust `Hook` record does not release them. Repeated installation/retry is not a harmless cleanup strategy.
 

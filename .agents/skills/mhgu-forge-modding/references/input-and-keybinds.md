@@ -103,7 +103,7 @@ input hold does not stop it, since ImGui reads Forge's input.
 
 ## Forge's own menu
 
-Stock Forge 1.5.1 toggles its window on a **keyboard** key only:
+Stock Forge 1.5.1 and 2.0.0 toggle its window on a **keyboard** key only:
 `[menu] key` in `nativeNX/forge/config.ini`. The `data/config.ini` Forge ships
 sets 73 (Insert); 66 (F9) is only the fallback when no ini is read (`graphics.cpp`
 `Graphics::render`, `config.c`, `include/forge/input.h`). On Ryujinx the key

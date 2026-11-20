@@ -3,12 +3,15 @@
 ## Supported loaders and source updates
 
 Switch development uses unmodified [Fexty's Forge fork](https://github.com/Fexty12573/forge)
-1.5.1, based on Jeffi's original Forge, at
-`tools/forge-local/` (`b23e114a23f41c9a8e2fd34b2f4df2a2102d0ee1`).
+2.0.0, based on Jeffi's original Forge, at
+`tools/forge-local/` (`fd03ecb4c4ad16a02edb508c5a9b7731b84008d3`). A plugin
+built with forge-rs 2.0 asks for Forge 2.0; Forge 1.5.1 removes it and logs
+`requires Forge version 2.0.*` (`plugin.cpp`);
+MHGURecomp hosts 2.0.0 from 0.18.0. Mods not yet moved vendor forge-rs 1.5.0.
 Native ARM32 Hook is 24 bytes: target/detour/original/context pointers at
 0/4/8/12, ctx_cell at16 and has_ctx at20. Forge pools ordinary/context
 trampolines; verify allocations, ownership and the actual headers at each boundary.
-forge-rs source is1.5.0
+forge-rs source is 2.0.0
 at `tools/forge-rs/`; its compatible converter is separately pinned at1.4.1.
 
 Update the existing checkout from its official remote; do not create an extra

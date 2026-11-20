@@ -6,8 +6,8 @@ The Switch loader is native ARM32. C++ and Rust plugins produce `.nro` modules l
 
 | Component | Pinned source | Role |
 | --- | --- | --- |
-| Forge 1.5.1 | `b23e114a23f41c9a8e2fd34b2f4df2a2102d0ee1` | Loader, hooks, callbacks, graphics, native facilities |
-| forge-rs 1.5.0 | `d1865b68e9b194eb3eacc8bd71bbf601a5fac63e` | Raw bindings, Rust wrappers/macros/runtime |
+| Forge 2.0.0 | `fd03ecb4c4ad16a02edb508c5a9b7731b84008d3` | Loader, hooks, callbacks, graphics, native facilities |
+| forge-rs 2.0.0 | `112e0e032ad72db992870989384aba65331978c2` | Raw bindings, Rust wrappers/macros/runtime |
 | cargo-forge converter 1.4.1 | Fingerprinted by the mod dependency lock/tool status | Separate ELF-to-NRO build tool |
 
 Current Forge source is [Fexty's fork](https://github.com/Fexty12573/forge), based on Jeffi's original Forge. Update the existing official checkout in place when requested. Retired local loader, renderer, Better Input, mutex, and support patches are not the baseline.

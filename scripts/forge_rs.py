@@ -34,7 +34,7 @@ def status():
     print(subprocess.check_output([str(TOOLCHAIN / "rustc"), "--version"], text=True).strip())
     print("Commands: forge-rs new NAME --path work/my-trial; forge-rs build --release")
     print("Build runs in the caller's plugin directory; Cargo defaults to offline mode.")
-    print("Supported Switch baseline: upstream Forge 1.5.1; docs/DEVELOPMENT.md")
+    print("Supported Switch baseline: upstream Forge 2.0.0; docs/DEVELOPMENT.md")
 
 
 def run(args):
