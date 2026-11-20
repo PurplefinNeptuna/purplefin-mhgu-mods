@@ -48,12 +48,14 @@ One checkout per upstream repository is retained. Update it directly; do not
 create an additional upstream directory. Revisions/remotes and historical pins
 are recorded in COMPACTION.json and WORKSPACE_EVIDENCE.json. The two pinned
 baselines are submodules (`git submodule update --init --recursive`); the rest
-are ignored research clones, made by hand from the listed upstream.
+are ignored research clones, made by hand from the listed upstream. `tools/`
+holds what is built or run; a source that is only read goes in `references/`,
+with its revision in `references/provenance.json`.
 
 | Source | Checkout |
 | --- | --- |
 | Forge 1.5.1 | `tools/forge-local/`, submodule of https://github.com/Fexty12573/forge.git |
-| MHGURecomp 0.15.1 | `tools/MHGURecomp-source/` (blobless sparse clone of https://github.com/morerokk/MHGURecomp at tag `0.15.1`: `runtime`, `tools`, `docs`, `third_party/cimgui/imgui`; `tools/` is gitignored) |
+| MHGURecomp 0.15.1 | `references/MHGURecomp/` (blobless sparse clone of https://github.com/morerokk/MHGURecomp at tag `0.15.1`: `runtime`, `tools`, `docs`, `third_party/cimgui/imgui`; `tools/` is gitignored) |
 | forge-rs 1.5.0 | `tools/forge-rs/`, submodule of https://github.com/Fexty12573/forge-rs.git |
 | hactool | `tools/hactool-source/` (https://github.com/SciresM/hactool.git) |
 | Eden | `references/eden/` (https://git.eden-emu.dev/eden-emu/eden.git) |

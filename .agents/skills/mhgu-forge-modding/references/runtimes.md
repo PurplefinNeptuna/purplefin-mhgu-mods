@@ -8,7 +8,7 @@ in the table below. Check each row your plugin touches before you ship.
 | Switch | Native ARM32 | Stock Forge 1.5.1 (`subsdk9`) | Stock |
 | Eden | Emulated ARM | Stock Forge in the emulated process | Stock |
 | Ryubing 1.3.3 (and Ryujinx-Nextendo) | Emulated ARM | Stock Forge in the emulated process | Stock |
-| MHGURecomp (PC, Linux/Windows) | Recompiled to host code | An ARM interpreter | Its own HLE of Forge's exports (`tools/MHGURecomp-source/runtime/forge.c`, `forge_imgui.c`) |
+| MHGURecomp (PC, Linux/Windows) | Recompiled to host code | An ARM interpreter | Its own HLE of Forge's exports (`references/MHGURecomp/runtime/forge.c`, `forge_imgui.c`) |
 | gu-native (Android, Windows) | Recompiled to host code, a fork of MHGURecomp's runtime | Same interpreter | Same HLE plus its own renderer (`/mnt/storage2/Programs/gu-native/src`, local checkout `9a1aef7`; the HUD findings below were read at upstream `c7fc45a`) |
 
 The tester runs Eden, Ryubing and MHGURecomp. Nobody here runs gu-native or a
@@ -110,7 +110,7 @@ Hub, WishFinder). Load order rules per host are in
 | Laying out ImGui text to Roboto's widths only | MHGURecomp falls back to a wider font. Measure and fall back to smaller sizes ([Rendering](rendering-and-settings.md#fonts-and-text-fit)). |
 
 Sources: `tools/forge-local/source/forge/{input.cpp,graphics.cpp,config.c}`;
-`tools/MHGURecomp-source/{README.md,runtime/forge.c,runtime/forge_imgui.c,runtime/overlay.cpp,runtime/kernel.c}`
+`references/MHGURecomp/{README.md,runtime/forge.c,runtime/forge_imgui.c,runtime/overlay.cpp,runtime/kernel.c}`
 (commit `dafb590`); gu-native source as above; `mods/damage-numbers/DEVELOPMENT.md`,
 `mods/imgui-meter/DEVELOPMENT.md`, `mods/world-sharpness-gauge/DEVELOPMENT.md`,
 `mods/online-roaming/DEVELOPMENT.md`, `mods/please-do-better/DEVELOPMENT.md`.

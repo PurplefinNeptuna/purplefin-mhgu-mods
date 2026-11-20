@@ -12,7 +12,7 @@ This appendix describes `/mnt/storage2/Programs/MHGU_Modding` Paths and installe
 | Latest Eden log | `~/.local/share/eden/log/eden_log.txt` |
 | Ryubing 1.3.3 (Ryujinx test target) packages | `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/mods/contents/0100770008dd8000/` |
 | Ryubing logs | `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/Logs/` |
-| MHGURecomp | `/mnt/storage2/Programs/MHGURecomp/` (`mods/NAME/romfs/nativeNX/plugins/`, log `recomplog.txt`, launcher `run.sh`); source `tools/MHGURecomp-source/` |
+| MHGURecomp | `/mnt/storage2/Programs/MHGURecomp/` (`mods/NAME/romfs/nativeNX/plugins/`, log `recomplog.txt`, launcher `run.sh`); source `references/MHGURecomp/` |
 
 What each input holds and when to use it: the Game data section of this skill's SKILL.md.
 

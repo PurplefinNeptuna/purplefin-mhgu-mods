@@ -184,7 +184,7 @@ checks in `scripts/doc_rules.py` (current-state length, version chains, previous
   user's decision it counts as a superset of Ryubing: a mod that works on
   Ryubing is taken to work there, so install and test on Ryubing, not here.
 - MHGURecomp: `/mnt/storage2/Programs/MHGURecomp/`, Linux build (source at
-  `tools/MHGURecomp-source/`). Each mod is a folder under `mods/` beside the
+  `references/MHGURecomp/`). Each mod is a folder under `mods/` beside the
   executable, NROs at `mods/NAME/romfs/nativeNX/plugins/`, ordered by
   `mods/load_order.txt`; saves are in `~/.local/share/MHGURecomp/save/save_0/`.
   The user starts it with `/mnt/storage2/Programs/MHGURecomp/run.sh`, which
