@@ -134,6 +134,7 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 | Testing a key with a fake that builds the same key | The test agrees with itself. Assert against what the real finish path produces, in the native adapter. |
 | Stretching a rule from the rows it was measured on | "Create row wins" was true at level 1 and wrong for the 127 create rows above it. Run a rule over the whole table and read the branch counts. |
 | Treating an empty search as proof nothing references a function | Run the tool on a known positive first. A broken script's "no `bl` site" stood for weeks. Use `research xref` and `research word`, and check both. |
+| Treating a hook that logged nothing as proof the function did not run | Log a call you know happens through the same hook first. A silent `0x4eef00` hook with no positive control sent WishFinder's sound research the wrong way for about a hundred builds; the function only ever runs for the BBQ Spit. |
 
 ## Topic references
 

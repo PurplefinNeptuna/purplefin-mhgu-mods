@@ -58,9 +58,13 @@ build it and extract into the scratchpad.
 - Names, wiki fields, decompiler variables and file presence are leads, not proof.
 - An empty search is evidence only once the same tool has found a known positive.
   A broken cross-reference script reported "no `bl` site" for every target through
-  the whole of World Sharpness Gauge's research. `research xref` replaces it.
+  the whole of World Sharpness Gauge's research. `research xref` replaces it. A hook that logs
+  nothing counts the same way: one on `0x4eef00` with no positive control sent WishFinder's sound
+  research the wrong way for about a hundred builds.
 - Follow writer, reader, callers and destructor before claiming what a field means or who owns an object.
-- A runtime object and its serialized resource record can have different layouts.
+- A runtime object and its serialized resource record can have different layouts. Map the offsets
+  through the resource's load (vtable slot 0x2c and its per-record reader): `itemData` is 44 bytes
+  in the file and 56 in memory, so a code offset read on the file gives a wrong field.
 - Do not run DTI extraction, launch the game, edit saves or touch original dumps.
   Reuse the saved indexes. New runtime evidence needs the user to run something.
 - Say "inference" when evidence is indirect, and name what would confirm it.
@@ -84,14 +88,14 @@ build it and extract into the scratchpad.
 | How do GUI resources, properties, trees, maps and caches work? Which screens and rows are already mapped (counter, quest detail panel, Quest Info, smithy, HUD, start menu, item pouch, rewards, popup, button guide)? What do message texts accept (line breaks, colour tags, no clipping)? | [Native GUI](references/native-gui.md) |
 | Where are sharpness points, tiers, tables and the sharpness HUD row? | [Sharpness](references/sharpness.md) |
 | How do key quests, urgents, completion and progression relate? How does the game list quests, fill the counter's rank and star pages, page the quest detail panel at the counter and the quest board and the start menu's Quest Info, find the running quest in a quest, find downloaded event quests, record a clear online? | [Quests and progression](references/quests-and-progression.md) |
-| What rewards, carves, captures, breaks, gathering and fishing does a quest give, and from which files? Definitive Edition quests? | [Quest files](references/quest-files.md) |
+| What rewards, carves, captures, breaks, gathering and fishing does a quest give, and from which files? How does a gather, carve or catch reach the pouch at runtime? Definitive Edition quests? | [Quest files](references/quest-files.md) |
 | Start menu internals and pages, Options window, Help, Item Pouch and Equipment screens, the page cursor (`0x54edec`/`0x54ee34`), button guide, centre popup, in town or in a quest? Making a game window (a `cUIObject`) outside its own screen, loading its layout and texts? | [Menus and screens](references/menus-and-screens.md) |
-| Menu sounds, sound data, pickup jingles, motion sound events (MSS)? | [Sounds](references/sounds.md) |
+| Menu sounds, sound data, pickup jingles (which item gets which, the BBQ Spit's), motion sound events (MSS)? | [Sounds](references/sounds.md) |
 | Online sessions, member state, who spawns for whom, hunter data, travel codes and exits? | [Multiplayer and areas](references/multiplayer-and-areas.md) |
 | Which input representation/player/state is this? Button glyph IDs and the button config bytes? Target camera tap? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
 | Where do damage, HP loss, ownership, hitzones and camera matrices come from? | [Damage and cameras](references/damage-and-cameras.md) |
 | How do Luck, reward pages, quantities and appraisal work? | [Rewards and Luck](references/rewards-and-luck.md) |
-| Where are equipment box slots, weapon crafting rows and armor series names? | [Equipment and crafting](references/equipment-and-crafting.md) |
+| Where are equipment box slots, weapon crafting rows and armor series names? itemData's file and memory layouts, item rarity, skill effect checks (`0x2864c4`)? | [Equipment and crafting](references/equipment-and-crafting.md) |
 | Which tools/formats edit a resource, which wiki `.bt` templates match real files? ARC, GMD and texture layouts, language codes? | [Resources and tooling](references/resources-and-tooling.md) |
 | Original local paths and topic-to-source coverage | [Workspace and sources](references/workspace-and-sources.md) |
 

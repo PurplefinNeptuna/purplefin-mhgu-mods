@@ -29,7 +29,7 @@ The icon follows the player's button config, so read it, do not assume it: the s
 
 Read session pointer cell `0x188ca48`, then local hunter index+0x30 in range 0..3. Read sPlayer cell `0x1885b58`, then player pointer+0x1c+4*index. Never obtain that index from sUserInfo. Native helpers `0x3f8398`/`0x276278` support this chain. Validate each mapping and pointer.
 
-Player+0x13c4 is weapon pointer; weapon ID+0x4d4 uses 0 GS, 1 SnS, 2 Hammer, 3 Lance, 4 HBG, 6 LBG, 7 LS, 8 SA, 9 GL, 10 Bow, 11 DB, 12 HH, 13 IG, 14 CB, 15 Prowler; 5 is unused. Player+0x2749 bit 0 is draw state (getter `0x2a2444`). IDs are not a contiguous 14-weapon ordinal.
+Player+0x13c4 is weapon pointer; weapon ID+0x4d4 uses 0 GS, 1 SnS, 2 Hammer, 3 Lance, 4 HBG, 6 LBG, 7 LS, 8 SA, 9 GL, 10 Bow, 11 DB, 12 HH, 13 IG, 14 CB, 15 Prowler; 5 is unused. Player+0x2749 bit 0 is draw state (getter `0x2a2444`). IDs are not a contiguous 14-weapon ordinal. The quest classes `uPlayerQuest00..15` follow the same numbers (no 05), so `uPlayerQuest15` is the Prowler (inference from the matching gap). It has its own action dispatcher (vtable slot 0x318 `0x1207e6c`, actions in `0x1208000..0x1210000`, its gather `0x120cf18` and fishing `0x120e88c`); 00..14 share `0x2cbfcc`. All share the add slots 0x360 `0x3015e0` and 0x364 `0x301784`.
 
 The combat gate reproduces `0x3a5ed0(selector5, thirdArg1)` using byte at `*main[0x188ad90]+0x50`. States 4, 5, 6, 7, 9 block combat; 8 does not. Imported mState+0x4c is another field. Treat entry/exit transitions as state changes, including hold quarantine until release.
 
