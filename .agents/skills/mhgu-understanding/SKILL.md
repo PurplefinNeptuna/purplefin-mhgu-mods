@@ -86,7 +86,7 @@ build it and extract into the scratchpad.
 | How do key quests, urgents, completion and progression relate? How does the game list quests, fill the counter's rank and star pages, page the quest detail panel at the counter and the quest board and the start menu's Quest Info, find the running quest in a quest, find downloaded event quests, record a clear online? | [Quests and progression](references/quests-and-progression.md) |
 | What rewards, carves, captures, breaks, gathering and fishing does a quest give, and from which files? Definitive Edition quests? | [Quest files](references/quest-files.md) |
 | Start menu internals and pages, Options window, Help, Item Pouch and Equipment screens, the page cursor (`0x54edec`/`0x54ee34`), button guide, centre popup, in town or in a quest? Making a game window (a `cUIObject`) outside its own screen, loading its layout and texts? | [Menus and screens](references/menus-and-screens.md) |
-| Menu sounds, sound data and pickup jingles? | [Sounds](references/sounds.md) |
+| Menu sounds, sound data, pickup jingles, motion sound events (MSS)? | [Sounds](references/sounds.md) |
 | Online sessions, member state, who spawns for whom, hunter data, travel codes and exits? | [Multiplayer and areas](references/multiplayer-and-areas.md) |
 | Which input representation/player/state is this? Button glyph IDs and the button config bytes? Target camera tap? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
 | Where do damage, HP loss, ownership, hitzones and camera matrices come from? | [Damage and cameras](references/damage-and-cameras.md) |
