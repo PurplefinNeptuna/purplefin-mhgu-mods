@@ -280,9 +280,11 @@ short description of what it does. Use these sections in this order:
 | Installation | Numbered steps to close the game, extract the named ZIP, copy the whole named folder, and enable/start it. Include the destination paths and any required loader configuration. |
 | Usage | What the user does and sees. Put controls, badges, settings and INI examples here as needed. |
 | Update and removal | Close the game, explain which files/folder to replace or remove, and preserve settings stored inside a mod folder. |
-| Compatibility and known issues | Relevant conflicts, visible limitations and steps the user can take. Omit this section when there is nothing useful to say. |
+| Compatibility and known issues | Visible limitations and steps the user can take. Omit this section when there is nothing useful to say. |
 
-Use `### Settings` and `### INI settings` below Usage when applicable. Settings
+A README names another mod only in Requirements: a requirement (a minimum version of a mod the user
+may run beside it counts), or a recommended mod listed by name and version alone, without what it
+does there; conflicts live in `manifest.json`. Use `### Settings` and `### INI settings` below Usage when applicable. Settings
 tables use `Setting | Default | Effect`. Control tables use `Action | Input`.
 Write overlay paths as **Plugin UI > Plugin name**, keeping the actual UI name
 and button labels exact. Use colour/grey consistently, with plain colour names
