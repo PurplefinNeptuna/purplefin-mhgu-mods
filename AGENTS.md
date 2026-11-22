@@ -59,6 +59,11 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   Imported base is 0x009c9000; subtract it for Forge offsets, but not from vtable
   or DTI words, which are already main-relative. One text byte and some imported
   type layouts differ from the target, so verify against real bytes.
+- **Answer from the source.** A question about what a mod or the game does is
+  answered from the code that decides it, read in full, not from its docs. When
+  the answer also depends on game data (RomFS rows, a save, an ini), read that
+  data before answering. A reply never ends with "I didn't read X" or "to be
+  sure I'd need Y" when X or Y can be read now: read it first.
 - **Test the explanation.** Before writing down why something happened, name the data
   that would disprove it and look. Read-only ground truth is cheap: a save file, a mod's
   ini, a RomFS row. Values off by one constant across unrelated cases are a base or encoding
