@@ -85,7 +85,31 @@ Offline MHGU references/wiki are `references/MHGU-Modding/` and
 indexes and weapon motion-value indexes. Some fields are WIP/MHXX-specific;
 verify game/version, offsets, types, counts and bytes against the actual input.
 Model tutorials establish extraction/conversion, not a complete import workflow.
-See [research](RESEARCH.md) for Ghidra/DTI searches and native GUI ownership.
+Ghidra/DTI search: [Code research](#code-research-ghidra) below.
+
+## Code research (Ghidra)
+
+Open the imported MHGU 1.4.0 database with `./scripts/tool.sh ghidra` (or the
+**Ghidra** entry in `START_TOOLS.sh`), then double-click `MHGU_1.4.0`. Ghidra
+12.1.4 lives in `tools/ghidra/`, its settings in `tools/state/ghidra/`, and it
+runs on the system OpenJDK. The import came from a Ghidra 11.0.3 database and
+kept its analysis, with reanalysis off.
+
+| Material | Path |
+| --- | --- |
+| Supplied GZF, unchanged | `work/research-tooling/inputs/MHGU_1.4.0.gzf` (from `/mnt/storage2/Downloads/MHGU/MHGU_1.4.0.gzf`, SHA-256 `b4b94c526f2d0b1b91dbcbd4bd5f411479a5db7270de04a50605f61db649f99a`; author not established) |
+| Editable project | `work/research-tooling/ghidra-projects/MHGU_1.4.0.gpr` |
+| Search indexes and byte comparison | `work/research-tooling/ghidra-export/`, `summary.json` |
+| Saved DTI dump and index | `work/research-tooling/dti/` |
+| Import/export logs | `work/research-tooling/ghidra-*.log` |
+
+Searching (`research find/xref/word/dis/vtable`), refreshing the indexes
+(`research export --targets`), the image base and the database's known byte
+difference are in the mhgu-understanding skill:
+`references/discovery-and-evidence.md` and `references/research-playbook.md`.
+The DTI dumper's recipe and trial rules are in
+[mods/dti-dumper-support/README.md](../mods/dti-dumper-support/README.md).
+Game-derived databases and exports stay out of Git.
 
 ## ARC workflow
 

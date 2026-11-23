@@ -99,7 +99,7 @@ scripts/code_rules.py` checks every tracked file). Generated and third-party tre
 
 ## Native implementation rules
 
-Search saved Ghidra/DTI before gameplay work; see [research](RESEARCH.md).
+Search saved Ghidra/DTI before gameplay work (mhgu-understanding skill).
 Use Forge's callbacks, logging, input, memory, singleton, hooks, filesystem and
 render APIs where applicable. Document a verified API gap before using a lower
 level path. Validate pointers, signatures, allocation failures and rollback.

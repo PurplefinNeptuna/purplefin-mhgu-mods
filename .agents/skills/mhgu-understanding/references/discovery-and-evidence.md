@@ -32,6 +32,8 @@ Database address minus imported image base gives the main-relative offset. Examp
 
 The imported `.text` differs from original main at offset `0x00283710` (database `0x00c4c710`): original byte `0x49`, database `0x52`. Preserve the supplied database difference; patch/signature bytes come from original main. Data/GOT/initializer differences are not fully normalized. Conflicting annotations include `MtProperty` 56 versus 88 bytes and pointer-width inconsistencies. Validate layout through ARM32 instructions/bindings and actual field access.
 
+The DTI registry main+`0x018a5d7c` and the property-list vtable main+`0x0177e9a0` have code references; they are research targets, not gameplay proof.
+
 Open analysis with `./scripts/tool.sh ghidra`. The preserved GZF is `work/research-tooling/inputs/MHGU_1.4.0.gzf`; editable project is `work/research-tooling/ghidra-projects/MHGU_1.4.0.gpr`. To refresh indexes, close that GUI project and run `./scripts/tool.sh research export`. Export uses read-only/noanalysis mode and copied-main verification. `research import` creates a fresh project and refuses to overwrite an existing one. Preserve annotations and original GZF.
 
 To decompile or cross-reference specific addresses, write your own targets file in the task's work folder (for example `work/<mod>/ghidra-targets.txt`): one main-relative `0x` offset per line, with `#` comments saying why each is there. Then run `./scripts/tool.sh research export --targets work/<mod>/ghidra-targets.txt`. Read each target's symbols, containing function and references in `summary.json` `research_targets`, and function starts' C in `ghidra-export/function_<offset>.c`. Each run replaces the previous target output. Never add task offsets to `scripts/ghidra/ExportMhguResearch.java`; its list holds only the shared baseline.
@@ -54,4 +56,4 @@ Trace a resource from ARC entry/name/type to its native loader and runtime consu
 
 The GNU build-ID note in main is at `0x172e52c` (namesz 4, descsz 16, type 3), the ID itself at `0x172e53c`. Main SHA-256 `b3935415499549adaf4c0e89822831daa175cfd456a7990791c79be3997645ef`; loaded-memory SHA-256 `24c208c395c65727b21b5fa91af8381396e70cf421b0fcfee0345d8743298110`.
 
-Sources: `docs/RESEARCH.md`, `scripts/{research_tools.py,mhgu_binary.py,dti_dumper.py}`, `scripts/ghidra/`, saved summary/provenance, `mods/dti-dumper-support/README.md`, `references/MHGU-Modding.wiki/`, and `references/MHGU-Modding/`. [Workspace and sources](workspace-and-sources.md) provides snapshot revisions and machine paths.
+Sources: `docs/TOOLS.md`, `scripts/{research_tools.py,mhgu_binary.py,dti_dumper.py}`, `scripts/ghidra/`, saved summary/provenance, `mods/dti-dumper-support/README.md`, `references/MHGU-Modding.wiki/`, and `references/MHGU-Modding/`. [Workspace and sources](workspace-and-sources.md) provides snapshot revisions and machine paths.

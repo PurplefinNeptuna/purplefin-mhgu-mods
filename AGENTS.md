@@ -9,8 +9,8 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 | New or changed mod, builds, settings/INIs, packaging, release READMEs | docs/DEVELOPMENT.md, then the mod's AGENTS.md and DEVELOPMENT.md |
 | Forge plugin code, hooks, ABI, NRO builds, GUI insertion, ImGui, input/keybinds, reading game files, host differences (Recomp, gu-native) | `.agents/skills/mhgu-forge-modding/SKILL.md` (step-by-step: its `references/playbooks.md`) |
 | A mod's settings in the game's Options (Mod Options) or topics in the game's help | `mods/purple-lib/API.md`; copy from Purple-lib Tester (every feature) and Please do Better (a shipping mod's page); rules in forge-modding `references/api-and-builds.md`, "A library that calls its clients" |
-| Game code, Ghidra/DTI, resources, IDs, native GUI research | `.agents/skills/mhgu-understanding/SKILL.md` (step-by-step: its `references/research-playbook.md`), docs/RESEARCH.md, Key Quest Markers DEVELOPMENT.md for GUI rows, WishFinder DEVELOPMENT.md for menus, screens and the button guide; a game window on another screen or in a quest: forge-modding `references/native-gui-extensions.md`, "Borrow a game window on another screen" |
-| Toolbox (START_TOOLS.sh, scripts/tool.sh), ARC/GMD/Kuriimu2, models | docs/TOOLS.md |
+| Game code, Ghidra/DTI, resources, IDs, native GUI research | `.agents/skills/mhgu-understanding/SKILL.md` (step-by-step: its `references/research-playbook.md`), Key Quest Markers DEVELOPMENT.md for GUI rows, WishFinder DEVELOPMENT.md for menus, screens and the button guide; a game window on another screen or in a quest: forge-modding `references/native-gui-extensions.md`, "Borrow a game window on another screen" |
+| Toolbox (START_TOOLS.sh, scripts/tool.sh), Ghidra, ARC/GMD/Kuriimu2, models | docs/TOOLS.md |
 | HD Project resources, merge order, ownership | mods/hd-project/README.md |
 | User-facing prose (READMEs, guides) | `.agents/skills/humanizer/SKILL.md` and the release README standard in docs/DEVELOPMENT.md |
 
@@ -209,6 +209,7 @@ checks in `scripts/doc_rules.py` (current-state length, version chains, previous
   emulators: a mod added or updated there reaches Ryubing and MHGURecomp at
   their next `run.sh` launch. Enabling or disabling a mod in Eden does not
   reach a host that already lists it; toggle it in that host.
+- Never use a dual-GPU launcher: one of this machine's GPUs is assigned to a VM.
 
 Folder presence proves no activation, and library contents are not installed
 mods. After a reported run or failure, read that emulator's latest log and

@@ -22,8 +22,8 @@ Library material is not an installed mod. A RomFS-only dump cannot supply execut
 
 | Topic / reference | First sources to inspect |
 | --- | --- |
-| Discovery / executable identity | `docs/RESEARCH.md`, `scripts/{research_tools.py,mhgu_binary.py}`, `work/research-tooling/ghidra-export/summary.json`, DTI provenance |
-| DTI trial / limitations | `mods/dti-dumper-support/README.md`, `docs/RESEARCH.md`, `scripts/dti_dumper.py`, `docs/WORKSPACE_EVIDENCE.json` |
+| Discovery / executable identity | `docs/TOOLS.md`, `scripts/{research_tools.py,mhgu_binary.py}`, `work/research-tooling/ghidra-export/summary.json`, DTI provenance |
+| DTI trial / limitations | `mods/dti-dumper-support/README.md`, `scripts/dti_dumper.py`, `docs/WORKSPACE_EVIDENCE.json` |
 | Native GUI | Key Quest Markers `src/{gui.rs,native.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/native_adapter.py`, `research/theme-colours.json`; Please do Better native geometry research |
 | Sharpness | World Sharpness Gauge `DEVELOPMENT.md`, `core/src/lib.rs`, `src/insert.rs`; `work/world-sharpness-gauge/PHASE*_RESEARCH.md` |
 | Quests / progression | Key Quest Markers `core/src/lib.rs`, `src/{native.rs,offers.rs}`, native tests and `DEVELOPMENT.md` |

@@ -25,7 +25,7 @@ which kind of answer you need:
 2. Read the related mod's DEVELOPMENT.md (`mods/*/DEVELOPMENT.md`): damage,
    cameras and HP in Damage Numbers; quests and GUI in Key Quest Markers;
    input in Modern Weapon Controls; rewards in Please do Better.
-3. `grep -rn 'KEYWORD' docs/RESEARCH.md work/*/` for older notes.
+3. `grep -rn 'KEYWORD' mods/*/DEVELOPMENT.md work/*/` for older notes.
 
 Reuse a documented offset only after checking it in step 5.
 
