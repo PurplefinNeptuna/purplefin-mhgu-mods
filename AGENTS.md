@@ -51,11 +51,13 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 - **Short source files.** Under 600 lines, one topic per file. A change that would pass
   that splits the file first, in its own behaviour-neutral commit. Files already longer
   may only shrink ("Source file size" in docs/DEVELOPMENT.md; the pre-commit hook checks).
-- **Humanize user-facing text.** Every new or changed README, guide, release note,
-  setting label or tooltip goes through the full process in
-  `.agents/skills/humanizer/SKILL.md` (mark the tells, draft, check, final) before
-  it is packaged or committed. Read the skill file directly if the Skill tool
-  does not list it.
+- **Humanize user-facing text (hard rule).** Every new or changed README, guide,
+  release note, setting label, tooltip, in-game window or message, and log line a
+  player reads MUST go through the full process in
+  `.agents/skills/humanizer/SKILL.md` (read the whole file; mark the tells, draft,
+  check, final) before it is built, packaged or committed. Show the final text to
+  the user in the reply. No exception for short or temporary text. Read the skill
+  file directly if the Skill tool does not list it.
 - **Every language.** A change to a mod's user-facing text goes into every language
   file it ships, in the same change.
 - **Research first.** Search saved Ghidra/DTI before gameplay code:
