@@ -13,6 +13,7 @@ evidence; this page is the map). Area type values are in
 - A remote hunter moves only after a two-RPC handshake that needs its otomo too.
 - Trips are travel codes written for the decoder `0x6bff98`, which scene state 1 polls every frame; the leave flow `0x1ced60` only reports a result in `ui+0x54`.
 - `netPlMemberState.mAttr` is a u32 of which native code reads only the low byte, so the upper bits can carry a mod's own data.
+- `netPlData.mAttr` (hunter data, message +0x578) is the builders' reply flag; receivers test only bit 0. Skin Loader uses bits 1..31 for the wearer's skin.
 
 ## Findings
 
@@ -39,6 +40,7 @@ All main-relative on 1.4.0, read from the bytes; "inference" marks what the byte
 | Peer's state 2 removes their otomo (`0x25a01c`) and kills their unit (vtable `+0x40`). The player update clears a dead unit's slot | `0x22e388..0x22e3d0`, `0x274a00` | Bytes |
 | Own state change broadcasts, tagged with no place; only state 1 asks a reply, which goes back to the asker alone | `0x22dbd8`, `0x22debc`, `0x201478` | Bytes |
 | `netPlMemberState.mAttr` is a serialized u32 of which native code reads only the low byte | DTI, `0x20afb8`, `0x2013c0` | Bytes |
+| `netPlData.mAttr` (+0x578, u32): `0x202764`, `0x202640`, `0x202a34` and `0x203508` copy their third argument (ask reply, 0 or 1) into it; receivers `0x202894` and the Prowler one test bit 0 only, and `0x274400` keeps the data only to +0x560. Skin Loader uses bits 1..31 (`mods/skin-loader/DEVELOPMENT.md`, Player sync) | `0x202b30`, `0x202854`, `0x202968`, `0x2037dc` | Bytes |
 | Message routing: a target above 63 with a group byte reaches a member only when flag bits 16.. (`+0x2fda` halfword) overlap it. Bit 19 is group 8 | `0xb2c2d8`, `0xb2c440` | Bytes |
 | The member flags are at `[0x21267d4]+0x208`, then `+8`, then `+0x2fd8 + member * 296` | `0x22d9cc..0x22da3c`, `0xb2c2cc` | Bytes |
 | Position and action packets target `0x840`, group 8. Member state, area moves and hunter data go to everyone | `0x200ed8`, `0x200d54`, `0x2011a8`, `0x1e5250` | Bytes |
