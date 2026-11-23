@@ -24,7 +24,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Skin Loader | r14 | READY_TO_DISTRIBUTE, release, with a `-fast` package | MHGU Recomp, female and male; fast by report |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
-| WishFinder (was Wishlist) | r143 | DEVELOPMENT, candidate | Not run (r135 plus the rare pickup jingle, quest table stages 101 to 104, weapon levels forged or upgraded, API 8; no gather-sound log; r142 crashed KatSmithy in MHGU Recomp); r135 the release; r134 accepted on Eden with MHGU Definitive Edition 3.0.0. Needs Key Quest Markers r20+ |
+| WishFinder (was Wishlist) | r143 | DEVELOPMENT, candidate | Not run; r135 the release; r134 accepted on Eden with MHGU Definitive Edition 3.0.0. Needs Key Quest Markers r20+ |
 | WishFinder bridge for My Weapon Tree | r11 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.67 and WishFinder r83 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
@@ -58,16 +58,14 @@ Older accepted C++ builds: `build/modern-weapon-controls/candidates/r10/`,
 
 ## Inputs and runtime paths
 
+Emulator, RomFS and library paths are in the root AGENTS.md, "Runtime evidence
+and installation paths". This table holds the rest.
+
 | Purpose | Path |
 | --- | --- |
-| Game RomFS | `/mnt/storage2/Programs/MHGURecomp/data/romfs/` (1.4.0; the Eden dump keeps only `exefs` and `nso`) |
 | Sealed base game (v0) | `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` |
 | Sealed 1.4.0 update (v262144) | `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` |
 | Keys for the XCI/NSP | `/mnt/storage2/ROM/Switch/keys+firmware/` |
-| Uninstalled library | `/mnt/storage2/ROM/Switch/cheats/mhgu/` |
-| Eden packages / log | `~/.local/share/eden/load/0100770008DD8000/`, `~/.local/share/eden/log/eden_log.txt` |
-| Ryubing 1.3.3 (portable) | `/mnt/storage2/Programs/Ryubing-1.3.3/app/`, data in `app/portable/` |
-| Ryujinx-Nextendo | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/` (`mods/contents/0100770008dd8000/`, `Logs/`) |
 | Copied native inputs (1.4.0 code) | `work/shared/game-exefs/` |
 | Official Forge packages | `work/shared/forge-2.0.0/`, `work/shared/forge-1.5.1/` (mods not yet moved) |
 | Ghidra and saved DTI | `work/research-tooling/` |

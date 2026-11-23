@@ -1,18 +1,15 @@
 # Original workspace, inputs, and coverage
 
-The source workspace is `/mnt/storage2/Programs/MHGU_Modding`, Linux, user shell fish. This snapshot is dated 2026-10-17. All other source pointers are relative to that root. Commands require the referenced scripts/tool runtimes; private game-derived indexes and binaries may be absent in a source-only checkout.
+The source workspace is `/mnt/storage2/Programs/MHGU_Modding`. All other source pointers are relative to that root. Commands require the referenced scripts/tool runtimes; private game-derived indexes and binaries may be absent in a source-only checkout.
 
 ## Local inputs
 
-| Purpose | Path |
-| --- | --- |
-| RomFS | `/mnt/storage2/Programs/MHGURecomp/data/romfs/` (MHGURecomp's copy; the Eden dump keeps only `exefs` and `nso`) |
-| Uninstalled library | `/mnt/storage2/ROM/Switch/cheats/mhgu/` |
-| Copied executable inputs | `work/shared/game-exefs/` |
-| GZF/main-memory/project/indexes | `work/research-tooling/` |
-| Mod-specific copied resources/research | `work/<mod>/` and mod-local configured inputs |
-| Current Eden log | `~/.local/share/eden/log/eden_log.txt` |
-| Ryubing logs | `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/Logs/` |
+Machine paths (RomFS, library, emulator packages and logs, MHGURecomp) are in the
+workspace's root `AGENTS.md`, "Runtime evidence and installation paths"; the
+other local inputs (sealed game files, copied executables, Forge packages,
+research tooling) are in `docs/LOCAL_STATE.md`. Outside this workspace, supply
+equivalent inputs explicitly; the skill's Markdown stays usable without them.
+Copied executables and research indexes are under `work/shared/game-exefs/` and `work/research-tooling/`; mod-specific copies under `work/<mod>/`.
 
 What each input holds and when to use it: the Game data section of this skill's SKILL.md.
 

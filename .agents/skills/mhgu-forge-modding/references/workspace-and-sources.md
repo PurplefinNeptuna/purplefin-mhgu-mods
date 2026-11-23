@@ -1,22 +1,12 @@
 # Original workspace and coverage index
 
-This appendix describes `/mnt/storage2/Programs/MHGU_Modding` Paths and installed state can drift. All other source pointers in this skill are relative to that root. Outside this workspace, provide equivalent source/private inputs explicitly. The skill's Markdown remains usable without them.
+This appendix describes `/mnt/storage2/Programs/MHGU_Modding`. All other source pointers in this skill are relative to that root.
 
-## Machine-specific paths
-
-| Purpose | Path |
-| --- | --- |
-| RomFS | `/mnt/storage2/Programs/MHGURecomp/data/romfs/` (MHGURecomp's copy; the Eden dump keeps only `exefs` and `nso`) |
-| Uninstalled mod/input library | `/mnt/storage2/ROM/Switch/cheats/mhgu/` |
-| Eden packages | `~/.local/share/eden/load/0100770008DD8000/` |
-| Latest Eden log | `~/.local/share/eden/log/eden_log.txt` |
-| Ryubing 1.3.3 (Ryujinx test target) packages | `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/mods/contents/0100770008dd8000/` |
-| Ryubing logs | `/mnt/storage2/Programs/Ryubing-1.3.3/app/portable/Logs/` |
-| MHGURecomp | `/mnt/storage2/Programs/MHGURecomp/` (`mods/NAME/romfs/nativeNX/plugins/`, log `recomplog.txt`, launcher `run.sh`); source `references/MHGURecomp/` |
-
-What each input holds and when to use it: the Game data section of this skill's SKILL.md.
-
-The supplied dump is RomFS-only. Original main/SDK/loader inputs must come from verified copied executable material. Historical installed hashes in docs are dated evidence. Do not infer today's enabled packages from these paths. The user's interactive shell is fish; shell examples avoid Bash-only variable syntax.
+Machine paths (RomFS, library, emulator packages and logs, MHGURecomp) are in the
+workspace's root `AGENTS.md`, "Runtime evidence and installation paths"; the
+other local inputs (sealed game files, copied executables, Forge packages,
+research tooling) are in `docs/LOCAL_STATE.md`. Outside this workspace, supply
+equivalent inputs explicitly; the skill's Markdown stays usable without them.
 
 ## Coverage and source authority
 
@@ -32,12 +22,8 @@ The supplied dump is RomFS-only. Original main/SDK/loader inputs must come from 
 
 Core workspace reading: `AGENTS.md`, `README.md`, `docs/LOCAL_STATE.md`, `docs/DEVELOPMENT.md`, `docs/TOOLS.md`. Current source and exact artifact receipts resolve stale narrative claims. Preserve dated evidence instead of rewriting its historical assertions.
 
-Useful evidence locations: `work/shared/game-exefs/`, `work/shared/forge-1.5.1/`, `work/research-tooling/`, per-mod `work/NAME/`, `build/NAME/candidates/`, and `build/NAME/releases/`. Ignored/private material may be absent from another checkout. Consult the current docs, EVIDENCE.json and Git history.
+Useful evidence locations: `work/shared/game-exefs/`, `work/shared/forge-2.0.0/` (and `forge-1.5.1/`), `work/research-tooling/`, per-mod `work/NAME/`, `build/NAME/candidates/`, and `build/NAME/releases/`. Ignored/private material may be absent from another checkout. Consult the current docs, EVIDENCE.json and Git history.
 
 ## Source baselines
 
-Forge 2.0.0 commit `fd03ecb4c4ad16a02edb508c5a9b7731b84008d3`; forge-rs 2.0.0 commit `112e0e032ad72db992870989384aba65331978c2` (mods not yet moved: Forge 1.5.1 `b23e114`, forge-rs 1.5.0 `d1865b6`). Native offsets target main SHA-256 `b3935415499549adaf4c0e89822831daa175cfd456a7990791c79be3997645ef`, build `FB08F1D20FD1204FE7070672777F869B`.
-
-Per-mod versions and acceptance scope are in `docs/LOCAL_STATE.md`, `DISTRIBUTION.json` and `EVIDENCE.json`; this file does not repeat them.
-
-`EVIDENCE.json.current` and `DISTRIBUTION.json` hold exact versions/hashes/status. Do not turn these baselines into a statement about the latest upstream or installed payload.
+Pinned Forge and forge-rs commits: [API and builds](api-and-builds.md) and the root `AGENTS.md`. Native offsets target the main executable identified in the mhgu-understanding skill's `discovery-and-evidence.md`. Per-mod versions, status and hashes are in each mod's `DISTRIBUTION.json` and `EVIDENCE.json`, and the current builds in `docs/LOCAL_STATE.md`.
