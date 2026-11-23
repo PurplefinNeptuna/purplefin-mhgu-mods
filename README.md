@@ -29,7 +29,7 @@ extraction support are local integrations.
 - [Development and distribution](docs/DEVELOPMENT.md)
 - [Tools and references](docs/TOOLS.md)
 - [Code, DTI and native GUI research](docs/RESEARCH.md)
-- [HD ownership and merge order](docs/CLEANUP_HD_PROJECT.md)
+- [HD ownership and merge order](mods/hd-project/README.md)
 - [Compaction and preserved-artifact receipt](docs/COMPACTION.json)
 
 Clone with `git clone --recursive` for the Forge and forge-rs baselines. Use

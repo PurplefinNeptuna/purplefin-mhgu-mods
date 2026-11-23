@@ -30,7 +30,7 @@ Library material is not an installed mod. A RomFS-only dump cannot supply execut
 | Input / actions | Modern Weapon Controls `src/`, `core/src/`, native fixtures, `core/src/signatures.rs`, `DEVELOPMENT.md`, `RUNTIME_RESULTS.json` |
 | Damage / cameras | Damage Numbers `src/signatures.rs`, `core/src/{capture.rs,lib.rs,presentation.rs,mailbox.rs}`, tests, `work/damage-numbers/projection-r27/` |
 | Rewards / Luck | Please do Better `src/runtime.rs`, `core/src/{quantity.rs,attribution.rs}`, native fixtures, `DEVELOPMENT.md`, research/layout receipts |
-| Resource/tool workflows | `docs/TOOLS.md`, `docs/CLEANUP_HD_PROJECT.md`, tool wrappers/tests, offline wiki/templates/indexes, `mods/hd-project/README.md` |
+| Resource/tool workflows | `docs/TOOLS.md`, tool wrappers/tests, offline wiki/templates/indexes, `mods/hd-project/README.md` |
 | Exact current release/evidence scope | Each mod's `DISTRIBUTION.json` / `EVIDENCE.json`; dated workspace receipts in `docs/WORKSPACE_EVIDENCE.json` |
 
 Current instructions and source establish present implementation. Dated evidence retains original hashes/claims. Mod development documents include older investigations, so check the current release/source before copying a colour, loader assumption, fixed key count, hook recipe, or unresolved-state workaround. Superseded materials live in Git or accepted backups.

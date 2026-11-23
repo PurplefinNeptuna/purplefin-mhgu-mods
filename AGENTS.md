@@ -11,7 +11,7 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 | A mod's settings in the game's Options (Mod Options) or topics in the game's help | `mods/purple-lib/API.md`; copy from Purple-lib Tester (every feature) and Please do Better (a shipping mod's page); rules in forge-modding `references/api-and-builds.md`, "A library that calls its clients" |
 | Game code, Ghidra/DTI, resources, IDs, native GUI research | `.agents/skills/mhgu-understanding/SKILL.md` (step-by-step: its `references/research-playbook.md`), docs/RESEARCH.md, Key Quest Markers DEVELOPMENT.md for GUI rows, WishFinder DEVELOPMENT.md for menus, screens and the button guide; a game window on another screen or in a quest: forge-modding `references/native-gui-extensions.md`, "Borrow a game window on another screen" |
 | Toolbox (START_TOOLS.sh, scripts/tool.sh), ARC/GMD/Kuriimu2, models | docs/TOOLS.md |
-| HD Project resources, merge order, ownership | docs/CLEANUP_HD_PROJECT.md |
+| HD Project resources, merge order, ownership | mods/hd-project/README.md |
 | User-facing prose (READMEs, guides) | `.agents/skills/humanizer/SKILL.md` and the release README standard in docs/DEVELOPMENT.md |
 
 ## Always

@@ -74,7 +74,7 @@ Older accepted C++ builds: `build/modern-weapon-controls/candidates/r10/`,
 
 Library target: game 1.4.0, cheat build FB08F1D20FD1204F, NSO
 FB08F1D20FD1204FE7070672777F869B. Check the launched version before executable
-work. HD resource priorities: [CLEANUP_HD_PROJECT.md](CLEANUP_HD_PROJECT.md).
+work. HD resource priorities: [mods/hd-project/README.md](../mods/hd-project/README.md).
 DTI extraction is not enabled for gameplay.
 
 ## Recovery
