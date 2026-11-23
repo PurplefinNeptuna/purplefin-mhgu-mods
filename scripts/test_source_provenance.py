@@ -30,14 +30,13 @@ class ProvenanceTests(unittest.TestCase):
         commit = git('rev-parse', 'HEAD')
         (self.root / self.name).unlink()
         (self.root / 'scripts/shared.py').write_bytes(self.current)
-        (self.root / 'docs').mkdir()
         self.record = {'build_path': self.name, 'build_sha256': sha(self.old),
                        'build_commit': commit, 'current_path': 'scripts/shared.py',
                        'current_sha256': sha(self.current)}
         self.save()
 
     def save(self):
-        (self.root / 'docs/WORKSPACE_EVIDENCE.json').write_text(json.dumps({'historical': {'WORKSPACE_SOURCE_MIGRATION.json': {'sources': [self.record]}}}))
+        (self.root / 'scripts/baselines.json').write_text(json.dumps({'source_migration': {'sources': [self.record]}}))
 
     def test_removed_helper_resolves_to_exact_original_git_blob(self):
         verify(self.name, sha(self.old), self.root)

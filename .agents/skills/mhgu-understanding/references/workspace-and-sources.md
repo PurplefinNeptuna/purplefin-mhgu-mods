@@ -20,7 +20,7 @@ Library material is not an installed mod. A RomFS-only dump cannot supply execut
 | Topic / reference | First sources to inspect |
 | --- | --- |
 | Discovery / executable identity | `docs/TOOLS.md`, `scripts/{research_tools.py,mhgu_binary.py}`, `work/research-tooling/ghidra-export/summary.json`, DTI provenance |
-| DTI trial / limitations | `mods/dti-dumper-support/README.md`, `scripts/dti_dumper.py`, `docs/WORKSPACE_EVIDENCE.json` |
+| DTI trial / limitations | `mods/dti-dumper-support/README.md`, `scripts/dti_dumper.py` |
 | Native GUI | Key Quest Markers `src/{gui.rs,native.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/native_adapter.py`, `research/theme-colours.json`; Please do Better native geometry research |
 | Sharpness | World Sharpness Gauge `DEVELOPMENT.md`, `core/src/lib.rs`, `src/insert.rs`; `work/world-sharpness-gauge/PHASE*_RESEARCH.md` |
 | Quests / progression | Key Quest Markers `core/src/lib.rs`, `src/{native.rs,offers.rs}`, native tests and `DEVELOPMENT.md` |
@@ -28,7 +28,7 @@ Library material is not an installed mod. A RomFS-only dump cannot supply execut
 | Damage / cameras | Damage Numbers `src/signatures.rs`, `core/src/{capture.rs,lib.rs,presentation.rs,mailbox.rs}`, tests, `work/damage-numbers/projection-r27/` |
 | Rewards / Luck | Please do Better `src/runtime.rs`, `core/src/{quantity.rs,attribution.rs}`, native fixtures, `DEVELOPMENT.md`, research/layout receipts |
 | Resource/tool workflows | `docs/TOOLS.md`, tool wrappers/tests, offline wiki/templates/indexes, `mods/hd-project/README.md` |
-| Exact current release/evidence scope | Each mod's `DISTRIBUTION.json` / `EVIDENCE.json`; dated workspace receipts in `docs/WORKSPACE_EVIDENCE.json` |
+| Exact current release/evidence scope | Each mod's `DISTRIBUTION.json` / `EVIDENCE.json` |
 
 Current instructions and source establish present implementation. Dated evidence retains original hashes/claims. Mod development documents include older investigations, so check the current release/source before copying a colour, loader assumption, fixed key count, hook recipe, or unresolved-state workaround. Superseded materials live in Git or accepted backups.
 

@@ -127,7 +127,7 @@ def build():
             raise ValueError("Dumper target signature differs from the original executable")
     # Source and import validation use the copied official loader, never the
     # currently installed emulator package or a retired custom fork.
-    baseline = json.loads((ROOT / "docs/COMPACTION.json").read_text())["forge"]
+    baseline = json.loads((ROOT / "scripts/baselines.json").read_text())["forge"]
     forge = ROOT / "tools/forge-local"
     if subprocess.check_output(["git", "-C", str(forge), "rev-parse", "HEAD"], text=True).strip() != baseline["commit"]:
         raise ValueError("Upstream Forge source differs from the recorded baseline")

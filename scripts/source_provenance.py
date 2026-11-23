@@ -19,7 +19,7 @@ def verify(name, expected, root=ROOT):
     path = root / name
     if path.is_file() and digest(path.read_bytes()) == expected:
         return
-    receipt = json.loads((root / 'docs/WORKSPACE_EVIDENCE.json').read_text())['historical']['WORKSPACE_SOURCE_MIGRATION.json']
+    receipt = json.loads((root / 'scripts/baselines.json').read_text())['source_migration']
     matches = [r for r in receipt['sources'] if r['build_path'] == name and r['build_sha256'] == expected]
     if len(matches) != 1:
         raise ValueError('Unrecorded build source change: ' + name)

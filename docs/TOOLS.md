@@ -1,6 +1,6 @@
 # Installed modding toolkit
 
-Installed 2026-10-01. Double-click `START_TOOLS.sh` > **Execute**, or run
+Double-click `START_TOOLS.sh` > **Execute**, or run
 `./START_TOOLS.sh`. Select a tool > **Launch selected tool**. Startup output is
 logged; closing the launcher leaves tool windows open.
 
@@ -32,21 +32,14 @@ FFmpeg, Wine, Node, compiler/Qt are reused; no system packages installed.
 | Wiki model plugins | MHGU MaxScript import/export resources | `./scripts/tool.sh model-plugins` |
 | Wiki binary templates | 010 Editor `.bt` reference files | `./scripts/tool.sh templates` |
 
-[Versions/commits](WORKSPACE_EVIDENCE.json); download hashes: `tools/downloads/download-manifest.json`. Checked supplied GitHub
-digests, official Blender SHA-256 and .NET SHA-512. Local hashes without
-upstream digests establish inventory, not authenticity.
-
-Upstream checked 2026-10-12: the installed release/source tracks match upstream,
-including Blender's 4.5 LTS track. Available GitHub asset digests match the
-recorded downloads. [Check record](WORKSPACE_EVIDENCE.json) lists revisions,
-release links and digest comparisons. The private compatibility runtimes,
-accepted Forge container and host system packages retain their existing versions.
+Download hashes: `tools/downloads/download-manifest.json`. They were checked
+against supplied GitHub digests, Blender's official SHA-256 and .NET's SHA-512;
+local hashes without an upstream digest establish inventory, not authenticity.
 
 ## Current source checkouts
 
 One checkout per upstream repository is retained. Update it directly; do not
-create an additional upstream directory. Revisions/remotes and historical pins
-are recorded in COMPACTION.json and WORKSPACE_EVIDENCE.json. The two pinned
+create an additional upstream directory. The two pinned
 baselines are submodules (`git submodule update --init --recursive`); the rest
 are ignored research clones, made by hand from the listed upstream. `tools/`
 holds what is built or run; a source that is only read goes in `references/`,

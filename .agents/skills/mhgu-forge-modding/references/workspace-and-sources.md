@@ -18,7 +18,7 @@ equivalent inputs explicitly; the skill's Markdown stays usable without them.
 | Native GUI extension | `mods/key-quest-markers/DEVELOPMENT.md`, `src/gui.rs`, `src/native.rs`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/native_adapter.py`, `research/theme-colours.json` |
 | Rendering / storage | Damage Numbers `src/render.rs`, `src/config.rs`, runtime/context tests; Key Quest Markers settings/config; Please do Better settings/preferences and overlay gates |
 | Validation / delivery | `docs/DEVELOPMENT.md`, per-mod `DISTRIBUTION.json`, `EXPORT.json`, release manifests, `EVIDENCE.json`, `scripts/mod_distribution.py` |
-| Diagnostics / historical causes | `docs/WORKSPACE_EVIDENCE.json`, each mod's `EVIDENCE.json`, its DEVELOPMENT.md "Do not" list and Git history; current loader/libnx source for physical feasibility |
+| Diagnostics / historical causes | Each mod's `EVIDENCE.json`, its DEVELOPMENT.md "Do not" list and Git history; current loader/libnx source for physical feasibility |
 
 Core workspace reading: `AGENTS.md`, `README.md`, `docs/LOCAL_STATE.md`, `docs/DEVELOPMENT.md`, `docs/TOOLS.md`. Current source and exact artifact receipts resolve stale narrative claims. Preserve dated evidence instead of rewriting its historical assertions.
 

@@ -29,7 +29,6 @@ extraction support are local integrations.
 - [Development and distribution](docs/DEVELOPMENT.md)
 - [Tools and references](docs/TOOLS.md)
 - [HD ownership and merge order](mods/hd-project/README.md)
-- [Compaction and preserved-artifact receipt](docs/COMPACTION.json)
 
 Clone with `git clone --recursive` for the Forge and forge-rs baselines. Use
 mod-local build.sh commands; a Rust mod runs `./build.sh fetch` once to download

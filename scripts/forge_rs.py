@@ -15,7 +15,7 @@ SOURCE = ROOT / "tools/forge-rs"
 
 
 def status():
-    record = json.loads((ROOT / "docs/WORKSPACE_EVIDENCE.json").read_text())["tooling"]["forge_rs"]
+    record = json.loads((ROOT / "scripts/baselines.json").read_text())["forge_rs"]
     print(f"forge-rs {record['version']}; source: {SOURCE}")
     if SOURCE.exists():
         revision = subprocess.check_output(

@@ -1,0 +1,269 @@
+{
+  "forge": {
+    "version": "2.0.0",
+    "commit": "fd03ecb4c4ad16a02edb508c5a9b7731b84008d3",
+    "url": "https://github.com/Fexty12573/forge/releases/tag/v2.0.0",
+    "archive_sha256": "8bbc1e4036af2404c4808ba988035680425d673f18c518c3568b217ba439706e",
+    "path": "work/shared/forge-2.0.0",
+    "nso_sha256": "0e916acf194abd9e41c744faa825a1b532ff7085d39e2fd5094c6d82d6de34d7"
+  },
+  "forge_rs": {
+    "version": "2.0.0",
+    "source_revision": "112e0e032ad72db992870989384aba65331978c2",
+    "cargo_forge_version": "1.4.1",
+    "cargo_forge_sha256": "77f9bbda4b0bd374ee945758d9687d39e99a4df48f2861ca3cb5ed7662b04dc0"
+  },
+  "source_migration": {
+    "reason": "Remove retired components and move required shared helpers; host tooling/support changed, accepted runtime bytes unchanged. Original build receipts preserved as historical snapshots.",
+    "sources": [
+      {
+        "build_path": "mods/modern-weapon-controls/BUNDLE.md",
+        "build_sha256": "e4dcd6da4ffb306072572f3d887c6dc7006468197772942e29b3c191e3dbfa40",
+        "current_path": "mods/modern-weapon-controls/README.md",
+        "current_sha256": "54cb5689f9f5e3193a690fd794e7b88cc05f22c2c9a95dfb6d281545e2328b39",
+        "build_commit": "2c00bf54249172b88f7ca69dfc4196a55ca5a9ba"
+      },
+      {
+        "build_path": "mods/modern-weapon-controls/COMPATIBILITY.md",
+        "build_sha256": "651b6e2e06f42d2ef111e004f6d0d16bc16fc771e967d3af03cbbb539ed6dd32",
+        "current_path": "mods/modern-weapon-controls/COMPATIBILITY.md",
+        "current_sha256": "d34ede6ab443c704c961ed945bd9af83f04b535322e97ee3de30aa4dab887dc7",
+        "build_commit": "2c00bf54249172b88f7ca69dfc4196a55ca5a9ba"
+      },
+      {
+        "build_path": "mods/modern-weapon-controls/MANUAL_TESTS.md",
+        "build_sha256": "919ab9715fc1290bcb262348b0ada704c8002e0da64eb85f72e81fcb2b21f60b",
+        "current_path": "mods/modern-weapon-controls/MANUAL_TESTS.md",
+        "current_sha256": "c7e56d0dea1b41ea97573c0a72f20625ba2bae8fcbb7b25c37f8fc9793ff3e07",
+        "build_commit": "2c00bf54249172b88f7ca69dfc4196a55ca5a9ba"
+      },
+      {
+        "build_path": "mods/modern-weapon-controls/README.md",
+        "build_sha256": "c603f4bfb72866dbf7cf9dac952de198a36bf732b5b634e49928cb11684a3400",
+        "current_path": "mods/modern-weapon-controls/README.md",
+        "current_sha256": "54cb5689f9f5e3193a690fd794e7b88cc05f22c2c9a95dfb6d281545e2328b39",
+        "build_commit": "2c00bf54249172b88f7ca69dfc4196a55ca5a9ba"
+      },
+      {
+        "build_path": "mods/modern-weapon-controls/RELEASE.json",
+        "build_sha256": "c43b1cc67c57954760fe2ab6f9d8d4c199c8dee0042728de678d367ebf702b22",
+        "current_path": "mods/modern-weapon-controls/RELEASE.json",
+        "current_sha256": "40c24bdadd3a9e19f161b85b82bedfd429dc6792915d0750af3bac2a96f2021f",
+        "build_commit": "2c00bf54249172b88f7ca69dfc4196a55ca5a9ba"
+      },
+      {
+        "build_path": "mods/modern-weapon-controls/RELEASE.md",
+        "build_sha256": "c0a93983c3a338a8532a671b8a4f4fb77af38cf3193463698e9b1efdf5b32d89",
+        "current_path": "mods/modern-weapon-controls/RELEASE.md",
+        "current_sha256": "3950ea4d62cedf32376558fcee243671d468cb1e3c37972cea2d0c8b78eb4273",
+        "build_commit": "2c00bf54249172b88f7ca69dfc4196a55ca5a9ba"
+      },
+      {
+        "build_path": "mods/modern-weapon-controls/THIRD_PARTY.md",
+        "build_sha256": "b28a939cac90a52c065be2523d8b60ee19c580249cd8d95f2311faa8c751bfc8",
+        "current_path": "mods/modern-weapon-controls/THIRD_PARTY.md",
+        "current_sha256": "fe4762ea0e9a07a9e6044879920f386b924757e028c3058b0b17272e58fe60d3",
+        "build_commit": "c3c69afc6c174c4ca7c12f8f60c39b3d4589f3a1"
+      },
+      {
+        "build_path": "scripts/modern_weapon_controls.py",
+        "build_sha256": "98697eb2faa5d5db6ce134c6976d51e726fb7a01e88eabf3b48e42646cd09f12",
+        "current_path": "scripts/modern_weapon_controls.py",
+        "current_sha256": "00116de3618f739d5dca6f86c7a60e6055310d22641bcc946f05223d9adbf366",
+        "build_commit": "2c00bf54249172b88f7ca69dfc4196a55ca5a9ba"
+      },
+      {
+        "build_path": "scripts/modern_longsword_controls.py",
+        "build_sha256": "3fd76e0577d9cc16f940b882853373738fe17d5de469085db6e54fe064b167d1",
+        "current_path": "scripts/mhgu_binary.py",
+        "current_sha256": "23a7453eed56ec14f19a08befa2cc98406a1a65dcffefad363671e94830f808c",
+        "build_commit": "7e91d1bc53a0e7b28e45660d15d124039ed2ac9b"
+      },
+      {
+        "build_path": "scripts/patch_better_inputs_compat.py",
+        "build_sha256": "0678b938a012dd17eb92f40f7bc868c3ce6c07922ece640f4b9dca0a46f36c94",
+        "current_path": "scripts/forge_adapter_reference.py",
+        "current_sha256": "c55540a412205096ac42e32748bd5c028f68005d40ac66c193211456fb03f6e9",
+        "build_commit": "bbf86cc67497f5b5bda1620b1678ea523d683729"
+      },
+      {
+        "build_path": "scripts/package_patched_baseline.py",
+        "build_sha256": "71674d7f0393b0ff41026e867e47984b39ad0b5a95547564ad673251a46c5ef9",
+        "current_path": "scripts/forge_baseline.py",
+        "current_sha256": "7da894e61d949c0a646cd923d7934f71ee4ee7cc8d4ec49ed4ce48486ba82c9b",
+        "build_commit": "7e91d1bc53a0e7b28e45660d15d124039ed2ac9b"
+      },
+      {
+        "build_path": "scripts/package_modern_weapon_controls.py",
+        "build_sha256": "c472f630206e25cc64e78530fd223e46cd39e9bfefbcc5599b6f3c2c6d8f1421",
+        "current_path": "scripts/package_modern_weapon_controls.py",
+        "current_sha256": "f08785b8986dad117092b2252e370c7bb759ced180944f736f21c8c0883cabb6",
+        "build_commit": "2c00bf54249172b88f7ca69dfc4196a55ca5a9ba"
+      },
+      {
+        "build_path": "scripts/mwc_command_assets.py",
+        "build_sha256": "45777a4da42c0b9462139936f665bf4419425a9c2c13b6099feb704d4afa21b3",
+        "current_path": "scripts/mwc_command_assets.py",
+        "current_sha256": "7dd98d4ce1fce4d513390adaeab317323d5e70b4bef2feb82a6decdfd8e4e6e5",
+        "build_commit": "b68498d249abf4fe5feabb649369a2a6f0b0d945"
+      },
+      {
+        "build_path": "scripts/mwc_bowgun_runtime_probe.py",
+        "build_sha256": "676c1e7355ddab8a75eda2e73bdc41bc21f82ff5ec7862fb22bdc4e74491521a",
+        "current_path": "scripts/mwc_bowgun_runtime_probe.py",
+        "current_sha256": "10846a0d5c97e24ec72bdc6a252d31700b576f1d9cb51b10bea96411639d60ec",
+        "build_commit": "4fcd3dac6ca1ad882f11a48800e8818fa43063ba"
+      },
+      {
+        "build_path": "scripts/release_modern_weapon_controls.py",
+        "build_sha256": "672a2413b7ce6ecf14d4da50b68f7144f4c9aa6fba9e3ac371dce3a1163160d3",
+        "current_path": "scripts/release_modern_weapon_controls.py",
+        "current_sha256": "65dba5d7f522d53bf508a4c69b52a537aed9b711d8c2d92635d10818d1f3ea30",
+        "build_commit": "2c00bf54249172b88f7ca69dfc4196a55ca5a9ba"
+      },
+      {
+        "build_path": "work/forge-better-inputs-compat/forge/libs/libnx/nx/include/switch/kernel/jit.h",
+        "build_sha256": "86666db97d4b10d8f536a1654bb42611b5c2ddb916a4d3bbba1c6bebe067fb40",
+        "current_path": "work/shared/forge-sdk/libs/libnx/nx/include/switch/kernel/jit.h",
+        "current_sha256": "86666db97d4b10d8f536a1654bb42611b5c2ddb916a4d3bbba1c6bebe067fb40"
+      },
+      {
+        "build_path": "work/forge-better-inputs-compat/forge/libs/libnx/nx/include/switch/kernel/svc.h",
+        "build_sha256": "ac8c4176b61dd0f97b72e59770cae53db2d59e119fadf0bbe3e58abb2d7f9cf6",
+        "current_path": "work/shared/forge-sdk/libs/libnx/nx/include/switch/kernel/svc.h",
+        "current_sha256": "ac8c4176b61dd0f97b72e59770cae53db2d59e119fadf0bbe3e58abb2d7f9cf6"
+      },
+      {
+        "build_path": "work/forge-better-inputs-compat/forge/libs/libnx/nx/source/kernel/svc32.s",
+        "build_sha256": "e6d648265c606e5e14441936959267fd0fc5f43775df4d311ce5b295d6e2fadb",
+        "current_path": "work/shared/forge-sdk/libs/libnx/nx/source/kernel/svc32.s",
+        "current_sha256": "e6d648265c606e5e14441936959267fd0fc5f43775df4d311ce5b295d6e2fadb"
+      },
+      {
+        "build_path": "work/forge-better-inputs-compat/forge/libs/cimgui/cimgui.h",
+        "build_sha256": "cd533d7003f68ff0160aaf2bf9d464589d5cb98b5d6c0709bf1a8a6ecf037dde",
+        "current_path": "work/shared/forge-sdk/libs/cimgui/cimgui.h",
+        "current_sha256": "cd533d7003f68ff0160aaf2bf9d464589d5cb98b5d6c0709bf1a8a6ecf037dde"
+      },
+      {
+        "build_path": "mods/damage-numbers/DISTRIBUTION_README.md",
+        "build_sha256": "588fb5f5704e74a2ef98eb71506ae85698f18115de561fbc831a87c56d467ec9",
+        "current_path": "mods/damage-numbers/DISTRIBUTION_README.md",
+        "current_sha256": "fc82674faff5eeebadf8c6eecc89424dfae0ce204bd3e9e35d45fc4c4114124c",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/GE_PRESERVATION_AUDIT.md",
+        "build_sha256": "5607a62d9f30f2c9c822e06d22978a9398ad43235e48c6372c89bb5c90b97176",
+        "current_path": "mods/damage-numbers/GE_PRESERVATION_AUDIT.md",
+        "current_sha256": "4748ffef3bfa00da830143b933966e00d652b8f068edf7c7cebbb3387942c7fb",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/OPEN_ASSETS.md",
+        "build_sha256": "a73e75d85031dd10eaea9864aabe33b40a0ce3144cbe2dfe3c0a60bca775d30b",
+        "current_path": "mods/damage-numbers/THIRD_PARTY.md",
+        "current_sha256": "a7dad6a2aadc5f654125fad5905373c149aee0b1a28a7cf184dc11f3668dbd51",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/README.md",
+        "build_sha256": "9984e5c90eaa7eb07bd736b8aebd18732123eb18bbc2eed4f925e692b4bdd9b1",
+        "current_path": "mods/damage-numbers/README.md",
+        "current_sha256": "6883e582d7b0347d19fe2150b342c8142532a5ed553cc7d897687df92dc47b3e",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/RELEASE.json",
+        "build_sha256": "e0ccc21b5a3fed488f32f9e3f696a6146c26a37fe99057d89267c46d278c4ab3",
+        "current_path": "mods/damage-numbers/RELEASE.json",
+        "current_sha256": "5f321b4aee337e124162bd9fa30f90c9cf2ecd6c573e5e17d047a4e4f754228f",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/RELEASE.md",
+        "build_sha256": "b436f9d129918a118d045203c8cf842d8568c063f8292ebd5c5138f18fda04d7",
+        "current_path": "mods/damage-numbers/RUNTIME.md",
+        "current_sha256": "1b948b3f40bdbda3986def7abeae48d1a4d3a60dc6d95ae99f4f47b17aa03875",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/RUNTIME.md",
+        "build_sha256": "1eefc1df36e0771c75448b45f94edda2c81bb8669519dece6b01350210c9d5a7",
+        "current_path": "mods/damage-numbers/RUNTIME.md",
+        "current_sha256": "1b948b3f40bdbda3986def7abeae48d1a4d3a60dc6d95ae99f4f47b17aa03875",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/RYUJINX_COMPATIBILITY.md",
+        "build_sha256": "e2c00c2fcceb23d24f8fb4e507dcc59405a7accb4793ab8bcb00de8426bf1e7a",
+        "current_path": "mods/damage-numbers/RUNTIME.md",
+        "current_sha256": "1b948b3f40bdbda3986def7abeae48d1a4d3a60dc6d95ae99f4f47b17aa03875",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/TEST_CHECKLIST.md",
+        "build_sha256": "825c86bee723ab68ac568aa32770027eca1d515da05c45e0dc2c46c243da4b96",
+        "current_path": "mods/damage-numbers/RUNTIME.md",
+        "current_sha256": "1b948b3f40bdbda3986def7abeae48d1a4d3a60dc6d95ae99f4f47b17aa03875",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/TEST_RESULTS.md",
+        "build_sha256": "ba293657cb77f9c1613736796e4baa85c3f22f82f4abc2c7d41fadc5256ec445",
+        "current_path": "mods/damage-numbers/RUNTIME.md",
+        "current_sha256": "1b948b3f40bdbda3986def7abeae48d1a4d3a60dc6d95ae99f4f47b17aa03875",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "mods/damage-numbers/THIRD_PARTY.md",
+        "build_sha256": "1bf9efd70a8333fed8414c1c2574d2d0014afa60bfa5c7220212a6afe4494f08",
+        "current_path": "mods/damage-numbers/THIRD_PARTY.md",
+        "current_sha256": "a7dad6a2aadc5f654125fad5905373c149aee0b1a28a7cf184dc11f3668dbd51",
+        "build_commit": "3c6bd3913c8b78db39597dff2459b1c71b5ca5d8"
+      },
+      {
+        "build_path": "scripts/build_damage_numbers_capture.py",
+        "build_sha256": "90891064e9ba63c4a0691518dfbb03e569553fe076d04ba43313637b8f076316",
+        "current_path": "scripts/build_damage_numbers_capture.py",
+        "current_sha256": "0e1b5a137a4efc494287437448a9462ce82a8bd8f71f13be92804dc7c2b18f51",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "scripts/test_damage_numbers_visual.py",
+        "build_sha256": "85668614222d4c68ca0df241d5d30df9e4ae83adf710f2fdd3820a50e756f47d",
+        "current_path": "scripts/test_damage_numbers_visual.py",
+        "current_sha256": "489c9dae9c9e5dafa068f96e2316d9e86bd9d69ad525b40c577c853411751109",
+        "build_commit": "6573e442f34a0462dc404a6678c20a697d59c609"
+      },
+      {
+        "build_path": "scripts/damage_numbers_capture_probe.py",
+        "build_sha256": "2fdcbe99b0879e34c655949632838dbe141548270850a64974bdefa91c06da0f",
+        "current_path": "scripts/damage_numbers_capture_probe.py",
+        "current_sha256": "79bf7be83e913c83119e16a12aae3866d657baca67c8afa86c7cf96dfb00bd26",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "scripts/verify_damage_numbers_ge_compat.py",
+        "build_sha256": "36167017f9ebf4db91d6354b61c2e2ce47850377d5d6a5d0fd149c605ce019bd",
+        "current_path": "scripts/verify_damage_numbers_ge_compat.py",
+        "current_sha256": "bbc4c91d0437ad140bbe27174a65a9e187a28a311fc0800678227101a69aa570",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "scripts/build_damage_numbers_gateway.py",
+        "build_sha256": "702971ef022e26529a5808151a498decaa31f0ce84e83dae4a7bc84e3c31813c",
+        "current_path": "scripts/build_damage_numbers_gateway.py",
+        "current_sha256": "0167283068893835d913cc71edf9709b922833201babf8c2fedeb63d8fce3de4",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      },
+      {
+        "build_path": "scripts/package_damage_numbers.py",
+        "build_sha256": "6d7e18e4877c0775dfbe768fe1c4632f174e975c2537ddcec55930a84732541c",
+        "current_path": "scripts/package_damage_numbers.py",
+        "current_sha256": "ae1aec220b2ae19381c4ae87fe99d81625138f62793bd2f8f0ac1e22f6187450",
+        "build_commit": "323bc30a870e091600293c99449f415fafea4f6c"
+      }
+    ]
+  }
+}
