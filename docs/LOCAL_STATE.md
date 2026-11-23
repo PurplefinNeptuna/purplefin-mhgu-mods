@@ -14,7 +14,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | --- | --- | --- | --- |
 | Damage Numbers | r48 | READY_TO_DISTRIBUTE, release | Runs on MHGU Recomp with Purple-lib r20 |
 | ImGui Meter | r4 | DEVELOPMENT | NOT RUN; r3 cut Eden to 37 fps (r1 ran on MHGU Recomp, unitemized) |
-| Key Quest Markers | r22 | DEVELOPMENT, candidate | Not run (r21 plus gold badges for reward quests and their chains); r21 Recomp, unitemized; r20 accepted on Eden |
+| Key Quest Markers | r23 | DEVELOPMENT, candidate | Not run (r21 plus orange badges for reward quests and their chains); r21 Recomp, unitemized; r20 accepted on Eden |
 | Lock-on Target | r2 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp |
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r16 | READY_TO_DISTRIBUTE, release | Multiplayer, user report; Eden and MHGU Recomp installed |
