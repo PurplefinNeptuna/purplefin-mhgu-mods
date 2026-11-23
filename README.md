@@ -1,7 +1,7 @@
 # MHGU modding
 
 Monster Hunter Generations Ultimate 1.4.0 for Switch (Eden/Ryujinx), built on
-upstream Forge **1.5.1**. On PC, [MHGURecomp](https://github.com/morerokk/MHGURecomp)
+Forge **2.0.0** (mods not yet moved still target 1.5.1). On PC, [MHGURecomp](https://github.com/morerokk/MHGURecomp)
 loads the same Forge NROs.
 
 | Mod | Release | Guide |

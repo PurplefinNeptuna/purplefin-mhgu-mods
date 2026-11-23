@@ -1,6 +1,6 @@
 # Local state
 
-Baseline: stock Switch Forge 1.5.1 and forge-rs 1.5.0, branch `main`. MHGURecomp
+Baseline: stock Switch Forge 2.0.0 and forge-rs 2.0.0 (mods not yet moved: 1.5.1 and 1.5.0), branch `main`. MHGURecomp
 loads the Switch NROs. This file lists workspace builds, not emulator activation.
 
 Each mod's `DISTRIBUTION.json` is authoritative for status; `EVIDENCE.json` holds
@@ -69,7 +69,7 @@ Older accepted C++ builds: `build/modern-weapon-controls/candidates/r10/`,
 | Ryubing 1.3.3 (portable) | `/mnt/storage2/Programs/Ryubing-1.3.3/app/`, data in `app/portable/` |
 | Ryujinx-Nextendo | `/mnt/storage2/Programs/Ryujinx-nextendo/portable/` (`mods/contents/0100770008dd8000/`, `Logs/`) |
 | Copied native inputs (1.4.0 code) | `work/shared/game-exefs/` |
-| Official Forge package | `work/shared/forge-1.5.1/` |
+| Official Forge packages | `work/shared/forge-2.0.0/`, `work/shared/forge-1.5.1/` (mods not yet moved) |
 | Ghidra and saved DTI | `work/research-tooling/` |
 
 Library target: game 1.4.0, cheat build FB08F1D20FD1204F, NSO

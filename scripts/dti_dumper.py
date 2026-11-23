@@ -130,7 +130,7 @@ def build():
     baseline = json.loads((ROOT / "docs/COMPACTION.json").read_text())["forge"]
     forge = ROOT / "tools/forge-local"
     if subprocess.check_output(["git", "-C", str(forge), "rev-parse", "HEAD"], text=True).strip() != baseline["commit"]:
-        raise ValueError("Upstream Forge 1.5.1 source changed")
+        raise ValueError("Upstream Forge source differs from the recorded baseline")
     env = os.environ.copy()
     env.update(RUSTUP_HOME=str(TOOLS / "rustup"), CARGO_HOME=str(TOOLS / "cargo"),
                RUSTUP_TOOLCHAIN=recipe["toolchain"], CARGO_NET_OFFLINE="true")
@@ -155,7 +155,7 @@ def build():
         raise ValueError("Dumper unexpectedly imports a hook/JIT/CodeMemory API")
     live_forge = ROOT / "work/shared/game-exefs/forge"
     if sha(live_forge) != baseline["nso_sha256"]:
-        raise ValueError("Copied official Forge 1.5.1 fingerprint changed")
+        raise ValueError("Copied official Forge fingerprint changed")
     sdk = ROOT / "work/shared/game-exefs/sdk"
     if sha(sdk) != recipe["sdk_sha256"]:
         raise ValueError("Copied SDK fingerprint changed")

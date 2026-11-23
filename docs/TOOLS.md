@@ -28,7 +28,7 @@ FFmpeg, Wine, Node, compiler/Qt are reused; no system packages installed.
 | `scripts/recomp_imgui.gdb` | Reads MHGURecomp's live plugin ImGui pool under gdb: mirrors in use and free, a per-object-class histogram, and per-caller counts grouped by the plugin module that made the call | `cd /mnt/storage2/Programs/MHGURecomp && gdb -q -x ../MHGU_Modding/scripts/recomp_imgui.gdb --args ./mhgurecomp`, then `imgui_dump`, `imgui_watch`, `imgui_owners`, `imgui_mods` (attaching to a running process needs `kernel.yama.ptrace_scope=0`) |
 | [Ghidra](https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.1.4_build) 12.1.4 | Imported MHGU 1.4.0 code database, disassembly and decompilation | `./scripts/tool.sh ghidra` |
 | [MHGU DTI dumper](https://github.com/Fexty12573/mhgu-dti-dumper) | Runtime reflection results indexed; extraction plugin removed after trial | `./scripts/tool.sh research find QUERY --kind dti` |
-| [forge-rs](https://github.com/Fexty12573/forge-rs) 1.5.0 | Rust Forge plugin crates and Cargo scaffold/build command; isolated runtime | `./scripts/tool.sh forge-rs status` |
+| [forge-rs](https://github.com/Fexty12573/forge-rs) 2.0.0 | Rust Forge plugin crates and Cargo scaffold/build command; isolated runtime (mods not yet moved vendor 1.5.0) | `./scripts/tool.sh forge-rs status` |
 | Wiki model plugins | MHGU MaxScript import/export resources | `./scripts/tool.sh model-plugins` |
 | Wiki binary templates | 010 Editor `.bt` reference files | `./scripts/tool.sh templates` |
 

@@ -195,8 +195,8 @@ release ships `manifest.json` beside `romfs/` for mod managers, with exactly the
 `version` is this version rN written as `0.N.0`, and ranges in `requires` use the same
 form. `gamebananalink` is `""` until the mod has a GameBanana page. Ids are `author/mod`.
 Register it in `payloads`; `package` refuses a new candidate or release without it
-(`scripts/mod_manifest.py`). The 8 mods whose current version shipped the old `manifest.txt`
-re-package that version with it and ship `manifest.json` from their next version;
+(`scripts/mod_manifest.py`). The mods in its `MANIFEST_TXT` list, whose current version shipped
+the old `manifest.txt`, re-package that version with it and ship `manifest.json` from their next version;
 releases packaged before either rule keep their bytes. Keep notices and HTML outside
 ZIPs. Support refreshes back up the prior release and preserve runtime bytes.
 Archive superseded releases outside active releases.
