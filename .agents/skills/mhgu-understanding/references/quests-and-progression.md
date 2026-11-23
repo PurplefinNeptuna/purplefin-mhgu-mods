@@ -20,7 +20,7 @@ All addresses below are main-relative on verified Switch 1.4.0.
 | `0x523d00`, sUserInfo +0x100 | New/acknowledgement state, separate from completion |
 | Cell `0x18979f0` | Separate progression-record pointer |
 | Progression +0x3e0 / +0x3e2 | u16 Village / Hub-G tiers |
-| `0x3d17f8` | Script stage queries: Village 1..10, Hub/G 1..13 |
+| `0x3d17f8` | Common-script VM; its stage queries expose Village 1..10, Hub/G 1..13 |
 | `0x3b1a18` | Village prerequisite counter; bit 0 means requirements satisfied |
 | `0x3b1d70` | Hub/G total/completed prerequisite counter |
 | `0x3b2174` | Scene/quest-flag availability query |
@@ -76,6 +76,8 @@ Bytes unless marked upstream (MHGURecomp's source; its addresses are these plus 
 | Categories | Build `0x3b85d8`, fill `0x3bb318`, get `0x3bc96c` (reads area byte +0x4c, range 0..7), rebuild `0x3ba8fc` (caller `0x6bcafc`) | Quest lists per category; pool index for an urgent depends only on quest-ID ranges (`0x3bc5f0`), so host and client agree |
 
 Availability `0x54af8c(id, 0xff, 0)` returns 1 for DLC IDs (`0x3b9870`). For other quests it asks the progression script `0x3b2174`, whose module is at +0x8d0 of the cell behind it: with the module null, `0x3d7ee4` writes answer 0 at `0x3d7ffc` unless its +0x8dc cache holds the flag. The special-encounter bit at owner +0x35d4 is saved by `0x51d94c`, and which record of a pair a save enables differs by save. So the result depends on when it is asked. `aResult` slot 7 `0x6a1fd4` loads the module and slot 9 `0x8e48` unloads it. `aVillage` loads it at `0x10618` (`0x506fec`) and unloads it at `0x106a0`. An area load's list job can run while the module is still unloaded: the job `0xfc1c` is the stage's loading method (slot 0x74, also called from `0xd8f0`) and `0x10548` a later slot (inference from that order; no run has logged it). It also needs the special encounter bits (above). It reads the local save, never the host's.
+
+The module is rCommonScript `script\check_quest_unlocked` (`loc/arc/village/common.arc`), run by query `0x3d7e90` through the script VM `0x3d17f8` with the quest in `[WORK0]`: each case requires quests cleared and story flags (save `+0x500`) set. NPC talk tables (`loc/arc/npc/talk.arc`) set those flags when their quest and flag conditions hold, which is how a clear followed by dialogue unlocks a quest. Opcodes, record layouts and the talk evaluator are verified in Key Quest Markers' DEVELOPMENT.md, "Quest lists". In 1.4.0 every key quest's unlock needs only key or urgent quests; 468 other quests unlock something. Hunter Arts and Felyne ingredients are granted only by a talk row's mAction2 (switch `0x247c58`; arts `0x3f0c3c`, ingredients `0x3f1380`), on 7 and 26 quests' clears.
 
 ## Counter pages and their rows
 
