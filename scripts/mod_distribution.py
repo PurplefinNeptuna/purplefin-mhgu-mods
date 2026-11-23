@@ -133,14 +133,14 @@ def spec_for(mod, root=ROOT):
                 and not name.endswith('.zip'), f'Invalid support filename: {name}')
         relative(name)
         read(root, source)
-    # archives: extra ZIPs shipped beside the mod's archive, built from tracked files
-    # ({"kit.zip": {"path/in/zip": "source"}}), such as Purple-lib's API kit.
+    # archives: extra ZIPs beside the mod's archive ({"kit.zip": {"path/in/zip": "source"}}), from tracked
+    # files or, like payloads, from build/ (the release check pins those), such as Purple-lib's API kit.
     for name, entries in spec.get('archives', {}).items():
         require('/' not in name and name.endswith('.zip') and name != spec.get('archive')
                 and name not in spec.get('support', {}) and entries, f'Invalid extra archive: {name}')
         for inner, source in entries.items():
             relative(inner)
-            read(root, source)
+            source.startswith('build/') or read(root, source)
     payloads = spec.get('payloads')
     require(isinstance(payloads, dict) and payloads, f'No declared payloads: {mod}')
     for path, record in payloads.items():
@@ -701,7 +701,7 @@ def check_staged(root=ROOT):
             names = [f'mods/{mod}/DISTRIBUTION.json']
             if status in READY:
                 names += [spec['readme'], *spec['notices'], *spec.get('support', {}).values()]
-                names += [s for entries in spec.get('archives', {}).values() for s in entries.values()]
+                names += [s for e in spec.get('archives', {}).values() for s in e.values() if not s.startswith('build/')]
                 names += [p for p in spec['evidence'].get('manual', []) if p.startswith('mods/')]
             for name in names:
                 require(read(staged, name) == read(root, name),

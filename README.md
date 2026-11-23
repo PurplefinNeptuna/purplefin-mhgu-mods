@@ -14,6 +14,7 @@ loads the same Forge NROs.
 | Please do Better | r37 | [Install](mods/please-do-better/README.md) |
 | Purple-lib | r22 | [Install](mods/purple-lib/README.md) |
 | Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
+| Skin Loader | r14 | [Install](mods/skin-loader/README.md) |
 | Village Quests in Hub | r6 | [Install](mods/village-quests-in-hub/README.md) |
 | WishFinder | r135 | [Install](mods/wishfinder/README.md) |
 | WishFinder bridge for My Weapon Tree | r11 | [Install](mods/wishfinder-mwt-bridge/README.md) |
