@@ -2,23 +2,10 @@
 
 ## Supported loaders and source updates
 
-Switch development uses unmodified [Fexty's Forge fork](https://github.com/Fexty12573/forge)
-2.0.0, based on Jeffi's original Forge, at
-`tools/forge-local/` (`fd03ecb4c4ad16a02edb508c5a9b7731b84008d3`). A plugin
-built with forge-rs 2.0 asks for Forge 2.0; Forge 1.5.1 removes it and logs
-`requires Forge version 2.0.*` (`plugin.cpp`);
-MHGURecomp hosts 2.0.0 from 0.18.0. Mods not yet moved vendor forge-rs 1.5.0.
-Native ARM32 Hook is 24 bytes: target/detour/original/context pointers at
-0/4/8/12, ctx_cell at16 and has_ctx at20. Forge pools ordinary/context
-trampolines; verify allocations, ownership and the actual headers at each boundary.
-forge-rs source is 2.0.0
-at `tools/forge-rs/`; its compatible converter is separately pinned at1.4.1.
-
-Update the existing checkout from its official remote; do not create an extra
-upstream clone/worktree. Keep old revisions in Git when research needs them.
-Do not apply or recreate the retired loader, legacy Better Input, renderer,
-mutex or PC support patches, or GURecomp/Forge PC ports: MHGURecomp loads the
-Switch NROs. Source updates never replace installed packages.
+Baselines, update rules and retired patches: "Always" in the root AGENTS.md.
+Loader version checks, ABI layouts and the converter pin: the forge-modding
+skill's [api-and-builds.md](../.agents/skills/mhgu-forge-modding/references/api-and-builds.md).
+Source updates never replace installed packages.
 
 ## Independent mod builds
 
@@ -99,47 +86,22 @@ scripts/code_rules.py` checks every tracked file). Generated and third-party tre
 
 ## Native implementation rules
 
-Search saved Ghidra/DTI before gameplay work (mhgu-understanding skill).
-Use Forge's callbacks, logging, input, memory, singleton, hooks, filesystem and
-render APIs where applicable. Document a verified API gap before using a lower
-level path. Validate pointers, signatures, allocation failures and rollback.
-Explain native offsets, units, data flow, ownership, nested hooks, TLS borrows
-and unsafe caller requirements beside substantial code. Preserve audited assembly.
-Comments-only work keeps pinned assembly and third-party bytes unchanged. Skip
-comments that only repeat the code. A comment states the current contract in a
-line or two. Run IDs (`r23`), what a run printed and approaches that were
-refuted stay out of source.
+Hooks, GE/NZCVQ, settings panels, INI storage and logging rules live in the
+forge-modding skill (`SKILL.md` and its references); "Research first", "Forge
+first" and "Native writes" are in the root AGENTS.md. Rules kept here are the
+workspace's own:
 
-Store a tuned or user-accepted value in the frame it was measured against: an
-offset from, or a fraction of, the node or rect it was read on. Never store
-absolute screen pixels. Record the frame it was measured in beside the value.
-
-A mod's DEVELOPMENT.md holds the current project only: exactly one current-state
-paragraph, then the facts a change needs, a short "Do not" list and open items.
-"Writing project docs" in the root AGENTS.md has the full rules.
-
-Diagnostics, forced values, test sliders and probes are scaffolding. Once the
-user accepts the behaviour they were for, remove them with the consolidation
-playbook (forge-modding P7) before adding the next feature or promoting.
-
-Preserve NZCVQ and all live registers. Audit GE liveness at every hook and
-continuation; never require `msr APSR_g` or `msr APSR_nzcvqg`. Choose another hook
-site when required state cannot be preserved compatibly. Static tests do not
-establish emulator/gameplay correctness.
-
-Settings use stable plugin-specific IDs in a closed-by-default, unframed tree
-row under Plugin UI. Pair every opened TreeNode with TreePop. Panels contain
-settings/save feedback only; no settings means no panel. Closing a row leaves
-update/render callbacks active. Use concise process-deduplicated logs outside
-hot hooks; normal frames/hits/rewards produce no periodic diagnostics.
-
-Use one plugin-specific primary INI on Forge's counted save-data mount. Never
-create/read/recover/delete `_backup` configs. Validate before writing, flush,
-verify, commit and balance mounts/handles on every failure; preserve session
-settings on failure. Missing/invalid primary uses defaults; disk contents after
-a failed write are not guaranteed. Damage Numbers retains its expressly
-authorized upstream forge-rs config load/default-creation/ScopedMount/Writer
-behavior. Saving remains explicit in its settings UI.
+- Explain native offsets, units, data flow, ownership, nested hooks, TLS borrows
+  and unsafe caller requirements beside substantial code. A comment states the
+  current contract in a line or two and never just repeats the code.
+  Comments-only work keeps pinned assembly and third-party bytes unchanged.
+- A mod's DEVELOPMENT.md holds the current project only: exactly one current-state
+  paragraph, then the facts a change needs, a short "Do not" list and open items.
+  "Writing project docs" in the root AGENTS.md has the full rules.
+- Diagnostics, forced values, test sliders and probes are scaffolding. Once the
+  user accepts the behaviour they were for, remove them with the consolidation
+  playbook (forge-modding P7) before adding the next feature or promoting.
+- Static tests do not establish emulator or gameplay correctness.
 
 ## Releases
 
@@ -310,6 +272,3 @@ disclosures and complete legal notices in their respective records/sections.
 The source README, adjacent release README, archived README and both HTML
 descriptions must agree. Refresh them through the distribution packager and
 run its full check. Preserve runtime bytes and back up the previous delivery.
-
-Commit coherent validated work locally after reviewing staged paths. Never
-install, activate, launch, edit saves, publish or push implicitly.

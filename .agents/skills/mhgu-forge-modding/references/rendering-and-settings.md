@@ -32,7 +32,7 @@ Pictures of native screens show only what the explanation needs. The tester aske
 
 The workspace default is one primary plugin-specific INI, explicit Save, and defaults for missing/invalid primary input. Never create/read/recover/delete `_backup` configs. Reset and editing normally affect session/draft state until the mod's Save/Apply policy completes. Preserve session settings on failure and report save status without claiming old disk bytes are intact after a failed write.
 
-Use Forge's counted save mount and balance every successful acquisition with release. The mount point is supplied by Forge, rather than guessed from an emulator's host save layout. Validate values, write/flush, read back, and check commit before reporting a checked save as successful. Close handles and restore SDK abort/error context on every path. The native SDK file and handle ABI must be verified for ARM32.
+Use Forge's counted save mount and balance every successful acquisition with release. The mount point is supplied by Forge, rather than guessed from an emulator's host save layout. Validate values, write/flush, read back, and check commit before reporting a checked save as successful. On a failed save keep the session settings; the file on disk is then not guaranteed. Close handles and restore SDK abort/error context on every path. The native SDK file and handle ABI must be verified for ARM32.
 
 The stock Rust helpers have relevant limits: ScopedMount panics on failure, Reader can assert on short reads, Writer can ignore short writes, and checked flush/commit are absent. Key Quest Markers uses narrow checked SDK calls around Forge's mount to meet its stronger contract. Do not silently describe the high-level helpers as checked transactional storage.
 

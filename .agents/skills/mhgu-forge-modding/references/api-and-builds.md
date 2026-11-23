@@ -14,7 +14,7 @@ Current Forge source is [Fexty's fork](https://github.com/Fexty12573/forge), bas
 
 ## Loader contract
 
-Forge scans `app:/nativeNX/plugins` for `.nro`, registers module hashes, loads modules, resolves callbacks, calls `forge_onLoad`, checks the requested version, and calls `forge_onInit` for accepted plugins. Keep startup independent of ImGui availability.
+Forge scans `app:/nativeNX/plugins` for `.nro`, registers module hashes, loads modules, resolves callbacks, calls `forge_onLoad`, checks the requested version, and calls `forge_onInit` for accepted plugins. A plugin built with forge-rs 2.0 asks for Forge 2.0: Forge 1.5.1 removes it and logs `requires Forge version 2.0.*` (`plugin.cpp`). MHGURecomp hosts Forge 2.0.0 from 0.18.0. Keep startup independent of ImGui availability.
 
 | Export | Native signature / purpose |
 | --- | --- |
