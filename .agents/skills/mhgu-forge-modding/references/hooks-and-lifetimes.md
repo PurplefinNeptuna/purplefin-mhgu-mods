@@ -52,7 +52,7 @@ Stock Forge 1.5.1 and 2.0.0 hook `0x3da8fc`, `0xb8692c`, `0x887810` and `0x88784
 
 ## On MHGURecomp
 
-Recomp runs the game as compiled code and plugins in an interpreter, and implements Forge's hook and patch calls itself (`runtime/forge.c`, `dispatch.c` in its source). Only Forge calls change code there: a plugin's own stores into `main` are never seen. A hook at a function entry redirects the compiled function; its trampoline calls the whole function.
+Recomp runs the game as compiled code and plugins in an interpreter, and implements Forge's hook and patch calls itself (`runtime/forge.c`, `dispatch.c` in its source). Only Forge hooks change code there. A Forge patch counts only when its words form a hook; any other patch is logged as ignored, though its bytes read back as written (`code_changed` in `runtime/forge.c`). A plugin's own stores into `main` are never seen. A hook at a function entry redirects the compiled function; its trampoline calls the whole function.
 
 A hook inside a function makes Recomp interpret that whole function for the session, so a gateway may jump back to any address inside it. A jump into the middle of a function that is still compiled is fatal (`no function at %x`). Recomp refuses Thumb targets, sites outside a function, and sites under eight bytes before the next function.
 
