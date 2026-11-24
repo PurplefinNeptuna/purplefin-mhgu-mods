@@ -49,6 +49,8 @@ Camera gates: cell `0x184d750` holds sFestaCamera (GOT slot `0x1838d90`). `0x18e
 
 That object must pass vfunc +0x3f4 == 0, byte +0x1054 == byte +0x49 of the object in cell `0x188ca48`, and byte +0x75c0 != 0. It then returns that object's vfunc +0x3c4. So inside the tap logic, past `0x27e990`, `0x18ffc` is never 0 (read from the code, not run).
 
+Reticle: `0x61e95c(panel)` keeps a state at panel +0x78 (0, 1, 2). In states 1 and 2 it calls the reticle draw `0x61ecc0` when `0x18e50(sFestaCamera)` == 1 and `0x190d4(sFestaCamera)` == 1. `0x190d4` returns 1 when the current camera (DTI `0x184d8b8`) has byte +0xa7c set, else 0. The compares are at `0x61e9e0` and `0x61ea28`; they are `0x61ecc0`'s only two callers.
+
 ## Native processing order
 
 `0x2a79cc` copies input, preprocesses modifiers, applies Arts, checks mode/camera gates, then classifies shared/weapon commands. Player logical held/previous/pressed halfwords are +0x13f4/+0x13f6/+0x13f8; full/high-bit fields +0x13fc/+0x1400/+0x1404. Prior presses +0x13fa/+0x1408 are already logical and must not be remapped twice.
