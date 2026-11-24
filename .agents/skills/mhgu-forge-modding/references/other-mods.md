@@ -82,7 +82,7 @@ Layout and the update procedure: [the bridge](../../../../mods/wishfinder-mwt-br
 | Eden cheat engine | Writes 12 times a second (`CHEAT_ENGINE_NS = 1000000000 / 12`), so a cheat that relies on a value running out between writes works on Eden and not on MHGURecomp, which writes every frame | As above |
 | HD Project | Replaces atlases (not `HD_cmn_icon_GSM_NOMIP`) and `common_eng.arc`; Eden takes the alphabetically first of two replacements, so never ship a competing ARC: insert natively instead. Merge order Base -> HD Project -> Z_Balanced -> others | `mods/key-quest-markers/DEVELOPMENT.md`, `mods/modern-weapon-controls/DEVELOPMENT.md`, `mods/hd-project/README.md` |
 | Modern Weapon Controls (ours) | Ships a double-size `HD_cmn_icon_GSM_NOMIP` (1024x2048), so read atlas sizes from the header | `mods/wishfinder/DEVELOPMENT.md` |
-| Faster Field Hunter | Uses the centre popup and popup icons; leads from its code are in [Leads from other mods](other-mods-leads.md) | `work/wishfinder/POPUP_PLAN.md` | `mods/key-quest-markers/DEVELOPMENT.md` |
+| Faster Field Hunter | Uses the centre popup and popup icons; leads from its code are in [Leads read from other mods](#leads-read-from-other-mods-unverified-in-our-main) | `work/wishfinder/POPUP_PLAN.md` | `mods/key-quest-markers/DEVELOPMENT.md` |
 | MHGURecomp's own Village feature | Runs beside Village Quests in Hub (with its `hpscale.c`); the tester reports our mod fixes some of its problems | `mods/village-quests-in-hub/DEVELOPMENT.md` |
 
 ## What KatSmithy and My Weapon Tree showed about smithy data
@@ -116,3 +116,17 @@ its tree level in none, because that mod rewrites the displayed rows and the lev
 Resource priority is Base -> HD Project -> Z_Balanced -> others. Later changed resources win whole; unchanged resources retain lower improvements. Same-path ARC conflicts need internal resource merging, not choosing one archive wholesale. Preserve language/controller/icon selections, matching font/texture pairs, and base companions. Choose one FPS/FOV variant. V4 donors are retired.
 
 The HD cleanup's 7,931-file reproduction and 407-resource comparisons are static/deployment evidence from that operation. They do not establish current activation or every visual improvement. Read actual ownership/manifests before touching shared resources.
+
+## Leads read from other mods (unverified in our main)
+
+### Faster Field Hunter
+
+Read from that third-party mod's code (`work/wishfinder/POPUP_PLAN.md`); check each in the bytes before use.
+
+- It queues item lines through `0x5b521c(window, 0, 9, item, ...)` (message 9, an item name). It keeps each request id, the window's counter +0x58 & 0x3ff, in a 32-slot ring. Each frame it takes the shown window (+0x70, id at +8) and acts when that id is in the ring and within 64 of the counter.
+- Window timing floats at +0x64/+0x68 (hold, early; meaning open); a pane's x/y +0x90/+0x94 and scale +0xa0/+0xa4, a root's x/y +0x40/+0x44.
+- Popup icons are `cUIOPopIcon` (DTI `0x189e698`, vtable from `0x1774710 + 0x70`). The setup is a `cUIObjectSetupParam` block (`0x570688`) with +0x38 = 0x4000000, +0x3c = 0 and a word from `0x163e4a0`. The icon is created by `0x65c1e0(parent, dti, param, 0x202)` (parent through `0x183a954`), and the block destroyed with `0x570688 + 0x88`. Slot +0x54 is normally `0x60eba0`.
+
+### Charge Blade to 4G
+
+The Charge Blade to 4G mod blocks events with `opcode=0x66 / bank=0` by player, command and frame (`references/MHGU-Charge-Blade-To-4G/docs/Plugins.md`). When it played a request through the player's sequence object (bank 0, attach 2), the game crashed (`docs/Presentation.md`). So prefer a swap to a new call: change the request on a copy of the event and run the executor on it.

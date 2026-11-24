@@ -41,7 +41,7 @@ and to the start menu's Quest Info in town and in a quest; accepted in all four 
 
 ## Borrow a game window on another screen
 
-WishFinder shows the smithy's Req. Materials window beside its Hunter's Notes list, in town and in a quest (`mods/wishfinder/src/native.rs` `materials_open`, `materials_show`, `materials_close`; natives in `mhgu-understanding` [UI objects outside their screen](../../mhgu-understanding/references/ui-objects.md#ui-objects-outside-their-screen)). The method, in the order that worked:
+WishFinder shows the smithy's Req. Materials window beside its Hunter's Notes list, in town and in a quest (`mods/wishfinder/src/native.rs` `materials_open`, `materials_show`, `materials_close`; natives in `mhgu-understanding` [UI objects outside their screen](../../mhgu-understanding/references/gui-objects.md#ui-objects-outside-their-screen)). The method, in the order that worked:
 
 1. **Take the window apart statically first.** Find its class by DTI, then read four things from its vtable. Which layout file does it ask for, and which instance does it bind? What does its draw read (the data block, the dirty flag), and which message texts does it fetch? Find the screen code that fills that block and copy how each field is derived. A window that only reads a block behind a pointer is the easy case; one that reads its screen's fields is not.
 2. **Let the game build it.** Call the game's object factory with the class's DTI instead of allocating and wiring an object by hand: it creates, binds, registers for drawing and gives the object the destructor that matches. Compare the DTI's name and the new object's vtable before touching either.

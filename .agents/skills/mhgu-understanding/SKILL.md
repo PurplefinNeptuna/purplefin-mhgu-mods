@@ -104,8 +104,8 @@ build it and extract into the scratchpad.
 | Options window, Help | [Options and Help](references/options-and-help.md) |
 | Item Pouch and Equipment screens, how items enter the pouch | [Pouch and equipment screens](references/pouch-and-equipment-screens.md) |
 | Button guide, centre popup | [Guide and popups](references/guide-and-popups.md) |
-| Making a game window (`cUIObject`) outside its own screen | [UI objects](references/ui-objects.md) |
-| Smithy top menu and list screens | [Smithy screens](references/smithy-screens.md) |
+| Making a game window (`cUIObject`) outside its own screen | [GUI objects](references/gui-objects.md#ui-objects-outside-their-screen) |
+| Smithy top menu and list screens | [Smithy window](references/smithy-window.md#smithy-top-menu) |
 
 **Quests**
 
@@ -139,7 +139,7 @@ build it and extract into the scratchpad.
 | Menu sounds, sound data, request slots | [Sounds](references/sounds.md) |
 | Pickup and BBQ jingles | [Jingles](references/jingles.md) |
 | Motion sound events (MSS) | [Motion sounds](references/motion-sounds.md) |
-| Sessions, member state, who spawns for whom, travel codes | [Multiplayer and areas](references/multiplayer-and-areas.md), by address in [Multiplayer findings](references/multiplayer-findings.md) |
+| Sessions, member state, who spawns for whom, travel codes, functions that take an entry hook | [Multiplayer and areas](references/multiplayer-and-areas.md), by address in [Multiplayer findings](references/multiplayer-findings.md) |
 | The game's allocators and what a full one does | [Allocators](references/allocators.md) |
 | ARC, GMD and texture layouts, language codes, how the resource manager shares files | [File formats](references/file-formats.md) |
 | Which tools edit a resource, which wiki `.bt` templates fit | [Resource editing](references/resource-editing.md) |

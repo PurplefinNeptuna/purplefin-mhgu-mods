@@ -98,3 +98,19 @@ Pitfalls read from the bytes and runs:
 - Flag `0x00400000` is byte +0x56 bit 6, and the walker's exit clears bit 18 (`0xfffbffff`). Byte +0x57 bit 1 is drawable bit 25. Word index +0x33 is +0xcc (`Mask`), not a kind word.
 - Magenta is symmetric, so prove colour order with an asymmetric colour. The sharpness bar's yellow `0xff5efaff` shows `0xAABBGGRR`.
 - A build that wrote a texture quad every frame also faulted in the game's own update: `strb r1,[r4,#0xcb00]` at `0x1014604`, r4 = 0, from `0xf28238`. The mechanism is unread.
+
+## UI objects outside their screen
+
+A game window is a `cUIObject` class with its own layout file, and the game can make one from any screen. Bytes, and run in the village, the hub and a quest.
+
+- **Finding the class.** `./scripts/tool.sh research find cUIO --kind dti` lists the UI classes with size, vtable and parent; a screen's objects are in its create (slot 0x48) as `0x65ca84(screen, slot, DTI, setup, flags)` calls. The class's vtable gives getDTI (slot 0x14), the resource picker (0x28), bind (0x48) and draw (0x4c). A DTI object's name is the `char*` at `+4`.
+- **Factory.** `0x65c1e0(*0x18a1cd8, DTI, setup, flags)` is what `0x65ca84` calls. It makes the object from the DTI, and its resource (slot 0x28) when `setup` is 0. It finds a GUI holder with `0x65c2e4`: the holder whose `+0xf0` is the same resource is reused, else a new 0x2b0-byte one is registered. It shows the object (`+0x18 = 1`) unless flag 8, and binds it unless flag 4. It returns 0 when the object has no resource. Show `0x56de60`, hide `0x56dfac`; destroy through the deleting destructor, vtable slot 4, which detaches from the holder and releases the resource.
+- **Resource.** Slot 0x28 picks a file ID by the session language (`[*0x188ca48]+0xa5`, English past Italian) and calls `0x56e1a8`, which only finds a loaded resource (`0x152960`). The game's file table `0x15a0ce0` holds {`~crc32` of the path without extension, the DTI's `mID`} per ID, so a path can be checked against an ID offline. A layout loaded only inside one facility (the smithy's) is absent elsewhere and the factory returns 0.
+- **Loading it.** `sResource::create(*0x2126a64, DTI, path, 1)` `0xbcad18` loads by path, blocking, under the same key the lookup uses; `rGUI`'s DTI object is `0x212619c`. The layouts are loose files too (`nativeNX/<lang>/GUI/...gui`), and the load works with the facility's archive closed, in a quest as well. Release the extra reference with `0xbc8414(manager, resource)` once the object holds its own.
+- **Draw gate.** The holder draws an object (`0x56e2d8`, message 1) when it is shown and the mode word `[*0x1899458]+0x1a4` is 0 or the object's mask `+0x20` has that bit. The word read 0 on the Hunter's Notes page and a new object's mask 0.
+- **Texts.** `0x55bc7c(*0x1899220, file, id)` returns 0 when message file `file` is not loaded; file 14 (shop) is loaded in the village and hub and not in a quest. The text setters `0x56ea08` / `0x56e808` reach `0x547564`, which clears the text for a null `char*`, so a missing text is blank, not a fault.
+- **Example, `cUIOShopCmnWindow`** (the smithy's four-row Req. Materials window: vtable `0x176e640`, DTI `0x189a7d8`, 84 bytes, layout `<lang>\GUI\04_lobby\shop\shop_cmn_win`, file IDs `0xf4cd` + 3 per language).
+  - It draws while `+0x50 & 1` and clears it.
+  - It reads four records behind the pointer at `+0x4c`, record i at `+4 + i*0x14`: {u32 colour, u16 icon, u8 present, u16 needed at +8, u16 owned at +0xa, u32 0, `char*` name}. Owned below needed turns the row red.
+  - Titles are file 14 ids 0x1d and 0x99, into instance 1 parts 1 and 2.
+  - The smithy fills the block in `0x6fa3d8` (colour `0x560d3c(palette, itemData +0x19, 1)`, icon itemData `+0x18`). The three-row upgrade variant is `cUIOShopSmithMaterial` (`0x176ef7c`, layout `shop_prcsn`).

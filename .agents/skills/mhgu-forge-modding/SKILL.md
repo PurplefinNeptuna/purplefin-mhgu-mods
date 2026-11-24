@@ -137,7 +137,7 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 | Plugin-to-plugin exports; a library that calls its clients | [Plugin APIs](references/plugin-apis.md) |
 | Put a mod's settings in the game's Options (Mod Options) or its topics in the game's help | `mods/purple-lib/API.md`, then [Plugin APIs](references/plugin-apis.md#a-library-that-calls-its-clients-purple-lib) |
 | Detours, trampolines, flags, TLS, transactions, rollback | [Hooks and lifetimes](references/hooks-and-lifetimes.md) |
-| Game functions known to take a hook, and their pitfalls | [Hook sites](references/hook-sites.md) |
+| Game functions known to take a hook, and their pitfalls | [Multiplayer sessions](../mhgu-understanding/references/multiplayer-and-areas.md#hook-points-and-pitfalls) (mhgu-understanding) |
 | Add game-owned GUI objects to a native tree | [GUI insertion](references/gui-insertion.md) |
 | Reparent nodes, masks, cached quads, HUD movers, a row's end | [GUI masks and movers](references/gui-masks-and-movers.md) |
 | Reuse a game screen, add pages to a panel, borrow a window, guide entries | [GUI screen reuse](references/gui-screen-reuse.md) |
@@ -153,7 +153,7 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 | Read another plugin's memory when it has no API (bridges) | [Plugin bridges](references/plugin-bridges.md) |
 | Coexisting with KatLib/KatSmithy/UIScale, My Weapon Tree, DPS Meter, HD Project and others | [Other mods](references/other-mods.md) |
 | MHGU Definitive Edition: what it patches, its quests | [Definitive Edition](references/definitive-edition.md) |
-| Unverified leads read from other mods' code | [Leads from other mods](references/other-mods-leads.md) |
+| Unverified leads read from other mods' code | [Other mods](references/other-mods.md#leads-read-from-other-mods-unverified-in-our-main) |
 | Tests, exports, packaging, legal/support files, commits | [Validation and delivery](references/validation-and-delivery.md) |
 | Failed initialization, logs, historical failures, physical Switch | [Diagnostics](references/diagnostics.md) |
 | Workspace paths and evidence locations | [Workspace and sources](references/workspace-and-sources.md) |
