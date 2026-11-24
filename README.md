@@ -7,14 +7,14 @@ plugins.
 
 ## The mods
 
-Each mod lives in its own repository under `mods/`. Their source isn't public yet, so those
-folders stay empty in a clone until a mod's repository is published.
+Each mod lives in its own repository under `mods/`. Lock-on Target's is public; the others
+aren't yet, so their folders stay empty in a clone until each one is published.
 
 | Mod | What it does |
 | --- | --- |
 | Damage Numbers | Shows damage numbers at each impact, with physical and elemental damage combined, in Wilds, Rise or Classic style. |
 | Key Quest Markers | Adds Rise-style badges to key and urgent quests, coloured by whether you still need them to progress. |
-| Lock-on Target | Keeps the target camera on the monster the game targets and hides the target reticle. Tap the target button to turn the lock off, and hold R to aim freely. |
+| [Lock-on Target](https://github.com/PurplefinNeptuna/mhgu-lock-on-target) | Keeps the target camera on the monster the game targets and hides the target reticle. Tap the target button to turn the lock off, and hold R to aim freely. |
 | Modern Weapon Controls | Moves weapon actions from R to ZR and keeps R for sprinting while sheathed. |
 | Multiplayer Roaming | Lets you visit the villages, the bedrooms, the Palico ranch and the Soaratorium during an online session without leaving it. |
 | Please do Better | Gives reward slots granted by Luck a white frame. It can also force Miraculous Luck and multiply item quantities. |
