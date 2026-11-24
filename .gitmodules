@@ -61,4 +61,3 @@
 [submodule "mods/world-sharpness-gauge"]
 	path = mods/world-sharpness-gauge
 	url = https://github.com/PurplefinNeptuna/mhgu-world-sharpness-gauge.git
-	update = none

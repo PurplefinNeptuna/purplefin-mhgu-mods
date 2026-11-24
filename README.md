@@ -7,8 +7,9 @@ plugins.
 
 ## The mods
 
-Each mod lives in its own repository under `mods/`. Lock-on Target's and Please do Better's are
-public; the others aren't yet, so their folders stay empty in a clone until each one is published.
+Each mod lives in its own repository under `mods/`. Lock-on Target's, Please do Better's and World
+Sharpness Gauge's are public; the others aren't yet, so their folders stay empty in a clone until
+each one is published.
 
 | Mod | What it does |
 | --- | --- |
@@ -24,7 +25,7 @@ public; the others aren't yet, so their folders stay empty in a clone until each
 | Village Quests in Hub | Lets you post Village quests from the Hub or the Hunters' Pub, so other hunters can join. |
 | WishFinder | Keeps a wishlist from the smithy, adds up the materials, and pins the quests that give what you're short of. |
 | WishFinder bridge for My Weapon Tree | Copies My Weapon Tree's wish list into WishFinder. |
-| World Sharpness Gauge | Turns the sharpness bar into a gauge like the one in Monster Hunter: World. |
+| [World Sharpness Gauge](https://github.com/PurplefinNeptuna/mhgu-world-sharpness-gauge) | Turns the sharpness bar into a gauge like the one in Monster Hunter: World. |
 
 ## What's here
 
