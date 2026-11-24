@@ -276,6 +276,18 @@ provenance and license explanations out of README credit lists. Credit a fork
 and its original project as separate entries. Keep scope metadata, AI
 disclosures and complete legal notices in their respective records/sections.
 
+A published mod's README ends with this License section, word for word apart from the name and
+repository. Never paste a license's own legal wording ("at your option", "without warranty")
+into a README or release notes; say it in plain words.
+
+```markdown
+## License
+
+Copyright (c) 2026 PurplefinNeptuna. NAME is licensed under the GNU GPL, version 3 or
+later. The source code and the license text are at
+https://github.com/PurplefinNeptuna/mhgu-MOD.
+```
+
 The source README, adjacent release README, archived README and both HTML
 descriptions must agree. Refresh them through the distribution packager and
 run its full check. Preserve runtime bytes and back up the previous delivery.
