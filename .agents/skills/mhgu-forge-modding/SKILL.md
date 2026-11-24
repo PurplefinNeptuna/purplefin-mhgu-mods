@@ -7,7 +7,7 @@ description: Develop, change, debug, build, package and release native ARM32 For
 
 Target: MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
 `FB08F1D20FD1204FE7070672777F869B`. Loader: stock Forge 2.0.0 (Fexty's fork),
-forge-rs 2.0.0; mods not yet moved target 1.5.1 and 1.5.0.
+forge-rs 2.0.0. Every mod here still builds against forge-rs 1.5.0 and asks for Forge 1.5.1.
 
 This skill is **how a plugin does things**: builds, hooks, GUI insertion,
 rendering, input, files, hosts, other mods, delivery, and how each of our mods

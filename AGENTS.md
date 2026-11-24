@@ -20,8 +20,8 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 - **Baselines.** Switch: unmodified Forge 2.0.0 (Fexty's fork of Jeffi's
   Forge) at `tools/forge-local/`, commit `fd03ecb4c4ad16a02edb508c5a9b7731b84008d3`.
   Rust: forge-rs 2.0.0 at `tools/forge-rs/`, commit
-  `112e0e032ad72db992870989384aba65331978c2`. Mods not yet moved still vendor
-  forge-rs 1.5.0 and target Forge 1.5.1 (each mod's `dependencies.lock.json`). PC: [MHGURecomp](https://github.com/morerokk/MHGURecomp)
+  `112e0e032ad72db992870989384aba65331978c2`. Every mod still vendors
+  forge-rs 1.5.0 and targets Forge 1.5.1 (each mod's `dependencies.lock.json`). PC: [MHGURecomp](https://github.com/morerokk/MHGURecomp)
   loads the same Switch Forge NROs, so there are no separate PC builds. Both
   baselines are submodules; update them from their official remotes. History
   was rewritten on 2026-11-11 (vendor trees, retired mods, `backups/`, personal

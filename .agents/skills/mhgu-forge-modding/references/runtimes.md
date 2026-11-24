@@ -19,7 +19,7 @@ Switch, so findings for those two come from source and user reports only. Say so
 1. **Instructions.** Run the build's instruction gates (`verify.py`). Ryubing
    1.3.3 cannot run QADD/QSUB (`saturating_add`/`saturating_sub` emit them).
    MHGURecomp's interpreter aborts on NEON three-register-different forms other
-   than VMULL/VMLAL (`VADDW` comes from widened compares). Fixes are in
+   than VMULL/VMLAL/VMLSL (`VADDW` comes from widened compares). Fixes are in
    [Diagnostics](diagnostics.md).
 2. **SVCs.** MHGURecomp's kernel ends the process on an unimplemented svc: no
    CreateCodeMemory/ControlCodeMemory (0x4B, 0x4C), no
@@ -87,7 +87,7 @@ When input updates and where an edge is valid: [Input and keybinds](input-and-ke
 
 Other people's plugins differ by host too. KatLib and UIScale load on
 MHGURecomp but fail on Eden with `0x00000616` beside BetterBox, because all
-three ship an all-zero build ID. MHGU Definitive Edition (2.0.0 and 3.0.0) is an IPS plus a
+three ship an all-zero build ID. MHGU Definitive Edition 3.0.0 is an IPS plus a
 `subsdk1`; its words inside your windows are listed per mod (Village Quests in
 Hub, WishFinder). Load order rules per host are in
 [Hooks and lifetimes](hooks-and-lifetimes.md).
@@ -110,6 +110,6 @@ Hub, WishFinder). Load order rules per host are in
 
 Sources: `tools/forge-local/source/forge/{input.cpp,graphics.cpp,config.c}`;
 `references/MHGURecomp/{README.md,runtime/forge.c,runtime/forge_imgui.c,runtime/overlay.cpp,runtime/kernel.c}`
-(commit `dafb590`); gu-native source as above; `mods/damage-numbers/DEVELOPMENT.md`,
+(read at `dafb590`; the mirror pool, overlay, kernel and input-view claims rechecked at 0.19.0, `471b3b9`); gu-native source as above; `mods/damage-numbers/DEVELOPMENT.md`,
 `mods/imgui-meter/DEVELOPMENT.md`, `mods/world-sharpness-gauge/DEVELOPMENT.md`,
 `mods/online-roaming/DEVELOPMENT.md`, `mods/please-do-better/DEVELOPMENT.md`.

@@ -48,11 +48,11 @@ the game this way:
    limit), so the closing press does not reach the game.
 4. End the block if no frame renders for a while (60 pad updates), so a hidden
    window cannot lock the game.
-5. On MHGURecomp 0.17 with game actions on (`[Actions] Enable=1`, its default),
+5. On MHGURecomp 0.17 and later with game actions on (`[Actions] Enable=1`, its default),
    the records are not enough: its outer hooks on the view translators
    `0x3de4b0`/`0x3de4f8` replace their answer with its own bindings' buttons, and
    it writes town actions into the menu view around the town avatar's controls
-   `0x792728` (`runtime/hle/input_view.c`, 0.17.5/0.17.6 source). Also empty both
+   `0x792728` (`runtime/hle/input_view.c`). Also empty both
    views after `sFestaPad::move` `0x3ddf1c` (cur and pressed 0, released = prev,
    repeats +0x6c34/+0x6c3c 0) and the menu view's words during `0x792728`. Its
    outer layer runs before every plugin hook, so a plugin hook sees what it
@@ -62,7 +62,7 @@ On MHGURecomp, while Forge's own menu is open the game gets no controller input
 at all; on Switch and the emulators it still does. Ignore your hotkeys while
 `isMenuVisible()` is true.
 
-On MHGURecomp (0.16.1, `runtime/overlay.cpp`: `g_open = open || g_settings_open`,
+On MHGURecomp (`runtime/overlay.cpp`: `g_open = open || g_settings_open`,
 then `if (!g_open) pad = {}`), ImGui gets no controller input while its overlay
 (its settings or the Forge menu) is closed; real Forge feeds ImGui's gamepad
 navigation every frame (`imgui_impl_nvn.cpp`, `UpdateGamepadNav`). Its
@@ -134,7 +134,7 @@ fails there. A way to import them optionally has not been researched.
 
 Sources: `tools/forge-local/source/forge/{input.cpp,graphics.cpp,config.c}`,
 `graphics/imgui_impl_nvn.cpp:753`; `tools/forge-rs/forge/src/{input.rs,graphics.rs}`;
-`references/MHGURecomp/runtime/forge.c` (commit `dafb590`);
+`references/MHGURecomp/runtime/forge.c` (rechecked at `471b3b9`);
 WishFinder [welcome window](worked/wishfinder-welcome.md), [button guide](worked/wishfinder-guide.md),
 `mods/village-quests-in-hub/{DEVELOPMENT.md,src/lib.rs}`,
 `mods/wishfinder-katsmithy-bridge/DEVELOPMENT.md` (retired; in Git at `2888d72`).

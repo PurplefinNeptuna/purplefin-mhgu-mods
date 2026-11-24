@@ -21,25 +21,7 @@ version named here is the one read; another build can differ.
 
 ## Definitive Edition
 
-Read at 2.0.0 unless marked; versions, quests and stand-ins are in [Definitive Edition](definitive-edition.md).
-
-An IPS patch for main (`FB08F1D20FD1204FE7070672777F869B.ips`, 252 records)
-plus its own `subsdk1` (loaded at main+`0x2715000`; main image `0x2147000`,
-then subsdk0 `0x5ce000`). Source: `github.com/Scrimas/MHGU-Definitive-Edition`.
-
-| Site | DE's word | Effect on us |
-| --- | --- | --- |
-| `0x3b7de8` (quest list job loop) and `0x3b2194` (in quest script query `0x3b2174`) | `e28ff790` (`add pc, pc, #0x2400000`) | Village Quests in Hub accepts that exact word there (`core::install::DEFINITIVE_EDITION`) |
-| `0xb80fd0` (atlas lookup) | `e28ff771` (`add pc, pc, #0x1c40000`), to subsdk1 +0xabfd8 -> wrapper +0x2b6c -> +0xb610, which claims only ids with top 24 bits `0x4d4800` | WishFinder calls the lookup (ids 9 and 21) and still gets the game's record; it checks the record's id, size and texture word |
-| `0x3a3874` (capture and break record, subsdk1 +0x72bc) | Serves its own monsters from `mhgu_de/*.bin` | See `mhgu-understanding` quest files |
-| Its `0x3a3874` lookup (subsdk1 +0x72bc; module text size 0xf20bc, rodata 0xf3000, data 0x103000) | Checks sections <= 18, records <= 106, builds a 468-byte cBui cached per package (mHagiLv + 1 at 0x1913f4, records at 0x18ffd8), returns 0 with neither chunk (`work/wishfinder/DEFINITIVE_EDITION.md`) | |
-| File hook (subsdk1 +0x5e44) | Serves only its own `FILE` chunk ids, 0 below `0x10700` | |
-
-It appends 223 weapon process steps and 140 armor pieces to the loaded tables
-(17061 rows in WishFinder's table), raises rItemData to 3055 records, adds 39
-quests with stand-in bosses and three stages, and ships no `result.arc`. Read
-tables from the loaded game or the layered RomFS, never from base-game counts.
-Source: [WishFinder and other mods](worked/wishfinder-other-mods.md), [its tables](worked/wishfinder-tables.md), [Village Quests in Hub](worked/small-hooks.md).
+Version 3.0.0 patches main through an IPS and adds its own `subsdk1`, quests, maps and items. Every patched site and its effect on our mods: [Definitive Edition](definitive-edition.md).
 
 ## KatLib, KatSmithy and UIScale
 
@@ -67,9 +49,7 @@ No released source; read from their NROs, inis, logs and our runs.
   - Unguarded sites built as immediates: `0x3de4f8` (nav), `0x6f7220` (upgrade
     screen driver), `0xbc0e98` (preview viewport), `0x86d34c` (pad poll),
     `0x6f2c90` (category setter), `0x70301c` (the upgrade, called directly from its tree
-    with the window still in the Forge list's state 3, so the screen does not describe the upgrade). Its earlier
-    `smithyrise.nro` also hooked `0x86e1b4`, `0x86d588`, `0x86d7b4`, `0x86dc98`,
-    `0x1c33c`, `0x1c358`, `0xa3da50`, `0xa37988` and `0xa4f420`.
+    with the window still in the Forge list's state 3, so the screen does not describe the upgrade). Its hook set has changed between builds.
   - Its ini (`katsmithy.ini` in the save folder) keeps `nav_direct`,
     `upgrade_direct`, `hide_locked`, `owned_icons`, `rotstick = 1` (right
     stick axis rotates the preview; the click is free).
@@ -97,7 +77,7 @@ Layout and the update procedure: [the bridge](worked/mwt-bridge.md),
 
 | Mod | What to know | Source |
 | --- | --- | --- |
-| MHGU DPS Meter v1.2.0 | Holds Damage Numbers' hook 0 and 1 constants and window `0x276278`; chains over existing branches after the first update, so it stacks on ours without meeting our load check | `mods/damage-numbers/DEVELOPMENT.md` |
+| MHGU DPS Meter v1.3.1 | Chains over existing branches at Damage Numbers' hooks 0 and 1 (`0x170968`, `0x9d6f8`; Eden log), so it stacks on ours without meeting our load check | `mods/damage-numbers/DEVELOPMENT.md` |
 | Pixel Cheats "Hunter Speed x5" | Writes `sFestaUnit` (`0x2126f48`) +0x58 -> +0x14b0, the same local-hunter chain Lock-on Target uses | `mods/lock-on-target/DEVELOPMENT.md` |
 | Eden cheat engine | Writes 12 times a second (`CHEAT_ENGINE_NS = 1000000000 / 12`), so a cheat that relies on a value running out between writes works on Eden and not on MHGURecomp, which writes every frame | As above |
 | HD Project | Replaces atlases (not `HD_cmn_icon_GSM_NOMIP`) and `common_eng.arc`; Eden takes the alphabetically first of two replacements, so never ship a competing ARC: insert natively instead. Merge order Base -> HD Project -> Z_Balanced -> others | `mods/key-quest-markers/DEVELOPMENT.md`, `mods/modern-weapon-controls/DEVELOPMENT.md`, `mods/hd-project/README.md` |
@@ -135,4 +115,4 @@ its tree level in none, because that mod rewrites the displayed rows and the lev
 
 Resource priority is Base -> HD Project -> Z_Balanced -> others. Later changed resources win whole; unchanged resources retain lower improvements. Same-path ARC conflicts need internal resource merging, not choosing one archive wholesale. Preserve language/controller/icon selections, matching font/texture pairs, and base companions. Choose one FPS/FOV variant. V4 donors are retired.
 
-The HD cleanup's 7,931-file reproduction and 407-resource comparisons are static/deployment evidence from that operation. They do not establish current activation or every visual improvement. Historical paths to retired loader reports are not present-day baseline instructions. Read actual ownership/manifests before touching shared resources.
+The HD cleanup's 7,931-file reproduction and 407-resource comparisons are static/deployment evidence from that operation. They do not establish current activation or every visual improvement. Read actual ownership/manifests before touching shared resources.

@@ -1,6 +1,6 @@
 # Local state
 
-Baseline: stock Switch Forge 2.0.0 and forge-rs 2.0.0 (mods not yet moved: 1.5.1 and 1.5.0), branch `main`. MHGURecomp
+Baseline: stock Switch Forge 2.0.0 and forge-rs 2.0.0 (every mod still builds on 1.5.1 and 1.5.0), branch `main`. MHGURecomp
 loads the Switch NROs. This file lists workspace builds, not emulator activation.
 
 Each mod's `DISTRIBUTION.json` is authoritative for status; `EVIDENCE.json` holds
@@ -23,7 +23,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Purple-lib Tester | r14 | DEVELOPMENT, not for distribution | Not run (8 extra sets); r13 on MHGU Recomp with Purple-lib r20 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Skin Loader | r18 | READY_TO_DISTRIBUTE, release, with a `-fast` package | MHGU Recomp (full); r16 on Eden too; fast not run since r14 |
-| Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
+| Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition 2.0.0; inactive beside 3.0.0 |
 | WishFinder (was Wishlist) | r143 | DEVELOPMENT, candidate | Not run; r135 the release; r134 accepted on Eden with MHGU Definitive Edition 3.0.0. Needs Key Quest Markers r20+ |
 | WishFinder bridge for My Weapon Tree | r11 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.67 and WishFinder r83 |
 | World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
@@ -67,7 +67,7 @@ and installation paths". This table holds the rest.
 | Sealed 1.4.0 update (v262144) | `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` |
 | Keys for the XCI/NSP | `/mnt/storage2/ROM/Switch/keys+firmware/` |
 | Copied native inputs (1.4.0 code) | `work/shared/game-exefs/` |
-| Official Forge packages | `work/shared/forge-2.0.0/`, `work/shared/forge-1.5.1/` (mods not yet moved) |
+| Official Forge packages | `work/shared/forge-2.0.0/`, `work/shared/forge-1.5.1/` (what the mods build on) |
 | Ghidra and saved DTI | `work/research-tooling/` |
 
 Library target: game 1.4.0, cheat build FB08F1D20FD1204F, NSO
