@@ -38,7 +38,7 @@ Replaces weapon crafting, upgrades and armor crafting. It hooks the smithy updat
 | Mod | What to know | Source |
 | --- | --- | --- |
 | MHGU DPS Meter v1.3.1 | Chains over existing branches at Damage Numbers' hooks 0 and 1 (`0x170968`, `0x9d6f8`; Eden log), so it stacks on ours without meeting our load check | `mods/damage-numbers/DEVELOPMENT.md` |
-| Pixel Cheats "Hunter Speed x5" | Writes `sFestaUnit` (`0x2126f48`) +0x58 -> +0x14b0, the same local-hunter chain Lock-on Target uses | `mods/lock-on-target/DEVELOPMENT.md` |
+| Pixel Cheats "Hunter Speed x5" | Writes `sFestaUnit` (`0x2126f48`) +0x58 -> +0x14b0, the local-hunter chain (`input-and-actions.md`, Target camera tap) | `.agents/skills/mhgu-understanding/references/input-and-actions.md` |
 | Eden cheat engine | Writes 12 times a second (`CHEAT_ENGINE_NS = 1000000000 / 12`), so a cheat that relies on a value running out between writes works on Eden and not on MHGURecomp, which writes every frame | As above |
 | HD Project | Replaces atlases (not `HD_cmn_icon_GSM_NOMIP`) and `common_eng.arc`; Eden takes the alphabetically first of two replacements, so never ship a competing ARC: insert natively instead. Merge order Base -> HD Project -> Z_Balanced -> others | `mods/key-quest-markers/DEVELOPMENT.md`, `mods/modern-weapon-controls/DEVELOPMENT.md`, `mods/hd-project/README.md` |
 | Modern Weapon Controls (ours) | Ships a double-size `HD_cmn_icon_GSM_NOMIP` (1024x2048), so read atlas sizes from the header | `mods/wishfinder/DEVELOPMENT.md` |

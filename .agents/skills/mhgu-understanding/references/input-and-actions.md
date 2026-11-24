@@ -41,7 +41,13 @@ The local hunter is also reachable as `sFestaUnit` (cell `0x2126f48`) +0x58. Tap
 
 It reads held/pressed +0x13f4/+0x13f8 (masked with `0x65f8ec()`), hold time f32 +0x1450, and a tap window f32 +0x145c in frames. A press with the window closed sets 12.0 (`movt #0x4140`). `0x53aa84(hunter, &timer, 1.0)` counts it down by frame time (`timer -= hunter[+0x1c] * step`, 1/60 s units).
 
-It sets bits 0, 24 (unless session +0x6f == 1) and 6 of the request bitset +0x1434 (`0x285ea0` set, `0x285ec4` clear, `0x285ee8` test). The window is cleared at `0x27e9f4`, `0x27ea04`, `0x27eaf0`, and every frame when `0x18e50([0x184d750])` != 1 (meaning unread). Bits 0 and 24 clear at `0x2a7dd8`/`0x2a7de4` when `0x2e0b10(hunter)` == 1; bit 6 in `0x27eccc`.
+It sets bits 0, 24 (unless session +0x6f == 1) and 6 of the request bitset +0x1434 (`0x285ea0` set, `0x285ec4` clear, `0x285ee8` test). The window is cleared at `0x27e9f4`, `0x27ea04`, `0x27eaf0`, and every frame when `0x18e50([0x184d750])` != 1 (gate below). Bits 0 and 24 clear at `0x2a7dd8`/`0x2a7de4` when `0x2e0b10(hunter)` == 1; bit 6 in `0x27eccc`.
+
+When the window runs out with no press, the countdown path raises bit 0 and then bit 24 unless session +0x6f == 1 (`0x27eb2c` to `0x27eb48`). A press inside the open window raises the same pair (`0x27eacc` to `0x27eaec`).
+
+Camera gates: cell `0x184d750` holds sFestaCamera (GOT slot `0x1838d90`). `0x18e50(cam)` and `0x18ffc(cam)` both require that `[cam+0x54]`, the current camera, has DTI `0x184d8b8` or derives from it. `0x18ffc` then returns `0x29a58(current)`, else 0. `0x18e50` also needs `0x29868(current)` != 0 and a non-zero `0x29a58(current)` object.
+
+That object must pass vfunc +0x3f4 == 0, byte +0x1054 == byte +0x49 of the object in cell `0x188ca48`, and byte +0x75c0 != 0. It then returns that object's vfunc +0x3c4. So inside the tap logic, past `0x27e990`, `0x18ffc` is never 0 (read from the code, not run).
 
 ## Native processing order
 

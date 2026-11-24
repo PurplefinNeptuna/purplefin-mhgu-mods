@@ -153,7 +153,7 @@ Each mod's pages live in its own `docs/worked/`, because a mod's repo stays priv
 | Damage Numbers | [Capture](../../../mods/damage-numbers/docs/worked/damage-capture.md), [crop, projection, assets](../../../mods/damage-numbers/docs/worked/damage-view.md), [Mod Options and preview](../../../mods/damage-numbers/docs/worked/mod-options.md), [GE audit](../../../mods/damage-numbers/docs/worked/ge-audit.md) |
 | ImGui Meter | [Counting a plugin's ImGui calls](../../../mods/imgui-meter/docs/worked/imgui-meter.md) |
 | Key Quest Markers | [Classification and badges](../../../mods/key-quest-markers/docs/worked/quest-badges.md) |
-| Lock-on Target | [Hook](../../../mods/lock-on-target/docs/worked/hook.md) |
+| Lock-on Target | [Patches](../../../mods/lock-on-target/docs/worked/patches.md) |
 | Shared Urgent Quests | [Design and hooks](../../../mods/shared-urgent-quests/docs/worked/hooks.md) |
 | Modern Weapon Controls | [Remap and hooks](../../../mods/modern-weapon-controls/docs/worked/weapon-controls.md), [bowgun reload](../../../mods/modern-weapon-controls/docs/worked/bowgun-reload.md) |
 | Multiplayer Roaming | [Design and hooks](../../../mods/online-roaming/docs/worked/multiplayer-roaming.md) |
