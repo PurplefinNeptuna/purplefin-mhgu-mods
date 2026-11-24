@@ -73,7 +73,7 @@ def scaffold(path,name,kind):
   for n in helpers:
    shutil.copy2(source/'scripts'/n,path/'scripts'/n)
   (path/'LICENSE').write_text((ROOT/'scripts/standalone-license.txt').read_text().format(name=name))
-  (path/'THIRD_PARTY.md').write_text('Owned code uses MIT. Vendored dependencies retain their included license notices. The plugin scaffold uses the project-owned ARM32 startup and linker scaffold; libnx-derived SVC code is not included.\n')
+  (path/'THIRD_PARTY.md').write_text('The author keeps all rights to owned code. Vendored dependencies retain their included license notices. The plugin scaffold uses the project-owned ARM32 startup and linker scaffold; libnx-derived SVC code is not included.\n')
   cfg={'schema_version':1,'mod':name,'kind':kind,'version':'r1','compiler_image':json.loads((source/'mod.json').read_text())['compiler_image']}
   (path/'mod.json').write_text(json.dumps(cfg,indent=2)+'\n')
   (path/'DISTRIBUTION.json').write_text(json.dumps({'schema_version':1,'mod':name,'status':'DEVELOPMENT','reason':'New mod; distribution approval and verified package are not recorded.','publication':{'published':False,'url':None,'date':None}},indent=2)+'\n')
