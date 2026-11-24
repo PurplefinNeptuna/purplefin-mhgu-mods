@@ -279,3 +279,16 @@ disclosures and complete legal notices in their respective records/sections.
 The source README, adjacent release README, archived README and both HTML
 descriptions must agree. Refresh them through the distribution packager and
 run its full check. Preserve runtime bytes and back up the previous delivery.
+
+### GitHub release notes
+
+A published mod's GitHub release is tagged with the version (`rN`) on the mod-repo commit its ZIP
+was packaged from, and attaches the release ZIP and `NOTICES.txt`. Its notes hold only:
+
+- A later release: the changelog since the previous published release, one short line per change
+  a player notices, in players' terms.
+- A mod's first release: two or three sentences on what the mod does, and its requirements.
+
+Leave out everything else: install steps, credits, license, test scope, checksums and history.
+The notes go through the full Humanizer process like any player-facing text, and the user sees
+the final text before the release is created.
