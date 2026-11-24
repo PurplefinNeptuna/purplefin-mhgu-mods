@@ -292,3 +292,12 @@ was packaged from, and attaches the release ZIP and `NOTICES.txt`. Its notes hol
 Leave out everything else: install steps, credits, license, test scope, checksums and history.
 The notes go through the full Humanizer process like any player-facing text, and the user sees
 the final text before the release is created.
+
+### Publishing a mod repo
+
+Before a mod repo (or the main repo) becomes public, scan its whole history and read the full
+result: every commit address must be the noreply one, and no file in any commit may hold a
+personal address, a home path, ROM file names or release-site tags, decompiled code, a large or
+binary blob, or third-party material such as cheat lines (any code type), a copied cheat or wiki
+file, or those words inside code. Never truncate the scan's output; list every matching file and
+read it. Make the repo public only afterwards, as its own step, once the result is clean.
