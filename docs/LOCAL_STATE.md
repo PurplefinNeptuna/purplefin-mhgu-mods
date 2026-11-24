@@ -63,8 +63,8 @@ and installation paths". This table holds the rest.
 
 | Purpose | Path |
 | --- | --- |
-| Sealed base game (v0) | `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` |
-| Sealed 1.4.0 update (v262144) | `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` |
+| Sealed base game (v0) | `/mnt/storage2/ROM/Switch/Game/`, the XCI with title ID `0100770008DD8000` and `[v0]` |
+| Sealed 1.4.0 update (v262144) | `/mnt/storage2/ROM/Switch/Update+DLC/`, the NSP with title ID `0100770008DD8800` and `[v262144]` |
 | Keys for the XCI/NSP | `/mnt/storage2/ROM/Switch/keys+firmware/` |
 | Copied native inputs (1.4.0 code; its `forge` is Forge 2.0.0's `subsdk9`) | `work/shared/game-exefs/` |
 | Build inputs for mods on Forge 1.5.1 (`main`, `sdk`, `forge` as each `dependencies.lock.json` pins; each mod's `build.local.json` `inputs` points here or at its own `work/NAME/inputs/`) | `work/shared/forge-1.5.1/inputs/` |

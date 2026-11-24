@@ -1,44 +1,57 @@
 # MHGU modding
 
-Monster Hunter Generations Ultimate 1.4.0 for Switch (Eden/Ryujinx), built on
-Forge **2.0.0** (mods not yet moved still target 1.5.1). On PC, [MHGURecomp](https://github.com/morerokk/MHGURecomp)
-loads the same Forge NROs.
+Mods and modding tools for Monster Hunter Generations Ultimate 1.4.0 on Switch, run on the Eden
+and Ryujinx emulators. The mods are [Forge](https://github.com/Fexty12573/forge) plugins, built
+against Forge 1.5.1. On PC, [MHGURecomp](https://github.com/morerokk/MHGURecomp) loads the same
+plugins.
 
-| Mod | Release | Guide |
-| --- | --- | --- |
-| Damage Numbers | r48 | [Install](mods/damage-numbers/README.md) |
-| Key Quest Markers | r23 | [Install](mods/key-quest-markers/README.md) |
-| Lock-on Target | r2 | [Install](mods/lock-on-target/README.md) |
-| Modern Weapon Controls | r15 | [Install](mods/modern-weapon-controls/README.md) |
-| Multiplayer Roaming | r16 | [Install](mods/online-roaming/README.md) |
-| Please do Better | r37 | [Install](mods/please-do-better/README.md) |
-| Purple-lib | r22 | [Install](mods/purple-lib/README.md) |
-| Shared Urgent Quests | r2 | [Install](mods/shared-urgent-quests/README.md) |
-| Skin Loader | r18 | [Install](mods/skin-loader/README.md) |
-| Village Quests in Hub | r6 | [Install](mods/village-quests-in-hub/README.md) |
-| WishFinder | r135 | [Install](mods/wishfinder/README.md) |
-| WishFinder bridge for My Weapon Tree | r11 | [Install](mods/wishfinder-mwt-bridge/README.md) |
-| World Sharpness Gauge | r70 | [Install](mods/world-sharpness-gauge/README.md) |
+## The mods
 
-Each mod's DISTRIBUTION.json controls delivery status and hashes. Current
-candidates and acceptance scope are summarised in
-[docs/LOCAL_STATE.md](docs/LOCAL_STATE.md). HD Project, wiki cheats and DTI
-extraction support are local integrations, kept outside Git.
+Each mod lives in its own repository under `mods/`. Their source isn't public yet, so those
+folders stay empty in a clone until a mod's repository is published.
 
-- [Instructions](AGENTS.md), [local paths/state](docs/LOCAL_STATE.md)
-- [Development and distribution](docs/DEVELOPMENT.md)
-- [Tools and references](docs/TOOLS.md)
+| Mod | What it does |
+| --- | --- |
+| Damage Numbers | Shows damage numbers at each impact, with physical and elemental damage combined, in Wilds, Rise or Classic style. |
+| Key Quest Markers | Adds Rise-style badges to key and urgent quests, coloured by whether you still need them to progress. |
+| Lock-on Target | Keeps the target camera locked on the monster the game targets, instead of letting go after one press. |
+| Modern Weapon Controls | Moves weapon actions from R to ZR and keeps R for sprinting while sheathed. |
+| Multiplayer Roaming | Lets you visit the villages, the bedrooms, the Palico ranch and the Soaratorium during an online session without leaving it. |
+| Please do Better | Gives reward slots granted by Luck a white frame. It can also force Miraculous Luck and multiply item quantities. |
+| Purple-lib | Lets other mods put their settings in the game's Options window and add topics to its help screens. It changes nothing by itself. |
+| Shared Urgent Quests | Lets you clear a Hub urgent quest by joining someone else's session. |
+| Skin Loader | Puts an installed skin on the armor your hunter wears. Only the look changes. |
+| Village Quests in Hub | Lets you post Village quests from the Hub or the Hunters' Pub, so other hunters can join. |
+| WishFinder | Keeps a wishlist from the smithy, adds up the materials, and pins the quests that give what you're short of. |
+| WishFinder bridge for My Weapon Tree | Copies My Weapon Tree's wish list into WishFinder. |
+| World Sharpness Gauge | Turns the sharpness bar into a gauge like the one in Monster Hunter: World. |
 
-Clone with `git clone --recursive` for the Forge and forge-rs baselines, then
-run `scripts/install_hooks.sh`. Each mod is its own repository under `mods/`. A
-mod that isn't published yet stays an empty folder, so its guide link above
-won't open. Use
-mod-local build.sh commands; a Rust mod runs `./build.sh fetch` once to download
-its pinned dependencies. Inspect all deliveries with
-`python3 scripts/mod_distribution.py check`. Builds and packaging do not install,
-activate or publish. Superseded source remains in Git. Each mod's last gameplay-accepted build stays
-under build/, and backups/ is an optional local archive. Update upstream
-repositories in place.
+## What's here
 
-The scripts, docs and skills here are under the MIT License ([LICENSE](LICENSE)).
-Each mod has its own license in its folder.
+- `scripts/`: the toolbox (`scripts/tool.sh`), research tools for the game's code, and the checks
+  the mods are built and packaged with.
+- `.agents/skills/`: notes for coding agents. `mhgu-understanding` covers how the game works
+  (code, resources, menus) and `mhgu-forge-modding` covers writing Forge plugins.
+- `templates/standalone/`: the scaffold a new mod starts from.
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) has the development rules,
+  [docs/TOOLS.md](docs/TOOLS.md) the tool setup, and [AGENTS.md](AGENTS.md) the instructions
+  agents work by.
+
+## Getting started
+
+Clone with submodules to get the Forge and forge-rs baselines, then turn on the commit hooks:
+
+```sh
+git clone --recursive https://github.com/PurplefinNeptuna/purplefin-mhgu-mods.git
+cd purplefin-mhgu-mods
+scripts/install_hooks.sh
+```
+
+Each mod builds with its own `./build.sh`; run `./build.sh fetch` once to download its pinned
+dependencies. `python3 scripts/mod_distribution.py check` checks every mod's records and packages.
+Building and packaging never install or publish anything.
+
+## License
+
+The scripts, docs and skills here are under the MIT License ([LICENSE](LICENSE)). Each mod has
+its own license in its folder.
