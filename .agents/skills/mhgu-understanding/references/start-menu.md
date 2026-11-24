@@ -66,14 +66,22 @@ The page that owns a list writes each row through `cUIObject` setters (text `0x5
 
 ## Page cursor
 
-The game's list and page cursor (36 bytes, set up by `0x54ed74`; read in `0x54edec`, `0x54ee34`, `0x54ee98`): `+0xd`
-row (u8), `+0xe` rows per page, `+0x10` page (u16), `+0x12` pages (u16), `+0x14` rows (u16), `+0x18` row mode, `+0x1c`
-page mode, `+0x20` set to 1 by each setter (inference: a changed flag). `0x54edec(c, rows, row mode, keep)` sets rows and rows per page and, with `keep` 1, clamps the
-row to the new count (else row 0). `0x54ee34(c, n, page mode)` sets the row count and the page count and sets the page
-to 0. `0x54ee98(c, pad)` moves it and wraps through the cursor's own getter (vtable `+0x2c`), so a count written by
-these setters is the one L/R and the D-pad walk. `0x54ecc0(c, page)` sets the page. Screens that page with L/R keep the
-page as the row of a one-row-per-page cursor (quest detail panels) or as its page (Quest Info, read through the
-cursor's virtual `+0x24`). Owners in [Quest detail pages: counter, quest board, Quest Info](quest-detail-pages.md#quest-detail-pages-counter-quest-board-quest-info).
+The game's list and page cursor (36 bytes, set up by `0x54ed74`; read in `0x54edec`, `0x54ee34`, `0x54ee98`):
+
+| Offset | Field |
+| --- | --- |
+| `+0xd` | row (u8) |
+| `+0xe` | rows per page |
+| `+0x10` | page (u16) |
+| `+0x12` | pages (u16) |
+| `+0x14` | rows (u16) |
+| `+0x18` | row mode |
+| `+0x1c` | page mode |
+| `+0x20` | set to 1 by each setter (inference: a changed flag) |
+
+`0x54edec(c, rows, row mode, keep)` sets rows and rows per page and, with `keep` 1, clamps the row to the new count (else row 0). `0x54ee34(c, n, page mode)` sets the row count and the page count and sets the page to 0. `0x54ee98(c, pad)` moves it and wraps through the cursor's own getter (vtable `+0x2c`), so a count written by these setters is the one L/R and the D-pad walk.
+
+`0x54ecc0(c, page)` sets the page. Screens that page with L/R keep the page as the row of a one-row-per-page cursor (quest detail panels) or as its page (Quest Info, read through the cursor's virtual `+0x24`). Owners in [Quest detail pages: counter, quest board, Quest Info](quest-detail-pages.md#quest-detail-pages-counter-quest-board-quest-info).
 
 ## In town or in a quest
 

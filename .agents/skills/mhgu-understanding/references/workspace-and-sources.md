@@ -4,11 +4,7 @@ The source workspace is `/mnt/storage2/Programs/MHGU_Modding`. All other source 
 
 ## Local inputs
 
-Machine paths (RomFS, library, logs) are in the
-workspace's root `AGENTS.md`, "Runtime evidence and installation paths"; the
-other local inputs (sealed game files, copied executables, research tooling) are in `docs/LOCAL_STATE.md`. Outside this workspace, supply
-equivalent inputs explicitly; the skill's Markdown stays usable without them.
-Copied executables and research indexes are under `work/shared/game-exefs/` and `work/research-tooling/`; task copies under `work/<task>/`.
+Machine paths (RomFS, library, logs) are in the workspace's root `AGENTS.md`, "Runtime evidence and installation paths"; the other local inputs (sealed game files, copied executables, research tooling) are in `docs/LOCAL_STATE.md`. Outside this workspace, supply equivalent inputs explicitly; the skill's Markdown stays usable without them. Copied executables and research indexes are under `work/shared/game-exefs/` and `work/research-tooling/`; task copies under `work/<task>/`.
 
 What each input holds and when to use it: the Game data section of this skill's SKILL.md.
 

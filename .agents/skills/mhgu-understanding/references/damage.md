@@ -31,48 +31,27 @@ Static research, not run (`work/damage-numbers/siege-weapons-research.md`; main-
 
 ### Shared mechanism
 
-- Shell hit setup main+0x4a2790 (vtable +0x140 on every shell) calls
-  main+0x168e98: hit +0x10 = 2, +0xc/+0x70 = shell, +0x6e = 2, +0x6d = subtype.
-  It then reads the owner character `*(*(shell+0x136c)+0xc)` and its type byte
-  +0x1052: 0 hunter -> +0x6e=0, +0x70=hunter; 2 Palico -> +0x6e=3; 1 monster
-  -> +0x6e=1. Any other type leaves +0x6e=2 and +0x70=shell.
+- Shell hit setup main+0x4a2790 (vtable +0x140 on every shell) calls main+0x168e98: hit +0x10 = 2, +0xc/+0x70 = shell, +0x6e = 2, +0x6d = subtype. It then reads the owner character `*(*(shell+0x136c)+0xc)` and its type byte +0x1052: 0 hunter -> +0x6e=0, +0x70=hunter; 2 Palico -> +0x6e=3; 1 monster -> +0x6e=1. Any other type leaves +0x6e=2 and +0x70=shell.
 - Character constructor main+0x53985c stores its second argument at +0x1052.
 - Shell spawn queue main+0x48c4f0; requests are {vtable, id, flag, owner, ...}.
 
 ### Ballista (proven player-owned)
 
-- Player action main+0x2d9ad8 (uPlayerQuest shared action) uses the gimmick at
-  player+0x32d0 and the loaded ammo item (+0x2520): items 0x6c2 and 0xa4d spawn
-  request 0x1c, item 0x6c3 spawns 0x1d, each with owner = the hunter.
-- Request allocators main+0x4628f8 / 0x4632ec sit in uShellPlcom_008 / _009
-  code; both classes derive from uShellPlcom_BallistaShell (DTI codes 0x8978 /
-  0x8979). Stage setup main+0x4feb40 preloads 0x1c/0x1d for ballista maps.
-- uShellPlcom_008 slot 0x16c (main+0x462da8) calls hit setup with subtype 8.
-  Result: tags (2, 8, 0), hit+0x70 = hunter.
-- Hits use the main handler. uShellPlcom_009 has no hit setup found (it tracks a monster at
-  +0x15a8); it may not deal damage itself.
+- Player action main+0x2d9ad8 (uPlayerQuest shared action) uses the gimmick at player+0x32d0 and the loaded ammo item (+0x2520): items 0x6c2 and 0xa4d spawn request 0x1c, item 0x6c3 spawns 0x1d, each with owner = the hunter.
+- Request allocators main+0x4628f8 / 0x4632ec sit in uShellPlcom_008 / _009 code; both classes derive from uShellPlcom_BallistaShell (DTI codes 0x8978 / 0x8979). Stage setup main+0x4feb40 preloads 0x1c/0x1d for ballista maps.
+- uShellPlcom_008 slot 0x16c (main+0x462da8) calls hit setup with subtype 8. Result: tags (2, 8, 0), hit+0x70 = hunter.
+- Hits use the main handler. uShellPlcom_009 has no hit setup found (it tracks a monster at +0x15a8); it may not deal damage itself.
 
 ### Stage-owned shells (not linked to a player)
 
-- Stage setup main+0x4feb40 allocates uStageShellOwner (0x1370 bytes,
-  constructor main+0x51c440 -> main+0x53985c(obj, 9): type 9) at map+0x314.
-  Map/quest code (main+0x4feb40, 0x4fed98, 0x50362c) queues stage shells
-  0x191, 0x193, 0x195, 0x196, 0x199 with that owner.
-- Type 9 is not handled by main+0x4a2790, so hits keep tags (2, subtype, 2)
-  with +0x70 = the shell. uShellSt002 uses subtype 8 (main+0x492668).
+- Stage setup main+0x4feb40 allocates uStageShellOwner (0x1370 bytes, constructor main+0x51c440 -> main+0x53985c(obj, 9): type 9) at map+0x314. Map/quest code (main+0x4feb40, 0x4fed98, 0x50362c) queues stage shells 0x191, 0x193, 0x195, 0x196, 0x199 with that owner.
+- Type 9 is not handled by main+0x4a2790, so hits keep tags (2, subtype, 2) with +0x70 = the shell. uShellSt002 uses subtype 8 (main+0x492668).
 
 ### Per weapon
 
-- Rail cannon: netShRailCannon is sent by main+0x497040 inside uShellSt006,
-  driven by aMap10/25/26/27 code (main+0x503c7c). Stage shell, stage owner.
-- Cannon: cMediateCannon methods act on the local player; the player request
-  main+0x2aabc4 forwards to a stage-side object (stage manager +0x9c74, virtual
-  +0x20). The player spawns no cannon shell. Firing shell not traced; stage-owned
-  by inference.
+- Rail cannon: netShRailCannon is sent by main+0x497040 inside uShellSt006, driven by aMap10/25/26/27 code (main+0x503c7c). Stage shell, stage owner.
+- Cannon: cMediateCannon methods act on the local player; the player request main+0x2aabc4 forwards to a stage-side object (stage manager +0x9c74, virtual +0x20). The player spawns no cannon shell. Firing shell not traced; stage-owned by inference.
 - Huge cannon: mediator identical in shape to the cannon; not traced further.
-- Dragonator: quest data cQuestPlus mIsGekiryu (+12), mGekiryuStartTime (+14),
-  mGekiryuReuseTime (+16), beside fort HP. Hit path not traced.
+- Dragonator: quest data cQuestPlus mIsGekiryu (+12), mGekiryuStartTime (+14), mGekiryuReuseTime (+16), beside fort HP. Hit path not traced.
 
-Not established: which stage shell id belongs to which weapon, the cannon and
-huge cannon projectile classes, and the Dragonator hit. A one-run log of
-rejected hit tags in a siege quest would settle them.
+Not established: which stage shell id belongs to which weapon, the cannon and huge cannon projectile classes, and the Dragonator hit. A one-run log of rejected hit tags in a siege quest would settle them.

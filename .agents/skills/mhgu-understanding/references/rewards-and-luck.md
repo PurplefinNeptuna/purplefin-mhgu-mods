@@ -36,9 +36,7 @@ Exact instruction sites:
 
 `0x3aeda4` sets `+0x52` to 2 when monster HP falls to `mGekitaiHp`, so 1 and 2 mean repelled. Reward file layouts: [Quest files](quest-files.md).
 
-**Chance per draw.** A reward's chance per draw is its weight over the sum of its frame's live
-weights (weight above 0; an item 0 row counts, since it rolls nothing). It is not the chance of the reward screen: a frame draws once
-per slot it fills (inference from the slot counts above), and the forced first entry ignores its weight.
+**Chance per draw.** A reward's chance per draw is its weight over the sum of its frame's live weights (weight above 0; an item 0 row counts, since it rolls nothing). It is not the chance of the reward screen: a frame draws once per slot it fills (inference from the slot counts above), and the forced first entry ignores its weight.
 
 ## Capture attribution by array/index
 

@@ -1,9 +1,6 @@
 # What a quest gives: rewards, carves, gathering, fishing
 
-Use this to answer "where can the player get item X" from the game's own files.
-Read from all 1,854 quest files of the 1.4.0 RomFS. Paths are
-relative to `nativeNX/`. ARC and other container layouts are in
-[File layouts](file-formats.md#file-layouts).
+Use this to answer "where can the player get item X" from the game's own files. Read from all 1,854 quest files of the 1.4.0 RomFS. Paths are relative to `nativeNX/`. ARC and other container layouts are in [File layouts](file-formats.md#file-layouts).
 
 ## Files and records
 

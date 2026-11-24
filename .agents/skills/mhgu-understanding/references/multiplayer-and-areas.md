@@ -1,9 +1,6 @@
 # Multiplayer sessions, areas and travel
 
-How the game moves a hunter between villages, lobbies and quests, and who it
-shows to whom. Read from the 1.4.0 bytes; [Multiplayer findings](multiplayer-findings.md) has every address and its
-evidence, and this page is the map. Area type values are in
-[Where the quest list comes from](quest-lists.md#where-the-quest-list-comes-from).
+How the game moves a hunter between villages, lobbies and quests, and who it shows to whom. Read from the 1.4.0 bytes; [Multiplayer findings](multiplayer-findings.md) has every address and its evidence, and this page is the map. Area type values are in [Where the quest list comes from](quest-lists.md#where-the-quest-list-comes-from).
 
 ## Summary
 

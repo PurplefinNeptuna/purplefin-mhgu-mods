@@ -2,11 +2,7 @@
 
 This appendix describes `/mnt/storage2/Programs/MHGU_Modding`. All other source pointers in this skill are relative to that root.
 
-Machine paths (RomFS, library, emulator packages and logs, MHGURecomp) are in the
-workspace's root `AGENTS.md`, "Runtime evidence and installation paths"; the
-other local inputs (sealed game files, copied executables, Forge packages,
-research tooling) are in `docs/LOCAL_STATE.md`. Outside this workspace, supply
-equivalent inputs explicitly; the skill's Markdown stays usable without them.
+Machine paths (RomFS, library, emulator packages and logs, MHGURecomp) are in the workspace's root `AGENTS.md`, "Runtime evidence and installation paths"; the other local inputs (sealed game files, copied executables, Forge packages, research tooling) are in `docs/LOCAL_STATE.md`. Outside this workspace, supply equivalent inputs explicitly; the skill's Markdown stays usable without them.
 
 ## Coverage and source authority
 

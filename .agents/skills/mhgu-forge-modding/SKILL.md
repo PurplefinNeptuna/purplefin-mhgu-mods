@@ -5,26 +5,15 @@ description: Develop, change, debug, build, package and release native ARM32 For
 
 # MHGU Forge Modding
 
-Target: MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
-`FB08F1D20FD1204FE7070672777F869B`. Loader: stock Forge 2.0.0 (Fexty's fork),
-forge-rs 2.0.0. Every mod here still builds against forge-rs 1.5.0 and asks for Forge 1.5.1.
+Target: MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID `FB08F1D20FD1204FE7070672777F869B`. Loader: stock Forge 2.0.0 (Fexty's fork), forge-rs 2.0.0. Every mod here still builds against forge-rs 1.5.0 and asks for Forge 1.5.1.
 
-This skill is **how a plugin does things**: builds, hooks, GUI insertion,
-rendering, input, files, hosts, other mods, delivery, and how each of our mods
-works. What the game itself does (offsets, fields, formats, IDs) is in the
-companion `mhgu-understanding` skill, which names no mod. When a fact here needs
-a game detail, it links there instead of copying it. A new game fact goes there;
-its source goes in [Knowledge sources](references/knowledge-sources.md).
+This skill is **how a plugin does things**: builds, hooks, GUI insertion, rendering, input, files, hosts, other mods, delivery, and how each of our mods works. What the game itself does (offsets, fields, formats, IDs) is in the companion `mhgu-understanding` skill, which names no mod. When a fact here needs a game detail, it links there instead of copying it. A new game fact goes there; its source goes in [Knowledge sources](references/knowledge-sources.md).
 
 ## Start here
 
-1. Read the workspace `AGENTS.md`, then `mods/NAME/AGENTS.md`, the top of
-   `mods/NAME/DEVELOPMENT.md` and `mods/NAME/DISTRIBUTION.json` (authoritative status and
-   hashes).
-2. Pick the matching procedure in [Playbooks](references/playbooks.md) and
-   follow it step by step. Each step names the exact command or file.
-3. Open a topic reference below only when a step needs it. Before shipping
-   anything, run the checklist in [Runtimes](references/runtimes.md).
+1. Read the workspace `AGENTS.md`, then `mods/NAME/AGENTS.md`, the top of `mods/NAME/DEVELOPMENT.md` and `mods/NAME/DISTRIBUTION.json` (authoritative status and hashes).
+2. Pick the matching procedure in [Playbooks](references/playbooks.md) and follow it step by step. Each step names the exact command or file.
+3. Open a topic reference below only when a step needs it. Before shipping anything, run the checklist in [Runtimes](references/runtimes.md).
 4. Finish with the playbook's commit steps and report template.
 
 ## Game data
@@ -70,11 +59,7 @@ Where the RomFS, executables, Ghidra project and sealed files are: "Game data" i
 - Write `msr APSR_g` / `APSR_nzcvqg`, hold game pointers after a callback, do file I/O or locking inside a hook, or log every frame.
 - Create `_backup` config files, or restore the retired loader, Better Input, renderer, mutex or PC patches.
 - Call something "working" or "tested" when it was only built or unit-tested.
-- Write run IDs (`r23`), run narratives or refuted approaches in source
-  comments, or tester instructions in README.md. Refuted approaches go in
-  DEVELOPMENT.md's "Do not" list, run results in `EVIDENCE.json`, and tester
-  steps in `TESTING.md`. "Writing project docs" in the workspace `AGENTS.md` has
-  the full rules.
+- Write run IDs (`r23`), run narratives or refuted approaches in source comments, or tester instructions in README.md. Refuted approaches go in DEVELOPMENT.md's "Do not" list, run results in `EVIDENCE.json`, and tester steps in `TESTING.md`. "Writing project docs" in the workspace `AGENTS.md` has the full rules.
 
 ## Stop and ask the user when
 
@@ -180,13 +165,8 @@ Each mod's pages live in its own `docs/worked/`, because a mod's repo stays priv
 | WishFinder bridge for My Weapon Tree | [Layout and update](../../../mods/wishfinder-mwt-bridge/docs/worked/mwt-bridge.md) |
 | World Sharpness Gauge | [Insertion and cut](../../../mods/world-sharpness-gauge/docs/worked/sharpness-gauge.md), [fill per tier](../../../mods/world-sharpness-gauge/docs/worked/sharpness-fill.md) |
 
-For GUI plans, read [GUI insertion](references/gui-insertion.md) before treating
-the quest-row recipe as a solution for another menu.
+For GUI plans, read [GUI insertion](references/gui-insertion.md) before treating the quest-row recipe as a solution for another menu.
 
 ## Portable use
 
-The Markdown references carry the findings. `agents/openai.yaml` is optional UI
-metadata. Commands beginning `./scripts/tool.sh`, `python3 scripts/…` or
-`./build.sh` need this workspace and its prerequisites. Without private
-executables, fixtures or saved analysis, name the missing input and continue
-only with source/host checks. Hardware compatibility remains unconfirmed.
+The Markdown references carry the findings. `agents/openai.yaml` is optional UI metadata. Commands beginning `./scripts/tool.sh`, `python3 scripts/…` or `./build.sh` need this workspace and its prerequisites. Without private executables, fixtures or saved analysis, name the missing input and continue only with source/host checks. Hardware compatibility remains unconfirmed.

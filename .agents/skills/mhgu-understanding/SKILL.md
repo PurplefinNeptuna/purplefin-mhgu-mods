@@ -5,28 +5,19 @@ description: What Monster Hunter Generations Ultimate 1.4.0 (Switch) itself does
 
 # MHGU Understanding
 
-Research MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
-`FB08F1D20FD1204FE7070672777F869B`. Offsets belong to this exact executable,
-not other game versions.
+Research MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID `FB08F1D20FD1204FE7070672777F869B`. Offsets belong to this exact executable, not other game versions.
 
-This skill is **only what the game does**: code, fields, formats, IDs. It names
-no mod. How a plugin uses these facts, what other mods change, how hosts differ
-and which run proved a fact are in the companion `mhgu-forge-modding` skill.
-A new game fact goes here, whichever mod found it. Label it bytes, run or
-inference, and add its source to that skill's `references/knowledge-sources.md`.
+This skill is **only what the game does**: code, fields, formats, IDs. It names no mod. How a plugin uses these facts, what other mods change, how hosts differ and which run proved a fact are in the companion `mhgu-forge-modding` skill. A new game fact goes here, whichever mod found it. Label it bytes, run or inference, and add its source to that skill's `references/knowledge-sources.md`.
 
 ## Start here
 
-1. For any "where/how does the game do X" question, follow the
-   [Research playbook](references/research-playbook.md) step by step.
+1. For any "where/how does the game do X" question, follow the [Research playbook](references/research-playbook.md) step by step.
 2. Check the topic reference below first; the answer may already be verified.
-3. Record each finding with its source, offset kind, type/units, verification
-   and remaining uncertainty.
+3. Record each finding with its source, offset kind, type/units, verification and remaining uncertainty.
 
 ## Game data
 
-These are read-only originals. Copy a file into the scratchpad or `work/NAME/`
-before extracting, unpacking or editing it.
+These are read-only originals. Copy a file into the scratchpad or `work/NAME/` before extracting, unpacking or editing it.
 
 | Location | What it holds | Use it for |
 | --- | --- | --- |
@@ -37,8 +28,7 @@ before extracting, unpacking or editing it.
 | `/mnt/storage2/ROM/Switch/Update+DLC/`, the NSP with title ID `0100770008DD8800` and `[v262144]` | Sealed 1.4.0 update, about 193 MiB (v262144). Mostly a RomFS patch: a binary delta that only works applied onto the base RomFS, not a folder of files. | Rarely needed. Its resource changes are in the dump and its code is in `game-exefs/`. |
 | `/mnt/storage2/ROM/Switch/keys+firmware/` | Keys needed to open the XCI/NSP | Only with the two files above |
 
-Opening the XCI/NSP needs hactool. Only its source is in `tools/hactool-source/`;
-build it and extract into the scratchpad.
+Opening the XCI/NSP needs hactool. Only its source is in `tools/hactool-source/`; build it and extract into the scratchpad.
 
 ## Address conventions
 
@@ -55,28 +45,16 @@ build it and extract into the scratchpad.
 
 ## Rules
 
-- Verify against the copied, hash-checked original NSO (`work/shared/game-exefs/main`).
-  Ghidra text differs from it at one byte, and some imported type layouts are wrong.
+- Verify against the copied, hash-checked original NSO (`work/shared/game-exefs/main`). Ghidra text differs from it at one byte, and some imported type layouts are wrong.
 - Names, wiki fields, decompiler variables and file presence are leads, not proof.
-- An empty search is evidence only once the same tool has found a known positive.
-  A broken cross-reference script once reported "no `bl` site" for every target; `research xref`
-  replaces it. A probe that logs nothing counts the same way: one on `0x4eef00` with no positive
-  control sent a sound investigation the wrong way for about a hundred builds.
+- An empty search is evidence only once the same tool has found a known positive. A broken cross-reference script once reported "no `bl` site" for every target; `research xref` replaces it. A probe that logs nothing counts the same way: one on `0x4eef00` with no positive control sent a sound investigation the wrong way for about a hundred builds.
 - Follow writer, reader, callers and destructor before claiming what a field means or who owns an object.
-- A runtime object and its serialized resource record can have different layouts. Map the offsets
-  through the resource's load (vtable slot 0x2c and its per-record reader): `itemData` is 44 bytes
-  in the file and 56 in memory, so a code offset read on the file gives a wrong field.
-- Do not run DTI extraction, launch the game, edit saves or touch original dumps.
-  Reuse the saved indexes. New runtime evidence needs the user to run something.
+- A runtime object and its serialized resource record can have different layouts. Map the offsets through the resource's load (vtable slot 0x2c and its per-record reader): `itemData` is 44 bytes in the file and 56 in memory, so a code offset read on the file gives a wrong field.
+- Do not run DTI extraction, launch the game, edit saves or touch original dumps. Reuse the saved indexes. New runtime evidence needs the user to run something.
 - Say "inference" when evidence is indirect, and name what would confirm it.
-- MHGU is a last-generation game, and quests are not seamless: a quest map is split into
-  numbered areas, with a loading screen between them. Do not assume what that does to an
-  object; measure each one. The sharpness gauge's HUD row lasts a whole quest. That is
-  inference: its row ends sit beside the game's save commits and testers report area
-  changes and faints with no re-insertion, but no log line marks an area change. Other objects
-  are unmeasured. The cGUIObjRoot destructor slot 0x04 fired in no saved log. `setAnimationId`
-  `0xa38828` destroys a row's controller and map and builds new ones (called from
-  `0x54504c` and `0x5451fc`), and whether that is the path a row's end takes is unread.
+- MHGU is a last-generation game, and quests are not seamless: a quest map is split into numbered areas, with a loading screen between them. Do not assume what that does to an object; measure each one. The sharpness gauge's HUD row lasts a whole quest.
+  - That is inference: its row ends sit beside the game's save commits and testers report area changes and faints with no re-insertion, but no log line marks an area change. Other objects are unmeasured. The cGUIObjRoot destructor slot 0x04 fired in no saved log.
+  - `setAnimationId` `0xa38828` destroys a row's controller and map and builds new ones (called from `0x54504c` and `0x5451fc`), and whether that is the path a row's end takes is unread.
 
 ## Choose a reference
 
@@ -144,14 +122,8 @@ build it and extract into the scratchpad.
 | ARC, GMD and texture layouts, language codes, how the resource manager shares files | [File formats](references/file-formats.md) |
 | Which tools edit a resource, which wiki `.bt` templates fit | [Resource editing](references/resource-editing.md) |
 
-For a GUI question, establish instance-to-animation-to-object ownership and
-distinguish resource IDs from table rows before proposing reuse. File presence,
-suggestive names and setter lookup do not establish unused objects or a working
-rendering mechanism.
+For a GUI question, establish instance-to-animation-to-object ownership and distinguish resource IDs from table rows before proposing reuse. File presence, suggestive names and setter lookup do not establish unused objects or a working rendering mechanism.
 
 ## Portable use
 
-These Markdown files contain the findings without requiring a particular agent
-tool. Workspace commands need the original checkout, tool runtimes and private
-inputs. When inputs are missing, explain what cannot be checked and use the
-documented method with equivalent inputs. Do not invent game bytes.
+These Markdown files contain the findings without requiring a particular agent tool. Workspace commands need the original checkout, tool runtimes and private inputs. When inputs are missing, explain what cannot be checked and use the documented method with equivalent inputs. Do not invent game bytes.

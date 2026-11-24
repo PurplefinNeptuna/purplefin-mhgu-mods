@@ -78,7 +78,7 @@ The level-up itself is `0x70301c` with +0x4a 1: +0x11 raised by one on a copy, b
 
 ## Smithy top menu
 
-`uUIBlackSmith` state 1 (`0x6f1ae8` case 1). Labels: block at window `+0x2d14` (byte style 7 for the top menu, 8..10 for submenus; u16 `+0x2d16` 0 top, 1 submenu), then `{u32 flags, char* text}` rows at `+0x2d18 + row*8`, room for 7 before `+0x2d50`; the open `0x6f0f84` fills four from table 14 (`LbShop_EqMakeMsg`) ids at `0x1630988`: 1, 16, 22, 23.
+`uUIBlackSmith` state 1 (`0x6f1ae8` case 1). Labels: a block at window `+0x2d14` (byte style 7 for the top menu, 8..10 for submenus; u16 `+0x2d16` 0 top, 1 submenu). Then come `{u32 flags, char* text}` rows at `+0x2d18 + row*8`, with room for 7 before `+0x2d50`. The open `0x6f0f84` fills four from table 14 (`LbShop_EqMakeMsg`), ids at `0x1630988`: 1, 16, 22, 23.
 
 `cUIOShopTopPanel` update `0x592ffc` (`shop_top.gui`, `Anm_panel01..07`) shows panels while the index is below the cursor's rows on the page, sets each text through `0x56e808` (plain `char*`) and greys a row with flag bit 1. The cursor is `+0x1f64`; `0x54edec(cursor, rows, mode, keep)` keeps the row (clamped) only with `keep` 1.
 
@@ -92,9 +92,9 @@ The list screen (state 3; `research dis`). The list object (slot 2, `cUIOFacilit
 
 Pane 16 is the kind 2 card (below); its texts 5 and 4 are the "Displaying" label and filter, which `0x58cb8c` sets only when header byte `+0x2d51` has 0x20 (label table 2 id 67). Visibility is `0x56e528(object, pane, shown)`.
 
-The equipment panel (slot 5, `cUIOEquipDetail`) pages with its own cursor at window `+0x1f88` (bound by `0x57e938`): the list handler steps it with the repeat word only when the row cursor's step answers no 0xf0 bit (`0x6f48f0`), then redraws the preview (`0x6f9b18(window, 0)`).
+The equipment panel (slot 5, `cUIOEquipDetail`) pages with its own cursor at window `+0x1f88` (bound by `0x57e938`). The list handler steps it with the repeat word only when the row cursor's step answers no 0xf0 bit (`0x6f48f0`). It then redraws the preview (`0x6f9b18(window, 0)`).
 
-The list fill sizes it (`0x6f57f4`): pages `0x57edac(record, 0, 0x8048)` for the sPlayer (`0x1885b58`) gear entry `0xdf814(0x277454(sPlayer) + 4, 0xdae68(type))`, then `0x54edec(+0x1f88, pages, 5, 0)`; cursor mode 5 reads 0x100/0x200 (L and R), modes 2 and 3 read 0x80/0x20 (stick left and right), table `0x162d0c0`. Mode 7 reads 0x80000/0x20000.
+The list fill sizes it (`0x6f57f4`). It takes pages `0x57edac(record, 0, 0x8048)` for the sPlayer (`0x1885b58`) gear entry `0xdf814(0x277454(sPlayer) + 4, 0xdae68(type))`, then calls `0x54edec(+0x1f88, pages, 5, 0)`. Cursor mode 5 reads 0x100/0x200 (L and R); modes 2 and 3 read 0x80/0x20 (stick left and right), table `0x162d0c0`. Mode 7 reads 0x80000/0x20000.
 
 The preview `0x6f9b18` re-sizes that cursor every time it runs, with mode 5, or 7 while the smithy's +0x3a is set. The call is `0x552988(status, 0, cursor, flags, mode, 1)`: page count `0x57edac` of the shown item, page kept. A screen of its own that keeps L and R writes mode 5 (+0x18) back after it.
 

@@ -1,23 +1,13 @@
 # Other people's mods: what they touch and how to coexist
 
-Players run our plugins beside these. Each entry says what the mod changes,
-where that meets our code, and what to do. Facts come from the named mod's
-files, logs and our runs; each line names its source in our docs. A build ID or
-version named here is the one read; another build can differ.
+Players run our plugins beside these. Each entry says what the mod changes, where that meets our code, and what to do. Facts come from the named mod's files, logs and our runs; each line names its source in our docs. A build ID or version named here is the one read; another build can differ.
 
 ## Rules that hold for all of them
 
-- Never key behaviour off another mod's file name, ini keys, log lines or hook
-  list: they change between builds (KatSmithy's file was renamed once).
-  Detect a plugin by `app:/nativeNX/plugins/NAME.nro` existing, and read its
-  memory only for one pinned build ID ([Plugin bridges](plugin-bridges.md)).
-- Entry hooks that only run before or after the original accept a foreign
-  Forge hook over the first eight bytes ([Hooks and lifetimes](hooks-and-lifetimes.md#chaining-onto-another-plugins-hook)).
-- Read a foreign NRO's `movw`/`movt` constants and immediates to find its
-  candidate hook sites before a run; they are candidates, not proven sites.
-- Some mods install late (first update, or after a delay). A rule as weak as
-  "install at the first update" loses a guarded site to nobody and wins it
-  from them. WishFinder waits for the foreign hook and installs on top.
+- Never key behaviour off another mod's file name, ini keys, log lines or hook list: they change between builds (KatSmithy's file was renamed once). Detect a plugin by `app:/nativeNX/plugins/NAME.nro` existing, and read its memory only for one pinned build ID ([Plugin bridges](plugin-bridges.md)).
+- Entry hooks that only run before or after the original accept a foreign Forge hook over the first eight bytes ([Hooks and lifetimes](hooks-and-lifetimes.md#chaining-onto-another-plugins-hook)).
+- Read a foreign NRO's `movw`/`movt` constants and immediates to find its candidate hook sites before a run; they are candidates, not proven sites.
+- Some mods install late (first update, or after a delay). A rule as weak as "install at the first update" loses a guarded site to nobody and wins it from them. WishFinder waits for the foreign hook and installs on top.
 
 ## Definitive Edition
 
@@ -27,51 +17,21 @@ Version 3.0.0 patches main through an IPS and adds its own `subsdk1`, quests, ma
 
 No released source; read from their NROs, inis, logs and our runs.
 
-- **KatLib** (`katlib.nro`) offers `katlib_register_hook` and a pad filter
-  (`katlib_register_pad_filter`) that can mask the game's menu-pressed word
-  `sFestaPad+0x6bfc`. It keeps a stack of GUI instances being drawn (`0x4138`).
-- **UIScale** edits a sprite in the uploaded matrix block at
-  `*(ctx+4)+0x18bc` after the GUI publishers, keyed per instance (`0x13b8`),
-  so the node's own matrix stays unscaled ([HUD movers](gui-masks-and-movers.md#hud-movers-gu-native-and-uiscale)).
-  A copy node under the same instance gets the same transform.
-- **On Eden** KatLib, UIScale and BetterBox all fail to load with
-  `0x00000616`, because all three NROs have an all-zero build ID. On MHGURecomp
-  they load.
-- **KatSmithy** (`katsmithy.nro`, read at build b4171947…) replaces the
-  smithy's weapon tree and armor lists with its own ImGui drawing (foreground
-  draw list, the game's icons registered as textures), so there are no native
-  rows to decorate there. It exports nothing beyond Forge's entry points, and
-  its state is bss.
-  - Guarded probes, registered through KatLib in its first update: `0x6f1ae8`
-    (`E92D41F0 E24DD018`), `0x6f31d8`, `0x55e4f8`, `0x2831e0`. It refuses a
-    target whose first words differ (its log says `NOT hooked`), so a hook of
-    ours placed first disables its smithy. Install on top of it instead.
-  - Unguarded sites built as immediates: `0x3de4f8` (nav), `0x6f7220` (upgrade
-    screen driver), `0xbc0e98` (preview viewport), `0x86d34c` (pad poll),
-    `0x6f2c90` (category setter), `0x70301c` (the upgrade, called directly from its tree
-    with the window still in the Forge list's state 3, so the screen does not describe the upgrade). Its hook set has changed between builds.
-  - Its ini (`katsmithy.ini` in the save folder) keeps `nav_direct`,
-    `upgrade_direct`, `hide_locked`, `owned_icons`, `rotstick = 1` (right
-    stick axis rotates the preview; the click is free).
-  - It borrows a weapon id for one frame for the preview, so read its node from
-    `forge_onUpdate` and require the same value twice.
-  - Our bridge (now retired: KatSmithy 8f93b and later call WishFinder themselves) read two
-    bss words and hooked its `ImDrawList_AddRectFilled` GOT slot for one pinned build:
-    `mods/wishfinder-katsmithy-bridge/DEVELOPMENT.md` (retired; in Git at `2888d72`);
-    everything read from that build (draw helpers, tree records, armor cells) is
-    in `work/wishfinder-katsmithy-bridge/FINDINGS.md`.
+- **KatLib** (`katlib.nro`) offers `katlib_register_hook` and a pad filter (`katlib_register_pad_filter`) that can mask the game's menu-pressed word `sFestaPad+0x6bfc`. It keeps a stack of GUI instances being drawn (`0x4138`).
+- **UIScale** edits a sprite in the uploaded matrix block at `*(ctx+4)+0x18bc` after the GUI publishers, keyed per instance (`0x13b8`), so the node's own matrix stays unscaled ([HUD movers](gui-masks-and-movers.md#hud-movers-gu-native-and-uiscale)). A copy node under the same instance gets the same transform.
+- **On Eden** KatLib, UIScale and BetterBox all fail to load with `0x00000616`, because all three NROs have an all-zero build ID. On MHGURecomp they load.
+- **KatSmithy** (`katsmithy.nro`, read at build b4171947…) replaces the smithy's weapon tree and armor lists with its own ImGui drawing (foreground draw list, the game's icons registered as textures), so there are no native rows to decorate there. It exports nothing beyond Forge's entry points, and its state is bss.
+  - Guarded probes, registered through KatLib in its first update: `0x6f1ae8` (`E92D41F0 E24DD018`), `0x6f31d8`, `0x55e4f8`, `0x2831e0`. It refuses a target whose first words differ (its log says `NOT hooked`), so a hook of ours placed first disables its smithy. Install on top of it instead.
+  - Unguarded sites built as immediates: `0x3de4f8` (nav), `0x6f7220` (upgrade screen driver), `0xbc0e98` (preview viewport), `0x86d34c` (pad poll), `0x6f2c90` (category setter) and `0x70301c` (the upgrade). It calls the upgrade directly from its tree with the window still in the Forge list's state 3, so the screen does not describe the upgrade. Its hook set has changed between builds.
+  - Its ini (`katsmithy.ini` in the save folder) keeps `nav_direct`, `upgrade_direct`, `hide_locked`, `owned_icons`, `rotstick = 1` (right stick axis rotates the preview; the click is free).
+  - It borrows a weapon id for one frame for the preview, so read its node from `forge_onUpdate` and require the same value twice.
+  - Our bridge read two bss words and hooked its `ImDrawList_AddRectFilled` GOT slot for one pinned build. It is retired, since KatSmithy 8f93b and later call WishFinder themselves; see `mods/wishfinder-katsmithy-bridge/DEVELOPMENT.md` (in Git at `2888d72`). Everything read from that build (draw helpers, tree records, armor cells) is in `work/wishfinder-katsmithy-bridge/FINDINGS.md`.
 
 Source: [WishFinder and other mods](../../../../mods/wishfinder/docs/worked/wishfinder-other-mods.md), [World Sharpness Gauge](../../../../mods/world-sharpness-gauge/docs/worked/sharpness-gauge.md).
 
 ## My Weapon Tree
 
-Replaces weapon crafting, upgrades and armor crafting. It hooks the smithy
-update `0x6f1ae8` in its `forge_onInit`, only if the entry still has its
-original bytes. It leaves smithy state 5 and state 7 with +0x5c below 7 to the
-game. Written in Rust; its wish list, lines, levels and armor pieces live in
-its image at offsets that move per release (0.50, 0.55, 0.59, 0.60 are mapped).
-Layout and the update procedure: [the bridge](../../../../mods/wishfinder-mwt-bridge/docs/worked/mwt-bridge.md),
-`scripts/mwt_layout.py`.
+Replaces weapon crafting, upgrades and armor crafting. It hooks the smithy update `0x6f1ae8` in its `forge_onInit`, only if the entry still has its original bytes. It leaves smithy state 5 and state 7 with +0x5c below 7 to the game. Written in Rust; its wish list, lines, levels and armor pieces live in its image at offsets that move per release (0.50, 0.55, 0.59, 0.60 are mapped). Layout and the update procedure: [the bridge](../../../../mods/wishfinder-mwt-bridge/docs/worked/mwt-bridge.md), `scripts/mwt_layout.py`.
 
 ## Others
 
@@ -87,29 +47,27 @@ Layout and the update procedure: [the bridge](../../../../mods/wishfinder-mwt-br
 
 ## What KatSmithy and My Weapon Tree showed about smithy data
 
-All 700 material groups KatSmithy logged in
-  `work/wishfinder/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's four
-  items exactly, 163 distinct rows (`work/wishfinder-katsmithy-bridge/rise_vs_wcd.py`); in the 2026-11-09 log 22 of
-  the 25 distinct groups equal the matching row of `work/wishfinder/inputs/weaponPath.bin` at the number and level
-  named, 2 equal that number's create row at its own level, and one group is KatSmithy leaving one of four items
-  out (`Clero Blade 1` omits 582x4, which the game's own row carries) —
-  `work/wishfinder-katsmithy-bridge/rise_vs_path.py` reproduces that count. KatSmithy prints only the four items,
-  never the row's pieces. Its `FULL layout type=N` is the weapon table N, not the equip type.
+All 700 material groups KatSmithy logged in `work/wishfinder/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's four items exactly. They are 163 distinct rows (`work/wishfinder-katsmithy-bridge/rise_vs_wcd.py`). The 2026-11-09 log has 25 distinct groups, and `work/wishfinder-katsmithy-bridge/rise_vs_path.py` reproduces this count:
 
-What My Weapon Tree 0.55 reads is built in memory, from that plugin's own code (copied in
-  `mods/wishfinder-mwt-bridge/core/src/lib.rs::level`): a per-class `{ptr, len}` pair of 80-byte level entries with the
-  name `{ptr,len}` at words 0/1, a craft list `{ptr,len}` at 6/7 and an upgrade list `{ptr,len}` at 10/11, whose
-  8-byte elements `{u16 id, u8 kind, u8 0, u32 count}` carry the parent link in `kind`: 0 is an item, 1..15 names the
-  weapon that level comes from, in table `kind - 1`, at `id = number << 8 | level`. That shape is MWT's reader's, not
-  a fact about the RomFS files above.
+- 22 equal the matching row of `work/wishfinder/inputs/weaponPath.bin` at the number and level named.
+- 2 equal that number's create row at its own level.
+- One is KatSmithy leaving one of four items out: `Clero Blade 1` omits 582x4, which the game's own row carries.
 
-**The window names the selected weapon, not its level.** What is reliable across a co-installed weapon-tree mod is
-category (`+0x5c` u16) and number (`+0x5c` high half, repeated at `+0x5e` u16), which the game and the mod agree on;
-the row's `+9` level byte belongs to whatever row the game last built for that slot. Over 30 right-stick presses on
-2026-11-09 the category and number matched KatSmithy's own `5C=`/`5E=` in every one and the row's level byte matched
-its tree level in none, because that mod rewrites the displayed rows and the level field it leaves alone
-(`DIRECT rows(+2) before: 0001 000B 001A … m2 after 6F53E4: 005B 0086 0085 0084 0008 0051 0000 0000 cur=4 page=4
-5E=8`). Untried alternative: the entry array at window `+0x1f80 + index*0x30` (`+0xcc` class, `+0xd0` level).
+KatSmithy prints only the four items, never the row's pieces. Its `FULL layout type=N` is the weapon table N, not the equip type.
+
+What My Weapon Tree 0.55 reads is built in memory, from that plugin's own code (copied in `mods/wishfinder-mwt-bridge/core/src/lib.rs::level`):
+
+- Each class has a `{ptr, len}` pair of 80-byte level entries.
+- An entry holds the name `{ptr,len}` at words 0/1, a craft list `{ptr,len}` at 6/7 and an upgrade list `{ptr,len}` at 10/11.
+- List elements are 8 bytes, `{u16 id, u8 kind, u8 0, u32 count}`, with the parent link in `kind`. 0 is an item; 1..15 names the weapon that level comes from, in table `kind - 1`, at `id = number << 8 | level`.
+
+That shape is MWT's reader's, not a fact about the RomFS files above.
+
+**The window names the selected weapon, not its level.** What is reliable across a co-installed weapon-tree mod is category (`+0x5c` u16) and number (`+0x5c` high half, repeated at `+0x5e` u16). The game and the mod agree on those. The row's `+9` level byte belongs to whatever row the game last built for that slot.
+
+Over 30 right-stick presses on 2026-11-09, the category and number matched KatSmithy's own `5C=`/`5E=` in every one. The row's level byte matched its tree level in none. That mod rewrites the displayed rows and leaves the level field alone (`DIRECT rows(+2) before: 0001 000B 001A … m2 after 6F53E4: 005B 0086 0085 0084 0008 0051 0000 0000 cur=4 page=4 5E=8`).
+
+Untried alternative: the entry array at window `+0x1f80 + index*0x30` (`+0xcc` class, `+0xd0` level).
 
 ## Merge ownership and companions
 

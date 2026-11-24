@@ -14,30 +14,15 @@ WishFinder's Hunter's Notes row opens the game's Item Pouch screen with its own 
 
 ## Add pages to a game's paged panel
 
-WishFinder adds pages after the game's to the quest detail panel (at the receptionist and the multiplayer quest board)
-and to the start menu's Quest Info in town and in a quest; accepted in all four on Eden and MHGU Recomp (r131;
-`mods/wishfinder/src/native/quest_page.rs`, `quest_info.rs`; natives in `mhgu-understanding`
-[Quest detail pages: counter, quest board, Quest Info](../../mhgu-understanding/references/quest-detail-pages.md#quest-detail-pages-counter-quest-board-quest-info)).
+WishFinder adds pages after the game's to the quest detail panel (at the receptionist and the multiplayer quest board), and to the start menu's Quest Info in town and in a quest. All four were accepted on Eden and MHGU Recomp (r131; `mods/wishfinder/src/native/quest_page.rs`, `quest_info.rs`). Natives: `mhgu-understanding` [Quest detail pages: counter, quest board, Quest Info](../../mhgu-understanding/references/quest-detail-pages.md#quest-detail-pages-counter-quest-board-quest-info).
 
-1. **List the owners from the code, not from screenshots.** Search the callers of the window's functions; every
-   owner sizes the page cursor itself and may count pages differently (Quest Info: 3 in town, 4 in a quest). A
-   screenshot's dialogue line is a help text, not a screen: the "counter Quest Info" one build assumed does not exist.
-2. **Find the page cursor, every sizer and the draw.** The page is a cursor row or page
-   ([Page cursor](../../mhgu-understanding/references/start-menu.md#page-cursor)); the game's draw handles
-   its own pages only, so a later row draws nothing. Read whether the sizers run per frame or on events: a per-frame
-   re-size would hold the row at 0.
-3. **Hook after the draw** (an entry hook that stacks). Size the cursor to the game's pages plus yours only when the
-   count differs, with the setter the owner uses: `0x54edec` with keep 1 clamps the row, `0x54ee34` resets the page.
-4. **Draw your page through a game page.** Run the game's fill of a similar page (header, title and group come out
-   right), then hide its rows and write your texts through the part setters, from static buffers.
-5. **One text block.** Message objects do not clip, so all lines go into one text joined by `\r\n`; two text boxes
-   gave the first line a different colour and spacing. Colour it with `<COL RRGGBBAA>` when the slot's own colour is
-   wrong. Set the lines per page from a screenshot of your page, one owner at a time.
-6. **Give back what no game page sets.** Rule lines, band objects and texts the game never touches stay hidden after
-   your page; remember which window hid them and show them again on its next game page. A band set (`TexSet`) is one
-   object: to keep one band, show another page's single-band object at the same place and hide the rest of that page.
-7. **Read the quest the way the game does on each owner**, and confirm a field's type by a game reader before using
-   it: `sQuest +0xa4` is a `cQuestData`, not the `rQuestData` its name suggested.
+1. **List the owners from the code, not from screenshots.** Search the callers of the window's functions; every owner sizes the page cursor itself and may count pages differently (Quest Info: 3 in town, 4 in a quest). A screenshot's dialogue line is a help text, not a screen: the "counter Quest Info" one build assumed does not exist.
+2. **Find the page cursor, every sizer and the draw.** The page is a cursor row or page ([Page cursor](../../mhgu-understanding/references/start-menu.md#page-cursor)); the game's draw handles its own pages only, so a later row draws nothing. Read whether the sizers run per frame or on events: a per-frame re-size would hold the row at 0.
+3. **Hook after the draw** (an entry hook that stacks). Size the cursor to the game's pages plus yours only when the count differs, with the setter the owner uses: `0x54edec` with keep 1 clamps the row, `0x54ee34` resets the page.
+4. **Draw your page through a game page.** Run the game's fill of a similar page (header, title and group come out right), then hide its rows and write your texts through the part setters, from static buffers.
+5. **One text block.** Message objects do not clip, so all lines go into one text joined by `\r\n`; two text boxes gave the first line a different colour and spacing. Colour it with `<COL RRGGBBAA>` when the slot's own colour is wrong. Set the lines per page from a screenshot of your page, one owner at a time.
+6. **Give back what no game page sets.** Rule lines, band objects and texts the game never touches stay hidden after your page; remember which window hid them and show them again on its next game page. A band set (`TexSet`) is one object: to keep one band, show another page's single-band object at the same place and hide the rest of that page.
+7. **Read the quest the way the game does on each owner**, and confirm a field's type by a game reader before using it: `sQuest +0xa4` is a `cQuestData`, not the `rQuestData` its name suggested.
 
 ## Borrow a game window on another screen
 

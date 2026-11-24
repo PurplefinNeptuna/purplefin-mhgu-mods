@@ -54,51 +54,23 @@ Position and authored-size writes after the build were also inert (`pos=90.0 0.0
 
 ## HUD movers (gu-native and UIScale)
 
-Two things move HUD quads after the game has drawn them. Any placement a mod
-computes from node fields, rects or the node's own matrix is then the
-unmoved place.
+Two things move HUD quads after the game has drawn them. Any placement a mod computes from node fields, rects or the node's own matrix is then the unmoved place.
 
 | Mover | What it does | Source |
 | --- | --- | --- |
 | gu-native's renderer | Rewrites every GUI quad's uploaded matrix, anchored by that quad's own layer and position; moves the game's scissor only vertically | gu-native `runtime/nvn/vulkan/exec.c`, the `pos_z = m[14]` read and `scissor_rect` (local `9a1aef7`; first read at `c7fc45a`) |
 | UIScale (KatLib) | Edits a sprite in the uploaded matrix block at `*(ctx+4)+0x18bc` after publishers main+`0xa4eb9c`/`0xa3e3b0`. The node's `+0x10` stays unscaled. Its own `+0xe0` rewrite refreshes only on a rebuild | World Sharpness Gauge *Following a rescaled bar* |
 
-gu-native's rule, per quad: the anchor (left, right or centre; top, bottom or
-centre) comes from layer `m[14]` and position `m[12]`/`m[13]` on the 1280x720
-canvas, with special cases (layer 103 status HUD at y < 500 goes left/top, the
-item bar right/bottom, layer 105 the minimap). The quad is scaled by
-`s = (16/9)/aspect` and `sy = aspect/(16/9)`, so at exactly 16:9 nothing moves
-except what the touch layout moves (item bar, Arts, target). The scissor moves
-only vertically at 16:10 (`ui_scissor_v`) or is relaxed for the item bar, never
-with the status pieces.
+gu-native's rule, per quad: the anchor (left, right or centre; top, bottom or centre) comes from layer `m[14]` and position `m[12]`/`m[13]` on the 1280x720 canvas. Special cases: the layer 103 status HUD at y < 500 goes left/top and the item bar right/bottom, and layer 105 is the minimap. The quad is scaled by `s = (16/9)/aspect` and `sy = aspect/(16/9)`, so at exactly 16:9 nothing moves except what the touch layout moves (item bar, Arts, target). The scissor moves only vertically at 16:10 (`ui_scissor_v`) or is relaxed for the item bar, never with the status pieces.
 
 Rules:
 
-1. **Cut a sprite in its own geometry, at its draw.** The texture draw
-   main+`0xa4fc9c` uploads `node+0x10` (main+`0xa4fd10`/`0xa4fd38`) and rebuilds
-   the UVs from the `[u1, v1, u2, v2]` window later in the same call
-   (main+`0xa4fe44`). In a hook on it: scale m[0], move m[12], set the window
-   through the setter, call the original, then put m[0] and m[12] back. The
-   quad's local x span is the float authored width at +`0xb4` with anchor
-   +`0xa0 & 3` (0: `0..w`, 1: centred, 2: `-w..0`; main+`0xa4ff1c..0xa4ffb4`),
-   not the layout width at +`0xd8`. A mover then moves the cut with the sprite
-   (World Sharpness Gauge `crop_span`; accepted on MHGURecomp, not run on
-   gu-native).
-2. **Read where a sprite really went after the original draw**, from the
-   uploaded block. Words 0, 1, 4, 5, 12 and 13 equal to the node's mean a plain
-   draw; an unchanged block address means nothing was uploaded. This sees
-   UIScale; it cannot see gu-native, which moves the quad later, on the host.
-3. **A node you add moves by its own position, not its parent's,** on
-   gu-native (inference from the per-quad rule above). Keep added nodes on the
-   same layer and inside the same position band as the part they belong to, or
-   they split from it on a non-16:9 screen.
-4. **An ImGui overlay never moves with the HUD.** Do not place ImGui drawing
-   from HUD node positions if it must line up on gu-native. World-space
-   overlays are a separate problem: [Runtimes](runtimes.md#imgui-on-each-host).
-5. **Test what you can reach.** Nobody here runs gu-native. UIScale on
-   MHGURecomp is the reachable mover: run the quest with a non-default scale, and
-   ask the tester to drag the element in UIScale's editor (a live drag is still
-   unconfirmed for World Sharpness Gauge). Report gu-native as source-only.
+1. **Cut a sprite in its own geometry, at its draw.** The texture draw main+`0xa4fc9c` uploads `node+0x10` (main+`0xa4fd10`/`0xa4fd38`) and rebuilds the UVs from the `[u1, v1, u2, v2]` window later in the same call (main+`0xa4fe44`). In a hook on it: scale m[0], move m[12], set the window through the setter, call the original, then put m[0] and m[12] back.
+   - The quad's local x span is the float authored width at +`0xb4` with anchor +`0xa0 & 3` (0: `0..w`, 1: centred, 2: `-w..0`; main+`0xa4ff1c..0xa4ffb4`), not the layout width at +`0xd8`. A mover then moves the cut with the sprite (World Sharpness Gauge `crop_span`; accepted on MHGURecomp, not run on gu-native).
+2. **Read where a sprite really went after the original draw**, from the uploaded block. Words 0, 1, 4, 5, 12 and 13 equal to the node's mean a plain draw; an unchanged block address means nothing was uploaded. This sees UIScale; it cannot see gu-native, which moves the quad later, on the host.
+3. **A node you add moves by its own position, not its parent's,** on gu-native (inference from the per-quad rule above). Keep added nodes on the same layer and inside the same position band as the part they belong to, or they split from it on a non-16:9 screen.
+4. **An ImGui overlay never moves with the HUD.** Do not place ImGui drawing from HUD node positions if it must line up on gu-native. World-space overlays are a separate problem: [Runtimes](runtimes.md#imgui-on-each-host).
+5. **Test what you can reach.** Nobody here runs gu-native. UIScale on MHGURecomp is the reachable mover: run the quest with a non-default scale, and ask the tester to drag the element in UIScale's editor (a live drag is still unconfirmed for World Sharpness Gauge). Report gu-native as source-only.
 
 ## Survive a row's end
 
