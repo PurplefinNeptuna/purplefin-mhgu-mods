@@ -28,3 +28,8 @@ __pycache__/
 *.gzf
 *.gpr
 *.rep/
+
+# Local integrations, kept outside Git
+/mods/hd-project/
+/mods/wiki-cheats/
+/mods/dti-dumper-support/

@@ -23,17 +23,22 @@ loads the same Forge NROs.
 Each mod's DISTRIBUTION.json controls delivery status and hashes. Current
 candidates and acceptance scope are summarised in
 [docs/LOCAL_STATE.md](docs/LOCAL_STATE.md). HD Project, wiki cheats and DTI
-extraction support are local integrations.
+extraction support are local integrations, kept outside Git.
 
 - [Instructions](AGENTS.md), [local paths/state](docs/LOCAL_STATE.md)
 - [Development and distribution](docs/DEVELOPMENT.md)
 - [Tools and references](docs/TOOLS.md)
-- [HD ownership and merge order](mods/hd-project/README.md)
 
-Clone with `git clone --recursive` for the Forge and forge-rs baselines. Use
+Clone with `git clone --recursive` for the Forge and forge-rs baselines, then
+run `scripts/install_hooks.sh`. Each mod is its own repository under `mods/`. A
+mod that isn't published yet stays an empty folder, so its guide link above
+won't open. Use
 mod-local build.sh commands; a Rust mod runs `./build.sh fetch` once to download
 its pinned dependencies. Inspect all deliveries with
 `python3 scripts/mod_distribution.py check`. Builds and packaging do not install,
 activate or publish. Superseded source remains in Git. Each mod's last gameplay-accepted build stays
 under build/, and backups/ is an optional local archive. Update upstream
 repositories in place.
+
+The scripts, docs and skills here are under the MIT License ([LICENSE](LICENSE)).
+Each mod has its own license in its folder.

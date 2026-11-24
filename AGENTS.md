@@ -23,16 +23,22 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   `112e0e032ad72db992870989384aba65331978c2`. Every mod still vendors
   forge-rs 1.5.0 and targets Forge 1.5.1 (each mod's `dependencies.lock.json`). PC: [MHGURecomp](https://github.com/morerokk/MHGURecomp)
   loads the same Switch Forge NROs, so there are no separate PC builds. Both
-  baselines are submodules; update them from their official remotes. History
-  was rewritten on 2026-11-11 (vendor trees, retired mods, `backups/`, personal
-  email and home path removed); older commit hashes resolve only in
-  `/mnt/storage2/Programs/MHGU_Modding-pre-rewrite.git`. Never create duplicate clones/worktrees
+  baselines are submodules; update them from their official remotes. Each mod
+  is its own private repo, `PurplefinNeptuna/mhgu-NAME`, checked out as the
+  submodule `mods/NAME`; `hd-project`, `wiki-cheats` and `dti-dumper-support`
+  are untracked local folders. History was rewritten on 2026-11-11 (vendor
+  trees, retired mods, `backups/`, personal email and home path removed) and on
+  2026-11-24 (mods moved to their own repos); older commit hashes resolve only
+  in `/mnt/storage2/Programs/MHGU_Modding-pre-rewrite.git` and
+  `/mnt/storage2/Programs/MHGU_Modding-pre-split.git`. Never create duplicate clones/worktrees
   or restore the retired loader, Better Input, renderer, mutex or PC patches,
   GURecomp or Forge PC ports.
 - **Authorization.** Preparing work never installs, activates, launches an
   emulator, changes emulator settings, edits saves, publishes or pushes. Commit
   validated, coherent changes locally after checking staged paths, run
   `python3 scripts/mod_distribution.py check` first and keep the custom hooks.
+  A mod change is committed in the mod's repo first, then its new pointer in
+  the main repo, whose hook checks that mod's packages.
 - **Preserve** unrelated work, original dumps, library inputs, saves and research
   inputs in `work/`. `backups/` is an optional local archive: agents do not delete
   it, the user may clear it, and nothing may depend on it. Each mod's last
@@ -115,6 +121,9 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 ## Getting work done
 
 - New mod: `python3 scripts/mod_distribution.py init NAME --kind plugin`, then
+  before its first commit make `mods/NAME` its own repo (private
+  `PurplefinNeptuna/mhgu-NAME`) and add it as a submodule, so its source never
+  enters the main repo. Then
   work through "New plugin: definition of done" in docs/DEVELOPMENT.md.
 - Phased plans (`work/*/PLAN.md`): finish the current phase completely,
   including its exit evidence and any candidate packaging it asks for. Then

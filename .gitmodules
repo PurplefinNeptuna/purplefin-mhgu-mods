@@ -4,3 +4,48 @@
 [submodule "tools/forge-rs"]
 	path = tools/forge-rs
 	url = https://github.com/Fexty12573/forge-rs.git
+[submodule "mods/damage-numbers"]
+	path = mods/damage-numbers
+	url = https://github.com/PurplefinNeptuna/mhgu-damage-numbers.git
+[submodule "mods/imgui-meter"]
+	path = mods/imgui-meter
+	url = https://github.com/PurplefinNeptuna/mhgu-imgui-meter.git
+[submodule "mods/key-quest-markers"]
+	path = mods/key-quest-markers
+	url = https://github.com/PurplefinNeptuna/mhgu-key-quest-markers.git
+[submodule "mods/lock-on-target"]
+	path = mods/lock-on-target
+	url = https://github.com/PurplefinNeptuna/mhgu-lock-on-target.git
+[submodule "mods/modern-weapon-controls"]
+	path = mods/modern-weapon-controls
+	url = https://github.com/PurplefinNeptuna/mhgu-modern-weapon-controls.git
+[submodule "mods/online-roaming"]
+	path = mods/online-roaming
+	url = https://github.com/PurplefinNeptuna/mhgu-online-roaming.git
+[submodule "mods/please-do-better"]
+	path = mods/please-do-better
+	url = https://github.com/PurplefinNeptuna/mhgu-please-do-better.git
+[submodule "mods/purple-lib"]
+	path = mods/purple-lib
+	url = https://github.com/PurplefinNeptuna/mhgu-purple-lib.git
+[submodule "mods/purple-lib-tester"]
+	path = mods/purple-lib-tester
+	url = https://github.com/PurplefinNeptuna/mhgu-purple-lib-tester.git
+[submodule "mods/shared-urgent-quests"]
+	path = mods/shared-urgent-quests
+	url = https://github.com/PurplefinNeptuna/mhgu-shared-urgent-quests.git
+[submodule "mods/skin-loader"]
+	path = mods/skin-loader
+	url = https://github.com/PurplefinNeptuna/mhgu-skin-loader.git
+[submodule "mods/village-quests-in-hub"]
+	path = mods/village-quests-in-hub
+	url = https://github.com/PurplefinNeptuna/mhgu-village-quests-in-hub.git
+[submodule "mods/wishfinder"]
+	path = mods/wishfinder
+	url = https://github.com/PurplefinNeptuna/mhgu-wishfinder.git
+[submodule "mods/wishfinder-mwt-bridge"]
+	path = mods/wishfinder-mwt-bridge
+	url = https://github.com/PurplefinNeptuna/mhgu-wishfinder-mwt-bridge.git
+[submodule "mods/world-sharpness-gauge"]
+	path = mods/world-sharpness-gauge
+	url = https://github.com/PurplefinNeptuna/mhgu-world-sharpness-gauge.git
