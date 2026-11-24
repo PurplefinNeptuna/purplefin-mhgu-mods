@@ -47,7 +47,7 @@ That function calls `0x19b7fc` at `0x19c320` and turns its result into the item 
 | --- | --- | --- |
 | 0, 1 | added | 9 "obtained."; bit 2 instead gives 74 "You caught a %s!", bit 3 71 "You made a %s.", bit 4 72 "No! It became a %s.", all with request flags 1 |
 | 2 | added to the maximum | 12 "at maximum." |
-| 3 | no room | |
-| 5 | a carried item (`0x1943bc`) | 15 "You cannot carry any more items."; another result-5 branch, through `0x670500`, is unread |
+| 3 | stack at its maximum; in a village or the hub the add tries the box (`0x19945c`) | 12 "at maximum." in a quest |
+| 5 | no free slot. A carried item (`0x1943bc`) gives popup 15; in a village or the hub the add tries the box. Otherwise (a quest) `0x19c494` calls `0x670500(item, amount)`, which a tester saw as the prompt to swap a pouch item (inference: `0x670500` unread) | 15 "You cannot carry any more items." for a carried item |
 | 6 | | 17 "sent to Item Box." |
 | 7 | not the main hunter, or the quest check `0x3a5ed0(…, 5, 1)` refuses | |
