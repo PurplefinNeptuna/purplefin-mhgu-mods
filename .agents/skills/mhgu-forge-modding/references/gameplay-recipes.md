@@ -2,7 +2,9 @@
 
 ## Target camera tap (Lock-on Target)
 
-Lock-on Target makes every press a tap by storing 0.001 in the window before the original. The cheat Lock-on Target replaces gates on `[main+0x184ddc8]` != 0 (a manager pointer) and writes the window through `[main+0x2126f48]` -> +0x58; its end path `0x5584a0([...])` == 1 clears bit 6 (tail call `0x285ec4`), bit 6 is set at `0x27ee04`. The target crosshair's zoom-in animation replaying while locked looks like a twitch; lead `cUIOCPanelTargetCamera` (DTI size 0x58, vtable `0x177a4d0`), unconfirmed (`work/lock-on-target/NOTES.md`). The Eden cheat that writes the window works only because Eden's cheat engine writes 12 times a second, so the window keeps running out; written every frame, it never fires.
+Lock-on Target makes every press a tap by storing 0.001 in the window before the original. The cheat Lock-on Target replaces gates on `[main+0x184ddc8]` != 0 (a manager pointer) and writes the window through `[main+0x2126f48]` -> +0x58; its end path `0x5584a0([...])` == 1 clears bit 6 (tail call `0x285ec4`), bit 6 is set at `0x27ee04`.
+
+The target crosshair's zoom-in animation replaying while locked looks like a twitch; lead `cUIOCPanelTargetCamera` (DTI size 0x58, vtable `0x177a4d0`), unconfirmed (`work/lock-on-target/NOTES.md`). The Eden cheat that writes the window works only because Eden's cheat engine writes 12 times a second, so the window keeps running out; written every frame, it never fires.
 
 ## Remapping weapon input (Modern Weapon Controls)
 

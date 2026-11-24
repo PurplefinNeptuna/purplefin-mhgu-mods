@@ -29,7 +29,9 @@ Use C linkage and exported unmangled names. Forge's native metadata is **70 byte
 
 Version satisfaction compares major/minor ordering and ignores patch. Requesting 1.5.1 is not a strict runtime equality guard. Verify actual ABI/signatures separately. Maintained mods write explicit 1.5.1/name metadata in `forge_onLoad` (Damage Numbers `src/lib.rs`, Please do Better `src/lib.rs`).
 
-`PluginInitParam` is defined only in Forge's private `source/forge/plugin.cpp`, not in a public header. C++ mods therefore declare `struct ForgeVersion { uint16_t major, minor, patch; }; struct PluginInitParam { ForgeVersion required_ver; char name[64]; };` locally with `static_assert(sizeof(PluginInitParam) == 70 && offsetof(PluginInitParam, name) == 6)`. This is the only accepted local re-declaration; include `<forge/log.h>`, `<forge/hook.h>`, `<forge/mem.h>`, `<forge/singleton.h>`, `<forge/fs.h>` and others for everything else. `<forge/mem.h>` lacks a C++ linkage guard, so include it inside `extern "C" { }`.
+`PluginInitParam` is defined only in Forge's private `source/forge/plugin.cpp`, not in a public header. C++ mods therefore declare `struct ForgeVersion { uint16_t major, minor, patch; }; struct PluginInitParam { ForgeVersion required_ver; char name[64]; };` locally with `static_assert(sizeof(PluginInitParam) == 70 && offsetof(PluginInitParam, name) == 6)`.
+
+This is the only accepted local re-declaration; include `<forge/log.h>`, `<forge/hook.h>`, `<forge/mem.h>`, `<forge/singleton.h>`, `<forge/fs.h>` and others for everything else. `<forge/mem.h>` lacks a C++ linkage guard, so include it inside `extern "C" { }`.
 
 ## Compiler-derived layouts
 

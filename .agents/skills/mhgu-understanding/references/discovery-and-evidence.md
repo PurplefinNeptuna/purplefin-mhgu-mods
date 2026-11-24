@@ -36,7 +36,9 @@ The DTI registry main+`0x018a5d7c` and the property-list vtable main+`0x0177e9a0
 
 Open analysis with `./scripts/tool.sh ghidra`. The preserved GZF is `work/research-tooling/inputs/MHGU_1.4.0.gzf`; editable project is `work/research-tooling/ghidra-projects/MHGU_1.4.0.gpr`. To refresh indexes, close that GUI project and run `./scripts/tool.sh research export`. Export uses read-only/noanalysis mode and copied-main verification. `research import` creates a fresh project and refuses to overwrite an existing one. Preserve annotations and original GZF.
 
-To decompile or cross-reference specific addresses, write your own targets file in the task's work folder (for example `work/<task>/ghidra-targets.txt`): one main-relative `0x` offset per line, with `#` comments saying why each is there. Then run `./scripts/tool.sh research export --targets work/<task>/ghidra-targets.txt`. Read each target's symbols, containing function and references in `summary.json` `research_targets`, and function starts' C in `ghidra-export/function_<offset>.c`. Each run replaces the previous target output. Never add task offsets to `scripts/ghidra/ExportMhguResearch.java`; its list holds only the shared baseline.
+To decompile or cross-reference specific addresses, write your own targets file in the task's work folder (for example `work/<task>/ghidra-targets.txt`): one main-relative `0x` offset per line, with `#` comments saying why each is there. Then run `./scripts/tool.sh research export --targets work/<task>/ghidra-targets.txt`.
+
+Read each target's symbols, containing function and references in `summary.json` `research_targets`, and function starts' C in `ghidra-export/function_<offset>.c`. Each run replaces the previous target output. Never add task offsets to `scripts/ghidra/ExportMhguResearch.java`; its list holds only the shared baseline.
 
 ## Understand DTI records
 

@@ -13,7 +13,9 @@ Offsets are for Switch 1.4.0.
 | Same pad, menu view | Held/previous/pressed +0x6bf4/+0x6bf8/+0x6bfc (pressed = held & ~previous, `0x3de0d4`), repeat +0x6c34; menus that repeat a held D-pad read `pressed | (repeat & 0xf0)` (`0x54c168`..`0x54c178`) |
 | Menu bits (table `0x162aa24`, 25 {output, menu bit} pairs read by `0x3de4b0`) | Select 0x1, L3 0x2, R3 0x4, Start 0x8, D-pad 0x10..0x80, L 0x100, R 0x200, ZL 0x400, ZR 0x800, X 0x1000, A 0x2000, B 0x4000, Y 0x8000, sticks from 0x20000. L/R/ZL/ZR depend on `sUserInfo+0x446e` (`0x65f8ec`); `0x65f8c4`/`0x65f914` return the page-left/right buttons (L/R, or ZL/ZR when swapped) |
 
-Where those views come from: `sFestaPad::move` `0x3ddf1c` (object vtable `0x1754954` slot 0x1c) calls `sPad::move` `0xbaade4` (its only caller, `bl` at `0x3ddf24`), then builds the gameplay view +0x6b98 and the menu view +0x6bf0 with `0x3de064`, which reads the selected `sPad::Pad` record's `On` (record +0x190; pad 0 at +0x1d0) and derives pressed and released from it. It skips both views while `sFestaMain` (`0x2126764`) has +0x60 zero and `mPause` (+0x64) set. `sPad::Pad` (DTI, 2896 bytes; eight in `mPad` from +0x40, `Handheld` at +0x5ac0): `On`/`Old`/`Trg`/`Rel`/`Chg`/`Rep` u64 at +400..+440, `Rx`/`Ry`/`Lx`/`Ly` s32 at +448..+460, `Rz/RT` +464, `Lz/LT` +465.
+Where those views come from: `sFestaPad::move` `0x3ddf1c` (object vtable `0x1754954` slot 0x1c) calls `sPad::move` `0xbaade4`. It is that function's only caller (`bl` at `0x3ddf24`). It then builds the gameplay view +0x6b98 and the menu view +0x6bf0 with `0x3de064`. That reads the selected `sPad::Pad` record's `On` (record +0x190; pad 0 at +0x1d0) and derives pressed and released from it.
+
+It skips both views while `sFestaMain` (`0x2126764`) has +0x60 zero and `mPause` (+0x64) set. `sPad::Pad` (DTI, 2896 bytes; eight in `mPad` from +0x40, `Handheld` at +0x5ac0): `On`/`Old`/`Trg`/`Rel`/`Chg`/`Rep` u64 at +400..+440, `Rx`/`Ry`/`Lx`/`Ly` s32 at +448..+460, `Rz/RT` +464, `Lz/LT` +465.
 
 sUserInfo cell `0x1897f78` supplies settings. Control byte+0x446c=2 means displayed Control Type 3, and original shoulder assignment+0x446e=0. Native R accessor `0x65f93c` returns 0x40 for assignment 0, else 0x800. Its prologue is PC-relative.
 
@@ -27,13 +29,19 @@ The icon follows the player's button config, so read it, do not assume it: the s
 
 Read session pointer cell `0x188ca48`, then local hunter index+0x30 in range 0..3. Read sPlayer cell `0x1885b58`, then player pointer+0x1c+4*index. Never obtain that index from sUserInfo. Native helpers `0x3f8398`/`0x276278` support this chain. Validate each mapping and pointer.
 
-Player+0x13c4 is weapon pointer; weapon ID+0x4d4 uses 0 GS, 1 SnS, 2 Hammer, 3 Lance, 4 HBG, 6 LBG, 7 LS, 8 SA, 9 GL, 10 Bow, 11 DB, 12 HH, 13 IG, 14 CB, 15 Prowler; 5 is unused. Player+0x2749 bit 0 is draw state (getter `0x2a2444`). IDs are not a contiguous 14-weapon ordinal. The quest classes `uPlayerQuest00..15` follow the same numbers (no 05), so `uPlayerQuest15` is the Prowler (inference from the matching gap). It has its own action dispatcher (vtable slot 0x318 `0x1207e6c`, actions in `0x1208000..0x1210000`, its gather `0x120cf18` and fishing `0x120e88c`); 00..14 share `0x2cbfcc`. All share the add slots 0x360 `0x3015e0` and 0x364 `0x301784`.
+Player+0x13c4 is weapon pointer; weapon ID+0x4d4 uses 0 GS, 1 SnS, 2 Hammer, 3 Lance, 4 HBG, 6 LBG, 7 LS, 8 SA, 9 GL, 10 Bow, 11 DB, 12 HH, 13 IG, 14 CB, 15 Prowler; 5 is unused. Player+0x2749 bit 0 is draw state (getter `0x2a2444`). IDs are not a contiguous 14-weapon ordinal.
+
+The quest classes `uPlayerQuest00..15` follow the same numbers (no 05), so `uPlayerQuest15` is the Prowler (inference from the matching gap). It has its own action dispatcher (vtable slot 0x318 `0x1207e6c`, actions in `0x1208000..0x1210000`, its gather `0x120cf18` and fishing `0x120e88c`); 00..14 share `0x2cbfcc`. All share the add slots 0x360 `0x3015e0` and 0x364 `0x301784`.
 
 The combat gate reproduces `0x3a5ed0(selector5, thirdArg1)` using byte at `*main[0x188ad90]+0x50`. States 4, 5, 6, 7, 9 block combat; 8 does not. Imported mState+0x4c is another field. Treat entry/exit transitions as state changes, including hold quarantine until release.
 
 ## Target camera tap
 
-The local hunter is also reachable as `sFestaUnit` (cell `0x2126f48`) +0x58. Tap logic `0x27e970(hunter)`, 568 bytes, has one caller, `0x2a7b74` in the hunter update `0x2a79cc` (nothing branches to `0x27e974`; `0x2a7b78` reloads r0, so its result is unused). It reads held/pressed +0x13f4/+0x13f8 (masked with `0x65f8ec()`), hold time f32 +0x1450, and a tap window f32 +0x145c in frames: a press with the window closed sets 12.0 (`movt #0x4140`), and `0x53aa84(hunter, &timer, 1.0)` counts it down by frame time (`timer -= hunter[+0x1c] * step`, 1/60 s units). It sets bits 0, 24 (unless session +0x6f == 1) and 6 of the request bitset +0x1434 (`0x285ea0` set, `0x285ec4` clear, `0x285ee8` test). The window is cleared at `0x27e9f4`, `0x27ea04`, `0x27eaf0`, and every frame when `0x18e50([0x184d750])` != 1 (meaning unread). Bits 0 and 24 clear at `0x2a7dd8`/`0x2a7de4` when `0x2e0b10(hunter)` == 1; bit 6 in `0x27eccc`.
+The local hunter is also reachable as `sFestaUnit` (cell `0x2126f48`) +0x58. Tap logic `0x27e970(hunter)`, 568 bytes, has one caller, `0x2a7b74` in the hunter update `0x2a79cc` (nothing branches to `0x27e974`; `0x2a7b78` reloads r0, so its result is unused).
+
+It reads held/pressed +0x13f4/+0x13f8 (masked with `0x65f8ec()`), hold time f32 +0x1450, and a tap window f32 +0x145c in frames. A press with the window closed sets 12.0 (`movt #0x4140`). `0x53aa84(hunter, &timer, 1.0)` counts it down by frame time (`timer -= hunter[+0x1c] * step`, 1/60 s units).
+
+It sets bits 0, 24 (unless session +0x6f == 1) and 6 of the request bitset +0x1434 (`0x285ea0` set, `0x285ec4` clear, `0x285ee8` test). The window is cleared at `0x27e9f4`, `0x27ea04`, `0x27eaf0`, and every frame when `0x18e50([0x184d750])` != 1 (meaning unread). Bits 0 and 24 clear at `0x2a7dd8`/`0x2a7de4` when `0x2e0b10(hunter)` == 1; bit 6 in `0x27eccc`.
 
 ## Native processing order
 

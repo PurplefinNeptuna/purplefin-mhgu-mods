@@ -38,7 +38,11 @@ Read the whole function and your detour before classing a hook this way. All of 
 
 All hooks of one feature still install together, so a strict hook in the set refuses for the whole feature. Check each hook on its own and mark only the ones that qualify; a mod's other windows, which are only compared or called through their entry, accept a foreign hook too. `chains` and `window_matches` in `mods/please-do-better/core/src/hooks.rs` mark and check such entries, and its trampoline check accepts the foreign pair Forge copied.
 
-Check stacking with a real foreign hook on the entry at install, not with any log that merely loads. The direct test swaps a strict build for a lenient one under the same plugin set: on MHGURecomp beside KatLib and UIScale, a World Sharpness Gauge build with exact windows logs `code mismatch`, and the same build with chaining windows loads and works. Install failures log below Forge's shipped `level = error`, so a silent mod may have refused. MHGU DPS Meter (v1.3.1 installed) defers its hooks to after the first update and chains over existing branches, so it lies over ours without reaching our load check. To find overlaps before a run, compare the ARM `movw`/`movt` constants in a foreign NRO against your windows; these are candidates, not proven hook sites.
+Check stacking with a real foreign hook on the entry at install, not with any log that merely loads. The direct test swaps a strict build for a lenient one under the same plugin set. On MHGURecomp beside KatLib and UIScale, a World Sharpness Gauge build with exact windows logs `code mismatch`. The same build with chaining windows loads and works.
+
+Install failures log below Forge's shipped `level = error`, so a silent mod may have refused. MHGU DPS Meter (v1.3.1 installed) defers its hooks to after the first update and chains over existing branches, so it lies over ours without reaching our load check.
+
+To find overlaps before a run, compare the ARM `movw`/`movt` constants in a foreign NRO against your windows; these are candidates, not proven hook sites.
 
 What changes is narrow. The window still compares every byte past the first eight, and the build checks stay, so a different game build is still refused. Only the exact pair `e51ff004` plus any literal is accepted in those eight bytes; any other difference is a mismatch. Run the P4 step 3 relocation check against the original NSO bytes, and compare the trampoline against the live words captured just before hooking. `window_matches` in `mods/world-sharpness-gauge/core/src/lib.rs` is the current form, with a fixture covering all four cases. Copy it, since no mod builds against a sibling.
 
@@ -48,9 +52,11 @@ Stock Forge 1.5.1 and 2.0.0 hook `0x3da8fc`, `0xb8692c`, `0x887810` and `0x88784
 
 ## On MHGURecomp
 
-Recomp runs the game as compiled code and plugins in an interpreter, and implements Forge's hook and patch calls itself (`runtime/forge.c`, `dispatch.c` in its source). Only Forge calls change code there: a plugin's own stores into `main` are never seen. A hook at a function entry redirects the compiled function; its trampoline calls the whole function. A hook inside a function makes Recomp interpret that whole function for the session, so a gateway may jump back to any address inside it. A jump into the middle of a function that is still compiled is fatal (`no function at %x`). Recomp refuses Thumb targets, sites outside a function, and sites under eight bytes before the next function.
+Recomp runs the game as compiled code and plugins in an interpreter, and implements Forge's hook and patch calls itself (`runtime/forge.c`, `dispatch.c` in its source). Only Forge calls change code there: a plugin's own stores into `main` are never seen. A hook at a function entry redirects the compiled function; its trampoline calls the whole function.
 
-An entry whose first two words read PC-relative data cannot run from Forge's copied trampoline on Switch. Please do Better's `0x381FEC` takes a Forge hook with no original and resumes through a fixed stub in its `gateway.S` that replays both words and jumps to site + 8; on Recomp that works because two interior hooks in the same function make it interpreted. A function interpreted for the session costs per call, so keep interior hooks out of per-draw or per-frame hot paths.
+A hook inside a function makes Recomp interpret that whole function for the session, so a gateway may jump back to any address inside it. A jump into the middle of a function that is still compiled is fatal (`no function at %x`). Recomp refuses Thumb targets, sites outside a function, and sites under eight bytes before the next function.
+
+An entry whose first two words read PC-relative data cannot run from Forge's copied trampoline on Switch. Please do Better's `0x381FEC` takes a Forge hook with no original. It resumes through a fixed stub in its `gateway.S` that replays both words and jumps to site + 8. On Recomp that works because two interior hooks in the same function make it interpreted. A function interpreted for the session costs per call, so keep interior hooks out of per-draw or per-frame hot paths.
 
 ## Pool and publication behavior
 

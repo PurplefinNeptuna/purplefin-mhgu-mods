@@ -18,7 +18,11 @@ Every GUI tree mapped so far. Sizes are each row's own; never copy one row's to 
 | Centre popup | `cUIOInfoWindow`, UI object 1 | Lines grouped up to six | `0x65ddc4(0, 99, text, 0)`; group `0x65dce4`/`0x65dd24` | [Centre popup](guide-and-popups.md#centre-popup) |
 | Button guide | UI object 5 | Ten per-button slots +0x248 (UI instances, not text), four extras +0x228 {s32 icon, char* label} | Presets `0x65e794(preset, flags)`, extra `0x65e8cc(icon, label)` | [Button guide](guide-and-popups.md#button-guide); icons in [Input and actions](input-and-actions.md#button-names-and-icons) |
 
-Counter list rows (`counter.gui`, checked on the English HD file). Rank and star pages switch the list (`cUIOQuestList`, holder +0x24) to GUI identity 4 (`0x546f28`/`0x56e61c`). Rank rows use instances 8..12 (`0x616164`'s table); star rows 8..14 and 24 (`0x1635118`, `Anm_list_v00..v07`), stamps 36..43 (`0x1635138`); quest rows are `Anm_list_S00..S07`, instances 16..23, animation 20. Rank and star rows play animation 1: index 0 root ID 1; index 1 Null ID 14 at X -548 (as the quest row's), whose direct children are messages ID 11 (64,10), 6 (36,11), 13 (40,9), textures ID 7 (index 5, at 0,0) and 16 (index 7), and Nulls 19 (316,22) and 21 (375,22). Star row instances are not consecutive.
+Counter list rows (`counter.gui`, checked on the English HD file). Rank and star pages switch the list (`cUIOQuestList`, holder +0x24) to GUI identity 4 (`0x546f28`/`0x56e61c`).
+
+Rank rows use instances 8..12 (`0x616164`'s table); star rows 8..14 and 24 (`0x1635118`, `Anm_list_v00..v07`), stamps 36..43 (`0x1635138`); quest rows are `Anm_list_S00..S07`, instances 16..23, animation 20.
+
+Rank and star rows play animation 1. Index 0 is root ID 1. Index 1 is Null ID 14 at X -548 (as the quest row's). Its direct children are messages ID 11 (64,10), 6 (36,11), 13 (40,9), textures ID 7 (index 5, at 0,0) and 16 (index 7), and Nulls 19 (316,22) and 21 (375,22). Star row instances are not consecutive.
 
 UI objects 1 and 5 belong to the UI manager in cell `0x1899458`, reached as `0x65cb3c(0x55d2b4(*cell, 0), n)` (wrappers load the cell through GOT word `0x1838bd8`). `0x65cb3c(ui, n)` also gets a screen's own UI object n (the counter's quest list is `0x65cb3c(counter, 2)`, holder +0x24).
 

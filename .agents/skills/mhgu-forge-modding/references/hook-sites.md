@@ -2,7 +2,22 @@
 
 ## Hook points and pitfalls
 
-Entry points that take an entry hook cleanly (two PC-independent words, reached by `bl` or a vtable): leave flow `0x1ced60`, destination menu `0x7939cc`, travel decode `0x6bff98`, disconnect page `0x797954`, host and join page `0x79867c`, player update `0x274710`, network send `0xbbabf4` (reads a stack argument), member state receive `0x201390`, hunter data stored `0x274400`, head-up update `0x5c74b0` (reached by a branch; whether MHGURecomp can hook it is unknown). The transition's entry `0x6bd720` cannot take one (`add r11, sp, #24` in its first words); the walking-exit op is picked by `mov r6, #1` at `0x6bdd78` and read at `0x6bd830`. The airship's online prompt is the `bne` at `0x6db868` (target `0x6db8a4`).
+Entry points that take an entry hook cleanly (two PC-independent words, reached by `bl` or a vtable):
+
+| Function | Address |
+| --- | --- |
+| Leave flow | `0x1ced60` |
+| Destination menu | `0x7939cc` |
+| Travel decode | `0x6bff98` |
+| Disconnect page | `0x797954` |
+| Host and join page | `0x79867c` |
+| Player update | `0x274710` |
+| Network send | `0xbbabf4` (reads a stack argument) |
+| Member state receive | `0x201390` |
+| Hunter data stored | `0x274400` |
+| Head-up update | `0x5c74b0` (reached by a branch; whether MHGURecomp can hook it is unknown) |
+
+The transition's entry `0x6bd720` cannot take one (`add r11, sp, #24` in its first words); the walking-exit op is picked by `mov r6, #1` at `0x6bdd78` and read at `0x6bd830`. The airship's online prompt is the `bne` at `0x6db868` (target `0x6db8a4`).
 
 - Scene code a village shares has online checks that skip an offline-only step or apply only in hub or quest flow: `0x6bce80`, `0x6bcf7c`, `0x6bd1f8`, `0x6bd938`, `0x6bdc50`, `0x6bde98`, `0x6c02d8`. 232 call sites read the online flag; most are unread.
 - Never write `net+0xa90` or `sVillage+0x3d1` by hand: the common load publishes them and replies read the table at `0x2013f0`.

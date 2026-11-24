@@ -4,21 +4,83 @@ Bytes of the 1.4.0 main and RomFS, plus runs where stated. Decoded samples and p
 
 ## Playing a menu sound
 
-`0x54f260(kind, id)` picks one of the sound-manager calls by kind, passing id unchanged: 0 `0x4eeb78` on +0xc0 `mpResSeSys` (`snd_sys_com`), 1 `0x4eec94` on +0xc4 `mpResSeSysLb` (`snd_sys_lb`), 4 `0x4ef2c4` on +0xd8 `mpResSeCom` (in a quest `sound\se\com\snd_com_qst`, `loc/arc/quest.arc`, 415 requests), 6 `0x4eed04` on +0xe0 `mpResSeTitle` (`sound\se\title\snd_title`, `loc/arc/title.arc`); kinds 2, 3, 5 do nothing. The native cursor `0x54ee98` calls the kind functions directly. Bank 0 ids the game uses most: 2 (356 sites), 1, 6, 3, 13, 4, 14, 7, 10, 16, 31, 9, 15, 21, 27, 30; bank 1 uses ids 101..194.
+`0x54f260(kind, id)` picks one of the sound-manager calls by kind, passing id unchanged. Kinds 2, 3, 5 do nothing.
 
-The smithy uses `0x54f260(0, n)` with 1 accept, 2 cancel, 3 deny (heard). Which kind is cursor move and which page turn is unread. `0x54f260` passes n through unchanged and `0x4eeb78(sound, n)` queues it at slot +0x10 with bank `mpResSeSys` (+0xc0 of `sSoundControl`, DTI vft `0x17696a0`), so n is a `snd_sys_com` request id; Sound data gives how a request names a wave. The four heard cases agree: 1 `sys_kettei` (accept), 2 `sys_cancel`, 3 `sys_bubu` (deny), 5 `sys_info` (the popup). n = 43 (`sys_panel_slider`) was not heard in a quest (called once, from the pouch add, in the update the popup played `sys_info`); its wave is 0.31 s at a normal level, its record's +0x24 f32 is -6.0 (5: -3.5; 42: -2.3), and no record or bank field read so far (+0x44 nibble 4, the group, the key) differs from a request that plays, so why it was not heard is open until a run plays it alone.
+| Kind | Call | Bank |
+| --- | --- | --- |
+| 0 | `0x4eeb78` | +0xc0 `mpResSeSys` (`snd_sys_com`) |
+| 1 | `0x4eec94` | +0xc4 `mpResSeSysLb` (`snd_sys_lb`) |
+| 4 | `0x4ef2c4` | +0xd8 `mpResSeCom` (in a quest `sound\se\com\snd_com_qst`, `loc/arc/quest.arc`, 415 requests) |
+| 6 | `0x4eed04` | +0xe0 `mpResSeTitle` (`sound\se\title\snd_title`, `loc/arc/title.arc`) |
+
+The native cursor `0x54ee98` calls the kind functions directly. Bank 0 ids the game uses most: 2 (356 sites), 1, 6, 3, 13, 4, 14, 7, 10, 16, 31, 9, 15, 21, 27, 30; bank 1 uses ids 101..194.
+
+The smithy uses `0x54f260(0, n)` with 1 accept, 2 cancel, 3 deny (heard). Which kind is cursor move and which page turn is unread. `0x54f260` passes n through unchanged and `0x4eeb78(sound, n)` queues it at slot +0x10 with bank `mpResSeSys` (+0xc0 of `sSoundControl`, DTI vft `0x17696a0`), so n is a `snd_sys_com` request id; Sound data gives how a request names a wave.
+
+The four heard cases agree: 1 `sys_kettei` (accept), 2 `sys_cancel`, 3 `sys_bubu` (deny), 5 `sys_info` (the popup). n = 43 (`sys_panel_slider`) was not heard in a quest. It was called once, from the pouch add, in the update the popup played `sys_info`. Its wave is 0.31 s at a normal level, and its record's +0x24 f32 is -6.0 (5: -3.5; 42: -2.3). No record or bank field read so far differs from a request that plays (+0x44 nibble 4, the group, the key). Why it was not heard stays open until a run plays it alone.
 
 ## Sound data
 
 - Menu sounds are `sound\se\system` in `loc/arc/resident.arc`: 36 waves (type `0x79c47b59`), bank `snd_sys_com` (SBKR, `0x15d782fb`) and request table `snd_sys_com` (SRQR, `0x1bcc4966`).
-- **How a request names a wave** (bytes of the loaders and lookups, checked on every request of `snd_sys_com`, `snd_sys_lb`, `snd_jingle_qst` and the `rt_jNN` banks: each resolves to one wave). SRQR (`rSoundRequest`, vft `0x1794210`, load `0xb67a0c`): header +8 record count, records of 0x84 bytes from 0x34; `0xb68280(table, id)` finds a record by its u16 id at +0 through an index built at load (`0xb67cf0`). Record: byte +2 the key, s16 +0x1c the next request of a chain (-1 none), u16 +0x1e the bank group. SBKR (`rSoundBank`, vft `0x1789758`, load `0x87654c`): magic, version 4, +8 group count, +0xc wave count, +0x10 a third count; groups of 12 bytes from 0x14 (u32: u16 group id, wave count in bits 17..26; u32 first wave); then each wave as a null-terminated path and 80 bytes of parameters (in memory 84-byte records: +0 the wave resource, +4 the parameters). A wave answers a key when parameter bytes 0x4c <= key <= 0x4d (memory +0x50, +0x51; the picker `0x876ab0` compares them), within the request's group. When several waves of the group answer, the picker chooses by weight, parameter byte 8 (memory +0xc): request 38 of `snd_com_qst` plays `pl_haraheri` 3 times in 7 and the silent `blank` otherwise. Key 255 marks a placeholder record (request 0 of every table); a request whose group or key has no wave (`snd_com_qst` 400, 900, 950..953) plays nothing.
-- `snd_sys_com` requests: 1 `sys_kettei`, 2 `sys_cancel`, 3 `sys_bubu`, 4 `sys_cursor`, 5 `sys_info`, 6 `sys_undermenu`, 7 `sys_undercursor`, 8 `sys_box_open`, 9 `sys_box_get`, 10 `sys_money`, 11 `sys_mix_success`, 12 `sys_mix_lost`, 13 `sys_saywindow`, 14 `sys_itemsort`, 15 `sys_manual_itemsort`, 16 `sys_itemidou`, 17 to 20 and 58 to 60 `sys_sine` (18 to 20 and 58 to 60 chain on), 21 `sys_item_suteru`, 24 `h_note_open`, 25 `h_note_put`, 26 `h_note_mekuru`, 27 `sys_undercursor`, 28 `sys_moji`, 29 `sys_next`, 30 `sys_quest_papu`, 31 `item_box_dasiire`, 32 `sys_saywindow_attention`, 33 `sys_saywindow_important`, 34 `sys_head_mark`, 41 `sys_panel_move`, 42 `sys_panel_set`, 43 `sys_panel_slider`, 44 `sys_panel_trash`, 45 `lb_sys_display_updown`, 161 and 171 `lb_sys_chat_reception`, 162 `lb_sys_checkmark_on`, 163 `lb_sys_checkmark_off`; 201 to 213 (groups 2 and 3) `sys_kettei`, `sys_cancel`, `sys_panel_set`, `sys_panel_move`, `sys_undercursor`, `sys_manual_itemsort`, `sys_cursor`, `sys_cursor`, `sys_undercursor`, `sys_cancel`, `sys_itemsort`, `sys_moji`, `sys_bubu`.
+- **How a request names a wave** (bytes of the loaders and lookups, checked on every request of `snd_sys_com`, `snd_sys_lb`, `snd_jingle_qst` and the `rt_jNN` banks: each resolves to one wave).
+  - SRQR (`rSoundRequest`, vft `0x1794210`, load `0xb67a0c`): header +8 record count, records of 0x84 bytes from 0x34; `0xb68280(table, id)` finds a record by its u16 id at +0 through an index built at load (`0xb67cf0`). Record: byte +2 the key, s16 +0x1c the next request of a chain (-1 none), u16 +0x1e the bank group.
+  - SBKR (`rSoundBank`, vft `0x1789758`, load `0x87654c`): magic, version 4, +8 group count, +0xc wave count, +0x10 a third count.
+    - Groups of 12 bytes from 0x14: a u32 holding the u16 group id and the wave count in bits 17..26, then a u32 first wave.
+    - Then each wave as a null-terminated path and 80 bytes of parameters. In memory they are 84-byte records: +0 the wave resource, +4 the parameters.
+  - A wave answers a key when parameter bytes 0x4c <= key <= 0x4d (memory +0x50, +0x51; the picker `0x876ab0` compares them), within the request's group. When several waves of the group answer, the picker chooses by weight, parameter byte 8 (memory +0xc): request 38 of `snd_com_qst` plays `pl_haraheri` 3 times in 7 and the silent `blank` otherwise.
+  - Key 255 marks a placeholder record (request 0 of every table); a request whose group or key has no wave (`snd_com_qst` 400, 900, 950..953) plays nothing.
+- `snd_sys_com` requests: the table below.
 - `snd_sys_lb` (`loc/arc/village/common.arc` and `title.arc`; kind 1) requests run from 101 `lb_sys_arm_change` to 300 `sys_quest_papu_rabbit_lb`; `srqr_map.py` lists them. The lobby jingle bank `<lang>\sound\se\jingle\lobby\snd_jingle_lb` (`village/common_<lang>.arc`; ids 1..6, 21, 22) has two groups and no waves in its SBKR (52 bytes) in every language, so those requests play nothing; no other archive holds `jingle\lobby` waves.
 - Quest common sounds are `sound\se\com\wav` in `loc/arc/quest.arc` (148 waves).
 - Waves are DSP-ADPCM, mono or stereo (byte 4 = channels; stereo interleaved in 0x100-byte blocks): +0x10 a build date, +0x18 16 LE s16 coefficients, +0x60 nibble count, +0x64 sample rate, data from +0x78 in 8-byte frames.
 
+`snd_sys_com` requests:
+
+| Request | Name |
+| --- | --- |
+| 1 | `sys_kettei` |
+| 2 | `sys_cancel` |
+| 3 | `sys_bubu` |
+| 4 | `sys_cursor` |
+| 5 | `sys_info` |
+| 6 | `sys_undermenu` |
+| 7 | `sys_undercursor` |
+| 8 | `sys_box_open` |
+| 9 | `sys_box_get` |
+| 10 | `sys_money` |
+| 11 | `sys_mix_success` |
+| 12 | `sys_mix_lost` |
+| 13 | `sys_saywindow` |
+| 14 | `sys_itemsort` |
+| 15 | `sys_manual_itemsort` |
+| 16 | `sys_itemidou` |
+| 17 to 20 and 58 to 60 | `sys_sine` (18 to 20 and 58 to 60 chain on) |
+| 21 | `sys_item_suteru` |
+| 24 | `h_note_open` |
+| 25 | `h_note_put` |
+| 26 | `h_note_mekuru` |
+| 27 | `sys_undercursor` |
+| 28 | `sys_moji` |
+| 29 | `sys_next` |
+| 30 | `sys_quest_papu` |
+| 31 | `item_box_dasiire` |
+| 32 | `sys_saywindow_attention` |
+| 33 | `sys_saywindow_important` |
+| 34 | `sys_head_mark` |
+| 41 | `sys_panel_move` |
+| 42 | `sys_panel_set` |
+| 43 | `sys_panel_slider` |
+| 44 | `sys_panel_trash` |
+| 45 | `lb_sys_display_updown` |
+| 161 and 171 | `lb_sys_chat_reception` |
+| 162 | `lb_sys_checkmark_on` |
+| 163 | `lb_sys_checkmark_off` |
+| 201 to 213 (groups 2 and 3) | `sys_kettei`, `sys_cancel`, `sys_panel_set`, `sys_panel_move`, `sys_undercursor`, `sys_manual_itemsort`, `sys_cursor`, `sys_cursor`, `sys_undercursor`, `sys_cancel`, `sys_itemsort`, `sys_moji`, `sys_bubu` |
+
 ## Request and realtime slots
 
-- `sSoundControl` holds 64 request slots of 36 bytes at +0xec (+0 used, +2 kind, +0x10 id, +0x14 word, +0x20 bank pointer, one of +0xc0..+0xe4; written by `0x4eeb78` and `0x4eef00`) and 64 realtime slots of 16 bytes at +0x9ec (+0 used, +4 a resource, +8 a word, +0xc reset to -2; cleared at `0x4eb5fc`, walked at `0x4eb874`). Kind 2 is a jingle (`0x4eef00`, `0x4eede8` and the update's own write store 2), kind 3 the realtime jingle's request. A run showed a gather's `bank +0xd0 word 1` realtime slot two updates after its add.
+- `sSoundControl` holds two slot arrays:
+  - 64 request slots of 36 bytes at +0xec: +0 used, +2 kind, +0x10 id, +0x14 word, +0x20 bank pointer (one of +0xc0..+0xe4). `0x4eeb78` and `0x4eef00` write them.
+  - 64 realtime slots of 16 bytes at +0x9ec: +0 used, +4 a resource, +8 a word, +0xc reset to -2. They are cleared at `0x4eb5fc` and walked at `0x4eb874`. Kind 2 is a jingle (`0x4eef00`, `0x4eede8` and the update's own write store 2), kind 3 the realtime jingle's request. A run showed a gather's `bank +0xd0 word 1` realtime slot two updates after its add.
 - `0x4eb540(sound)` is `sSoundControl`'s update, which takes the queued requests; its one caller is `0x4dd90c` (bytes).
 - `0x4ee980` submits an effect-tied sound (r0-r3 and three stack words), called from `main+0x40e70` and `main+0x40f28` (bytes). The executor's own call of `0x4f0be8` is at `0x4d8000` (bytes).

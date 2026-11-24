@@ -15,7 +15,7 @@ These are the original workspace's release conventions. In another project, use 
 
 For Switch Rust/GCC NROs, verify the [target flags and final relocation destinations](rust-builds.md#rust-nro-relocation-requirements) before packaging. Retain the ELF/NRO hashes and any linker errors; a clean `-z text` link and absent TEXTREL flags complement the destination scan. Treat hardware-test rebuilds as new DEVELOPMENT candidates, preserving accepted artifacts and their original runtime scope.
 
-A double that builds the value the code reads proves only the code's own belief about it: model the game's layout as a game reader shows it, and pick test inputs whose wrong reading gives a different result (WishFinder r130's in-quest Quest Info case used a quest with nothing to list, so a lookup that read quest ID 0 passed).
+A double that builds the value the code reads proves only the code's own belief about it. Model the game's layout as a game reader shows it, and pick test inputs whose wrong reading gives a different result. WishFinder r130's in-quest Quest Info case used a quest with nothing to list, so a lookup that read quest ID 0 passed.
 
 Use relevant mod-local tests and `verify`. Prefer existing native fixtures over assertions that only mirror source wording. Exercise allocation, short read/write, mapping, partial publication, foreign patch, nested entry, teardown, and fallback failures where changed. Existing damages tests cover mailbox concurrency and thread exit, native pool failure, ARM state, projection scaling, and actual ImGui pixel scenes. GUI fixtures execute native materials/destruction. Input fixtures execute classifiers/evaluator. Reward fixtures execute count bodies and ownership/quantity preflight.
 
@@ -44,7 +44,11 @@ Packaging a new DEVELOPMENT candidate does not rewrite the `sha256` pins in `pay
 
 The full `check` is required before readiness or commit. `--source-only` is not a readiness check. Use mod-local packaging when building an independent export. Follow the current command's help for support refresh options.
 
-A release under `build/NAME/releases/VERSION/` has versioned ZIP, named runtime folder, README.md/HTML/GameBanana HTML, notices text/HTML, manifest, and SHA256SUMS. The ZIP contains README.md beside the named runtime folder. That README matches its adjacent copy. Runtime folders contain payloads only, with `romfs/nativeNX/...`, `exefs/`, or `cheats/<build-id>.txt` directly inside, plus the mod-manager `manifest.json` (format in docs/DEVELOPMENT.md, "Releases"; version rN is `0.N.0`) that every new candidate or release ships and `package` requires (source: `scripts/mod_manifest.py`). HTML, legal notices, receipts, and checksums stay outside the ZIP.
+A release under `build/NAME/releases/VERSION/` has versioned ZIP, named runtime folder, README.md/HTML/GameBanana HTML, notices text/HTML, manifest, and SHA256SUMS. The ZIP contains README.md beside the named runtime folder. That README matches its adjacent copy.
+
+Runtime folders contain payloads only, with `romfs/nativeNX/...`, `exefs/`, or `cheats/<build-id>.txt` directly inside, plus the mod-manager `manifest.json` (format in docs/DEVELOPMENT.md, "Releases"; version rN is `0.N.0`) that every new candidate or release ships and `package` requires (source: `scripts/mod_manifest.py`).
+
+HTML, legal notices, receipts, and checksums stay outside the ZIP.
 
 ## Player guides and legal records
 

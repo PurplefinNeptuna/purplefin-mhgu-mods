@@ -1,7 +1,5 @@
 # Smithy window and its code
 
-## Smithy window and its code
-
 `uUIBlackSmith` update `0x6f1ae8` (vtable `0x177d988` slot 0x24) is the one per-frame entry.
 
 | Field | Meaning |
@@ -33,14 +31,47 @@
 
 **Upgrade record.** `0x70301c` sets its box index once (`uxth r8` at `0x703068`): `u16 +0x20c0 * +0x20be * +0x20bf + (+0x20be * +0x20bd + +0x20bc) & 0xff`, low 16 bits. It reads the record with `0x143894(box, 0, index)` (box: GOT `0x1839394` names cell `0x1856fe8`), and every branch writes it back with `0x1431f8(box, 0, index, record)` at `0x7035c0`; an empty record skips the write and only pays.
 
-The smithy row list is a native GUI tree ([Known screens and trees](gui-screens.md#known-screens-and-trees)). `uUIBlackSmith` is 12,824 bytes. Smithy buttons: A 0x2000, B 0x4000, X 0x1000, Y 0x8000; `0x65f808` returns Options (8, or 1 when `sUserInfo+0x446d` is nonzero) and `0x65f830` Help, the reverse; Options is Resort when +0x5c is 2..6 and Show Skills in `0x6f5064` (also read at `0x6f5b50`, `0x6f5bd8`, `0x707884`; 5 of 47 callers read). `0x70a30c` is only the upgrade preview. A row label set through `0x56e808` -> `0x547564` takes a plain `char*` (strlen). Pad menu bits in +0x6c are listed in [Input and actions](input-and-actions.md); no smithy handler, preview slot or cursor mode (table `0x162d0c0`) tests L3 0x2 or R3 0x4, and `0x65f808` starts with PC-relative loads.
+The smithy row list is a native GUI tree ([Known screens and trees](gui-screens.md#known-screens-and-trees)). `uUIBlackSmith` is 12,824 bytes.
+
+Smithy buttons: A 0x2000, B 0x4000, X 0x1000, Y 0x8000. `0x65f808` returns Options (8, or 1 when `sUserInfo+0x446d` is nonzero), and `0x65f830` returns Help, the reverse. Options is Resort when +0x5c is 2..6, and Show Skills in `0x6f5064`. It is also read at `0x6f5b50`, `0x6f5bd8`, `0x707884` (5 of 47 callers read). `0x70a30c` is only the upgrade preview.
+
+A row label set through `0x56e808` -> `0x547564` takes a plain `char*` (strlen). Pad menu bits in +0x6c are listed in [Input and actions](input-and-actions.md); no smithy handler, preview slot or cursor mode (table `0x162d0c0`) tests L3 0x2 or R3 0x4, and `0x65f808` starts with PC-relative loads.
 
 **Item limit.** `[[[main+0x18583a8] + 0x1c] + 0x64] - 1` is the loaded `rItemData`'s last ID, the bound lookup `0x192530` uses: 2990 on 1.4.0 (2991 records).
 
-**Loaded smithy tables.** `0x152960(0, file ID)` is the smithy's own lookup (`0x6f0870`): file table `0x15a0ce0`, then the resource manager's find `0xbcba9c` (`sResource` vtable `0x1795948` slot 0x38), which never loads and returns a loaded resource with +0x48 raised, or 0; release through `0x887660` (slot 0x3c, `0xbc8414`), as the window's destructor `0x6f02fc` does. File IDs are `~crc32` of the path: `weaponCreateW..` 0xf4a4.., `armorCreateA00..04` 0xf4b2.., `decoCreate` 0xf4b7, `weaponProcessW..` 0xf4b8.., `armorProcessA00` 0xf4c6 (`arc/facility/blacksmith.arc`, loaded with a town area), `weaponNNBaseData` 0xdde4.. (`loc/arc/resident.arc`). Count +0x64, records at `[+0x6c]`. DTI sizes: `cWeaponCreateData` 44 (`mLv` +4, `mNo` +6, `mItem` +10, `mNum` +18), `cWeaponProcessData` 36 (`mNo` +4, `mLv` +6, `mItem` +8, `mNum` +16), `cArmorCreateData` 48 (`mNo[4]` +4, `mItem` +14, `mNum` +22), `cWeaponNNBaseData` 40 (`mDeriveLv[5]` +28, `mDeriveID[5]` +33; +26/+31 for tables 04 and 06, `cLongWeaponBase`). The loose `nativeNX/table/` files equal the archive entries (47 of 47).
+**Loaded smithy tables.** `0x152960(0, file ID)` is the smithy's own lookup (`0x6f0870`). It reads file table `0x15a0ce0`, then calls the resource manager's find `0xbcba9c` (`sResource` vtable `0x1795948` slot 0x38). The find never loads: it returns a loaded resource with +0x48 raised, or 0. Release through `0x887660` (slot 0x3c, `0xbc8414`), as the window's destructor `0x6f02fc` does.
 
-Do not: sum a smithy row's three piece slots into a cost (337 item IDs there, none shared with the 1,733 in the four item slots, and the runtime row has none); read a gear pack at `sPlayer::Instance + 0x7c` (unverified, read `kind=255`).
+File IDs are `~crc32` of the path: `weaponCreateW..` 0xf4a4.., `armorCreateA00..04` 0xf4b2.., `decoCreate` 0xf4b7, `weaponProcessW..` 0xf4b8.., `armorProcessA00` 0xf4c6 (`arc/facility/blacksmith.arc`, loaded with a town area), `weaponNNBaseData` 0xdde4.. (`loc/arc/resident.arc`). Count +0x64, records at `[+0x6c]`.
 
-**Row price and owned count.** A list row's price is its block +0x10 (+0x28e4 + row*0x30); the header fill `0x6f8648` copies it to the display record +8, and the confirm steps (`0x6f44a8`, `0x6f4cb8`, `0x6f536c`) read it into +0x7c. With the table object `0x13c208(type, number)`: the craft list fill (`0x6f56c4`) charges, at row level 0 (+9, from 0), twice slot +0x20 for armor (types up to 5) and v + v/2 for a weapon; above level 0 it charges 1000 for armor and twice +0x158(level, flag, extra) for a weapon, flag and extra being 1 and 0x2134 for type 16 number 47 and type 21 number 26. The upgrade list fill (`0x700180`) charges +0x158(target level) for a weapon and +0x158(current level) for armor (types up to 6), not doubled. A decoration costs its item record's +0x20 (`0x6fdd54`, 200 without a record). Both lists charge 1000 without a table object. The card's owned count (header +6, `0x2d56`) is `0x142de4(box, 0, type, number)`, every level together.
+DTI sizes:
 
-**Kinsects** (bytes; a run confirmed the screen bytes). A kinsect lives in its Insect Glaive's box record, type 20 only: ID at +0x10 (`0xdcb8c`/`0xdcba8`), level at +0x11 counted from 0 (`0xdcbbc`/`0xdcbd8`), stats and attributes at +0x12..+0x25, filled from `cInsectData` by `0xdd7d0`. `cInsectData` (DTI `0x17368c4`, 56 bytes) is `0x13f518(*0x1856b18, id)`: +4 mType, +0x10 mTrgLv, +0x34 mIndex, the name's index in the message table at cell `0x1856b64` (`0xb84114(table, index)`; `insectData_eng.gmd` has 32 names, 20 Bullshroud). The smithy's kinsect screens are state 7 with +0x5c 0x14 and +0x4a 1; the level-up list `0x70181c` writes rows like the upgrade list's (+0x28d6 the ID, +0x28dd target level from 0, price 0, four materials). The level-up itself is `0x70301c` with +0x4a 1: +0x11 raised by one on a copy, bonus fields cleared, written back by `0x1431f8`, then `0x6fbcfc`; the record's +4 and +6 do not change.
+| Class | Size | Fields |
+| --- | --- | --- |
+| `cWeaponCreateData` | 44 | `mLv` +4, `mNo` +6, `mItem` +10, `mNum` +18 |
+| `cWeaponProcessData` | 36 | `mNo` +4, `mLv` +6, `mItem` +8, `mNum` +16 |
+| `cArmorCreateData` | 48 | `mNo[4]` +4, `mItem` +14, `mNum` +22 |
+| `cWeaponNNBaseData` | 40 | `mDeriveLv[5]` +28, `mDeriveID[5]` +33; +26/+31 for tables 04 and 06, `cLongWeaponBase` |
+
+The loose `nativeNX/table/` files equal the archive entries (47 of 47).
+
+Do not:
+
+- Sum a smithy row's three piece slots into a cost. They hold 337 item IDs, none shared with the 1,733 in the four item slots, and the runtime row has none.
+- Read a gear pack at `sPlayer::Instance + 0x7c` (unverified, read `kind=255`).
+
+**Row price and owned count.** A list row's price is its block +0x10 (+0x28e4 + row*0x30); the header fill `0x6f8648` copies it to the display record +8, and the confirm steps (`0x6f44a8`, `0x6f4cb8`, `0x6f536c`) read it into +0x7c.
+
+With the table object `0x13c208(type, number)`, the craft list fill (`0x6f56c4`) charges:
+
+- At row level 0 (+9, from 0): twice slot +0x20 for armor (types up to 5), and v + v/2 for a weapon.
+- Above level 0: 1000 for armor, and twice +0x158(level, flag, extra) for a weapon. Flag and extra are 1 and 0x2134 for type 16 number 47 and type 21 number 26.
+
+The upgrade list fill (`0x700180`) charges +0x158(target level) for a weapon and +0x158(current level) for armor (types up to 6), not doubled. A decoration costs its item record's +0x20 (`0x6fdd54`, 200 without a record). Both lists charge 1000 without a table object. The card's owned count (header +6, `0x2d56`) is `0x142de4(box, 0, type, number)`, every level together.
+
+**Kinsects** (bytes; a run confirmed the screen bytes). A kinsect lives in its Insect Glaive's box record, type 20 only: ID at +0x10 (`0xdcb8c`/`0xdcba8`), level at +0x11 counted from 0 (`0xdcbbc`/`0xdcbd8`), stats and attributes at +0x12..+0x25, filled from `cInsectData` by `0xdd7d0`.
+
+`cInsectData` (DTI `0x17368c4`, 56 bytes) is `0x13f518(*0x1856b18, id)`: +4 mType, +0x10 mTrgLv, +0x34 mIndex, the name's index in the message table at cell `0x1856b64` (`0xb84114(table, index)`; `insectData_eng.gmd` has 32 names, 20 Bullshroud).
+
+The smithy's kinsect screens are state 7 with +0x5c 0x14 and +0x4a 1; the level-up list `0x70181c` writes rows like the upgrade list's (+0x28d6 the ID, +0x28dd target level from 0, price 0, four materials).
+
+The level-up itself is `0x70301c` with +0x4a 1: +0x11 raised by one on a copy, bonus fields cleared, written back by `0x1431f8`, then `0x6fbcfc`; the record's +4 and +6 do not change.

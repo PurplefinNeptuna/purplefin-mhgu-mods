@@ -14,15 +14,25 @@ Bytes unless marked upstream, which means read in a recompilation project's sour
 | Selector | Cell `0x188ae38` (GOT `0x1838d74`, caller `0xfdb8`) | Holds the lists, urgent pools and Special Permit groups below |
 | Categories | Build `0x3b85d8`, fill `0x3bb318`, get `0x3bc96c` (reads area byte +0x4c, range 0..7), rebuild `0x3ba8fc` (caller `0x6bcafc`) | Quest lists per category; pool index for an urgent depends only on quest-ID ranges (`0x3bc5f0`), so host and client agree |
 
-Availability `0x54af8c(id, 0xff, 0)` returns 1 for DLC IDs (`0x3b9870`). For other quests it asks the progression script `0x3b2174`, whose module is at +0x8d0 of the cell behind it: with the module null, `0x3d7ee4` writes answer 0 at `0x3d7ffc` unless its +0x8dc cache holds the flag. The special-encounter bit at owner +0x35d4 is saved by `0x51d94c`, and which record of a pair a save enables differs by save. So the result depends on when it is asked. `aResult` slot 7 `0x6a1fd4` loads the module and slot 9 `0x8e48` unloads it. `aVillage` loads it at `0x10618` (`0x506fec`) and unloads it at `0x106a0`. An area load's list job can run while the module is still unloaded: the job `0xfc1c` is the stage's loading method (slot 0x74, also called from `0xd8f0`) and `0x10548` a later slot (inference from that order; no run has logged it). It also needs the special encounter bits (above). It reads the local save, never the host's.
+Availability `0x54af8c(id, 0xff, 0)` returns 1 for DLC IDs (`0x3b9870`). For other quests it asks the progression script `0x3b2174`, whose module is at +0x8d0 of the cell behind it: with the module null, `0x3d7ee4` writes answer 0 at `0x3d7ffc` unless its +0x8dc cache holds the flag.
 
-The module is rCommonScript `script\check_quest_unlocked` (`loc/arc/village/common.arc`), run by query `0x3d7e90` through the script VM `0x3d17f8` with the quest in `[WORK0]`: each case requires quests cleared and story flags (save `+0x500`) set. NPC talk tables (`loc/arc/npc/talk.arc`) set those flags when their quest and flag conditions hold, which is how a clear followed by dialogue unlocks a quest. Opcodes, record layouts and the talk evaluator are in [Unlock script and talk tables](#unlock-script-and-talk-tables). In 1.4.0 every key quest's unlock needs only key or urgent quests; 468 other quests unlock something. Hunter Arts and Felyne ingredients are granted only by a talk row's mAction2 (switch `0x247c58`; arts `0x3f0c3c`, ingredients `0x3f1380`), on 7 and 26 quests' clears.
+The special-encounter bit at owner +0x35d4 is saved by `0x51d94c`, and which record of a pair a save enables differs by save. So the result depends on when it is asked. `aResult` slot 7 `0x6a1fd4` loads the module and slot 9 `0x8e48` unloads it. `aVillage` loads it at `0x10618` (`0x506fec`) and unloads it at `0x106a0`.
+
+An area load's list job can run while the module is still unloaded. The job `0xfc1c` is the stage's loading method (slot 0x74, also called from `0xd8f0`), and `0x10548` is a later slot. That is inference from the order; no run has logged it. It also needs the special encounter bits (above). It reads the local save, never the host's.
+
+The module is rCommonScript `script\check_quest_unlocked` (`loc/arc/village/common.arc`), run by query `0x3d7e90` through the script VM `0x3d17f8` with the quest in `[WORK0]`: each case requires quests cleared and story flags (save `+0x500`) set.
+
+NPC talk tables (`loc/arc/npc/talk.arc`) set those flags when their quest and flag conditions hold, which is how a clear followed by dialogue unlocks a quest. Opcodes, record layouts and the talk evaluator are in [Unlock script and talk tables](#unlock-script-and-talk-tables). In 1.4.0 every key quest's unlock needs only key or urgent quests; 468 other quests unlock something.
+
+Hunter Arts and Felyne ingredients are granted only by a talk row's mAction2 (switch `0x247c58`; arts `0x3f0c3c`, ingredients `0x3f1380`), on 7 and 26 quests' clears.
 
 ## Downloaded event quests
 
 The game lists event quests (lists 15..17) only while their row is open: `0x54dcac` starts a save job (`0x3dfa2c`), then `0x3bc234(selector, code)` lists the job's set at `[[0x188ad90] + 0xb4]`. That set is empty at any other time, so memory does not show every event quest.
 
-They live in the game's save file `system`. Header word 0x30 gives a shared section (`0xb281`), whose +0x4618 starts 200 slots of 0x1c00 bytes, each `{u32 quest, u32 size, ARC}`. A tester's save had 165 used, 46 of them G rank, and the game lists those 46. The rest of `system`: three hunter sections of 0x11f8c4 bytes at 0x18cc78, 0x2ac53c, 0x3cbe00; end word 0x1c = 0x4eb898. No code constant was found for 0x4618 or 0xf899 (movw search). Offset and slot count were read from saves, not from code, so count a slot only when it holds the ARC magic and an event ID. Listing rule (`0x3bc234`): millions digit 1, ten-thousands digit not 2, and `(id / 100) % 100` is 0, 1 or 10 for star codes 1, 3, 4.
+They live in the game's save file `system`. Header word 0x30 gives a shared section (`0xb281`), whose +0x4618 starts 200 slots of 0x1c00 bytes, each `{u32 quest, u32 size, ARC}`. A tester's save had 165 used, 46 of them G rank, and the game lists those 46. The rest of `system`: three hunter sections of 0x11f8c4 bytes at 0x18cc78, 0x2ac53c, 0x3cbe00; end word 0x1c = 0x4eb898.
+
+No code constant was found for 0x4618 or 0xf899 (movw search). Offset and slot count were read from saves, not from code, so count a slot only when it holds the ARC magic and an event ID. Listing rule (`0x3bc234`): millions digit 1, ten-thousands digit not 2, and `(id / 100) % 100` is 0, 1 or 10 for star codes 1, 3, 4.
 
 ## Unlock script and talk tables
 

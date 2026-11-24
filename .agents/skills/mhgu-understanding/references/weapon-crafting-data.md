@@ -1,7 +1,5 @@
 # Weapon crafting data
 
-## Weapon crafting data
-
 Both tables are loose in the RomFS and also inside `arc/facility/blacksmith.arc`, tables 00..14 without 05.
 Layouts are verified by exact file size over all 14 of each.
 
@@ -17,7 +15,11 @@ Layouts are verified by exact file size over all 14 of each.
   process rows 1..7, and table 13 number 11 at level 6. Some numbers have no create row at all: table 11 number 6
   and number 25 have process rows for levels 1..8 and no create row, so their level-1 row is an upgrade from a
   *different* number, not a craft. Which file answers for a level is measured against the Smithy's own visits rather
-  than inferred: a create row is what a direct craft charges, and at level 1 it is the step a chain starts from. All 127 create rows above level 1 also have a priced process row (table 00 number 8 at level 6: create 330x7, 1774x5, 333x1, 329x20, process 1774x1, 332x2, 324x5), and a chain walking up from level 1 pays the process row (that the upgrade screen charges it is inference from what the file is for, until a run compares them). 807 process rows carry no materials: a level-1 create row prices 771 of them, leaving 36 free steps, 22 at level 1 and 14 at level 2. A level neither file lists is absent. The three piece slots hold a disjoint set of IDs: over all 14 classes the item slots hold 1,733 distinct
+than inferred: a create row is what a direct craft charges, and at level 1 it is the step a chain starts from.
+
+All 127 create rows above level 1 also have a priced process row. For example, table 00 number 8 at level 6: create 330x7, 1774x5, 333x1, 329x20; process 1774x1, 332x2, 324x5. A chain walking up from level 1 pays the process row. That the upgrade screen charges it is inference from what the file is for, until a run compares them. 807 process rows carry no materials: a level-1 create row prices 771 of them, leaving 36 free steps, 22 at level 1 and 14 at level 2.
+
+A level neither file lists is absent. The three piece slots hold a disjoint set of IDs: over all 14 classes the item slots hold 1,733 distinct
   IDs and the piece slots 337, none in common (empty slots are 0 and excluded), and the three Scrap IDs
   2158 Ore Scrap, 2164 Bone Scrap and 2187 Velociprey Scrap+ appear only in piece slots. Whether a piece ever
   adds to what the Smithy charges is open until a run compares a step with the game's upgrade screen.

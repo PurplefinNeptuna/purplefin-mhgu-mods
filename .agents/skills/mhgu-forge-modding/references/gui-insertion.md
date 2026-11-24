@@ -4,7 +4,11 @@ This recipe is established for the quest counter row in MHGU Switch 1.4.0 (Key Q
 
 ## Plan a different menu before adapting the recipe
 
-Establish the selected resource hash/variant, live instance, animation ID versus table row, owned object range and sequence bindings. Node names and file presence do not establish a spare rendering mechanism. The corrected hud0 case has `Anm_sharp` selecting animation ID 4 at row 7. Its apparent `sgauge` candidates belong to stamina, and `Txt_mask05..55` belong to `h_hand`. Use the companion's native GUI identity table when researching that fixture. At runtime (World Sharpness Gauge r9 Eden log, 2026-10-22), `Txt_sharp`, `Txt_sharpefx` and the third sharpness texture are siblings whose parent is the gauge controller itself. The file's child indices do not describe this tree: there is no group node, and the glow is not a child of the bar. Like the counter row, it has a map alias: controller +0xa0 holds the same pointer as instance +0xd8 (r16 log; the insertion's gate has required it on every insert since r18). An earlier zero reading did not hold.
+Establish the selected resource hash/variant, live instance, animation ID versus table row, owned object range and sequence bindings. Node names and file presence do not establish a spare rendering mechanism. The corrected hud0 case has `Anm_sharp` selecting animation ID 4 at row 7. Its apparent `sgauge` candidates belong to stamina, and `Txt_mask05..55` belong to `h_hand`.
+
+Use the companion's native GUI identity table when researching that fixture. At runtime (World Sharpness Gauge r9 Eden log, 2026-10-22), `Txt_sharp`, `Txt_sharpefx` and the third sharpness texture are siblings whose parent is the gauge controller itself. The file's child indices do not describe this tree: there is no group node, and the glow is not a child of the bar.
+
+Like the counter row, it has a map alias: controller +0xa0 holds the same pointer as instance +0xd8 (r16 log; the insertion's gate has required it on every insert since r18). An earlier zero reading did not hold.
 
 Before adding a child, identify the target menu's construction/update/draw/destruction paths, every affected count/map consumer, map aliases, cache prefix and capacity, allocation/free pairing and publication order. Derive its sizes from those paths. The 13-pointer map and 168-byte cache below are quest-row results, not reusable HUD constants. Resource counts alone do not establish runtime capacity. Prepare allocations before publishing, preserve original bindings, avoid duplicate insertion and verify failure cleanup.
 
@@ -28,10 +32,14 @@ The Key Quest Markers badge (`create()` in `mods/key-quest-markers/src/gui.rs`) 
 
 1. Allocate 304 bytes through alloc+`0x20` with `(bytes, 16, dti id)`, zero the block, then run constructor main+`0xa4f60c` with the storage in r0.
 2. Write +`0x50` (a private ID), +`0x74` (owner) and +`0x78` (resource). World Sharpness Gauge also needed a live sibling's +`0x64`, because the `Texture` resolve scans `*(obj+0x64)+0xe8` (main+`0xb80fd0`). Without it, the copy is refused at the texture step.
-3. Run the 12 style setters, each with two integer arguments. Names are from the saved DTI; values are the badge's: `BlendState` `0xa4dc24`=1, `ControlPoint` `0xa4a9f4`=0, `FixFrame` `0xa47a94`=0, `Mask` `0xa4dca0`=0, `Priority` `0xa47a04`=2, `ReferencePosition` `0xa4aa24`=1, `ReferenceRotation` `0xa4aa5c`=1, `ReferenceScaleX/Y/Z` `0xa4aa94`/`0xa4aac8`/`0xa4aafc`=3, `Reverse` `0xa4dc54`=0, `SamplerState` `0xa4fa5c`=0. A zeroed block leaves every `Reference*` property at 0. These are the badge's values: a copy of another sprite takes that sprite's sampler, the low nibble of +`0x108` (the sharpness bar's is 2; a copy left on 0 filtered its edges differently).
+3. Run the 12 style setters, each with two integer arguments.
+   - Names are from the saved DTI; values are the badge's: `BlendState` `0xa4dc24`=1, `ControlPoint` `0xa4a9f4`=0, `FixFrame` `0xa47a94`=0, `Mask` `0xa4dca0`=0, `Priority` `0xa47a04`=2, `ReferencePosition` `0xa4aa24`=1, `ReferenceRotation` `0xa4aa5c`=1, `ReferenceScaleX/Y/Z` `0xa4aa94`/`0xa4aac8`/`0xa4aafc`=3, `Reverse` `0xa4dc54`=0, `SamplerState` `0xa4fa5c`=0.
+   - A zeroed block leaves every `Reference*` property at 0. These are the badge's values: a copy of another sprite takes that sprite's sampler, the low nibble of +`0x108` (the sharpness bar's is 2; a copy left on 0 filtered its edges differently).
 4. Run `Texture` `0xa4faf0` last; it returns early while +`0x78` is 0. Then set `mTextureRect` through `0xa4fb58` with a pointer to four floats, and keep using that setter afterwards (see "A texture caches its quad").
 
-The constructor's own defaults include +`0x54` = `0x020a0001` and +`0xb4`/+`0xb8` = 32.0 (main+`0xa4d0d8`). Reading those words back proves only that the constructor ran, not that the node draws. +`0x80`/+`0x84` and +`0xb4`/+`0xb8` are local values, not screen pixels. A node's rect at +`0xe0` is not its sprite either: the sharpness bar is authored 88x24 with an x scale of 1.0, its rect is 128x128, and its ink was measured ending at 200 px inside the rect's 110..238. No mapping from atlas columns to rect pixels was ever derived, so measure geometry on screen and store it as a fraction of the rect (P7 step 2).
+The constructor's own defaults include +`0x54` = `0x020a0001` and +`0xb4`/+`0xb8` = 32.0 (main+`0xa4d0d8`). Reading those words back proves only that the constructor ran, not that the node draws. +`0x80`/+`0x84` and +`0xb4`/+`0xb8` are local values, not screen pixels.
+
+A node's rect at +`0xe0` is not its sprite either: the sharpness bar is authored 88x24 with an x scale of 1.0, its rect is 128x128, and its ink was measured ending at 200 px inside the rect's 110..238. No mapping from atlas columns to rect pixels was ever derived, so measure geometry on screen and store it as a fraction of the rect (P7 step 2).
 
 An untested alternative is to copy a live sibling of the same class byte for byte, then replace the ID, clear the +`0x68`/+`0x6c`/+`0x70` links and the animation binding, and link the copy with the native linker. No mod has run this, and the class has no clone function: its vtable slot 0x00 (main+`0xa4f6a4`) is not a constructor, and calling it on a fresh block froze the game.
 
@@ -50,7 +58,11 @@ The count getter `0xa38ffc` counts the linked tree, while cleanup `0x5456e4` ind
 
 ### A row another plugin also extends
 
-Key Quest Markers and WishFinder both add children to the quest counter row, and either may insert first. So the 13-pointer map and 168-byte cache above hold only for a row with no other additions: size both from the live tree each time. WishFinder takes the map as the live count `0xa38ffc` plus two and the cache as (the resource's drawables + nodes beyond the resource's own + 2) × 16 + 8, counting every added node as drawable, so a foreign non-drawable node only over-allocates. A build that read the map and cache at fixed sizes crashed beside WishFinder when WishFinder inserted first. Find your own nodes by their private ID (+`0x50`), never by index.
+Key Quest Markers and WishFinder both add children to the quest counter row, and either may insert first. So the 13-pointer map and 168-byte cache above hold only for a row with no other additions: size both from the live tree each time.
+
+WishFinder takes the map as the live count `0xa38ffc` plus two. It takes the cache as (the resource's drawables + nodes beyond the resource's own + 2) × 16 + 8. That counts every added node as drawable, so a foreign non-drawable node only over-allocates. A build that read the map and cache at fixed sizes crashed beside WishFinder when WishFinder inserted first.
+
+Find your own nodes by their private ID (+`0x50`), never by index.
 
 ### Size any row from its own numbers
 

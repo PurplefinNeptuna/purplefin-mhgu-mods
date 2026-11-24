@@ -41,15 +41,20 @@ Follow the failing stage: module load/imports, metadata/init, signature checks, 
 
 ## Read a log and a photo
 
-Run-independent noise in Eden logs, not evidence against a plugin unless something else connects it: `maxwell_3d.cpp:392 ... assert method == executing_macro + 1` (r62's began 6271 s before the mod's insertion), and a PANIC or host `Unhandled SIGSEGV` shortly after `ForceStop: Force stopping EmuThread` (r59's was 7 ms later, with `nn::hid::VibrationNode::Update()` in its backtrace). Check timing against the mod's own lines before setting a line aside.
+Two kinds of Eden log noise are run-independent. Neither is evidence against a plugin unless something else connects it:
+
+- `maxwell_3d.cpp:392 ... assert method == executing_macro + 1`. r62's began 6271 s before the mod's insertion.
+- A PANIC or host `Unhandled SIGSEGV` shortly after `ForceStop: Force stopping EmuThread`. r59's was 7 ms later, with `nn::hid::VibrationNode::Update()` in its backtrace.
+
+Check timing against the mod's own lines before setting a line aside.
 
 A row's death reads as words turning to freed-heap fill at unchanged addresses: `0x727272`, `0xffffff`, `0xffeaeaea`, `0xff7f7f7f`, `0x4d4d4d`. A rect of `0 0 0 0` comes first. A captured pointer whose word reads one of these is gone, and live relinked pointers there mean the row is mid-teardown (r28).
 
-To measure a photo, use the log as the ruler: fit the image scale on two logged box edges, then read the ink against it (one photo gave 1.4 image px per GUI px, r41's fit landed within 1 to 2 image px on all four crops). Downscaled crops carry a few px of noise, so don't treat a single measurement as a mechanism.
+To measure a photo, use the log as the ruler: fit the image scale on two logged box edges, then read the ink against it. One photo gave 1.4 image px per GUI px, and r41's fit landed within 1 to 2 image px on all four crops. Downscaled crops carry a few px of noise, so don't treat a single measurement as a mechanism.
 
 ## Read a Ryubing crash
 
-Ryubing (`KProcess.cs`, `Syscall.cs`) prints `Guest stack trace` and `Guest CPU registers` for three guest faults and adds a line for two of them: `Invalid memory access at virtual address ...` for a bad access and `The guest program broke execution!` for `svcBreak`. An undefined instruction adds nothing, so a log that ends at `PC:` is one. `PC` is the start of the translated block, not the faulting instruction, and on ARM32 `X[13]`/`X[14]` are SP and LR. Eden logs an unmapped access (`Unmapped Read`, `Unmapped @`) and keeps running, so a latent bad access can pass on Eden and stop Ryubing.
+Ryubing (`KProcess.cs`, `Syscall.cs`) prints `Guest stack trace` and `Guest CPU registers` for three guest faults. It adds a line for two of them: `Invalid memory access at virtual address ...` for a bad access, and `The guest program broke execution!` for `svcBreak`. An undefined instruction adds nothing, so a log that ends at `PC:` is one. `PC` is the start of the translated block, not the faulting instruction, and on ARM32 `X[13]`/`X[14]` are SP and LR. Eden logs an unmapped access (`Unmapped Read`, `Unmapped @`) and keeps running, so a latent bad access can pass on Eden and stop Ryubing.
 
 Ryubing names only the game module, as `Rabbit_RoApplicationMTFMasterReleaseNX.nss:OFFSET` (main-relative), and `mhguForge:OFFSET`. Plugin NROs show as bare addresses. `mhguForge:0x4af4` is the return address in `forge_plugin_onUpdateHook` after a plugin's `forge_onUpdate`. Forge maps NROs page-aligned, so match the low 12 bits of `PC` and of the return address on the stack against each installed NRO: a call at return address minus 4 whose callee contains `PC`.
 

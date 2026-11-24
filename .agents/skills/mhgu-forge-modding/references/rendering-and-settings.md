@@ -20,7 +20,11 @@ Damage rendering consumes copied model values. It never follows game identities 
 
 Damage Numbers keeps valid damage when impact/camera/projection is unavailable by placing it at display centre with ordinary animation/spacing. Missing position is explicit, while a genuine world origin remains valid. Behind-camera and clipped points are skipped for that frame, not centred. Invalid display dimensions prevent drawing. The viewport aspect guard cannot prove that a same-aspect offscreen camera belongs to the presented frame.
 
-Memory: a plugin's `malloc`/`free` resolve to main's exports, so Forge, every plugin, ImGui and the game share one heap. Forge's NVN backend keeps each ImGui texture twice, its RGBA32 pixels and a GPU pool from `aligned_alloc` (`source/forge/graphics/allocator.cpp`), so a texture costs 8 bytes a texel of that heap, and ImGui bakes every font size used into Forge's shared glyph atlas for the session. The backend frees a texture in `WantDestroy` once `UnusedFrames` > 0 (`imgui_impl_nvn.cpp`), and ImGui counts `UnusedFrames` only for its own atlases: a plugin freeing a user texture sets both itself, after the frames that drew it, then unregisters and destroys it once the status reads `Destroyed` (WishFinder `welcome::release`).
+Memory: a plugin's `malloc`/`free` resolve to main's exports, so Forge, every plugin, ImGui and the game share one heap.
+
+Forge's NVN backend keeps each ImGui texture twice: its RGBA32 pixels and a GPU pool from `aligned_alloc` (`source/forge/graphics/allocator.cpp`). So a texture costs 8 bytes a texel of that heap. ImGui also bakes every font size used into Forge's shared glyph atlas for the session.
+
+The backend frees a texture in `WantDestroy` once `UnusedFrames` > 0 (`imgui_impl_nvn.cpp`), but ImGui counts `UnusedFrames` only for its own atlases. So a plugin freeing a user texture sets both itself, after the frames that drew it. It then unregisters and destroys the texture once the status reads `Destroyed` (WishFinder `welcome::release`).
 
 ## Fonts and text fit
 

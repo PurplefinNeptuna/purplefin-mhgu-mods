@@ -70,7 +70,17 @@ Classify GMD format before conversion. npm gmd 0.2.0 dropped 19 metadata fields 
 
 Native fonts pair GFD glyph mapping/metrics with TEX atlas pages. Altering page images without updating Unicode/page/position/advance/size data breaks text. The offline font tutorial describes packed glyph fields and layout adjustments. Validate the real header and entry stride before editing. Larger glyphs can require companion line/window textures. Preserve language and controller prompts while merging font assets.
 
-The item icon atlas `GUI\99_texture\HD_cmn_icon_GSM_NOMIP` is in every language's `<lang>/arc/resident_<lang>.arc` (type `0x241f5deb`): grey RGBA8 art in the `rTexture` and block-linear layouts of [File layouts](file-formats.md#file-layouts). The base game's is 512x1024 (2,097,176 bytes unpacked); a replaced atlas can be 1024x2048 (8 MiB), so never assume the size. It holds each icon twice, 32-texel cells from the top (`mIconType`, ten to a row) and 48-texel cells from y 416 in the same order, all scaled with the width; checked on cells 2, 13, 21 and 36 at both sizes. Some cells are drawn differently per language: cell 9 (ore) in German, Italian and Spanish. BC formats tile 4x4 blocks (8 bytes BC1, 16 bytes BC3): `HD_questCounter_BM_NOMIP` (1024x1024), `HD_lobby00_BM_NOMIP`, `HD_window_BM_MQ_NOMIP` and `HD_custom_pnl2_BM_NOMIP` (512x512) are BC3 in `resident_eng.arc`, decoded and checked by eye. GMD text tables (layout in the table below): `resident_<lang>.arc` `weapon13MsgData`, `itemData`, `CommonMsg` and `StartMenuMsg` have the same string count in all seven languages, so an index names the same text in each (`CommonMsg` 0 is the price format `%dz`; a `weapon13MsgData` without the language suffix is a different 4-string table). Quest names are string 0 of `loc/arc/quest/*.arc` `<lang>\quest\questData\questData_<id 7 digits>_<lang>`. Logical GUI atlas coordinates need not equal physical HD pixels. Preserve texture descriptors, format, dimensions, mip/swizzle/platform requirements and alpha. DDS/PNG export alone does not prove a valid reinjected TEX. Compare unchanged roundtrip and then verify the edited in-game consumer.
+The item icon atlas `GUI\99_texture\HD_cmn_icon_GSM_NOMIP` is in every language's `<lang>/arc/resident_<lang>.arc` (type `0x241f5deb`): grey RGBA8 art in the `rTexture` and block-linear layouts of [File layouts](file-formats.md#file-layouts). The base game's is 512x1024 (2,097,176 bytes unpacked); a replaced atlas can be 1024x2048 (8 MiB), so never assume the size.
+
+It holds each icon twice: 32-texel cells from the top (`mIconType`, ten to a row), and 48-texel cells from y 416 in the same order. All are scaled with the width. Checked on cells 2, 13, 21 and 36 at both sizes. Some cells are drawn differently per language: cell 9 (ore) in German, Italian and Spanish.
+
+BC formats tile 4x4 blocks (8 bytes BC1, 16 bytes BC3): `HD_questCounter_BM_NOMIP` (1024x1024), `HD_lobby00_BM_NOMIP`, `HD_window_BM_MQ_NOMIP` and `HD_custom_pnl2_BM_NOMIP` (512x512) are BC3 in `resident_eng.arc`, decoded and checked by eye.
+
+GMD text tables (layout in the table below): `resident_<lang>.arc` `weapon13MsgData`, `itemData`, `CommonMsg` and `StartMenuMsg` have the same string count in all seven languages. So an index names the same text in each. `CommonMsg` 0 is the price format `%dz`. A `weapon13MsgData` without the language suffix is a different 4-string table.
+
+Quest names are string 0 of `loc/arc/quest/*.arc` `<lang>\quest\questData\questData_<id 7 digits>_<lang>`. Logical GUI atlas coordinates need not equal physical HD pixels. Preserve texture descriptors, format, dimensions, mip/swizzle/platform requirements and alpha. DDS/PNG export alone does not prove a valid reinjected TEX.
+
+Compare unchanged roundtrip and then verify the edited in-game consumer.
 
 ## Models, gameplay tables, and audio
 
@@ -91,4 +101,6 @@ An encoded tone/header check establishes encoding, not music-loop/STQR correctne
 
 ## Tool limits and evidence
 
-`START_TOOLS.sh` and `scripts/tool.sh` own launcher commands. Pax browses ARC/textures, ImHex edits bytes, Revil converts supported formats, GIMP edits imagery, Blender inspects models, and Audacity edits audio. 010Editor `.bt` files are format references for ImHex, not executable ImHex templates. Private runtimes avoid changing host packages: Kuriimu2's matching .NET 3.1.32 starts its GUI, while a .NET 9 substitution crashed it; ImHex requires its private 0700 runtime path; Pax uses private LLVM 19 libraries. In another environment re-establish prerequisites rather than copying absolute paths.
+`START_TOOLS.sh` and `scripts/tool.sh` own launcher commands. Pax browses ARC/textures, ImHex edits bytes, Revil converts supported formats, GIMP edits imagery, Blender inspects models, and Audacity edits audio. 010Editor `.bt` files are format references for ImHex, not executable ImHex templates.
+
+Private runtimes avoid changing host packages: Kuriimu2's matching .NET 3.1.32 starts its GUI, while a .NET 9 substitution crashed it; ImHex requires its private 0700 runtime path; Pax uses private LLVM 19 libraries. In another environment re-establish prerequisites rather than copying absolute paths.

@@ -24,13 +24,39 @@ Three classes share the base `uUIStartMenu` (1,712 bytes, vtable `0x177adac`): v
 | 0x78 | `0x79119c` / `0x6783bc` | Close the open page; run at level 3 by close-all `0x66ffb4` (+). Hunter's Notes' case is `0x678598`, the pouch page's `0x671a04` |
 | 0x68 | `0x790414` / `0x677ee0` | Run the open page each frame: returns 0 to stay, 2 to go back to the submenu (B path: `0x54f260(0, 2)`, return 2), after which the base update calls slots 0xb0 and 0x9c again |
 
-Opening: on A (`0x66fc30`) slot 0x98 runs, then +0x50 = row, +0x58 = 0, and slot 0x68 runs the page until it returns nonzero. Lobby slot 0x68 jumps by +0x4c; index 5 goes to the shared `0x676528`, whose open step `0x67655c` clamps the row (`if (+0x50 >= 6) +0x50 = 0`), so a seventh row opens Control Type unless the runner is replaced for it. Rows 0..4 then show page object slot `19 + row` (`0x65cbe8`); row 5 is the Manual. A forced close is +0x38 = 3 in update `0x66ed24`; the base update hides objects 0 and 1 through `0x56dfac` on entering level 3 (that this is "hide" is inference).
+Opening: on A (`0x66fc30`) slot 0x98 runs, then +0x50 = row, +0x58 = 0, and slot 0x68 runs the page until it returns nonzero. Lobby slot 0x68 jumps by +0x4c. Index 5 goes to the shared `0x676528`, whose open step `0x67655c` clamps the row (`if (+0x50 >= 6) +0x50 = 0`). So a seventh row opens Control Type unless the runner is replaced for it. Rows 0..4 then show page object slot `19 + row` (`0x65cbe8`); row 5 is the Manual. A forced close is +0x38 = 3 in update `0x66ed24`; the base update hides objects 0 and 1 through `0x56dfac` on entering level 3 (that this is "hide" is inference).
 
 Submenu object: slot 2 is `cUIOSMenuSub` (vtable `0x1776488`), wired with +0x54 = menu+0xb0 in the lobby create `0x78f784`. Its slot 0x48 (`0x62c8f0`) binds 7 row panels (instances 0x12..0x18, animation 0x1b), and draw loop `0x62c4d4` shows as many rows as the cursor holds (cursor slot 0x30), reading each enabled byte. A seventh row draws (run).
 
-Page runners by top index (lobby slot 0x68's table at `0x790474`): 0 `0x671954` (Item Pouch), 1 `0x671a0c`, 2 `0x67271c`, 3 `0x6728a8`, 4 `0x674e9c`, 5 `0x676528` (Hunter's Notes), 6 `0x7904b4`, 7 `0x790658`, 8 `0x7907b4`, 9 `0x672b98`, 10 `0x67443c` (Equipment), 11 `0x674b98`, 12 `0x790920`, 13 `0x67497c`, 14 `0x674da0`, 15 `0x7909e0`.
+Page runners by top index (lobby slot 0x68's table at `0x790474`):
 
-Page objects built by the base create (slot 0x48, `0x66e6dc`), by slot: 1 cUIOSMenuDownTop, 4 cUIOItemPouch, 5 cUIOMix, 6 cUIOMixList, 7 cUIOQuestInfo, 8 cUIOStatus, 9 cUIOOtodokeSetStatus, 0xa cUIOEquipList, 0xb cUIOEquipDetail, 0xc..0xf Palico objects, 0x10 cUIOPanelCustomize, 0x12 cUIOChatFixedPharase, 0x13 cUIOHunterNoteStandard, 0x14 cUIOHNActivityMemo, 0x15 cUIOHunterNoteTips, 0x16 cUIOHunterNoteMonsterList, 0x17 cUIOHunterNoteWeaponGuide, 0x18..0x1b their Low panels, 0x1e cUIOActionList, 0x1f cUIOOptionWindowForGame. Slot to DTI comes from each create call's GOT load. Page runners show and hide them through `0x65cba0(menu, slot)` / `0x65cbc4`.
+| Index | Runner | Index | Runner |
+| --- | --- | --- | --- |
+| 0 | `0x671954` (Item Pouch) | 8 | `0x7907b4` |
+| 1 | `0x671a0c` | 9 | `0x672b98` |
+| 2 | `0x67271c` | 10 | `0x67443c` (Equipment) |
+| 3 | `0x6728a8` | 11 | `0x674b98` |
+| 4 | `0x674e9c` | 12 | `0x790920` |
+| 5 | `0x676528` (Hunter's Notes) | 13 | `0x67497c` |
+| 6 | `0x7904b4` | 14 | `0x674da0` |
+| 7 | `0x790658` | 15 | `0x7909e0` |
+
+Page objects built by the base create (slot 0x48, `0x66e6dc`), by slot:
+
+| Slot | Object | Slot | Object |
+| --- | --- | --- | --- |
+| 1 | cUIOSMenuDownTop | 0x10 | cUIOPanelCustomize |
+| 4 | cUIOItemPouch | 0x12 | cUIOChatFixedPharase |
+| 5 | cUIOMix | 0x13 | cUIOHunterNoteStandard |
+| 6 | cUIOMixList | 0x14 | cUIOHNActivityMemo |
+| 7 | cUIOQuestInfo | 0x15 | cUIOHunterNoteTips |
+| 8 | cUIOStatus | 0x16 | cUIOHunterNoteMonsterList |
+| 9 | cUIOOtodokeSetStatus | 0x17 | cUIOHunterNoteWeaponGuide |
+| 0xa | cUIOEquipList | 0x18..0x1b | their Low panels |
+| 0xb | cUIOEquipDetail | 0x1e | cUIOActionList |
+| 0xc..0xf | Palico objects | 0x1f | cUIOOptionWindowForGame |
+
+Slot to DTI comes from each create call's GOT load. Page runners show and hide them through `0x65cba0(menu, slot)` / `0x65cbc4`.
 
 Input inside a page: the menu view of `sFestaPad` (pressed +0x6bfc, repeat +0x6c34), page left/right through `0x65f8c4`/`0x65f914` ([Input and actions](input-and-actions.md)).
 

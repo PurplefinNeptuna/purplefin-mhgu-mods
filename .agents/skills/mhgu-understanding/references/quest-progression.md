@@ -66,7 +66,9 @@ Result routine `0x384af0` calls `0x388d40`, which writes completion with `0x523f
 | C | `0x3ae768` | sQuest+0xb8 bit 19: the 4MMNN family (MM 1..18, NN 1..16) from `0x3b5bb4(id)`, unnamed |
 | D | `0x3a3424` | Request quest: `mRequestVillage` in {5, 6, 7, 8, 12} and `0x54af8c(id, 0xff, 0) != 1` |
 
-The write is at `0x388e40`. Other completion writers: script opcodes 0x33/0x34 in `0x3d17f8`, one fixed quest 0x41d in `0x50d494`, a bulk block in `0x521d4c`. After the write the native follow-up is `0x5106f8` (stores +0x3d4 when newly cleared), `0x50cbd0(…, sUserInfo)`, `0xb91be0`; whether HR-up and unlocks follow from that alone is unknown (`work/urgent-share/FINDINGS.md`). `0x388d40` is called unconditionally from `0x384af0` (+0x49c), and the gate window is `0x388d70..0x388ddc`. The host-only branch in `0x3afd54` uses the same host test (+0xd56/+0xd57). So an online joiner never records a rank-up urgent's clear.
+The write is at `0x388e40`. Other completion writers: script opcodes 0x33/0x34 in `0x3d17f8`, one fixed quest 0x41d in `0x50d494`, a bulk block in `0x521d4c`. After the write the native follow-up is `0x5106f8` (stores +0x3d4 when newly cleared), `0x50cbd0(…, sUserInfo)`, `0xb91be0`; whether HR-up and unlocks follow from that alone is unknown (`work/urgent-share/FINDINGS.md`).
+
+`0x388d40` is called unconditionally from `0x384af0` (+0x49c), and the gate window is `0x388d70..0x388ddc`. The host-only branch in `0x3afd54` uses the same host test (+0xd56/+0xd57). So an online joiner never records a rank-up urgent's clear.
 
 ## Investigate a new quest discrepancy
 

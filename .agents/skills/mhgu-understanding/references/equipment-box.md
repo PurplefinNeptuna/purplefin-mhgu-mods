@@ -10,7 +10,11 @@ the game's decoder `FUN_00b0803c` (`main+0x13f03c`: `ldrh r2, [r1, #4]`, `and r3
 `cmp r2, #23`, `movhi r0, #0`, then `ldrh r2, [r1, #6]`, `b main+0x13c208`) reads the type from the u16 at **+4**
 and the number from **+6**, so types **1..23** are valid, 0 is empty, and the data getter is
 `main+0x13c208(type, number)`. The smithy writes the level into bits 5..9 of that u16 (`and r1, r1, r2` with
-`0xfc1f`, `orr r1, r1, r2, lsl #5` at `main+0x6f9ef8`; `bfi r0, r1, #0, #5` at `main+0x7008e4`). **The level bits count from 0: they hold the shown level minus one.** `main+0x6f9f00` loads the row byte at window `+0x28dd` (row `+9`) and `main+0x6f9f08` shifts it straight into the bits, and in the tester's save (`system`, read-only, 44-byte records at 0x192fd2..0x1931ee) the six weapons they listed at shown levels 5, 6, 5, 3, 4 and 2 hold 4, 5, 4, 2, 3 and 1. So a level-1 weapon holds 0 with a non-zero type, and the row byte counts from 0 too: saved upgrade keys hold 1 and 6 where the matching process rows are levels 2 and 7 (Sage Rod, General's Bayonet; a third saved key, Full Bolt Chamber, matches no row of its table). RomFS `mLevel`, `deriveLv` and the player's display count from 1.
+`0xfc1f`, `orr r1, r1, r2, lsl #5` at `main+0x6f9ef8`; `bfi r0, r1, #0, #5` at `main+0x7008e4`).
+
+**The level bits count from 0: they hold the shown level minus one.** `main+0x6f9f00` loads the row byte at window `+0x28dd` (row `+9`), and `main+0x6f9f08` shifts it straight into the bits. The tester's save (`system`, read-only, 44-byte records at 0x192fd2..0x1931ee) agrees. The six weapons they listed at shown levels 5, 6, 5, 3, 4 and 2 hold 4, 5, 4, 2, 3 and 1.
+
+So a level-1 weapon holds 0 with a non-zero type, and the row byte counts from 0 too. Saved upgrade keys hold 1 and 6 where the matching process rows are levels 2 and 7 (Sage Rod, General's Bayonet). A third saved key, Full Bolt Chamber, matches no row of its table. RomFS `mLevel`, `deriveLv` and the player's display count from 1.
 `cFestaEquip::reset` (`main+0xdac14`) and `::assign` (`main+0xdadf0`: `bfi r3, r2, #0, #5` type bits 0..4, `lsr r2,
 r2, #5` + `bfi r3, r2, #5, #5` level bits 5..9, `movw r2, #0x83ff` keeps bit 15 of the destination, then copies `+6`,
 `+8`, `+10`, `+12`, `+14` and 24 bytes from `+16`) keep bit 15. The array base is **+0x1c**, from the slot getter

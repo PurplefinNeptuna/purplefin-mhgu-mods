@@ -18,13 +18,31 @@ Size/AutoScale updates also need title +0xf0 bit 16 to rebuild glyph caches. Par
 
 The resource theme audit traces Gathering Green `#006305` and objective Red `#A30000` to native properties. The objective instance overrides its shared Message template. Slaying category Red `#CC0000` is a separate colour.
 
-Message text (`cGUIObjMessage`, set through `0x547564`, as `0x56fc28`, `0x56e808` and `0x56ea08` do): a `\r\n` breaks the line, as quest GMD text does (`questData_*`); a text runs past its layout `Size` instead of clipping (`counter_down` `Mes_name01`, sized for one line, drew eleven lines; run); `<COL RRGGBBAA>...</COL>` in a plain string colours it (`<COL 4E320BFF>` gave the panel's value brown in a label, run; DialogMsg 99 uses the same tag). A `TexSet` object (type `0x4f7228fc`) draws several boxes from one texture as one object, so one of its bands cannot be hidden alone: its record's word at +32 is an offset into the float section named by header word 280, where the boxes are (x0, y0, x1, y1) after an 8-byte lead (`menu_questconfirm`: page 3's two bands (0, 0, 426, 34) and (0, 80, 426, 114), page 2's `TexSet_bg2` (0, 0, 426, 34) alone; the format is read off these records, inference for others).
+Message text is `cGUIObjMessage`, set through `0x547564`, as `0x56fc28`, `0x56e808` and `0x56ea08` do.
 
-Reward screen frames: layout setup `0x623a6c` starts sequence `0xf4242` plus a variant on the group's background root (`0x56e538` -> `0x546c74` -> root `0xa3896c`, which restarts only on a different ID); that colours Base rows red and Wound/Cap rows blue. A Base frame's corners hold `0xa02337dc` (R 0xdc, G 0x37, B 0x23, alpha 0xa0) over a light texture, so a white vertex colour shows the texture itself. The cursor's yellow cell comes from a path not yet read. Shaders: `root.arc` holds one shader resource of 58,841,740 bytes unpacked (ARC sizes are the low 29 bits of the flags, `flags & 0x1fffffff`); loader `0xce1fbc` checks SPK magic, version 0x26 and shader version `0xb2d34c60`. The exact GUI vertex program and constant-buffer bindings are unresolved.
+- A `\r\n` breaks the line, as quest GMD text does (`questData_*`).
+- A text runs past its layout `Size` instead of clipping. `counter_down` `Mes_name01`, sized for one line, drew eleven lines (run).
+- `<COL RRGGBBAA>...</COL>` in a plain string colours it. `<COL 4E320BFF>` gave the panel's value brown in a label (run), and DialogMsg 99 uses the same tag.
 
-Reward world-quad helper `0xa4b390` combines anchors +0xa0, size +0xb4, matrix +0x10, direction bit 0x40 at +0x56, and hard-VFP scale s0. A scissor mask's enter calls the same builder with its own node and its +0xa8/+0xac size, so its box starts at its own +0x40/+0x44 translation. Scissor `0xa37c1c` applies draw offsets/scales and viewport intersections, writes the render target's scissor at target +0xe4..+0xf0 and stores the request at context +0xd0..+0xdc (one Eden run read the box at x1.5 there); sentinel fallback is at `0xbc12d8..0xbc1364`. A computed world quad does not establish framebuffer coordinates. The exact shader/constant-buffer route remained unresolved in that experiment.
+A `TexSet` object (type `0x4f7228fc`) draws several boxes from one texture as one object, so one of its bands cannot be hidden alone. Its record's word at +32 is an offset into the float section named by header word 280. There the boxes are (x0, y0, x1, y1) after an 8-byte lead. In `menu_questconfirm`, page 3 has two bands (0, 0, 426, 34) and (0, 80, 426, 114), and page 2's `TexSet_bg2` has (0, 0, 426, 34) alone. The format is read off these records and is inference for others.
 
-For screen-space work: texture draw `0xa4fc9c` reaches `0xa4fe50` after it builds a quad's vertices. GUI publishers `0xa4eb9c` and `0xa3e3b0` supply model matrices and `0xa397d4` the globals (CBGUIMatrix 0x2d7, CBGUIGlobal 0x2d6 at renderer +0x18bc/+0x18b4). The sentinel rectangle is read through relocated GOT main+`0x183f2b0` (offline main+`0x191eaa0`). The game's NVN present wrapper ends at `0x86a330` (`mov r0,r12; bx r3`); `0x86a28c` records the acquired resource at owner +0x48cc, whose NVN texture is resource +0x3c. Downsample gateways `0xbbfb08`/`0xbbfb44` (GOT main+`0x18418f8`) never ran for reward geometry. A reward frame's per-vertex setter `0xa4e0b8` stores +0xa4 + 4 * vertex and marks the quad dirty, and nothing rewrites a frame's colour until the next reward screen.
+Reward screen frames: layout setup `0x623a6c` starts sequence `0xf4242` plus a variant on the group's background root (`0x56e538` -> `0x546c74` -> root `0xa3896c`, which restarts only on a different ID); that colours Base rows red and Wound/Cap rows blue.
+
+A Base frame's corners hold `0xa02337dc` (R 0xdc, G 0x37, B 0x23, alpha 0xa0) over a light texture, so a white vertex colour shows the texture itself. The cursor's yellow cell comes from a path not yet read.
+
+Shaders: `root.arc` holds one shader resource of 58,841,740 bytes unpacked (ARC sizes are the low 29 bits of the flags, `flags & 0x1fffffff`); loader `0xce1fbc` checks SPK magic, version 0x26 and shader version `0xb2d34c60`. The exact GUI vertex program and constant-buffer bindings are unresolved.
+
+Reward world-quad helper `0xa4b390` combines anchors +0xa0, size +0xb4, matrix +0x10, direction bit 0x40 at +0x56, and hard-VFP scale s0. A scissor mask's enter calls the same builder with its own node and its +0xa8/+0xac size, so its box starts at its own +0x40/+0x44 translation.
+
+Scissor `0xa37c1c` applies draw offsets/scales and viewport intersections, writes the render target's scissor at target +0xe4..+0xf0 and stores the request at context +0xd0..+0xdc (one Eden run read the box at x1.5 there); sentinel fallback is at `0xbc12d8..0xbc1364`. A computed world quad does not establish framebuffer coordinates.
+
+The exact shader/constant-buffer route remained unresolved in that experiment.
+
+For screen-space work: texture draw `0xa4fc9c` reaches `0xa4fe50` after it builds a quad's vertices. GUI publishers `0xa4eb9c` and `0xa3e3b0` supply model matrices and `0xa397d4` the globals (CBGUIMatrix 0x2d7, CBGUIGlobal 0x2d6 at renderer +0x18bc/+0x18b4). The sentinel rectangle is read through relocated GOT main+`0x183f2b0` (offline main+`0x191eaa0`).
+
+The game's NVN present wrapper ends at `0x86a330` (`mov r0,r12; bx r3`); `0x86a28c` records the acquired resource at owner +0x48cc, whose NVN texture is resource +0x3c. Downsample gateways `0xbbfb08`/`0xbbfb44` (GOT main+`0x18418f8`) never ran for reward geometry.
+
+A reward frame's per-vertex setter `0xa4e0b8` stores +0xa4 + 4 * vertex and marks the quad dirty, and nothing rewrites a frame's colour until the next reward screen.
 
 Verify constructor, setters, material dispatch, quad output, traversal, and destruction using original ARM bodies. GPU doubles prove no actual pixels/clipping.
 

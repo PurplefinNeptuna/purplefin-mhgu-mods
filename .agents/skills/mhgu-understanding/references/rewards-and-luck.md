@@ -44,7 +44,16 @@ per slot it fills (inference from the slot counts above), and the forced first e
 
 UI builder `0x3874e0` copies generated four-byte `(u16 item, u16 amount)` entries. Audited copy windows begin `0x3875bc`, `0x3878e0`, `0x387b00`, `0x388084`, targeting known player arrays/indices. Item IDs can repeat with different quantities. Attribution uses observed generation, exact caller/copy destination, snapshots, and index, not a search for the first matching ID.
 
-The four copies, with their end (exclusive), source register and destination: `0x3875bc..0x387680` r7 to `*(ui+0x5c)` slots 0..7 and `0x3878e0..0x3879a4` r7 to the same (both after main wrapper `0x381d30`); `0x387b00..0x387bc4` r6 to `*(ui+0x5c)+32` slots 8..15 (direct main generation); `0x388084..0x388144` r5 to `*(ui+0x64)+32` slots 8..15 (after secondary `0x382e1c`). State 1's `0x384af0` can grow the main reward array to 16 or 48 entries before its call `0x384fc0` reaches builder `0x3874e0`; copy loops `0x384bf0..0x384c24` and `0x384c7c..0x384cb0` keep indices, then free the old allocation.
+The four copies, with their end (exclusive), source register and destination:
+
+| Copy | Source | Destination | After |
+| --- | --- | --- | --- |
+| `0x3875bc..0x387680` | r7 | `*(ui+0x5c)` slots 0..7 | main wrapper `0x381d30` |
+| `0x3878e0..0x3879a4` | r7 | the same | main wrapper `0x381d30` |
+| `0x387b00..0x387bc4` | r6 | `*(ui+0x5c)+32` slots 8..15 | direct main generation |
+| `0x388084..0x388144` | r5 | `*(ui+0x64)+32` slots 8..15 | secondary `0x382e1c` |
+
+State 1's `0x384af0` can grow the main reward array to 16 or 48 entries before its call `0x384fc0` reaches builder `0x3874e0`; copy loops `0x384bf0..0x384c24` and `0x384c7c..0x384cb0` keep indices, then free the old allocation.
 
 Native list copy `0x623c08` copies min(source count, capacity) by index. Items are inline at list +0x60; that field is not an item-array pointer. Flags at +0x120 come from a separate descriptor. Result update `0x384848` observes reward states 2..5 at +0x3c; departure/destruction invalidates provenance. If array growth frees the old allocation, snapshot before original execution and verify the new prefix without rereading freed memory.
 

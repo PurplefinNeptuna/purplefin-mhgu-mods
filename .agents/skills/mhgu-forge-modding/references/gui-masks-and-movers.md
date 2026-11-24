@@ -46,7 +46,11 @@ Unread: what writes `sGUI`+`0x1c`, so whether `0xb38004` does anything at runtim
 
 Draw slot 0x3c (main+`0xa4fc9c`) calls `0xa4feb4`, which copies the UVs from +`0x10c..+0x118` and the corner colours from +`0xa4..+0xb0` into the vertex record only while `global+0x98 & (+0xc0 >> 24) & 7` is nonzero, then clears those bits. Only slot 0x50 (main+`0xa4fc68`) sets them.
 
-So use the setter. `mTextureRect` `0xa4fb58(node, *f32[4])` returns at once when the floats match, otherwise stores them, calls slot 0x28 when `+0x108 & 0x30`, and tail-calls slot 0x50. Calling it every frame is cheap. A raw write to +`0x10c` reads back perfectly and never repaints: the copy kept the band the first build left while a read-back showed the write landing on all 73 fill lines. Inference: raw colour writes after the first build are inert the same way, so use the `VertexColor*` setters. Position and authored-size writes after the build were also inert (`pos=90.0 0.0 size=0.7 24.0` with `rect=110 38 238 166`, mechanism unread), so move geometry with a mask.
+So use the setter. `mTextureRect` `0xa4fb58(node, *f32[4])` returns at once when the floats match, otherwise stores them, calls slot 0x28 when `+0x108 & 0x30`, and tail-calls slot 0x50. Calling it every frame is cheap.
+
+A raw write to +`0x10c` reads back perfectly and never repaints: the copy kept the band the first build left while a read-back showed the write landing on all 73 fill lines. Inference: raw colour writes after the first build are inert the same way, so use the `VertexColor*` setters.
+
+Position and authored-size writes after the build were also inert (`pos=90.0 0.0 size=0.7 24.0` with `rect=110 38 238 166`, mechanism unread), so move geometry with a mask.
 
 ## HUD movers (gu-native and UIScale)
 
@@ -106,6 +110,6 @@ The sharpness gauge's row lasts a quest (inference, see Lifecycle in [the gauge'
 
 ## The sharpness gauge's measured cut and fill
 
-The bar's length is the fill inside the band its points sit in: `(current - floor) * 10_000 / (ceiling - floor)`, `floor` the top of the tier below (0 in tier 0) and `ceiling` the top of this tier clipped to `mMaxSharpness`, so the bar refills at every colour and a raised maximum reads full partway through its tier. Publish that fill directly: "the need is approximation, so jumpy is okay, no need for fancy smooth animations or lerp" (tester). Colour comes from the game, and a ratio can never pick the tier.
+The bar's length is the fill inside the band its points sit in: `(current - floor) * 10_000 / (ceiling - floor)`. Here `floor` is the top of the tier below (0 in tier 0), and `ceiling` is the top of this tier clipped to `mMaxSharpness`. So the bar refills at every colour, and a raised maximum reads full partway through its tier. Publish that fill directly: "the need is approximation, so jumpy is okay, no need for fancy smooth animations or lerp" (tester). Colour comes from the game, and a ratio can never pick the tier.
 
 Not derived from the atlas. The accepted cut runs 128 to 200 px on the 110..238 rect, the tester's measurement, carried as offsets 18 and 90 of the rect's 128. The ink measured 124..200 px on screen, with a few px of noise from downscaled screenshots.

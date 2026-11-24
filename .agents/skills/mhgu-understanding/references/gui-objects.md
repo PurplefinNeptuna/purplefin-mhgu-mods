@@ -73,8 +73,28 @@ Flag word +0x54, read from the bytes on 2026-11-01. The constructor default `0x0
 | 22 | Byte +0x56 bit 6. The texture's enter skips its scissor branch when set (`0xa4e670`). |
 | 25 | Drawable. The walker emits enter and exit records on it; byte +0x57 bit 1 is the same bit. |
 
-Code map for HUD rows: walker `0xa494a0` is called by `bl` from `0xa39664` (instance draw `0xa39300`) and tail-branched from `0xa56a20`; controller setup `0xa49b28`; mask enter `0xa4ba94` (vtable word `0x178fb3c`) and exit `0xa4bcdc` (`0x178fb44`, restores the clip saved at +0xc0..+0xcc); mask Enable `0xa4ba20` and Size `0xa4ba40`; linkers `0xa48460`/`0xa4844c` (called from `0xa38dd8`/`0xa38dfc`); destructors: root `0xa486fc` (frees the cache, then its child chain), mask `0xa56758`; mask factory `0xa4b6cc` via the class table at `0x178ff04`; texture vtable slots 0x00 `0xa4f6a4` (not a constructor), 0x04 `0xa4f77c`, 0x38 `0xa4e628`, 0x74 `0xa4f420`. A row's map is allocated in `FUN_01401bc0` (allocation `0xa38c14`) and freed in `setAnimationId` (`0xa38880`, `0xa382c8`) through GOT slot `0x18422b4` (DTI registered as `cGUIInstance` at `0xa3c03c`).
+Code map for HUD rows:
+
+| Part | Address |
+| --- | --- |
+| Walker | `0xa494a0`, called by `bl` from `0xa39664` (instance draw `0xa39300`) and tail-branched from `0xa56a20` |
+| Controller setup | `0xa49b28` |
+| Mask enter | `0xa4ba94` (vtable word `0x178fb3c`) |
+| Mask exit | `0xa4bcdc` (`0x178fb44`); restores the clip saved at +0xc0..+0xcc |
+| Mask Enable, Size | `0xa4ba20`, `0xa4ba40` |
+| Linkers | `0xa48460`/`0xa4844c`, called from `0xa38dd8`/`0xa38dfc` |
+| Root destructor | `0xa486fc`; frees the cache, then its child chain |
+| Mask destructor | `0xa56758` |
+| Mask factory | `0xa4b6cc`, via the class table at `0x178ff04` |
+| Texture vtable slots | 0x00 `0xa4f6a4` (not a constructor), 0x04 `0xa4f77c`, 0x38 `0xa4e628`, 0x74 `0xa4f420` |
+
+A row's map is allocated in `FUN_01401bc0` (allocation `0xa38c14`) and freed in `setAnimationId` (`0xa38880`, `0xa382c8`) through GOT slot `0x18422b4` (DTI registered as `cGUIInstance` at `0xa3c03c`).
 
 Draw block prefix: a row with sequences starts its draw block (root +0xa4) with `sequences * 12` bytes of animation tracks. Row setup loads the block at `0xa38cfc`, and `0xa484c4` stores each object's slice at +0x64 and the object's address at +8 of each track. Row update `0xa4915c` walks the first `row+4` map entries and, for an object with bit 23, evaluates its tracks through +0x64 at `0xb349c0` (freed under it: crash at `0xb349c0` from `0xa49238`/`0xa4923c`).
 
-Pitfalls read from the bytes and runs: vtable words are already main-relative (`0x85628`, `0x86420`, `0x866a4`, `0x8677c` are the Ghidra base subtracted by mistake); flag `0x00400000` is byte +0x56 bit 6, the walker's exit clears bit 18 (`0xfffbffff`), byte +0x57 bit 1 is drawable bit 25, and word index +0x33 is +0xcc (`Mask`), not a kind word; magenta is symmetric, so prove colour order with an asymmetric colour (the sharpness bar's yellow `0xff5efaff` shows `0xAABBGGRR`); a build that wrote a texture quad every frame also faulted in the game's own update (`strb r1,[r4,#0xcb00]` at `0x1014604`, r4 = 0, from `0xf28238`), mechanism unread.
+Pitfalls read from the bytes and runs:
+
+- Vtable words are already main-relative. `0x85628`, `0x86420`, `0x866a4`, `0x8677c` are the Ghidra base subtracted by mistake.
+- Flag `0x00400000` is byte +0x56 bit 6, and the walker's exit clears bit 18 (`0xfffbffff`). Byte +0x57 bit 1 is drawable bit 25. Word index +0x33 is +0xcc (`Mask`), not a kind word.
+- Magenta is symmetric, so prove colour order with an asymmetric colour. The sharpness bar's yellow `0xff5efaff` shows `0xAABBGGRR`.
+- A build that wrote a texture quad every frame also faulted in the game's own update: `strb r1,[r4,#0xcb00]` at `0x1014604`, r4 = 0, from `0xf28238`. The mechanism is unread.
