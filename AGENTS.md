@@ -188,6 +188,9 @@ describe the project as it is now, not how it got here.
 
 The pre-commit hook refuses per-run and dated headings, files over these sizes, and the history
 checks in `scripts/doc_rules.py` (current-state length, version chains, previous-release history, long table cells).
+In `.agents/skills/` it also refuses a sentence over 40 words, a line over 600 characters and a title
+repeated as the first section heading. Split a long sentence into short ones, a list or a table, never
+into a chain of clauses.
 
 ## Runtime evidence and installation paths
 
