@@ -26,6 +26,6 @@
   "mods/world-sharpness-gauge/core/tests/behavior.rs": 808,
   "mods/world-sharpness-gauge/scripts/mod_distribution.py": 613,
   "mods/world-sharpness-gauge/src/insert.rs": 1135,
-  "scripts/mod_distribution.py": 751,
+  "scripts/mod_distribution.py": 703,
   "scripts/test_mod_distribution.py": 729
 }
