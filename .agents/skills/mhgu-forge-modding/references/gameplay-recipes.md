@@ -2,7 +2,7 @@
 
 ## Target camera tap (Lock-on Target)
 
-Lock-on Target does what clarkekoko's lock-on and No Target Reticle cheats do with two replacing hooks. The tap logic detour runs the cheat's version for the local hunter: a tap flips a lock flag, and while it is on only bit 0 is raised, every frame. The reticle check `0x190d4` returns 0. Layout and install: `mods/lock-on-target/docs/worked/hooks.md`.
+Lock-on Target does what clarkekoko's lock-on and No Target Reticle cheats do with two replacing hooks. The tap logic detour runs the cheat's version for the local hunter: a tap flips a lock flag, and while it is on only bit 0 is raised, every frame, except while weapon R (`+0x13f4 & 0x65f93c()`) is held. The reticle check `0x190d4` returns 0. Layout and install: `mods/lock-on-target/docs/worked/hooks.md`.
 
 Running the window out every frame (0.001 before the original) also raises bit 24 through the countdown path, and the user found that ruined aiming. The earlier "Lock-on Target V1" cheat gates on `[main+0x184ddc8]` != 0 and writes 5.0 through `[main+0x2126f48]` -> +0x58. It works on Eden only because Eden's cheat engine writes 12 times a second, so the window keeps running out; written every frame, it never fires. The end path `0x5584a0([...])` == 1 clears bit 6 (tail call `0x285ec4`); bit 6 is set at `0x27ee04`.
 
