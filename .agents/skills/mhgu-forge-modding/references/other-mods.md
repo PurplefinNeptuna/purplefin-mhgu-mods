@@ -33,6 +33,16 @@ Source: [WishFinder and other mods](../../../../mods/wishfinder/docs/worked/wish
 
 Replaces weapon crafting, upgrades and armor crafting. It hooks the smithy update `0x6f1ae8` in its `forge_onInit`, only if the entry still has its original bytes. It leaves smithy state 5 and state 7 with +0x5c below 7 to the game. Written in Rust; its wish list, lines, levels and armor pieces live in its image at offsets that move per release (0.50, 0.55, 0.59, 0.60 are mapped). Layout and the update procedure: [the bridge](../../../../mods/wishfinder-mwt-bridge/docs/worked/mwt-bridge.md), `scripts/mwt_layout.py`.
 
+## Free Transmog
+
+Free Transmog 1.7.3 (`free_transmog.nro`) adds a transmog screen to the item box and the smithy. Its `forge_onInit` checks the original first words of every site it hooks, the smithy update `0x6f1ae8` included. On any mismatch it installs no hook at all. A plugin that hooks `0x6f1ae8` must therefore install after it.
+
+- After each smithy update in state 1 it sets the top menu cursor to 5 rows on one page. It also writes its label to row 4 and halfword 9 at window `+0x2d14`.
+- Before the update it takes A at top-menu index 4 for its own screen.
+- A fifth row of ours has to move to the sixth beside it.
+
+Source: [WishFinder and other mods](../../../../mods/wishfinder/docs/worked/wishfinder-other-mods.md#the-smithys-other-owners), read from the NRO.
+
 ## Others
 
 | Mod | What to know | Source |
