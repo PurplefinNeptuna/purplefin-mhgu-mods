@@ -14,7 +14,6 @@
 [submodule "mods/key-quest-markers"]
 	path = mods/key-quest-markers
 	url = https://github.com/PurplefinNeptuna/mhgu-key-quest-markers.git
-	update = none
 [submodule "mods/lock-on-target"]
 	path = mods/lock-on-target
 	url = https://github.com/PurplefinNeptuna/mhgu-lock-on-target.git

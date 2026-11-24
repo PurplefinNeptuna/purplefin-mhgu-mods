@@ -7,14 +7,13 @@ plugins.
 
 ## The mods
 
-Each mod lives in its own repository under `mods/`. Damage Numbers', Lock-on Target's, Please do
-Better's and World Sharpness Gauge's are public; the others aren't yet, so their folders stay empty
-in a clone until each one is published.
+Each mod lives in its own repository under `mods/`. The linked mods in the table are public; the
+others are still private, so their folders stay empty in a clone.
 
 | Mod | What it does |
 | --- | --- |
 | [Damage Numbers](https://github.com/PurplefinNeptuna/mhgu-damage-numbers) | Shows damage numbers at each impact, with physical and elemental damage combined, in Wilds, Rise or Classic style. |
-| Key Quest Markers | Adds Rise-style badges to key and urgent quests, coloured by whether you still need them to progress. |
+| [Key Quest Markers](https://github.com/PurplefinNeptuna/mhgu-key-quest-markers) | Adds Rise-style badges to key and urgent quests, coloured by whether you still need them to progress. |
 | [Lock-on Target](https://github.com/PurplefinNeptuna/mhgu-lock-on-target) | Keeps the target camera on the monster the game targets and hides the target reticle. Tap the target button to turn the lock off, and hold R to aim freely. |
 | Modern Weapon Controls | Moves weapon actions from R to ZR and keeps R for sprinting while sheathed. |
 | Multiplayer Roaming | Lets you visit the villages, the bedrooms, the Palico ranch and the Soaratorium during an online session without leaving it. |
