@@ -15,7 +15,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Damage Numbers | r48 | READY_TO_DISTRIBUTE, release | Runs on MHGU Recomp with Purple-lib r20 |
 | ImGui Meter | r4 | DEVELOPMENT | NOT RUN; r3 cut Eden to 37 fps (r1 ran on MHGU Recomp, unitemized) |
 | Key Quest Markers | r23 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp, unitemized |
-| Lock-on Target | r6 | DEVELOPMENT, candidate | Not run (r5 pulled R aiming on MHGU Recomp); r2 accepted on Eden and MHGU Recomp |
+| Lock-on Target | r6 | READY_TO_DISTRIBUTE, release | MHGU Recomp |
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r16 | READY_TO_DISTRIBUTE, release | Multiplayer, user report; Eden and MHGU Recomp installed |
 | Please do Better | r37 | READY_TO_DISTRIBUTE, release | MHGU Recomp with Purple-lib r17 (r36 registers on Eden too) |
@@ -40,7 +40,7 @@ The rollback for a current build that has no run of its own.
 | --- | --- | --- |
 | Damage Numbers | r48 (r38 on Eden) | `build/damage-numbers/releases/r48/`, `candidates/r47/`, `r42/`, `r38-accepted/` |
 | Key Quest Markers | r23 (r20 before it) | `build/key-quest-markers/releases/r23/`, `candidates/r23/`, `r20/` |
-| Lock-on Target | r2 | `build/lock-on-target/candidates/r2/` |
+| Lock-on Target | r6 (r2 before it) | `build/lock-on-target/releases/r6/`, `candidates/r6/`, `r2/` |
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
 | Multiplayer Roaming | r16 | `build/online-roaming/candidates/r16/` |
 | Please do Better | r37 (r31 on Eden, r30 on Ryubing) | `build/please-do-better/candidates/r37/`, `r31/`, `r30/` |

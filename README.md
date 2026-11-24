@@ -14,7 +14,7 @@ folders stay empty in a clone until a mod's repository is published.
 | --- | --- |
 | Damage Numbers | Shows damage numbers at each impact, with physical and elemental damage combined, in Wilds, Rise or Classic style. |
 | Key Quest Markers | Adds Rise-style badges to key and urgent quests, coloured by whether you still need them to progress. |
-| Lock-on Target | Keeps the target camera locked on the monster the game targets, instead of letting go after one press. |
+| Lock-on Target | Keeps the target camera on the monster the game targets and hides the target reticle. Tap the target button to turn the lock off, and hold R to aim freely. |
 | Modern Weapon Controls | Moves weapon actions from R to ZR and keeps R for sprinting while sheathed. |
 | Multiplayer Roaming | Lets you visit the villages, the bedrooms, the Palico ranch and the Soaratorium during an online session without leaving it. |
 | Please do Better | Gives reward slots granted by Luck a white frame. It can also force Miraculous Luck and multiply item quantities. |
