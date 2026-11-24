@@ -54,6 +54,23 @@ Rules:
   render callback. Split a large build over updates (WishFinder's quest table:
   about 1,850 files over about 232 updates) and show progress.
 
+## Writing into the save
+
+- Keep a plugin's files in its own folder, `savedata:/NAME/` (WishFinder, Skin Loader); never at the save's
+  root. Moving an old root file: read it as a fallback, write it into the folder, delete the root one on save,
+  or MHGU Recomp's `run.sh` copies it back.
+- Writes, directories and space: `nn::fs::CreateDirectory`, `DeleteFile`, `DeleteDirectoryRecursively`,
+  `GetFreeSpaceSize`, then `nn::fs::CommitSaveData`; check the free space before a large write (Skin Loader
+  leaves a skin off below its size plus 1 MiB). Write a stamp file last and commit, so a cut-off write is
+  rebuilt next launch.
+- The save is not mounted while the game's resource loaders run (probed on Eden and MHGU Recomp). To load from it
+  then, hold Forge's counted mount for the session. Forge counts with the game's own counter (`sSavedata
+  +0xf1c`): the game's save routines commit while the count is held and unmount only at 0, so a held count
+  leaves the game's saving alone (Skin Loader r15 to r18).
+- To make the game load a file from the save, use the resource path filter (`sResource +0x13040`, in the
+  understanding [resources reference](../../mhgu-understanding/references/resources-and-tooling.md#how-the-resource-manager-loads-and-shares-files)).
+  Keep it cheap: it runs on every load (Skin Loader's costs 190 instructions on a path it leaves alone).
+
 ## Big entries: stream, cut, drop
 
 An 8 MiB atlas must never sit in memory whole. WishFinder's `inflate_each`
@@ -65,10 +82,16 @@ under 1 MiB in one update.
 
 ## Texts in the game's language
 
-- The game's language is byte `+0xa5` of the session (cell `0x188ca48`,
-  reached through GOT word `0x1838bb4`), as `cQuestData::getMessage` `0x37a2e4` reads it (WishFinder
-  `native.rs` `language`). Values and folder codes are in the understanding
-  resources reference.
+- The game's language is byte `+0xa5` of the session: `*(base + 0x188ca48) + 0xa5`, one load from the cell.
+  `cQuestData::getMessage` `0x37a2e4` reaches the same cell through GOT word `0x1838bb4`, so reading from
+  `0x1838bb4` takes two loads (WishFinder `native::session_language`: `cell(SESSION_CELL)` then `memory::word`).
+  One load from the GOT word reads a static byte that never says Chinese (Skin Loader r17). Values, folder codes
+  and the Korean patch check (scan the GMD strings only) are in the understanding
+  [resources reference](../../mhgu-understanding/references/resources-and-tooling.md#formats-a-plugin-reads).
+- Copy a working reader whole, helpers included, not its constants. Port WishFinder's `session_language` and
+  `imitation::korean` as they are, and test the port on the real tables: a constant pulled out of the helper
+  that dereferences it, and a byte scan in place of the string reader, made Skin Loader r17 show Korean in a
+  Chinese game.
 - Read GMD strings from `resident_<code>.arc` (or the language's own archive)
   by index. Check an index is the same in all seven languages by string count
   before relying on it.
@@ -78,6 +101,25 @@ under 1 MiB in one update.
 - Plugin text of your own goes in per-language files shipped beside the NRO
   (`romfs/nativeNX/plugins/NAME/lang/`), with English compiled in as the
   fallback. Every language ships in the same change.
+
+## CJK text in an ImGui window
+
+Forge's Roboto has no CJK glyphs, and the host fallback fonts differ. Ship a subset of Noto Sans CJK (OFL 1.1,
+license file and credit in the package) beside the NRO, one per language: cut with `pyftsubset` to printable
+ASCII plus every character the language's file shows (Skin Loader `scripts/cjk_fonts.py`: 58 to 83 KB each), and
+have `verify` refuse a font whose cmap lacks one (`scripts/font_cmap.py`, no fontTools needed). Load it on first
+use with `ImFontConfig` flag `NoLoadError` (a missing file returns null instead of asserting), push it with
+`igPushFont(font, 0.0)` around the window, and forget it in `forge_onImGuiInit`, since a new context has none of
+the old fonts. Names from outside the subset (a skin's `skin.json`) show boxes.
+
+## A message once per launch
+
+Skin Loader's notice (`src/notice.rs`) and WishFinder's welcome window: build the text in `forge_onUpdate` when
+the data and the game's language are ready and the player is in the game (local hunter nonzero), and draw it in
+`forge_onImGuiFreeRender`. While it is open, call Purple-lib's `hold_input` every frame so the game ignores the
+buttons and the closing press. Close on a new press of A or Enter read with Forge's input (MHGU Recomp feeds no
+ImGui navigation, [Input](input-and-keybinds.md)); a button already held on the first frame does not count. Pair
+every Begin, table, wrap and font push with its end whatever Begin returns.
 
 ## Turning texture pieces into ImGui textures
 
@@ -105,5 +147,5 @@ Edition's IPS hooks that site and claims only its own ids (WishFinder
 *Other mods in the checked windows*), so check the record's id, size and
 texture word.
 
-Sources: `mods/wishfinder/{DEVELOPMENT.md,src/config.rs,src/settings/mod.rs,src/settings/builds.rs,core/src/quest_build.rs,core/src/texture.rs,core/src/imitation.rs}`,
+Sources: `mods/skin-loader/{DEVELOPMENT.md,src/saved.rs,src/notice.rs,src/language.rs,scripts/cjk_fonts.py}`, `mods/wishfinder/{DEVELOPMENT.md,src/config.rs,src/settings/mod.rs,src/settings/builds.rs,core/src/quest_build.rs,core/src/texture.rs,core/src/imitation.rs}`,
 `mods/damage-numbers/DEVELOPMENT.md` (asset files), `tools/forge-local/source/forge/graphics/imgui_impl_nvn.cpp`.

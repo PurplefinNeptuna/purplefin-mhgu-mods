@@ -131,6 +131,8 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 | Explaining a mismatch with the first story that fits | Find data that would disprove it, then look. "One level low on three weapons, because the weapon in hand is not read" cannot be true of three weapons; a save file showed the field counts from 0. |
 | Mixing bases across a boundary | Game box bits and smithy row `+9` count from 0, RomFS `mLevel` and the screen from 1. Convert once, at the boundary, and say so in the signature's comment. |
 | Calling a plugin API once per item in one update and ignoring the answer | Read the queue size first. An 8-slot mailbox dropped most of a 15-step line, and the success tone still played. |
+| Taking a constant from another mod without the helper that reads it | Port the whole path. Skin Loader took WishFinder's `0x1838bb4` but not its second load, read a static byte, and showed Korean in a Chinese game. Check the skill reference and the game's reader first. |
+| Laying out a Unicorn probe's memory from your own reading of an address | Lay it out from the game's reader (disassembly) or real bytes, and use data a wrong reading would trip on (the base game's English table, whose binary bytes look like Hangul). Skin Loader's probe mirrored the missing load and passed. |
 | Testing a key with a fake that builds the same key | The test agrees with itself. Assert against what the real finish path produces, in the native adapter. |
 | Stretching a rule from the rows it was measured on | "Create row wins" was true at level 1 and wrong for the 127 create rows above it. Run a rule over the whole table and read the branch counts. |
 | Treating an empty search as proof nothing references a function | Run the tool on a known positive first. A broken script's "no `bl` site" stood for weeks. Use `research xref` and `research word`, and check both. |
@@ -149,7 +151,7 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 | ImGui, fonts/textures, damage overlay, INIs, save mounts | [Rendering and settings](references/rendering-and-settings.md) |
 | What differs on Switch, Eden, Ryubing, MHGURecomp and gu-native (instructions, SVCs, ImGui display, input, HUD movers) | [Runtimes](references/runtimes.md) |
 | Forge input, hotkeys, owning a press, the button guide, Forge's menu key, MHGURecomp mouse/keybind calls | [Input and keybinds](references/input-and-keybinds.md) |
-| Reading RomFS files, ARC entries, text and textures from a plugin; turning them into ImGui textures | [Game files at runtime](references/game-files-at-runtime.md) |
+| Reading RomFS files, ARC entries, text and textures from a plugin; writing into the save and loading game files from it; CJK fonts; a one-time message window | [Game files at runtime](references/game-files-at-runtime.md) |
 | Coexisting with Definitive Edition, KatLib/KatSmithy/UIScale, My Weapon Tree, DPS Meter, HD Project and others | [Other mods](references/other-mods.md) |
 | Tests, exports, packaging, legal/support files, commits | [Validation and delivery](references/validation-and-delivery.md) |
 | Failed initialization, logs, historical failures, physical Switch | [Diagnostics](references/diagnostics.md) |

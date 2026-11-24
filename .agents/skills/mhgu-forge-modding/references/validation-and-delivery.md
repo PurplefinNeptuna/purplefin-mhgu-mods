@@ -40,6 +40,8 @@ python3 scripts/mod_distribution.py package NAME
 python3 scripts/mod_distribution.py check
 ```
 
+Packaging a new DEVELOPMENT candidate does not rewrite the `sha256` pins in `payloads`, and `check` does not compare them for a DEVELOPMENT mod: Skin Loader r18's candidate kept r17's NRO and manifest pins until the release packaging. After each candidate package, compare every pin with its staged file, and set them to the bytes that ran before promoting. A `target/` folder inside the mod blocks `./build.sh build` ("Preserving existing target/ or loose NRO"); besides a plain `cargo` run, the editor's rust-analyzer can make one. It is a cargo cache: move it aside, then build.
+
 The full `check` is required before readiness or commit. `--source-only` is not a readiness check. Use mod-local packaging when building an independent export. Follow the current command's help for support refresh options.
 
 A release under `build/NAME/releases/VERSION/` has versioned ZIP, named runtime folder, README.md/HTML/GameBanana HTML, notices text/HTML, manifest, and SHA256SUMS. The ZIP contains README.md beside the named runtime folder. That README matches its adjacent copy. Runtime folders contain payloads only, with `romfs/nativeNX/...`, `exefs/`, or `cheats/<build-id>.txt` directly inside, plus the mod-manager `manifest.json` (format in docs/DEVELOPMENT.md, "Releases"; version rN is `0.N.0`) that every new candidate or release ships and `package` requires (source: `scripts/mod_manifest.py`). HTML, legal notices, receipts, and checksums stay outside the ZIP.

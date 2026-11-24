@@ -49,6 +49,7 @@ build it and extract into the scratchpad.
 | Vtable word / DTI `get`, `set`, `vft` | Already main-relative. Never subtract the Ghidra base from these | Texture slot 0x38 holds `0xa4e628` |
 | Decompiled `param_1[0x38]` on an `int *` | Indexed in words: byte offset = index × 4. Written pointer arithmetic is already in bytes | `param_1[0x38]` is `+0xe0` |
 | Cell 0xNNNN | Main-relative address of a global pointer to a singleton | session cell `0x188ca48` |
+| GOT word 0xNNNN | A word that holds a cell's address: code loads it, then loads the cell, then the object, one load more than from the cell. A plugin reads the cell directly; reading the GOT word once gives the pointer's address, not the object | GOT word `0x1838bb4` holds the address of cell `0x188ca48`; `*(*(0x1838bb4))` is the session |
 | ID / index / row | Object ID, lookup index, table row and resource ID are different numbers; keep them in separate columns | |
 
 ## Rules

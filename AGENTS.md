@@ -81,6 +81,9 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 - **Keys have two ends.** A key built here and compared there: read both ends, for every
   screen or state that reaches the comparison. A test whose fake builds the value proves
   nothing about the real consumer, so drive the compiled producer or real bytes.
+- **Reuse proven paths.** When another mod here already does it (the game's language, the Korean patch, a
+  save cache), read that mod's whole path and the skill reference first, then port the logic, helpers
+  included, never a constant lifted out of it. Test the port on the same real data.
 - **Calls have limits and answers.** Before calling an API in a loop, read its queue depth
   and limits. Check every return value, and report (sound, log, UI) what actually happened.
 - **A measured rule covers what was measured.** State which rows, levels or screens a rule

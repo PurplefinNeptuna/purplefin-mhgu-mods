@@ -108,8 +108,12 @@ them: `mhgu-forge-modding` [Game files at runtime](../../mhgu-forge-modding/refe
 | `rTexture` (TEX) | `TEX\0`, 24-byte header. Byte 13 is the format: `0x07` RGBA8, `0x13` BC1, `0x17` BC3. The word at +8 holds mip count (bits 0..5), width (6..18) and height (19..31). Level 0 follows |
 | Texture layout | Tegra block-linear: GOBs of 64 bytes by 8 rows, 16 GOBs to a block, over texels (RGBA8) or 4x4 blocks (BC) |
 
-Language folders and the game's language byte (session `+0xa5`, read by
-`cQuestData::getMessage` `0x37a2e4`):
+Language folders and the game's language byte: `+0xa5` of the session (sGameControl), the object in cell
+`0x188ca48`. `cQuestData::getMessage` `0x37a2e4` reaches it through GOT word `0x1838bb4`, three loads; its jump
+table at `0x37a310` picks the text slot (`+236` English, `+240` French, `+252` Spanish, `+244` German, `+248`
+Italian, `+256` and `+260` the two Chinese). MHGU Recomp's `MHGU_LANGUAGE` debug switch writes the same byte
+(`runtime/hle/villagehub.c` `GC_LANGUAGE`). The game's own language setting decides it, not the console's:
+Recomp reported `en-US` while the game ran in Traditional Chinese (Skin Loader r17).
 
 | Byte | Folder code |
 | --- | --- |
@@ -121,7 +125,27 @@ Language folders and the game's language byte (session `+0xa5`, read by
 | 8 | `chS` |
 | anything else | `eng` |
 
+The MHGU-Korean patch replaces the English files, so the byte still says English. Tell it apart by the strings
+of `eng\table\CommonMsg_eng` in `eng/arc/resident_eng.arc`: MHGU-Korean 1.0.5 has 142 strings of 198 with a
+Hangul syllable (U+AC00..U+D7A3), the base game none. Scan only the strings (the last `+0x20` bytes): the table's
+binary part reads as U+AFBE at byte 3796 in the base 1.4.0 table and in Modern Weapon Controls' copy, so a
+whole-table byte scan calls every English game Korean (WishFinder `imitation::korean`, Skin Loader
+`lang::korean_table`, both checked on the three real tables).
+
 Atlas facts (both cell sizes, sizes per mod, language differences) are in the Text, fonts, and textures section above. Forge's Roboto has no CJK glyphs; the game's own font is `font_festa.gfd`.
+
+## How the resource manager loads and shares files
+
+- Both loaders, `loadBlocking` `0xbcb0d0` and `loaderHandler` `0xbc74e0`, build `root\mPath.ext` in a 512- or
+  768-byte stack buffer (root: the MtString at `sResource +0x4024`, `\nativeNX` for skin archives, or `+0x4028`)
+  and then call `sResource +0x13040` as `filter(path, *(sResource +0x13044))` before `MtFile` opens it. The game
+  only ever clears that field (`0xbc6e08`), so a plugin can set it to redirect a load; `MtFile::canonicalizePath`
+  `0x8292ec` keeps a `savedata:` prefix, so a file can load from the save. On Eden the resource root read
+  `\resource`. Checked by Skin Loader r15 to r18 on Eden and MHGU Recomp (`mods/skin-loader/src/saved.rs`).
+- `sResource` (cell `0x2126a64`) shares a loaded file by `{crc(path), type}`: the first load of a path wins and
+  later requests get it. Two files with the same internal path cannot both be loaded, so a copy that must sit
+  beside the original (a skin beside the armor it came from) needs its own internal names (Skin Loader
+  `core::convert`).
 
 ## Tool limits and evidence
 
