@@ -110,9 +110,12 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   commit. A skill reference holds facts verified in bytes or a run, each with its source;
   the rest says "inference". Checks for premises, conflicting readings, partial matches
   and failed cross-checks: mhgu-understanding research playbook, step 6.
-- **Versions.** Runtime changes get a new version, and so does any change to what
-  `package` ships, a new data file included. Wire a new payload into build, verify and
-  package only in the phase that ships it. `DISTRIBUTION.json` is authoritative.
+- **Versions.** A change to the runtime (NRO, data files, `manifest.json`, any payload
+  in the mod folder) or to example code gets a new version. A change that touches no
+  code (READMEs, notices, the API book, comments in examples) ships in the current
+  version: `python3 scripts/mod_distribution.py package NAME --refresh-support`. Wire a
+  new payload into build, verify and package only in the phase that ships it.
+  `DISTRIBUTION.json` is authoritative.
 - **manifest.json.** Every new candidate or release ships the mod-manager
   `manifest.json` beside `romfs/`, registered as a payload (format: "Releases" in
   docs/DEVELOPMENT.md; rules: `scripts/mod_manifest.py`); `package` refuses one
