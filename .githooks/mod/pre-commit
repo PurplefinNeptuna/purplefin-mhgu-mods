@@ -5,5 +5,20 @@ set -eu
 root=$(cd "$(dirname "$0")/../.." && pwd)
 git diff --cached --name-only --diff-filter=ACMR -- '*.md' | "$root/scripts/doc_hook.sh"
 git diff --cached --name-only --diff-filter=ACMR -z | xargs -0 -r python3 "$root/scripts/code_rules.py" --staged --repo .
-python3 scripts/mod_distribution.py check --staged
+# The workspace's distribution checker on this repo's index. A mod's own scripts/mod_distribution.py
+# is an older copy that predates rules such as manifest.json, so it is not the one that decides.
+python3 - "$root/scripts" <<'EOF'
+import json, pathlib, sys
+sys.path.insert(0, sys.argv[1])
+import mod_distribution as distribution
+repo = pathlib.Path('.').resolve()
+mod = json.loads((repo / 'mod.json').read_text())['mod']
+# Every staged path here is this mod's, so a commit that stages anything touches it.
+distribution.staged_mods = lambda root: {mod} if any(distribution.staged_names(root)) else set()
+try:
+    records = distribution.check_staged(repo)
+except (ValueError, KeyError, TypeError, OSError) as error:
+    sys.exit(f'Distribution check failed: {error}')
+print(f'PASS: {len(records)} mod records (staged source records)')
+EOF
 git diff --cached --check
