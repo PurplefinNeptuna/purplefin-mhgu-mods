@@ -39,8 +39,7 @@ It appends 223 weapon process steps and 140 armor pieces to the loaded tables
 (17061 rows in WishFinder's table), raises rItemData to 3055 records, adds 39
 quests with stand-in bosses and three stages, and ships no `result.arc`. Read
 tables from the loaded game or the layered RomFS, never from base-game counts.
-Source: `mods/wishfinder/DEVELOPMENT.md` (Other mods in the checked windows,
-Definitive Edition's stand-in quests), `mods/village-quests-in-hub/DEVELOPMENT.md`.
+Source: [WishFinder and other mods](worked/wishfinder-other-mods.md), [its tables](worked/wishfinder-tables.md), [Village Quests in Hub](worked/small-hooks.md).
 
 ## KatLib, KatSmithy and UIScale
 
@@ -82,8 +81,7 @@ No released source; read from their NROs, inis, logs and our runs.
     everything read from that build (draw helpers, tree records, armor cells) is
     in `work/wishfinder-katsmithy-bridge/FINDINGS.md`.
 
-Source: `mods/wishfinder/DEVELOPMENT.md` (The smithy's other owners),
-`mods/world-sharpness-gauge/DEVELOPMENT.md` (Following a rescaled bar, Open items).
+Source: [WishFinder and other mods](worked/wishfinder-other-mods.md), [World Sharpness Gauge](worked/sharpness-gauge.md).
 
 ## My Weapon Tree
 
@@ -92,7 +90,7 @@ update `0x6f1ae8` in its `forge_onInit`, only if the entry still has its
 original bytes. It leaves smithy state 5 and state 7 with +0x5c below 7 to the
 game. Written in Rust; its wish list, lines, levels and armor pieces live in
 its image at offsets that move per release (0.50, 0.55, 0.59, 0.60 are mapped).
-Layout and the update procedure: `mods/wishfinder-mwt-bridge/DEVELOPMENT.md`,
+Layout and the update procedure: [the bridge](worked/mwt-bridge.md),
 `scripts/mwt_layout.py`.
 
 ## Others

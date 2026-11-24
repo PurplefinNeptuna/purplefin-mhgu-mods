@@ -2,7 +2,7 @@
 
 ## Reuse a game screen as a new page
 
-WishFinder's Hunter's Notes row opens the game's Item Pouch screen with its own rows (`mods/wishfinder/DEVELOPMENT.md` section Hunter's Notes has every address). The method:
+WishFinder's Hunter's Notes row opens the game's Item Pouch screen with its own rows ([its page](worked/wishfinder-notes.md) has every address). The method:
 
 - **Add the menu row in the game's own structures.** Hook the fill (write your row after the original), the "has a submenu" sizer (grow the cursor through the game's own resize call), and the help reader. Read each reader's bounds first: the start menu's help reader indexes its array by cursor row with no bound, so write the extra row only when the array really has room.
 - **Run the screen's open and close, never its step**, so nothing refills it from the game's data. The page runner hook replaces the original for your row only, because the game's open step would turn an unknown row into row 0. That makes it the one hook that does not stack under the chaining rule, and only for that row.

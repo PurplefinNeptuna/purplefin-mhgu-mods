@@ -3,7 +3,7 @@
 A bridge is a plugin that reads another plugin's memory and passes what it finds to one
 of ours, when the other plugin has no API. The worked example is
 `mods/wishfinder-mwt-bridge`: it reads My Weapon Tree's wish list and calls WishFinder's
-`sync`, from the table WishFinder hands it. Its DEVELOPMENT.md has the exact layout and the update procedure; this
+`sync`, from the table WishFinder hands it. [Its page](worked/mwt-bridge.md) has the exact layout and the update procedure; this
 page has the method. Prefer an API in the other plugin: a bridge breaks on every release
 of it.
 

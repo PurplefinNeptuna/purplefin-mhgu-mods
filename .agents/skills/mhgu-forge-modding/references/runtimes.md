@@ -55,8 +55,7 @@ Switch, so findings for those two come from source and user reports only. Say so
 What to do:
 
 - **Find your coordinate space once per frame.** Damage Numbers is the worked
-  example (`mods/damage-numbers/DEVELOPMENT.md` sections *Visible crop* and
-  *Projection and centre fallback*): it detects Recomp by the zero
+  example ([crop and projection](worked/damage-view.md)): it detects Recomp by the zero
   `CmdBuffer.Data` after NewFrame, uses Forge's display size there, uses the
   applied crop elsewhere, and when the projection's shape differs from the
   display by more than 2% places the picture as the largest centred rectangle
