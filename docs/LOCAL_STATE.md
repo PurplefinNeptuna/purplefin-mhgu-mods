@@ -22,7 +22,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Purple-lib | r22 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp 0.17 (input hold with game actions) |
 | Purple-lib Tester | r14 | DEVELOPMENT, not for distribution | Not run (8 extra sets); r13 on MHGU Recomp with Purple-lib r20 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
-| Skin Loader | r18 | DEVELOPMENT, candidate (Rust), with a `-fast` package | Not run (r17 showed Korean in a Chinese game); r16 works on Eden and MHGU Recomp (full build); r14 last release |
+| Skin Loader | r18 | READY_TO_DISTRIBUTE, release, with a `-fast` package | MHGU Recomp (full); r16 on Eden too; fast not run since r14 |
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition |
 | WishFinder (was Wishlist) | r143 | DEVELOPMENT, candidate | Not run; r135 the release; r134 accepted on Eden with MHGU Definitive Edition 3.0.0. Needs Key Quest Markers r20+ |
 | WishFinder bridge for My Weapon Tree | r11 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.67 and WishFinder r83 |
@@ -47,7 +47,7 @@ The rollback for a current build that has no run of its own.
 | Purple-lib | r22 | `build/purple-lib/candidates/r22/`, `r21/`, `r20/`, `r19/`, `r18/`, `r17/`, `r16/` |
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
-| Skin Loader | r14 (r13 before it) | `backups/accepted/skin-loader/r14-release/`, `candidates/r14/`, `r13/` |
+| Skin Loader | r18 (r16 before it) | `build/skin-loader/releases/r18/`, `candidates/r18/`, `r16/` |
 | Village Quests in Hub | r6 | `build/village-quests-in-hub/candidates/r6/` |
 | WishFinder | r134 | `build/wishfinder/candidates/r134/`, `r131/`, `r127/`, `r122/`, `r119/`, `r114/`, `r111/`, `r107/`, `r105/`, `r103/`, `r102/`, `r92/`, `r86/`, `r85/`, `r82/`, `r76/`, `r72/` |
 | WishFinder bridge for My Weapon Tree | r11 | `build/wishfinder-mwt-bridge/candidates/r11/`, `r10/` |
