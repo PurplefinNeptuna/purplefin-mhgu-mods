@@ -26,7 +26,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition 2.0.0; inactive beside 3.0.0 |
 | WishFinder (was Wishlist) | r143 | DEVELOPMENT, candidate | Not run; r135 the release; r134 accepted on Eden with MHGU Definitive Edition 3.0.0. Needs Key Quest Markers r20+ |
 | WishFinder bridge for My Weapon Tree | r11 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.67 and WishFinder r83 |
-| World Sharpness Gauge | r70 | READY_TO_DISTRIBUTE, release | MHGU Recomp; r68 on Eden and Ryubing |
+| World Sharpness Gauge | r70 | PUBLISHED, GitHub release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
 
 Ryujinx and Switch hardware are unconfirmed for every mod unless its
