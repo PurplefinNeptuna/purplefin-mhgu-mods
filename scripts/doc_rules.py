@@ -28,7 +28,9 @@ def paragraphs(text):
     block = []
     for line in text.split('\n'):
         skip = line.lstrip().startswith(('#', '|'))
-        if block and (not line.strip() or skip or LIST_ITEM.match(line)):
+        # text ending in , ; or : has not ended its sentence: the next list item continues it
+        continued = LIST_ITEM.match(line) and block and block[-1].endswith((',', ';', ':'))
+        if block and not continued and (not line.strip() or skip or LIST_ITEM.match(line)):
             yield ' '.join(block)
             block = []
         if line.strip() and not skip:
@@ -89,6 +91,9 @@ def self_check():
     assert len(list(problems(skill, '# A\n\n## A\n\n' + 'x' * 601 + '\n'))) == 2
     fine = '---\ndescription: ' + long_sentence + '\n---\n# A\n\n' + ('Short one. ' * 30) + '\n\n| ' + long_sentence + ' |\n'
     assert not list(problems(skill, fine)), list(problems(skill, fine))
+    # one sentence chopped into bullets that end in , or ; is still one sentence
+    twelve = ' '.join(['w'] * 12)
+    assert len(list(problems(skill, f'- {twelve}:\n  - {twelve},\n  - {twelve};\n  - {twelve}.\n'))) == 1
     # "238. No" inside a line is a sentence end, not a list marker to strip
     assert not list(problems(skill, '- ' + ' '.join(['w'] * 30) + ' 238. ' + ' '.join(['w'] * 30) + '.\n'))
     assert not list(problems('docs/x.md', long_sentence))
