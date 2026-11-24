@@ -7,8 +7,8 @@ plugins.
 
 ## The mods
 
-Each mod lives in its own repository under `mods/`. Lock-on Target's is public; the others
-aren't yet, so their folders stay empty in a clone until each one is published.
+Each mod lives in its own repository under `mods/`. Lock-on Target's and Please do Better's are
+public; the others aren't yet, so their folders stay empty in a clone until each one is published.
 
 | Mod | What it does |
 | --- | --- |
@@ -17,7 +17,7 @@ aren't yet, so their folders stay empty in a clone until each one is published.
 | [Lock-on Target](https://github.com/PurplefinNeptuna/mhgu-lock-on-target) | Keeps the target camera on the monster the game targets and hides the target reticle. Tap the target button to turn the lock off, and hold R to aim freely. |
 | Modern Weapon Controls | Moves weapon actions from R to ZR and keeps R for sprinting while sheathed. |
 | Multiplayer Roaming | Lets you visit the villages, the bedrooms, the Palico ranch and the Soaratorium during an online session without leaving it. |
-| Please do Better | Gives reward slots granted by Luck a white frame. It can also force Miraculous Luck and multiply item quantities. |
+| [Please do Better](https://github.com/PurplefinNeptuna/mhgu-please-do-better) | Gives reward slots granted by Luck a white frame. It can also force Miraculous Luck and multiply item quantities. |
 | Purple-lib | Lets other mods put their settings in the game's Options window and add topics to its help screens. It changes nothing by itself. |
 | Shared Urgent Quests | Lets you clear a Hub urgent quest by joining someone else's session. |
 | Skin Loader | Puts an installed skin on the armor your hunter wears. Only the look changes. |

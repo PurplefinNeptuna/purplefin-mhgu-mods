@@ -30,7 +30,6 @@
 [submodule "mods/please-do-better"]
 	path = mods/please-do-better
 	url = https://github.com/PurplefinNeptuna/mhgu-please-do-better.git
-	update = none
 [submodule "mods/purple-lib"]
 	path = mods/purple-lib
 	url = https://github.com/PurplefinNeptuna/mhgu-purple-lib.git
