@@ -578,8 +578,8 @@ def staged_names(root=ROOT):
 
 
 def staged_mods(root=ROOT):
-    """The mods the commit being made touches: those with a staged path under mods/NAME/."""
-    return {name.split('/')[1] for name in staged_names(root) if name.startswith('mods/') and name.count('/') >= 2}
+    """The mods the commit being made touches: a staged path under mods/NAME/, or its submodule pointer."""
+    return {name.split('/')[1] for name in staged_names(root) if name.startswith('mods/') and name.count('/') >= 1}
 
 
 def packages_to_check(root=ROOT):
@@ -595,10 +595,11 @@ def packages_to_check(root=ROOT):
 def check(root=ROOT, source_only=False, only=None):
     """Every mod's records and, unless `source_only`, its packages. With `only`, a set of mod names,
     packages and build/ entries are checked for those mods alone, so a mod rebuilt by other work in
-    progress does not block a commit that leaves it alone."""
-    result = []
+    progress does not block a commit that leaves it alone. A submodule not checked out (an empty folder
+    .gitmodules names) is skipped, and as the index holds none of its files, finding no mod is no error."""
+    result, submodules = [], (root/'.gitmodules').read_text() if (root/'.gitmodules').is_file() else ''
     for directory in ([root] if (root/'mod.json').is_file() else sorted((root/'mods').iterdir())):
-        if not directory.is_dir():
+        if not directory.is_dir() or not any(directory.iterdir()) and f'path = mods/{directory.name}\n' in submodules:
             continue
         mod = json.loads((directory/'mod.json').read_text())['mod'] if directory==root else directory.name
         spec = spec_for(mod, root)
@@ -618,7 +619,6 @@ def check(root=ROOT, source_only=False, only=None):
                 require({p.name for p in releases.iterdir()} == allowed,
                         f'Superseded/unregistered release entries must be archived: {releases}')
         result.append((mod, spec['status'], archive))
-    require(result, 'No mod records found')
     purple_lib_clients(root)
     if not source_only:
         registered = {mod for mod, _, _ in result}

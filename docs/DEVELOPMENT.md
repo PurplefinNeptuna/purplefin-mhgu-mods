@@ -78,10 +78,11 @@ Split along the topics the file already has (`mods/wishfinder/src/native/` is th
 parts. Tests follow the same rule: one test file per area.
 
 `scripts/code_size_limits.json` lists the files that were already longer, each with its length
-as a ceiling. A listed file may shrink but not grow; when it shrinks, lower its entry in the
+as a ceiling; a mod's own files are listed in that mod's `scripts/code_size_limits.json`, keyed
+from the mod's folder. A listed file may shrink but not grow; when it shrinks, lower its entry in the
 same commit, and remove the entry once the file is under 600. Never raise an entry or add a
 new one. `scripts/code_rules.py` checks this in the pre-commit hook (`python3
-scripts/code_rules.py` checks every tracked file). Generated and third-party trees (`vendor/`,
+scripts/code_rules.py` checks every tracked file; `--repo mods/NAME` reads a mod's own repo). Generated and third-party trees (`vendor/`,
 `tools/`, mdBook's `book/html/`, rendered test assets) are exempt.
 
 ## Native implementation rules
@@ -116,7 +117,8 @@ results; preserve limitations for Linux, Windows, Eden, Ryujinx and hardware.
 Use `python3 scripts/mod_distribution.py package NAME` after mod-specific tests,
 then `python3 scripts/mod_distribution.py check` before committing or claiming
 readiness. Source-only checks do not establish readiness. Preserve the tracked
-pre-commit check and other hooks. The hook checks the whole index, but packages, records on disk
+pre-commit check and other hooks; `scripts/install_hooks.sh` turns them on after a clone, for the
+workspace and for each mod checked out as a submodule (`.githooks/mod/pre-commit`). The hook checks the whole index, but packages, records on disk
 and doc rules only for what the commit stages (`check --touched`), so several mods can be worked
 on at once; stage a mod's whole change together. Staging `scripts/mod_distribution.py`,
 `scripts/standalone_mods.py` or `templates/` checks every mod's package.

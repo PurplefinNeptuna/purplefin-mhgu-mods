@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Keep source files short ("Source file size" in docs/DEVELOPMENT.md).
 
-Usage: code_rules.py [--staged] [FILE...]
-  --staged  check the staged copy of each file (the pre-commit hook)
-  no FILE   check every tracked source file
-A file over LIMIT lines is refused unless scripts/code_size_limits.json lists it; a listed file may
-not grow past its entry, and when it shrinks the entry must come down with it, so the list only falls.
+Usage: code_rules.py [--staged] [--repo DIR] [FILE...]
+  --staged    check the staged copy of each file (the pre-commit hook)
+  --repo DIR  the git repo FILE paths are relative to: a mod's own submodule (default: the workspace)
+  no FILE     check every tracked source file
+A file over LIMIT lines is refused unless a scripts/code_size_limits.json lists it: the workspace's,
+or for a file under mods/NAME/ that mod's own, keyed from the mod's folder. A listed file may not grow
+past its entry, and when it shrinks the entry must come down with it, so the list only falls.
 """
 import json
 import re
@@ -31,7 +33,7 @@ def problems(lines, limits):
             yield f'{path}: {count} lines, over its ceiling of {ceiling}; split it rather than grow it'
         elif count < ceiling:
             fix = 'remove its entry' if count < LIMIT else f'set its entry to {count}'
-            yield f'{path}: shrank to {count} lines; {fix} in {LIMITS.relative_to(ROOT)}'
+            yield f'{path}: shrank to {count} lines; {fix} in its scripts/code_size_limits.json'
 
 
 def self_check():
@@ -42,16 +44,27 @@ def self_check():
     assert SKIP.search('mods/x/vendor/y.rs') and SKIP.search('mods/p/book/html/book.js') and not SKIP.search('mods/x/src/a.rs')
 
 
-def tracked(paths):
-    out = subprocess.run(['git', 'ls-files', '--', *paths], cwd=ROOT, capture_output=True, text=True, check=True).stdout
-    return [p for p in out.splitlines() if SOURCE.search(p) and not SKIP.search(p)]
+def load_limits():
+    """Every ceiling keyed by workspace path: the workspace's own and each checked-out mod's."""
+    limits = json.loads(LIMITS.read_text())
+    for own in ROOT.glob('mods/*/scripts/code_size_limits.json'):
+        prefix = own.parent.parent.relative_to(ROOT).as_posix() + '/'
+        limits.update({prefix + p: n for p, n in json.loads(own.read_text()).items()})
+    return limits
 
 
-def count(path, staged):
+def tracked(repo, paths):
+    """{workspace path: path in repo} for each tracked source file."""
+    out = subprocess.run(['git', 'ls-files', '--', *paths], cwd=repo, capture_output=True, text=True, check=True).stdout
+    prefix = '' if repo == ROOT else repo.relative_to(ROOT).as_posix() + '/'
+    return {prefix + p: p for p in out.splitlines() if SOURCE.search(prefix + p) and not SKIP.search(prefix + p)}
+
+
+def count(repo, path, staged):
     if staged:
-        data = subprocess.run(['git', 'show', f':{path}'], cwd=ROOT, capture_output=True, check=True).stdout
+        data = subprocess.run(['git', 'show', f':{path}'], cwd=repo, capture_output=True, check=True).stdout
     else:
-        data = (ROOT / path).read_bytes()
+        data = (repo / path).read_bytes()
     return data.count(b'\n') + (0 if data.endswith(b'\n') or not data else 1)
 
 
@@ -59,15 +72,20 @@ if __name__ == '__main__':
     self_check()
     args = sys.argv[1:]
     staged = '--staged' in args
-    files = tracked([a for a in args if a != '--staged'])
+    repo = ROOT
+    if '--repo' in args:
+        at = args.index('--repo')
+        repo = Path(args[at + 1]).resolve()
+        del args[at:at + 2]
+    files = tracked(repo, [a for a in args if a != '--staged'])
     if staged and not files:
         sys.exit(0)
-    limits = json.loads(LIMITS.read_text())
+    limits = load_limits()
     # A listed file that was deleted or moved leaves its entry behind.
     gone = [p for p in limits if not (ROOT / p).exists()]
     found = [f'{p}: no longer exists; remove its entry' for p in gone]
     # A tracked file deleted in the working tree has nothing to count.
-    found += list(problems({p: count(p, staged) for p in files if staged or (ROOT / p).exists()}, limits))
+    found += list(problems({p: count(repo, r, staged) for p, r in files.items() if staged or (repo / r).exists()}, limits))
     for p in found:
         print(p, file=sys.stderr)
     if found:
