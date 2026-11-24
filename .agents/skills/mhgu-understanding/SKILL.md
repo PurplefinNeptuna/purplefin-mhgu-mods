@@ -97,6 +97,7 @@ build it and extract into the scratchpad.
 | Where do damage, HP loss, ownership, hitzones and camera matrices come from? | [Damage and cameras](references/damage-and-cameras.md) |
 | How do Luck, reward pages, quantities and appraisal work? | [Rewards and Luck](references/rewards-and-luck.md) |
 | Where are equipment box slots, weapon crafting rows and armor series names? itemData's file and memory layouts, item rarity, skill effect checks (`0x2864c4`)? | [Equipment and crafting](references/equipment-and-crafting.md) |
+| How does the game load, share and attach a hunter's armor? Armor archive contents, file IDs, MRL materials, armor textures, renaming an armor mod's files, which hunter is local? | [Hunter armor](references/armor-models.md) |
 | Which tools/formats edit a resource, which wiki `.bt` templates match real files? ARC, GMD and texture layouts, language codes? | [Resources and tooling](references/resources-and-tooling.md) |
 | Original local paths and topic-to-source coverage | [Workspace and sources](references/workspace-and-sources.md) |
 
