@@ -122,7 +122,8 @@ workspace and for each mod checked out as a submodule (`.githooks/mod/pre-commit
 is two commits: in `mods/NAME` (its hook runs the code and doc rules and the workspace's
 `scripts/mod_distribution.py` on the mod's index), then the new pointer in the main repo. A mod's
 own `scripts/mod_distribution.py` is a helper its builder imports; its `check` predates
-`manifest.json` and does not decide. The hook checks the whole index, but packages, records on disk
+`manifest.json` and does not decide. A mod whose repo is still private is `update = none` in
+`.gitmodules`, so a recursive clone without access skips it; publishing a mod removes that line. The hook checks the whole index, but packages, records on disk
 and doc rules only for what the commit stages (`check --touched`), so several mods can be worked
 on at once; stage a mod's whole change together. Staging `scripts/mod_distribution.py`,
 `scripts/standalone_mods.py` or `templates/` checks every mod's package.

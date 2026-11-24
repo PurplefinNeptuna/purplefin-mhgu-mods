@@ -7,45 +7,59 @@
 [submodule "mods/damage-numbers"]
 	path = mods/damage-numbers
 	url = https://github.com/PurplefinNeptuna/mhgu-damage-numbers.git
+	update = none
 [submodule "mods/imgui-meter"]
 	path = mods/imgui-meter
 	url = https://github.com/PurplefinNeptuna/mhgu-imgui-meter.git
+	update = none
 [submodule "mods/key-quest-markers"]
 	path = mods/key-quest-markers
 	url = https://github.com/PurplefinNeptuna/mhgu-key-quest-markers.git
+	update = none
 [submodule "mods/lock-on-target"]
 	path = mods/lock-on-target
 	url = https://github.com/PurplefinNeptuna/mhgu-lock-on-target.git
 [submodule "mods/modern-weapon-controls"]
 	path = mods/modern-weapon-controls
 	url = https://github.com/PurplefinNeptuna/mhgu-modern-weapon-controls.git
+	update = none
 [submodule "mods/online-roaming"]
 	path = mods/online-roaming
 	url = https://github.com/PurplefinNeptuna/mhgu-online-roaming.git
+	update = none
 [submodule "mods/please-do-better"]
 	path = mods/please-do-better
 	url = https://github.com/PurplefinNeptuna/mhgu-please-do-better.git
+	update = none
 [submodule "mods/purple-lib"]
 	path = mods/purple-lib
 	url = https://github.com/PurplefinNeptuna/mhgu-purple-lib.git
+	update = none
 [submodule "mods/purple-lib-tester"]
 	path = mods/purple-lib-tester
 	url = https://github.com/PurplefinNeptuna/mhgu-purple-lib-tester.git
+	update = none
 [submodule "mods/shared-urgent-quests"]
 	path = mods/shared-urgent-quests
 	url = https://github.com/PurplefinNeptuna/mhgu-shared-urgent-quests.git
+	update = none
 [submodule "mods/skin-loader"]
 	path = mods/skin-loader
 	url = https://github.com/PurplefinNeptuna/mhgu-skin-loader.git
+	update = none
 [submodule "mods/village-quests-in-hub"]
 	path = mods/village-quests-in-hub
 	url = https://github.com/PurplefinNeptuna/mhgu-village-quests-in-hub.git
+	update = none
 [submodule "mods/wishfinder"]
 	path = mods/wishfinder
 	url = https://github.com/PurplefinNeptuna/mhgu-wishfinder.git
+	update = none
 [submodule "mods/wishfinder-mwt-bridge"]
 	path = mods/wishfinder-mwt-bridge
 	url = https://github.com/PurplefinNeptuna/mhgu-wishfinder-mwt-bridge.git
+	update = none
 [submodule "mods/world-sharpness-gauge"]
 	path = mods/world-sharpness-gauge
 	url = https://github.com/PurplefinNeptuna/mhgu-world-sharpness-gauge.git
+	update = none
