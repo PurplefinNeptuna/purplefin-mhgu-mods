@@ -12,7 +12,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 
 | Mod | Current | Status | Runtime |
 | --- | --- | --- | --- |
-| Damage Numbers | r48 | READY_TO_DISTRIBUTE, release | Runs on MHGU Recomp with Purple-lib r20 |
+| Damage Numbers | r48 | PUBLISHED, GitHub release | Runs on MHGU Recomp with Purple-lib r20 |
 | ImGui Meter | r4 | DEVELOPMENT | NOT RUN; r3 cut Eden to 37 fps (r1 ran on MHGU Recomp, unitemized) |
 | Key Quest Markers | r23 | READY_TO_DISTRIBUTE, release | Eden and MHGU Recomp, unitemized |
 | Lock-on Target | r6 | PUBLISHED, GitHub release | MHGU Recomp |
