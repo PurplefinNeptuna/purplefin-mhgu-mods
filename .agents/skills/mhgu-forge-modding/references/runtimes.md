@@ -35,7 +35,7 @@ Switch, so findings for those two come from source and user reports only. Say so
 4. **Screen geometry.** Forge's ImGui display is not the game's picture on
    every host. See [ImGui on each host](#imgui-on-each-host).
 5. **HUD placement.** gu-native and UIScale move HUD quads after the game draws
-   them. See [Native GUI extensions](native-gui-extensions.md#hud-movers-gu-native-and-uiscale).
+   them. See [HUD movers (gu-native and UIScale)](gui-masks-and-movers.md#hud-movers-gu-native-and-uiscale).
 6. **Input.** Forge's input comes from the host, once per rendered frame. See
    [Input and keybinds](input-and-keybinds.md).
 7. **Fonts.** Each host's default ImGui font differs. See
@@ -88,7 +88,7 @@ When input updates and where an edge is valid: [Input and keybinds](input-and-ke
 
 Other people's plugins differ by host too. KatLib and UIScale load on
 MHGURecomp but fail on Eden with `0x00000616` beside BetterBox, because all
-three ship an all-zero build ID. MHGU Definitive Edition 2.0.0 is an IPS plus a
+three ship an all-zero build ID. MHGU Definitive Edition (2.0.0 and 3.0.0) is an IPS plus a
 `subsdk1`; its words inside your windows are listed per mod (Village Quests in
 Hub, WishFinder). Load order rules per host are in
 [Hooks and lifetimes](hooks-and-lifetimes.md).
@@ -102,7 +102,7 @@ Hub, WishFinder). Load order rules per host are in
 | Expecting Forge to hide a press from the game | It never does. Blank the game's pad records after `sPad::move` while your window owns input, and on MHGURecomp 0.17 the input views too ([Input and keybinds](input-and-keybinds.md), blocking step 5). |
 | Telling Switch players to open Forge's menu with a button | Stock Forge 1.5.1 and 2.0.0 open it with a keyboard key only (Insert in its shipped config). Give console players another way to change a setting. |
 | Importing MHGURecomp's extra calls (`forge_input_getMouse`, `setKeybind`, `isMenuOpen`) | Stock Forge does not export them, so the import check fails on Switch and emulators. No optional-import method is researched. |
-| Placing ImGui drawing from HUD node positions, or cutting a HUD sprite with a scissor | gu-native and UIScale move HUD quads after the game draws them. Use the sprite's own geometry at its draw ([HUD movers](native-gui-extensions.md#hud-movers-gu-native-and-uiscale)). |
+| Placing ImGui drawing from HUD node positions, or cutting a HUD sprite with a scissor | gu-native and UIScale move HUD quads after the game draws them. Use the sprite's own geometry at its draw ([HUD movers](gui-masks-and-movers.md#hud-movers-gu-native-and-uiscale)). |
 | Treating Forge's `io.DisplaySize` as the game's picture | It is the swapchain (Switch), the window surface (MHGURecomp) or the whole window with a letterboxed picture inside (gu-native) ([Runtimes](#imgui-on-each-host)). |
 | Writing through `ImDrawList` `VtxBuffer.Data` or other `ImVector` data | On MHGURecomp and gu-native those read 0 (guest mirrors), so the write hits the null page. Pass offsets to ImGui calls. |
 | Creating ImGui objects every frame without destroying them | MHGURecomp shares one 8192-slot mirror pool among all plugins; when it fills, every plugin's drawing stops. Count with `mods/imgui-meter`. |

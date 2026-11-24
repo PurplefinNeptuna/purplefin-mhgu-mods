@@ -2,7 +2,7 @@
 
 Follow these steps in order for any "where does the game do X?" question.
 Run commands from the workspace root. Write findings into
-`mods/NAME/DEVELOPMENT.md` or `work/NAME/` as you go, not only at the end, as
+the topic's reference here or `work/NAME/` as you go, not only at the end, as
 standing facts rather than a log ("Writing project docs" in the workspace `AGENTS.md`).
 
 ## 1. Write the question as something observable
@@ -15,17 +15,14 @@ which kind of answer you need:
 | --- | --- | --- |
 | Runtime behaviour | When HP falls, who owns a hit | Ghidra functions, then DTI fields |
 | Runtime object field | Monster HP offset | DTI properties, then the code that reads it |
-| Packed resource | Item table, GUI layout | Resource tools ([Resources and tooling](resources-and-tooling.md)) |
+| Packed resource | Item table, GUI layout | Resource tools ([Find and edit resources without losing data](resource-editing.md)) |
 | Text | Quest names | GMD files |
 | ID mapping | Quest ID to group | Offline wiki ID lists, then the native reader |
 
 ## 2. Check what is already known
 
 1. Search these skills' references for the topic.
-2. Read the related mod's DEVELOPMENT.md (`mods/*/DEVELOPMENT.md`): damage,
-   cameras and HP in Damage Numbers; quests and GUI in Key Quest Markers;
-   input in Modern Weapon Controls; rewards in Please do Better.
-3. `grep -rn 'KEYWORD' mods/*/DEVELOPMENT.md work/*/` for older notes.
+2. `rg -n 'KEYWORD' .agents/skills work/*/` for older notes.
 
 Reuse a documented offset only after checking it in step 5.
 
@@ -64,7 +61,7 @@ Each run replaces the previous target output. Do not add your offsets to
 | You have | Convert |
 | --- | --- |
 | Ghidra address `0x01177f68` | main-relative = `0x01177f68 - 0x009c9000` = `0x007aef68` |
-| main-relative offset | runtime address = actual main base + offset (Forge supplies the base) |
+| main-relative offset | runtime address = actual main base + offset (the loader supplies the base) |
 | Object field `+0x1428` | Leave as is; it is relative to an object pointer |
 
 Read the original instruction bytes from the verified copied NSO. Never use
@@ -88,7 +85,7 @@ Use these three traps as checks on any address or field you read:
 
 - Vtable words and DTI `get`/`set` values are already main-relative. Subtracting
   the Ghidra base from one gives a real-looking address in unrelated code, and
-  World Sharpness Gauge drew conclusions from three of those.
+  three such addresses once carried whole conclusions.
 - A decompiled `param_1[0x38]` on an `int *` is byte offset `0xe0`.
 - A global slot is loaded as `ldr rX, [pc, #imm]` then, possibly several instructions later,
   `ldr rY, [pc, rX]`. Match the first with `word & 0x0f7f0000 == 0x051f0000` (bit 23 set adds `imm`,
@@ -120,8 +117,7 @@ finisher"), write the word *inference* and say what evidence would confirm it.
 Checks that catch the usual wrong turns:
 
 - **A premise needs its own evidence.** In "X, which is why Y", X is a claim too. "Equipped
-  gear sits in the box array, which is why armor has its own types" had no source; My Weapon
-  Tree's doc says types 1..5 are *box* armor. A tester's requirement ("an equipped weapon
+  gear sits in the box array, which is why armor has its own types" had no source; another reader of the same record calls types 1..5 *box* armor. A tester's requirement ("an equipped weapon
   counts as owned") is a rule to build to, not a fact about where the game keeps it.
 - **Two readings that disagree are both kept, with what would settle them.** Do not invent a
   bridge between them ("the box view carries the same pair four bytes earlier"). Write both,
@@ -141,7 +137,7 @@ Checks that catch the usual wrong turns:
   a 0-based field or an encoding. Rule that out before looking for missing reads.
 - **Read-only ground truth beats theory.** A save file, an ini the game or a mod wrote, and RomFS
   rows are free to read and cannot flatter the model. Compare them with the tester's own list.
-- **Know what a measurement covers.** "Matches KatSmithy's log" covers the rows it printed. A rule
+- **Know what a measurement covers.** "Matches another mod's log" covers the rows it printed. A rule
   applied to a whole table is checked over the whole table, with the count of each branch printed.
 - **A layout is proved by its bytes, not its comment.** Dump one row in hex next to the claimed
   stride; a stride that only fits by eye is a lead.
@@ -150,7 +146,7 @@ Checks that catch the usual wrong turns:
 
 ## 7. Record the finding
 
-Write one entry per finding in the mod's DEVELOPMENT.md:
+Write one entry per finding in the topic's reference:
 
 ```text
 Finding: <what the game does>
@@ -169,7 +165,7 @@ Before you write it down or commit, answer each line. Any "no" means fix it firs
 4. Did a check fail and get dropped, softened or relabelled? Then undo that and change your
    hypothesis instead.
 5. Does this contradict anything already written? `rg` the old claim across
-   `.agents/skills`, `mods/*/DEVELOPMENT.md` and the task's `work/` notes, and correct each copy.
+   `.agents/skills`, the project docs and the task's `work/` notes, and correct each copy.
 6. Is it a fact about the game, or the tester's rule for the feature? Keep them apart.
 7. Does the conclusion depend on something you still list as open? Then state it as conditional
    ("counts it only if the index means kind 0"), and the step is not done. Call it done only when
@@ -200,21 +196,19 @@ Before you write it down or commit, answer each line. Any "no" means fix it firs
    stores the poison table's s16 `+0xc` there at each interval.
 4. Verify: bytes at 0xa2664 are `push {r4-r7,r11,lr}`, `vpush {d8}` (no PC
    use, safe to displace). No `SEL`/`MRS`/`MSR` in the function body.
-5. Result: an around hook at 0xa2664 reads `work+0x5d66` after the original
-   returns. That became Damage Numbers hook 8.
+5. Result: the amount is `work+0x5d66`, readable after the tick returns.
 
 ## Worked example 2: which table holds the craft cost
 
 1. Question: which RomFS rows hold the materials of a weapon's level-1 craft?
 2. Known: `weaponProcessW<table>.wpd` and `weaponCreateW<table>.wcd`, layouts verified by
-   file size. KatSmithy's run log prints each node's materials (`RISE mat id=... need=...`).
+   file size. A smithy mod's run log prints each node's materials (`RISE mat id=... need=...`).
 3. First hypothesis, the `.wpd` row `(number, 1)`: no level-1 group in the log matches.
-   Wrong move taken here: calling KatSmithy's panel "its own construction" and dropping the
+   Wrong move taken here: calling that mod's panel "its own construction" and dropping the
    check. Right move: keep the check, change the hypothesis.
 4. Second hypothesis, the `.wcd` row keyed `(mLevel, mNo)`: 588 of 632 groups matched
    under the first pairing of log groups to nodes. The misses were checked, not waved through:
-   matched against every create row of the open table, all 700 groups fit exactly
-   (`work/wishfinder-katsmithy-bridge/rise_vs_wcd.py`).
+   matched against every create row of the open table, all 700 groups fit exactly.
 5. Result: the craft row is the `.wcd` row, 163 distinct rows over 8 tables. The earlier lines "`.wcd mNo` is a create-entry index" and
    "the window loads `.wpd` records" are corrected wherever they were written.
 

@@ -1,4 +1,4 @@
-# Reward generation, Luck, and result pages
+# Reward generation, Luck and result pages
 
 ## Native count and item selection
 
@@ -6,9 +6,7 @@ Luck affects expansion of reward slot counts. It does not directly reroll the it
 
 Main count `0x381fec` retains quest guarantees, RemAddFrameA/B, meal checks 0x10/0x11, an eight-slot cap, and zero-to-one clamp. Secondary count `0x382e1c` starts at two, with six comparisons up to slot eight. Main generation `0x38211c` uses the resulting count and native item selection. Absent tables generate no items. A slot-count counterfactual using observed rolls does not establish which items a rerun would have selected.
 
-The maintained force mode changes only the audited conditional Miraculous checks at `0x3822dc` and `0x4d17f4`. Natural mode calls the original helper with original state. Forced mode supplies the cheat-equivalent result while preserving audited LR/register/flag behavior. Do not globally falsify every skill query or assume all reward paths use Luck.
-
-Exact instruction sites (Please do Better `DEVELOPMENT.md`):
+Exact instruction sites:
 
 | Site | Instruction / role |
 | --- | --- |
@@ -36,12 +34,10 @@ Exact instruction sites (Please do Better `DEVELOPMENT.md`):
 | 36 / 37 | 1 | `+0x1742` == 0 / == 1 | Inference: arena result |
 | 38..47 | 1 | Average of two questPlus percentages >= 10..100, and not repelled | Inference: damage dealt |
 
-`0x3aeda4` sets `+0x52` to 2 when monster HP falls to `mGekitaiHp`, so 1 and 2 mean repelled. Reward file layouts: [Quest files](quest-files.md). Source: `mods/wishfinder/DEVELOPMENT.md` section Reward rules.
+`0x3aeda4` sets `+0x52` to 2 when monster HP falls to `mGekitaiHp`, so 1 and 2 mean repelled. Reward file layouts: [Quest files](quest-files.md).
 
-**Chance per draw.** WishFinder's quest pages show a reward's chance as its weight over the sum of its frame's live
-weights (weight above 0; an item 0 row counts, since it rolls nothing), rounded, at least 1, the best of the quest's
-`rem1`, `rem2`, `add1`, `add2` and `sub` frames (`mods/wishfinder/core/src/quest_record.rs` `percent`, held by
-`tests/table.py`; the quest table stores it, version 4). It is not the chance of the reward screen: a frame draws once
+**Chance per draw.** A reward's chance per draw is its weight over the sum of its frame's live
+weights (weight above 0; an item 0 row counts, since it rolls nothing). It is not the chance of the reward screen: a frame draws once
 per slot it fills (inference from the slot counts above), and the forced first entry ignores its weight.
 
 ## Capture attribution by array/index
@@ -51,8 +47,6 @@ UI builder `0x3874e0` copies generated four-byte `(u16 item, u16 amount)` entrie
 The four copies, with their end (exclusive), source register and destination: `0x3875bc..0x387680` r7 to `*(ui+0x5c)` slots 0..7 and `0x3878e0..0x3879a4` r7 to the same (both after main wrapper `0x381d30`); `0x387b00..0x387bc4` r6 to `*(ui+0x5c)+32` slots 8..15 (direct main generation); `0x388084..0x388144` r5 to `*(ui+0x64)+32` slots 8..15 (after secondary `0x382e1c`). State 1's `0x384af0` can grow the main reward array to 16 or 48 entries before its call `0x384fc0` reaches builder `0x3874e0`; copy loops `0x384bf0..0x384c24` and `0x384c7c..0x384cb0` keep indices, then free the old allocation.
 
 Native list copy `0x623c08` copies min(source count, capacity) by index. Items are inline at list +0x60; that field is not an item-array pointer. Flags at +0x120 come from a separate descriptor. Result update `0x384848` observes reward states 2..5 at +0x3c; departure/destruction invalidates provenance. If array growth frees the old allocation, snapshot before original execution and verify the new prefix without rereading freed memory.
-
-Luck attribution identifies observed additional slots, not an intrinsic quality of each item. Unknown generation routes publish no attribution. Current highlighting sets each verified extra-luck slot's native background frame white through its vertex-colour setter; the earlier ImGui overlay and downsample experiments are retired.
 
 ## Result page layout
 
@@ -66,21 +60,3 @@ Builder `0x3874e0`, collection `0x388ee8`, and constructor `0x3839bc` establish:
 | 3 | +0x74 / +0x78 | 16 or 32 | Palico gathered/stolen items; unchanged |
 
 Companion gathering comes from save-state +0xaf0; stolen items use `0x382ffc`. Companion count +0xb17 controls page 3 row count at UI +0x158, two rows per companion. Pouch/box items already received during a quest are outside these result arrays.
-
-## Once-per-result quantity policy
-
-The implemented player multiplier is 1..5. A single atomic mode word stores force_miraculous bit 0 and multiplier-1 in bits 1..3. Generation scopes latch that word, including nested calls. Builder entry captures all player pointers/counts; return preflights every included page before writing any quantity.
-
-Preflight verifies unchanged metadata, capacity, alignment, writable bounds, disjoint ownership including Palico storage, valid zero/zero empty pairs, signed quantities, and captured preimages. Any failure leaves every included quantity unchanged and defers a deduplicated reason to update-time logging. Success updates amount halfwords only, preserving item IDs, indices, slot counts, RNG and attribution, and reconciles pending snapshots.
-
-A result-object latch records the completed attempt even at 1x or on failure. Repeated builders/settings changes cannot rescale the same result. Destructor `0x384408` clears the owning gameplay context latch before that UI address can be reused. Lost TLS/capture ownership never authorizes retrospective writes. Collection, list refresh, and rendering are not scaling entrypoints.
-
-Collection and appraisal enqueue `0x3c6c6c` read quantities as signed shorts. Reject products above 32767; at 5x the largest valid input is 6553. Appraisal loops once per amount, appending IDs at save-state +0xb08 with count +0xb16, capped at 150 entries. Preserve that cap and document possible truncation. Displayed multiplication alone does not verify inventory or appraisal acceptance.
-
-## Verify without broadening claims
-
-Existing native count fixtures cover 1,092 deterministic cases comparing natural counts/RNG consumption and cheat-equivalent forced behavior. Array/list tests preserve duplicate-ID distinctions, indices, untouched tails, and failure atomicity. Static validation does not substitute for collection/storage/gameplay acceptance.
-
-Manual scenarios include 1x and 2..5x, both Luck modes, guaranteed rewards, subquest/free-hunt/overflow/extra pages, unchanged Palico/pouch/box, Take All/Send to Box/partial stacks/full storage, appraisal quantities, slider edits while results are visible, and consecutive quests/settings persistence. The r23/r24 distribution records preserve their scoped loading/approval evidence; do not mark this entire matrix completed from them.
-
-Sources: `mods/please-do-better/DEVELOPMENT.md` count, copy, layout and reward-page sections; `core/src/{attribution.rs,quantity.rs,mode.rs}`, `src/{runtime.rs,gateway.S}`, native tests, `research/{patch-sites.json,highlight-fixtures.json}`, `EVIDENCE.json`; original main and retained reward-page receipts when available.

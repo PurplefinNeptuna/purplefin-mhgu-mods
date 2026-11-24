@@ -43,7 +43,7 @@ the game this way:
 1. Hook after `sPad::move` (inside `sFestaPad::move`, before the game builds its
    gameplay and menu views from the pad records).
 2. While blocked, zero each `sPad::Pad` record's `On/Old/Trg/Rel/Chg/Rep`,
-   sticks and triggers. Offsets: `mhgu-understanding` input reference.
+   sticks and triggers. Offsets: [Input and actions](../../mhgu-understanding/references/input-and-actions.md).
 3. Keep blocking until every button is up after the window closes (or a frame
    limit), so the closing press does not reach the game.
 4. End the block if no frame renders for a while (60 pad updates), so a hidden
@@ -87,8 +87,8 @@ input hold does not stop it, since ImGui reads Forge's input.
   read R3 only on smithy list screens.
 - **Show it in the game's button guide** with a guide extra entry, and choose
   L/R or ZL/ZR icons from the game's shoulder-swap byte, as the start menu does
-  ([Native GUI extensions](native-gui-extensions.md#button-guide-and-popups);
-  icon IDs in the understanding input reference).
+  ([Button guide and popups](gui-screen-reuse.md#button-guide-and-popups);
+  icon IDs in [Input and actions](../../mhgu-understanding/references/input-and-actions.md#button-names-and-icons)).
 - **Forge buttons are physical, game views are logical.** A player with the
   swapped shoulder layout presses physical ZR for the game's R. If your hotkey
   must match a game action, read the game's view or the config bytes.

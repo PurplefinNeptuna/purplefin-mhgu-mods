@@ -1,17 +1,19 @@
 ---
 name: mhgu-understanding
-description: Find and interpret Monster Hunter Generations Ultimate 1.4.0 Switch game code, RomFS resources, IDs, native objects, quests, input, damage, cameras and rewards. Includes a step-by-step research playbook (search saved Ghidra/DTI, convert addresses, read original bytes, prove meaning, record findings), address conventions, and topic references for planning plugins or verified resource edits. Not for MHXX or PC engine layouts.
+description: What Monster Hunter Generations Ultimate 1.4.0 (Switch) itself does - game code, RomFS resources, IDs, native objects, GUI trees, menus, quests, equipment, input, damage, cameras, rewards, sounds, multiplayer and file formats. Includes a step-by-step research playbook (search saved Ghidra/DTI, convert addresses, read original bytes, prove meaning, record findings). Use to find or interpret anything in the game. Holds no mod or plugin knowledge; for that use mhgu-forge-modding. Not for MHXX or PC engine layouts.
 ---
 
 # MHGU Understanding
 
 Research MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
 `FB08F1D20FD1204FE7070672777F869B`. Offsets belong to this exact executable,
-not other game versions. Knowledge dated 2026-11-13.
+not other game versions.
 
-This skill is **what the game does**: code, fields, formats, IDs. How a plugin
-uses those facts (hooks, GUI insertion, input handling, reading files, host
-differences) is in the companion `mhgu-forge-modding` skill.
+This skill is **only what the game does**: code, fields, formats, IDs. It names
+no mod. How a plugin uses these facts, what other mods change, how hosts differ
+and which run proved a fact are in the companion `mhgu-forge-modding` skill.
+A new game fact goes here, whichever mod found it. Label it bytes, run or
+inference, and add its source to that skill's `references/knowledge-sources.md`.
 
 ## Start here
 
@@ -28,13 +30,12 @@ before extracting, unpacking or editing it.
 
 | Location | What it holds | Use it for |
 | --- | --- | --- |
-| `/mnt/storage2/Programs/MHGURecomp/data/romfs/` | Every game resource (ARC archives in `nativeNX/arc/`, GUI, tables, per-language text), 12 GB, no code. MHGURecomp's copy of the 1.4.0 RomFS; files checked so far match the earlier Eden dump (WishFinder's `quests.bin` rebuilds byte for byte, and Modern Weapon Controls' pinned `hunter_note_eng.arc` hash matches). | Finding and reading resources: `rg --files DUMP/romfs \| rg NAME` |
-| `work/shared/game-exefs/` | The 1.4.0 code only: `main` (the game), `sdk`, `subsdk0`, `rtld`, `main.npdm`. `forge` is Forge 2.0.0's `subsdk9` (1.5.1's is in `work/shared/forge-1.5.1/`), not game code. | Instruction bytes and signatures. Read `main` with `scripts/mhgu_binary.py` `main_image()`, which refuses any other version. |
+| `/mnt/storage2/Programs/MHGURecomp/data/romfs/` | Every game resource (ARC archives in `nativeNX/arc/`, GUI, tables, per-language text), 12 GB, no code. A copy of the 1.4.0 RomFS. | Finding and reading resources: `rg --files DUMP/romfs \| rg NAME` |
+| `work/shared/game-exefs/` | The 1.4.0 code only: `main` (the game), `sdk`, `subsdk0`, `rtld`, `main.npdm`. The `forge` file there is the loader, not game code. | Instruction bytes and signatures. Read `main` with `scripts/mhgu_binary.py` `main_image()`, which refuses any other version. |
 | `work/research-tooling/` | Saved Ghidra project/export and DTI index built from that `main` | Search first: `./scripts/tool.sh research find QUERY --kind functions` |
 | `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` | Sealed base game (v0) | Rarely needed: an original the dump lacks |
-| `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` | Sealed 1.4.0 update, about 193 MiB (v262144; Eden logs it as "v0.4.0"). Mostly a RomFS patch: a binary delta that only works applied onto the base RomFS, not a folder of files. | Rarely needed. Its resource changes are in the dump and its code is in `game-exefs/`; nothing else is missing. |
+| `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` | Sealed 1.4.0 update, about 193 MiB (v262144). Mostly a RomFS patch: a binary delta that only works applied onto the base RomFS, not a folder of files. | Rarely needed. Its resource changes are in the dump and its code is in `game-exefs/`. |
 | `/mnt/storage2/ROM/Switch/keys+firmware/` | Keys needed to open the XCI/NSP | Only with the two files above |
-| `/mnt/storage2/ROM/Switch/cheats/mhgu/` | Uninstalled mod/cheat library | Not the game, and not installed mods |
 
 Opening the XCI/NSP needs hactool. Only its source is in `tools/hactool-source/`;
 build it and extract into the scratchpad.
@@ -44,12 +45,12 @@ build it and extract into the scratchpad.
 | Form | Meaning | Example |
 | --- | --- | --- |
 | Ghidra address | Address in the saved database (image base `0x009c9000`) | `0x01177f68` |
-| main+0xNNNN | Main-relative offset = Ghidra address − `0x009c9000`. Used everywhere in these skills and in hook code | main+`0x7aef68` |
+| main+0xNNNN | Main-relative offset = Ghidra address − `0x009c9000`. Used everywhere in these skills | main+`0x7aef68` |
 | +0xNN | Field offset inside an object. Never subtract the image base | `monster+0x1428` |
 | Vtable word / DTI `get`, `set`, `vft` | Already main-relative. Never subtract the Ghidra base from these | Texture slot 0x38 holds `0xa4e628` |
 | Decompiled `param_1[0x38]` on an `int *` | Indexed in words: byte offset = index × 4. Written pointer arithmetic is already in bytes | `param_1[0x38]` is `+0xe0` |
 | Cell 0xNNNN | Main-relative address of a global pointer to a singleton | session cell `0x188ca48` |
-| GOT word 0xNNNN | A word that holds a cell's address: code loads it, then loads the cell, then the object, one load more than from the cell. A plugin reads the cell directly; reading the GOT word once gives the pointer's address, not the object | GOT word `0x1838bb4` holds the address of cell `0x188ca48`; `*(*(0x1838bb4))` is the session |
+| GOT word 0xNNNN | A word that holds a cell's address: code loads it, then loads the cell, then the object, one load more than from the cell. Reading the GOT word once gives the pointer's address, not the object | GOT word `0x1838bb4` holds the address of cell `0x188ca48`; `*(*(0x1838bb4))` is the session |
 | ID / index / row | Object ID, lookup index, table row and resource ID are different numbers; keep them in separate columns | |
 
 ## Rules
@@ -58,10 +59,9 @@ build it and extract into the scratchpad.
   Ghidra text differs from it at one byte, and some imported type layouts are wrong.
 - Names, wiki fields, decompiler variables and file presence are leads, not proof.
 - An empty search is evidence only once the same tool has found a known positive.
-  A broken cross-reference script reported "no `bl` site" for every target through
-  the whole of World Sharpness Gauge's research. `research xref` replaces it. A hook that logs
-  nothing counts the same way: one on `0x4eef00` with no positive control sent WishFinder's sound
-  research the wrong way for about a hundred builds.
+  A broken cross-reference script once reported "no `bl` site" for every target; `research xref`
+  replaces it. A probe that logs nothing counts the same way: one on `0x4eef00` with no positive
+  control sent a sound investigation the wrong way for about a hundred builds.
 - Follow writer, reader, callers and destructor before claiming what a field means or who owns an object.
 - A runtime object and its serialized resource record can have different layouts. Map the offsets
   through the resource's load (vtable slot 0x2c and its per-record reader): `itemData` is 44 bytes
@@ -73,10 +73,8 @@ build it and extract into the scratchpad.
   numbered areas, with a loading screen between them. Do not assume what that does to an
   object; measure each one. The sharpness gauge's HUD row lasts a whole quest. That is
   inference: its row ends sit beside the game's save commits and testers report area
-  changes and faints with no re-insertion, but no log line marks an area change (see
-  Lifecycle in `mods/world-sharpness-gauge/DEVELOPMENT.md`). Other objects are unmeasured.
-  Any row can still die, so a plugin keeps a liveness check and drops its addresses on
-  failure. The cGUIObjRoot destructor slot 0x04 fired in no saved log. `setAnimationId`
+  changes and faints with no re-insertion, but no log line marks an area change. Other objects
+  are unmeasured. The cGUIObjRoot destructor slot 0x04 fired in no saved log. `setAnimationId`
   `0xa38828` destroys a row's controller and map and builds new ones (called from
   `0x54504c` and `0x5451fc`), and whether that is the path a row's end takes is unread.
 
@@ -85,27 +83,71 @@ build it and extract into the scratchpad.
 | Question | Read |
 | --- | --- |
 | How do I go from a question to a verified offset? | [Research playbook](references/research-playbook.md) |
-| Where is the code/data? Ghidra, DTI, IDs and resource search details | [Discovery and evidence](references/discovery-and-evidence.md) |
-| How do GUI resources, properties, trees, maps and caches work? Which screens and rows are already mapped (counter, quest detail panel, Quest Info, smithy, HUD, start menu, item pouch, rewards, popup, button guide)? What do message texts accept (line breaks, colour tags, no clipping)? | [Native GUI](references/native-gui.md) |
-| Where are sharpness points, tiers, tables and the sharpness HUD row? | [Sharpness](references/sharpness.md) |
-| How do key quests, urgents, completion and progression relate? How does the game list quests, fill the counter's rank and star pages, page the quest detail panel at the counter and the quest board and the start menu's Quest Info, find the running quest in a quest, find downloaded event quests, record a clear online? | [Quests and progression](references/quests-and-progression.md) |
-| What rewards, carves, captures, breaks, gathering and fishing does a quest give, and from which files? How does a gather, carve or catch reach the pouch at runtime? Definitive Edition quests? | [Quest files](references/quest-files.md) |
-| Start menu internals and pages, Options window, Help, Item Pouch and Equipment screens, the page cursor (`0x54edec`/`0x54ee34`), button guide, centre popup, in town or in a quest? Making a game window (a `cUIObject`) outside its own screen, loading its layout and texts? | [Menus and screens](references/menus-and-screens.md) |
-| Menu sounds, sound data, pickup jingles (which item gets which, the BBQ Spit's), motion sound events (MSS)? | [Sounds](references/sounds.md) |
-| Online sessions, member state, who spawns for whom, hunter data, travel codes and exits? | [Multiplayer and areas](references/multiplayer-and-areas.md) |
-| Which input representation/player/state is this? Button glyph IDs and the button config bytes? Target camera tap? How does reload buffering work? | [Input and actions](references/input-and-actions.md) |
-| Where do damage, HP loss, ownership, hitzones and camera matrices come from? | [Damage and cameras](references/damage-and-cameras.md) |
-| How do Luck, reward pages, quantities and appraisal work? | [Rewards and Luck](references/rewards-and-luck.md) |
-| Where are equipment box slots, weapon crafting rows and armor series names? itemData's file and memory layouts, item rarity, skill effect checks (`0x2864c4`)? | [Equipment and crafting](references/equipment-and-crafting.md) |
-| How does the game load, share and attach a hunter's armor? Armor archive contents, file IDs, MRL materials, armor textures, renaming an armor mod's files, which hunter is local? | [Hunter armor](references/armor-models.md) |
-| Which tools/formats edit a resource, which wiki `.bt` templates match real files? ARC, GMD and texture layouts, language codes? | [Resources and tooling](references/resources-and-tooling.md) |
-| Original local paths and topic-to-source coverage | [Workspace and sources](references/workspace-and-sources.md) |
+| Where is the code/data? Ghidra, DTI, IDs and resource search | [Discovery and evidence](references/discovery-and-evidence.md) |
+| Local paths and reference snapshots | [Workspace and sources](references/workspace-and-sources.md) |
 
-For native GUI plans as well as implementation, read [Native GUI](references/native-gui.md).
-Establish instance-to-animation-to-object ownership and distinguish resource IDs
-from table rows before proposing reuse. File presence, suggestive names and
-setter lookup do not establish unused objects or a working rendering mechanism.
-Keep unresolved feasibility separate from the user's chosen visual design.
+**GUI**
+
+| Question | Read |
+| --- | --- |
+| GUI file layout, properties, identifying a row, keyframes | [GUI resources](references/gui-resources.md) |
+| Which screens and rows are mapped (counter, quest detail, Quest Info, smithy, HUD, start menu, pouch, rewards, popup, guide) | [GUI screens](references/gui-screens.md) |
+| Object classes, sizes, setters, runtime fields, flag bits, ownership | [GUI objects](references/gui-objects.md) |
+| Draw walker, draw block, coordinates, colours, message text (line breaks, colour tags, no clipping), reward frames | [GUI drawing](references/gui-drawing.md) |
+| Which thread runs the GUI | [GUI threads](references/gui-threads.md) |
+
+**Menus and screens**
+
+| Question | Read |
+| --- | --- |
+| Start menu internals and pages, list objects, the page cursor (`0x54edec`/`0x54ee34`), in town or in a quest | [Start menu](references/start-menu.md) |
+| Options window, Help | [Options and Help](references/options-and-help.md) |
+| Item Pouch and Equipment screens, how items enter the pouch | [Pouch and equipment screens](references/pouch-and-equipment-screens.md) |
+| Button guide, centre popup | [Guide and popups](references/guide-and-popups.md) |
+| Making a game window (`cUIObject`) outside its own screen | [UI objects](references/ui-objects.md) |
+| Smithy top menu and list screens | [Smithy screens](references/smithy-screens.md) |
+
+**Quests**
+
+| Question | Read |
+| --- | --- |
+| Key quests, urgents, special encounters, completion, recording a clear online | [Quest progression](references/quest-progression.md) |
+| How quest lists are built, the unlock script, talk tables, downloaded event quests | [Quest lists](references/quest-lists.md) |
+| The counter's rank and star pages | [Counter pages](references/counter-pages.md) |
+| Quest detail panel, quest board, Quest Info, the running quest | [Quest detail pages](references/quest-detail-pages.md) |
+| Rewards, carves, captures, breaks, gathering, fishing and their files | [Quest files](references/quest-files.md) |
+| Luck, reward pages, guarantees, quantities, appraisal | [Rewards and Luck](references/rewards-and-luck.md) |
+
+**Equipment**
+
+| Question | Read |
+| --- | --- |
+| Box slots, equipped gear, level base, weapon category | [Equipment box](references/equipment-box.md) |
+| Weapon craft, upgrade and derive tables | [Weapon crafting data](references/weapon-crafting-data.md) |
+| Smithy window fields and code, prices, kinsects, loaded tables | [Smithy window](references/smithy-window.md) |
+| Stat getters, decorations, skills, itemData layouts, rarity, armor names | [Equipment stats](references/equipment-stats.md) |
+| Armor archives, file IDs, loading, MRL materials, armor textures, which hunter is local | [Hunter armor](references/armor-models.md) |
+| Sharpness points, tiers, tables, the HUD row | [Sharpness](references/sharpness.md) |
+
+**Gameplay, sound, network and files**
+
+| Question | Read |
+| --- | --- |
+| Input views, button glyphs, local player and weapon, target camera, reload | [Input and actions](references/input-and-actions.md) |
+| How monster HP falls, every damage route, shells and siege weapons | [Damage](references/damage.md) |
+| Camera objects, matrices, projection, applied display size | [Cameras](references/cameras.md) |
+| Menu sounds, sound data, request slots | [Sounds](references/sounds.md) |
+| Pickup and BBQ jingles | [Jingles](references/jingles.md) |
+| Motion sound events (MSS) | [Motion sounds](references/motion-sounds.md) |
+| Sessions, member state, who spawns for whom, travel codes | [Multiplayer and areas](references/multiplayer-and-areas.md), by address in [Multiplayer findings](references/multiplayer-findings.md) |
+| The game's allocators and what a full one does | [Allocators](references/allocators.md) |
+| ARC, GMD and texture layouts, language codes, how the resource manager shares files | [File formats](references/file-formats.md) |
+| Which tools edit a resource, which wiki `.bt` templates fit | [Resource editing](references/resource-editing.md) |
+
+For a GUI question, establish instance-to-animation-to-object ownership and
+distinguish resource IDs from table rows before proposing reuse. File presence,
+suggestive names and setter lookup do not establish unused objects or a working
+rendering mechanism.
 
 ## Portable use
 
@@ -113,6 +155,3 @@ These Markdown files contain the findings without requiring a particular agent
 tool. Workspace commands need the original checkout, tool runtimes and private
 inputs. When inputs are missing, explain what cannot be checked and use the
 documented method with equivalent inputs. Do not invent game bytes.
-
-The companion `mhgu-forge-modding` skill owns plugin implementation, hook
-safety, GUI insertion, settings, builds and delivery.

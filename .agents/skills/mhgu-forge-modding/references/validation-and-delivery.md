@@ -13,7 +13,7 @@ These are the original workspace's release conventions. In another project, use 
 | Fresh log + exact installed hash | Particular launch/load and recorded behavior | Every feature or platform |
 | User gameplay acceptance | Reported behavior for the identified payload/session | Exhaustive scenario coverage |
 
-For Switch Rust/GCC NROs, verify the [target flags and final relocation destinations](api-and-builds.md#rust-nro-relocation-requirements) before packaging. Retain the ELF/NRO hashes and any linker errors; a clean `-z text` link and absent TEXTREL flags complement the destination scan. Treat hardware-test rebuilds as new DEVELOPMENT candidates, preserving accepted artifacts and their original runtime scope.
+For Switch Rust/GCC NROs, verify the [target flags and final relocation destinations](rust-builds.md#rust-nro-relocation-requirements) before packaging. Retain the ELF/NRO hashes and any linker errors; a clean `-z text` link and absent TEXTREL flags complement the destination scan. Treat hardware-test rebuilds as new DEVELOPMENT candidates, preserving accepted artifacts and their original runtime scope.
 
 A double that builds the value the code reads proves only the code's own belief about it: model the game's layout as a game reader shows it, and pick test inputs whose wrong reading gives a different result (WishFinder r130's in-quest Quest Info case used a quest with nothing to list, so a lookup that read quest ID 0 passed).
 

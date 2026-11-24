@@ -2,7 +2,7 @@
 """Check wiki 010 Editor templates against a RomFS dump: header + count * record == file size.
 
 Usage: python3 scripts/check_wiki_templates.py [ROMFS]
-Results recorded in .agents/skills/mhgu-understanding/references/resources-and-tooling.md.
+Results recorded in .agents/skills/mhgu-understanding/references/resource-editing.md.
 """
 import collections
 import struct

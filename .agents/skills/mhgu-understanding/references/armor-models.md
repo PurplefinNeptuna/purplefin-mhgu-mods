@@ -1,16 +1,12 @@
 # Hunter armor: files, loading and drawing
 
-What the game does to put an armor piece on a hunter, from the archive on disk to the model on screen, and what
-an armor mod's files look like. Offsets are main-relative, 1.4.0. "Bytes" was read from the executable or real
-files, "run" was seen in the game (Skin Loader, Eden and MHGU Recomp), "inference" is unchecked. Skin Loader is
-the worked example (`mods/skin-loader/`: `src/hooks.rs`, `core/src/convert.rs`, `scripts/make_skin.py`); its
-mod-specific choices are in its DEVELOPMENT.md.
+What the game does to put an armor piece on a hunter, from the archive on disk to the model on screen. Offsets are main-relative, 1.4.0. "Bytes" was read from the executable or real files, "run" was seen in the game, "inference" is unchecked.
 
 ## Armor archives
 
 - One archive per part and armor number: `nativeNX/arc/player/com/{f|m}/NNN/{helm,body,arm,wst,leg}.arc`
   (female 571 numbered folders, male 565, numbers 1 to 747; `f/vo` and `m/vo` hold voices). 5,368 archives in
-  the 1.4.0 RomFS. ARC layout: [Resources and tooling](resources-and-tooling.md#formats-a-plugin-reads).
+  the 1.4.0 RomFS. ARC layout: [File layouts](file-formats.md#file-layouts).
 - Entry names: `player\mod\{f|m}\plNNN\{f|m}_PARTNNN<rest>`, for example `player\mod\f\pl001\f_body001` (model
   and material share the name, the type tells them apart) and `..._BM` textures. Shared textures live in
   `player\mod\common\` (`f_skin_BM`, `m_skin_BM`, `env_p000_BM`) and appear in many archives. Bytes, every
@@ -26,8 +22,6 @@ mod-specific choices are in its DEVELOPMENT.md.
   | `0x535d969f` | `rCnsTinyChain` | CTC | helm 374, wst 220, body 172, arm 20 |
   | `0x0026e7ff` | `rChainCol` | CCL | helm only, 153 |
 
-- An armor mod's download usually holds these same five archives at `romfs/nativeNX/arc/player/com/f/NNN/`
-  (replacing an existing armor's look), sometimes an `exefs` IPS too. Its entries keep the `plNNN` names.
 
 ## How a piece is requested
 
@@ -38,9 +32,7 @@ mod-specific choices are in its DEVELOPMENT.md.
   model argument of `0x2875c0` changes only which archive loads. Bytes.
 - `0x15339c(self, out, kind, part, model)` formats the path after `arc\` that `0x1529a8` builds: kind 42
   `player\com\m\%03d\%s`, kind 44 `player\com\f\%03d\%s`, `part` indexing the names at `0x173e650`. Its
-  `sprintf` site `0x153b60` (`add r0, sp, #12; mov r2, r8`, model in r8) is shared by both kinds and is where
-  Skin Loader formats `skins\FOLDER\PART` instead. MHGU Definitive Edition replaces the first word of
-  `0x15339c` with `add pc, pc, #imm`, so its entry cannot take a Forge hook. Bytes, run.
+  `sprintf` site `0x153b60` (`add r0, sp, #12; mov r2, r8`, model in r8) is shared by both kinds. Bytes.
 - `0x2899fc(hunter, slot, model)` changes one part (28 call sites in 10 functions) and returns 0 while the part's
   state at `+0x1378` is above 1. `0x287454` sets bit `slot` of hunter `+0x2460` for an empty slot, which uses
   the hunter's default model. Bytes.
@@ -62,13 +54,13 @@ mod-specific choices are in its DEVELOPMENT.md.
   each resolver called only from `0x288d10`. MRL and TEX are not in the table. Bytes.
 - A model gets its MRL by its own path (`0xb49854`), and an MRL gets its textures by the paths inside it, so
   those two need no file ID. Bytes.
-- Consequence, run on Eden: renaming textures and the MRL's texture paths works (the MOD keeps `plNNN`);
+- Consequence, run: renaming textures and the MRL's texture paths works (the MOD keeps `plNNN`);
   renaming the MOD too makes every ID lookup return null, `0x3071f8` stores the null at `part + 0x1384`, state
   4 skips installing the model, the armor is not drawn and the game freezes at the save screen.
 - So a piece under another name must be attached by hand after `0x288d10`: find its MOD, CTC, CCL and display
   file by path hash with the resource manager's find (vtable `+0x38` of the object in cell `0x2126a64`; never
   loads, returns the resource with its count raised) and set them with `0x3071f8`, `0x307238`, `0x307278` and
-  hunter `+0x23a8` (Skin Loader's attach hook). Run.
+  hunter `+0x23a8`. Run.
 - Open: when a body piece makes the helm follow its model (`0x28a30c`), an empty helm slot keeps the real
   model.
 
@@ -79,26 +71,10 @@ mod-specific choices are in its DEVELOPMENT.md.
   `0xbca65c` drop one leading `\`, collapse doubled `\`, take `MtCRC::getCRC(path, -1)` (no case folding) and key
   the resource by `{crc, dti id}`. A live match whose `mState & 0x50` is 0 gets `mRefCount + 1` and is returned,
   and the new archive's bytes are not used; `decodeProc` `0xbc790c` never decodes over a loaded resource. Bytes.
-- So two archives whose entries share a name share one loaded file: an unconverted armor mod placed elsewhere
-  and the real armor it replaces (or two mods for the same armor number) show whichever loaded first. Anything
+- So two archives whose entries share a name share one loaded file, and whichever loaded first is shown. Anything
   that must show beside the original needs its own internal names. Bytes, inference for what the player sees.
 - The path filter at `sResource +0x13040` can redirect any load, including to `savedata:`
-  ([Resources and tooling](resources-and-tooling.md#how-the-resource-manager-loads-and-shares-files)).
-
-## Renaming an armor mod's files (the converter rule)
-
-Checked with `make_skin.py` on 18 real armor mods and the plugin's `core::convert` against it:
-
-- An entry or MRL texture path matching `player\mod\[fm]\pl<digits>\[fm]_PART<digits><rest>` becomes
-  `skins\FOLDER\PART<rest>`; anything else keeps its name (`player\mod\common\...`, a mod's own extra names
-  such as `f_2b_leotard`). Results of 64 bytes or more do not fit the field.
-- MOD files are not changed: they name their materials by `crc(name) & 0x7fffffff`, which the MRL's material
-  table matches. Texture rows in the MRL hold paths in fixed 64-byte fields.
-- Repacking: each entry is one zlib stream, unpacked size in `flags & 0x1fffffff`. A rewritten MRL can go back
-  as stored (uncompressed) deflate blocks; other entries are copied packed. The game loads both (run).
-- `player\mod\common\` textures keep their names and stay shared with the game, which is safe only while a mod's
-  copy equals the stock file (true in all 16 converted skins checked).
-- Gender comes from the `\f\` or `\m\` in the names; an archive whose parts mix genders is not one armor.
+  ([How the resource manager loads and shares files](file-formats.md#how-the-resource-manager-loads-and-shares-files)).
 
 ## Material files (MRL, version 0x22)
 
@@ -121,14 +97,12 @@ Checked with `make_skin.py` on 18 real armor mods and the plugin's `core::conver
 - Part colour maps are DXT5/BC3 (TEX format byte +0xd `0x17`); `_BM+A` masks are BC4 (`0x19`). Data is the last
   `u32 @ +0x10` bytes, 16-byte blocks in the Switch block order; a block's two RGB565 end colours are at +8 and
   +10, so scaling those changes colour without decoding. TEX header: [Resources and
-  tooling](resources-and-tooling.md#formats-a-plugin-reads).
-- Ported textures can be far brighter than stock: Labubu's body averages 167 of 255 in luminance, Leather's 84.
+  tooling](file-formats.md#file-layouts).
 - Changing colour at load: `rTexture`'s load `0xb51464` reads the pixel buffer with `MtStream::read`
-  (`0xb5189c`, buffer r5, size r6) and builds the GPU texture after (`0xb0804c`, `0xb0915c`); a tap at
-  `0xb518a0` sees every 2D texture's pixels once, on any host that runs the game's loader. r10 is the header
+  (`0xb5189c`, buffer r5, size r6) and builds the GPU texture after (`0xb0804c`, `0xb0915c`); code at
+  `0xb518a0` sees every 2D texture's pixels once. r10 is the header
   from +4 (`[r10, #8]` the format word), the `rTexture` at `[sp, #0x2c]`. Textures already loaded keep their
-  pixels, so a change shows only after the game frees and reloads them. Bytes, run (Skin Loader Brightness and
-  Saturation).
+  pixels, so a change shows only after the game frees and reloads them. Bytes, run.
 
 ## Which hunter is which
 
@@ -140,7 +114,3 @@ Checked with `make_skin.py` on 18 real armor mods and the plugin's `core::conver
   type 0 or 1 hunter without bits 0 and 3 is another player's. Bytes.
 - A type 2 or 3 preview is the save screen while no local live hunter exists, and the smithy's otherwise.
   Bytes, run.
-
-Sources: `mods/skin-loader/DEVELOPMENT.md`, `work/skin-loader/{DESIGN.md,resource-sharing.md}`,
-`mods/skin-loader/scripts/make_skin.py`, a scan of every `nativeNX/arc/player/com/*/*/*.arc` in the 1.4.0 RomFS,
-`work/research-tooling/dti/dti.jsonl` for type names.

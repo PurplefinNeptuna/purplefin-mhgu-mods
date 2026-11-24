@@ -13,7 +13,7 @@ of it.
   later, never by load order ([Plugin order](hooks-and-lifetimes.md#plugin-order)).
 - Our libraries are not looked up at all: a mod exports `wishfinder_on_register` or
   `purplelib_on_register`, and WishFinder (r70 and later) or Purple-lib calls it with a table of
-  its functions ([API and builds](api-and-builds.md#a-library-that-calls-its-clients-purple-lib),
+  its functions ([API and builds](plugin-apis.md#a-library-that-calls-its-clients-purple-lib),
   `mods/wishfinder/API.md`). Do not use `nn::ro::LookupSymbol`: it resolves only the game's own
   modules and finds nothing in a loaded plugin, and Forge exports no plugin symbol lookup.
 - A third-party plugin that exports a function of its own can be found by that name in

@@ -58,12 +58,6 @@ SaladSoftware 2.4.2 no-edit smoke repacks of copied Barioth/localized quests wer
 
 Kuriimu2 uses MT Framework / MT ARC, plugin ID `5a2dfcb6-60d6-4783-acd1-bc7fb4a65f38`. Launch through `./scripts/tool.sh kuriimu PATH` or `kuriimu-cli` for the correct working directory/private runtime. If its GUI misreads a Linux absolute path, use the printed temporary workspace alias. CLI archive context needs `back-to-main` before `exit`.
 
-## Merge ownership and companions
-
-Resource priority is Base -> HD Project -> Z_Balanced -> others. Later changed resources win whole; unchanged resources retain lower improvements. Same-path ARC conflicts need internal resource merging, not choosing one archive wholesale. Preserve language/controller/icon selections, matching font/texture pairs, and base companions. Choose one FPS/FOV variant. V4 donors are retired.
-
-The HD cleanup's 7,931-file reproduction and 407-resource comparisons are static/deployment evidence from that operation. They do not establish current activation or every visual improvement. Historical paths to retired loader reports are not present-day baseline instructions. Read actual ownership/manifests before touching shared resources.
-
 ## Text, fonts, and textures
 
 ```sh
@@ -76,7 +70,7 @@ Classify GMD format before conversion. npm gmd 0.2.0 dropped 19 metadata fields 
 
 Native fonts pair GFD glyph mapping/metrics with TEX atlas pages. Altering page images without updating Unicode/page/position/advance/size data breaks text. The offline font tutorial describes packed glyph fields and layout adjustments. Validate the real header and entry stride before editing. Larger glyphs can require companion line/window textures. Preserve language and controller prompts while merging font assets.
 
-The item icon atlas `GUI\99_texture\HD_cmn_icon_GSM_NOMIP` is in every language's `<lang>/arc/resident_<lang>.arc` (type `0x241f5deb`): grey RGBA8 art in the `rTexture` and block-linear layouts of [Formats a plugin reads](#formats-a-plugin-reads). The base game's is 512x1024 (2,097,176 bytes unpacked); Modern Weapon Controls' `resident_eng.arc` replaces it with a 1024x2048 one (8 MiB), so never assume the size. It holds each icon twice, 32-texel cells from the top (`mIconType`, ten to a row) and 48-texel cells from y 416 in the same order, all scaled with the width; checked on cells 2, 13, 21 and 36 at both sizes (32-texel cells in `mods/wishfinder/src/gui.rs` `QUEST_ICONS`, 48-texel pieces in `core/src/imitation.rs`; host decode). Some cells are drawn differently per language: cell 9 (ore) in German, Italian and Spanish. BC formats tile 4x4 blocks (8 bytes BC1, 16 bytes BC3): `HD_questCounter_BM_NOMIP` (1024x1024), `HD_lobby00_BM_NOMIP`, `HD_window_BM_MQ_NOMIP` and `HD_custom_pnl2_BM_NOMIP` (512x512) are BC3 in `resident_eng.arc`, decoded and checked by eye (`mods/wishfinder/core/src/texture.rs`). GMD text tables (layout in the table below): `resident_<lang>.arc` `weapon13MsgData`, `itemData`, `CommonMsg` and `StartMenuMsg` have the same string count in all seven languages, so an index names the same text in each (`CommonMsg` 0 is the price format `%dz`; a `weapon13MsgData` without the language suffix is a different 4-string table). Quest names are string 0 of `loc/arc/quest/*.arc` `<lang>\quest\questData\questData_<id 7 digits>_<lang>`. Logical GUI atlas coordinates need not equal physical HD pixels. Preserve texture descriptors, format, dimensions, mip/swizzle/platform requirements and alpha. DDS/PNG export alone does not prove a valid reinjected TEX. Compare unchanged roundtrip and then verify the edited in-game consumer.
+The item icon atlas `GUI\99_texture\HD_cmn_icon_GSM_NOMIP` is in every language's `<lang>/arc/resident_<lang>.arc` (type `0x241f5deb`): grey RGBA8 art in the `rTexture` and block-linear layouts of [File layouts](file-formats.md#file-layouts). The base game's is 512x1024 (2,097,176 bytes unpacked); a replaced atlas can be 1024x2048 (8 MiB), so never assume the size. It holds each icon twice, 32-texel cells from the top (`mIconType`, ten to a row) and 48-texel cells from y 416 in the same order, all scaled with the width; checked on cells 2, 13, 21 and 36 at both sizes. Some cells are drawn differently per language: cell 9 (ore) in German, Italian and Spanish. BC formats tile 4x4 blocks (8 bytes BC1, 16 bytes BC3): `HD_questCounter_BM_NOMIP` (1024x1024), `HD_lobby00_BM_NOMIP`, `HD_window_BM_MQ_NOMIP` and `HD_custom_pnl2_BM_NOMIP` (512x512) are BC3 in `resident_eng.arc`, decoded and checked by eye. GMD text tables (layout in the table below): `resident_<lang>.arc` `weapon13MsgData`, `itemData`, `CommonMsg` and `StartMenuMsg` have the same string count in all seven languages, so an index names the same text in each (`CommonMsg` 0 is the price format `%dz`; a `weapon13MsgData` without the language suffix is a different 4-string table). Quest names are string 0 of `loc/arc/quest/*.arc` `<lang>\quest\questData\questData_<id 7 digits>_<lang>`. Logical GUI atlas coordinates need not equal physical HD pixels. Preserve texture descriptors, format, dimensions, mip/swizzle/platform requirements and alpha. DDS/PNG export alone does not prove a valid reinjected TEX. Compare unchanged roundtrip and then verify the edited in-game consumer.
 
 ## Models, gameplay tables, and audio
 
@@ -95,60 +89,6 @@ IFRIT wrappers handle Opus/DSP/Capcom ADPCM encoding. Match channel count, sampl
 
 An encoded tone/header check establishes encoding, not music-loop/STQR correctness. The Windows batch hub is not the Linux entrypoint. Existing wrappers use private Wine paths and explicit path translation.
 
-## Formats a plugin reads
-
-Verified by WishFinder's readers over the 1.4.0 RomFS (and Definitive Edition
-2.0.0), with host tests on real files. How a plugin opens, streams and caches
-them: `mhgu-forge-modding` [Game files at runtime](../../mhgu-forge-modding/references/game-files-at-runtime.md).
-
-| Format | Layout |
-| --- | --- |
-| ARC version 17 | 12-byte header: `ARC\0`, u16 version 17, u16 count. Then `count` 80-byte entries: 64-byte name, u32 type hash, u32 packed size, u32 flags, u32 offset. Each entry is one zlib stream; unpacked size is `flags & 0x1fffffff` (all 14,154 entries checked) |
-| GMD text | `GMD\0`; string count at +0x18, strings' byte size at +0x20; the strings are NUL-separated at the end of the file, UTF-8 |
-| `rTexture` (TEX) | `TEX\0`, 24-byte header. Byte 13 is the format: `0x07` RGBA8, `0x13` BC1, `0x17` BC3. The word at +8 holds mip count (bits 0..5), width (6..18) and height (19..31). Level 0 follows |
-| Texture layout | Tegra block-linear: GOBs of 64 bytes by 8 rows, 16 GOBs to a block, over texels (RGBA8) or 4x4 blocks (BC) |
-
-Language folders and the game's language byte: `+0xa5` of the session (sGameControl), the object in cell
-`0x188ca48`. `cQuestData::getMessage` `0x37a2e4` reaches it through GOT word `0x1838bb4`, three loads; its jump
-table at `0x37a310` picks the text slot (`+236` English, `+240` French, `+252` Spanish, `+244` German, `+248`
-Italian, `+256` and `+260` the two Chinese). MHGU Recomp's `MHGU_LANGUAGE` debug switch writes the same byte
-(`runtime/hle/villagehub.c` `GC_LANGUAGE`). The game's own language setting decides it, not the console's:
-Recomp reported `en-US` while the game ran in Traditional Chinese (Skin Loader r17).
-
-| Byte | Folder code |
-| --- | --- |
-| 2 | `fre` |
-| 3 | `spa` |
-| 4 | `ger` |
-| 5 | `ita` |
-| 7 | `chT` |
-| 8 | `chS` |
-| anything else | `eng` |
-
-The MHGU-Korean patch replaces the English files, so the byte still says English. Tell it apart by the strings
-of `eng\table\CommonMsg_eng` in `eng/arc/resident_eng.arc`: MHGU-Korean 1.0.5 has 142 strings of 198 with a
-Hangul syllable (U+AC00..U+D7A3), the base game none. Scan only the strings (the last `+0x20` bytes): the table's
-binary part reads as U+AFBE at byte 3796 in the base 1.4.0 table and in Modern Weapon Controls' copy, so a
-whole-table byte scan calls every English game Korean (WishFinder `imitation::korean`, Skin Loader
-`lang::korean_table`, both checked on the three real tables).
-
-Atlas facts (both cell sizes, sizes per mod, language differences) are in the Text, fonts, and textures section above. Forge's Roboto has no CJK glyphs; the game's own font is `font_festa.gfd`.
-
-## How the resource manager loads and shares files
-
-- Both loaders, `loadBlocking` `0xbcb0d0` and `loaderHandler` `0xbc74e0`, build `root\mPath.ext` in a 512- or
-  768-byte stack buffer (root: the MtString at `sResource +0x4024`, `\nativeNX` for skin archives, or `+0x4028`)
-  and then call `sResource +0x13040` as `filter(path, *(sResource +0x13044))` before `MtFile` opens it. The game
-  only ever clears that field (`0xbc6e08`), so a plugin can set it to redirect a load; `MtFile::canonicalizePath`
-  `0x8292ec` keeps a `savedata:` prefix, so a file can load from the save. On Eden the resource root read
-  `\resource`. Checked by Skin Loader r15 to r18 on Eden and MHGU Recomp (`mods/skin-loader/src/saved.rs`).
-- `sResource` (cell `0x2126a64`) shares a loaded file by `{crc(path), type}`: the first load of a path wins and
-  later requests get it. Two files with the same internal path cannot both be loaded, so a copy that must sit
-  beside the original (a skin beside the armor it came from) needs its own internal names (Skin Loader
-  `core::convert`).
-
 ## Tool limits and evidence
 
 `START_TOOLS.sh` and `scripts/tool.sh` own launcher commands. Pax browses ARC/textures, ImHex edits bytes, Revil converts supported formats, GIMP edits imagery, Blender inspects models, and Audacity edits audio. 010Editor `.bt` files are format references for ImHex, not executable ImHex templates. Private runtimes avoid changing host packages: Kuriimu2's matching .NET 3.1.32 starts its GUI, while a .NET 9 substitution crashed it; ImHex requires its private 0700 runtime path; Pax uses private LLVM 19 libraries. In another environment re-establish prerequisites rather than copying absolute paths.
-
-Sources: `docs/TOOLS.md`, `mods/hd-project/README.md`, shared ARC/GMD tests and build receipts; offline wiki CFileIndex, Weapon-Parameter-Modding, Item-Editing, Font-Editing, Model-and-Texture-Extract, audio pages; `references/MHGU-Modding/templates/` (checked by `scripts/check_wiki_templates.py`) and `weapon_MV_Index/`. Wiki claims not verified locally retain lead status.

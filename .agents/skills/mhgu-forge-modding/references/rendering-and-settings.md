@@ -4,7 +4,7 @@
 
 Use the native game tree for decorations that must follow an existing menu's transforms, visibility, selection, and destruction. Use Forge's ImGui callbacks for settings and independent overlays. Key Quest Markers renders badges natively and uses ImGui only for settings. Damage Numbers and current Please do Better use Forge overlays.
 
-An overlay that must line up with a HUD part breaks wherever the HUD is moved after the game draws it (gu-native, UIScale): use a native node there ([HUD movers](native-gui-extensions.md#hud-movers-gu-native-and-uiscale)). An overlay that follows the 3D world must find the game's picture inside Forge's display, which differs per host, and must not write through ImGui buffer pointers ([Runtimes](runtimes.md#imgui-on-each-host)).
+An overlay that must line up with a HUD part breaks wherever the HUD is moved after the game draws it (gu-native, UIScale): use a native node there ([HUD movers](gui-masks-and-movers.md#hud-movers-gu-native-and-uiscale)). An overlay that follows the 3D world must find the game's picture inside Forge's display, which differs per host, and must not write through ImGui buffer pointers ([Runtimes](runtimes.md#imgui-on-each-host)).
 
 `forge_onImGuiRender` runs inside the plugin UI. Give each settings panel a stable plugin-specific ID and a compact unframed tree, closed by default. Pair each successful TreeNode with TreePop. Keep rendering/update work outside the open-row branch. A plugin without settings needs no panel.
 

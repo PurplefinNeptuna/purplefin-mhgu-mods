@@ -7,12 +7,14 @@ description: Develop, change, debug, build, package and release native ARM32 For
 
 Target: MHGU Switch 1.4.0, title `0100770008DD8000`, main build ID
 `FB08F1D20FD1204FE7070672777F869B`. Loader: stock Forge 2.0.0 (Fexty's fork),
-forge-rs 2.0.0; mods not yet moved target 1.5.1 and 1.5.0. Knowledge dated 2026-11-13.
+forge-rs 2.0.0; mods not yet moved target 1.5.1 and 1.5.0.
 
 This skill is **how a plugin does things**: builds, hooks, GUI insertion,
-rendering, input, files, hosts, delivery. What the game itself does (offsets,
-fields, formats, IDs) is in the companion `mhgu-understanding` skill. When a
-fact here needs a game detail, it links there instead of copying it.
+rendering, input, files, hosts, other mods, delivery, and how each of our mods
+works. What the game itself does (offsets, fields, formats, IDs) is in the
+companion `mhgu-understanding` skill, which names no mod. When a fact here needs
+a game detail, it links there instead of copying it. A new game fact goes there;
+its source goes in [Knowledge sources](references/knowledge-sources.md).
 
 ## Start here
 
@@ -27,21 +29,7 @@ fact here needs a game detail, it links there instead of copying it.
 
 ## Game data
 
-These are read-only originals. Copy a file into the scratchpad or `work/NAME/`
-before extracting, unpacking or editing it.
-
-| Location | What it holds | Use it for |
-| --- | --- | --- |
-| `/mnt/storage2/Programs/MHGURecomp/data/romfs/` | Every game resource (ARC archives in `nativeNX/arc/`, GUI, tables, per-language text), 12 GB, no code. MHGURecomp's copy of the 1.4.0 RomFS; files checked so far match the earlier Eden dump (WishFinder's `quests.bin` rebuilds byte for byte, and Modern Weapon Controls' pinned `hunter_note_eng.arc` hash matches). | Finding and reading resources: `rg --files DUMP/romfs \| rg NAME` |
-| `work/shared/game-exefs/` | The 1.4.0 code only: `main` (the game), `sdk`, `subsdk0`, `rtld`, `main.npdm`. `forge` is Forge 2.0.0's `subsdk9` (1.5.1's is in `work/shared/forge-1.5.1/`), not game code. | Instruction bytes and signatures. Read `main` with `scripts/mhgu_binary.py` `main_image()`, which refuses any other version. |
-| `work/research-tooling/` | Saved Ghidra project/export and DTI index built from that `main` | Search first: `./scripts/tool.sh research find QUERY --kind functions` |
-| `/mnt/storage2/ROM/Switch/Game/Monster Hunter Generations Ultimate™ [0100770008DD8000][v0]).xci` | Sealed base game (v0) | Rarely needed: an original the dump lacks |
-| `/mnt/storage2/ROM/Switch/Update+DLC/MONSTER HUNTER GENERATIONS ULTIMATE [0100770008DD8800][v262144].nsp` | Sealed 1.4.0 update, about 193 MiB (v262144; Eden logs it as "v0.4.0"). Mostly a RomFS patch: a binary delta that only works applied onto the base RomFS, not a folder of files. | Rarely needed. Its resource changes are in the dump and its code is in `game-exefs/`; nothing else is missing. |
-| `/mnt/storage2/ROM/Switch/keys+firmware/` | Keys needed to open the XCI/NSP | Only with the two files above |
-| `/mnt/storage2/ROM/Switch/cheats/mhgu/` | Uninstalled mod/cheat library | Not the game, and not installed mods |
-
-Opening the XCI/NSP needs hactool. Only its source is in `tools/hactool-source/`;
-build it and extract into the scratchpad.
+Where the RomFS, executables, Ghidra project and sealed files are: "Game data" in the `mhgu-understanding` skill. They are read-only; copy a file into the scratchpad or `work/NAME/` before unpacking or editing it.
 
 ## Words used in this skill
 
@@ -100,7 +88,7 @@ Otherwise keep going, record unknowns in DEVELOPMENT.md, and finish the parts th
 
 ## Common mistakes
 
-Topic-specific mistakes live with their topic: native GUI in [Native GUI extensions](references/native-gui-extensions.md#common-mistakes), hosts, input and ImGui in [Runtimes](references/runtimes.md#common-mistakes). The rows below hold for every task.
+Topic-specific mistakes live with their topic: native GUI in [Native GUI extensions](references/gui-mistakes.md#common-mistakes), hosts, input and ImGui in [Runtimes](references/runtimes.md#common-mistakes). The rows below hold for every task.
 
 | Mistake | Correct approach |
 | --- | --- |
@@ -112,7 +100,7 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 | Shipping a texture or table extracted from the game | Read it from the user's `app:/nativeNX/` at run time, sized from the file header, because other mods may replace it ([Game files at runtime](references/game-files-at-runtime.md)). |
 | Fixing `check` failures by editing release folders by hand | Use `package NAME --refresh-support` for doc-only changes. |
 | Pointing release `notices` at a `vendor/` license file | Fetched vendor is untracked. Copy the license into `licenses/` and list that path. |
-| Comparing NROs built in different folders | Rust NROs embed absolute source paths. Build both at one path ([Rust dependencies](references/api-and-builds.md#rust-dependencies)). |
+| Comparing NROs built in different folders | Rust NROs embed absolute source paths. Build both at one path ([Rust dependencies](references/rust-builds.md#rust-dependencies)). |
 | Proving a dependency change with an equal NRO alone | Host test harnesses compile for x86_64, where C `char` is signed. Run `test --host` too. |
 | Concluding from an old log or a folder listing | Read the newest log and match installed hashes first (playbook P3). |
 | Assuming a test double proves pixels | GPU commands are doubles. Visible output needs a user run. |
@@ -142,24 +130,56 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 
 | Task | Read |
 | --- | --- |
-| Step-by-step procedures | [Playbooks](references/playbooks.md) |
-| Loader, Rust/C++ APIs, metadata, ABI, standalone builds, plugin-to-plugin exports | [API and builds](references/api-and-builds.md) |
+| Step-by-step: new plugin, change, diagnose, add a hook | [Playbooks](references/playbooks.md) |
+| Step-by-step: promote, support refresh, consolidate, finish, report | [Release playbooks](references/playbooks-release.md) |
+| Loader, Rust/C++ APIs, metadata, ABI, standalone builds | [API and builds](references/api-and-builds.md) |
+| Rust NRO relocations, fetched dependencies, the hardware-test loader | [Rust builds](references/rust-builds.md) |
+| Plugin-to-plugin exports; a library that calls its clients | [Plugin APIs](references/plugin-apis.md) |
+| Put a mod's settings in the game's Options (Mod Options) or its topics in the game's help | `mods/purple-lib/API.md`, then [Plugin APIs](references/plugin-apis.md#a-library-that-calls-its-clients-purple-lib) |
 | Detours, trampolines, flags, TLS, transactions, rollback | [Hooks and lifetimes](references/hooks-and-lifetimes.md) |
-| Add game-owned GUI objects or extend a native menu; add pages to a game's paged panel; show a game window on another screen or in a quest | [Native GUI extensions](references/native-gui-extensions.md) |
-| Put a mod's settings in the game's Options (Mod Options) or its topics in the game's help | `mods/purple-lib/API.md`; working clients and the rules in [API and builds](references/api-and-builds.md#a-library-that-calls-its-clients-purple-lib) |
+| Game functions known to take a hook, and their pitfalls | [Hook sites](references/hook-sites.md) |
+| Add game-owned GUI objects to a native tree | [GUI insertion](references/gui-insertion.md) |
+| Reparent nodes, masks, cached quads, HUD movers, a row's end | [GUI masks and movers](references/gui-masks-and-movers.md) |
+| Reuse a game screen, add pages to a panel, borrow a window, guide entries | [GUI screen reuse](references/gui-screen-reuse.md) |
+| Native GUI mistakes to check before a build | [GUI mistakes](references/gui-mistakes.md) |
+| ImGui, fonts/textures, INIs, save mounts | [Rendering and settings](references/rendering-and-settings.md) |
+| What differs on Switch, Eden, Ryubing, MHGURecomp and gu-native | [Runtimes](references/runtimes.md) |
+| Forge input, hotkeys, owning a press, Forge's menu key, MHGURecomp mouse/keybind calls | [Input and keybinds](references/input-and-keybinds.md) |
+| Remapping weapon input, tap windows, replacing a native command | [Gameplay recipes](references/gameplay-recipes.md) |
+| Capturing damage and placing numbers from a camera | [Damage capture](references/damage-capture.md) |
+| Changing rewards safely | [Reward editing](references/reward-editing.md) |
+| Armor mods, renaming their files, skins | [Armor skins](references/armor-skins.md) |
+| Reading RomFS files, ARC entries, text and textures; writing into the save; CJK fonts; a one-time message window | [Game files at runtime](references/game-files-at-runtime.md) |
 | Read another plugin's memory when it has no API (bridges) | [Plugin bridges](references/plugin-bridges.md) |
-| ImGui, fonts/textures, damage overlay, INIs, save mounts | [Rendering and settings](references/rendering-and-settings.md) |
-| What differs on Switch, Eden, Ryubing, MHGURecomp and gu-native (instructions, SVCs, ImGui display, input, HUD movers) | [Runtimes](references/runtimes.md) |
-| Forge input, hotkeys, owning a press, the button guide, Forge's menu key, MHGURecomp mouse/keybind calls | [Input and keybinds](references/input-and-keybinds.md) |
-| Reading RomFS files, ARC entries, text and textures from a plugin; writing into the save and loading game files from it; CJK fonts; a one-time message window | [Game files at runtime](references/game-files-at-runtime.md) |
-| Coexisting with Definitive Edition, KatLib/KatSmithy/UIScale, My Weapon Tree, DPS Meter, HD Project and others | [Other mods](references/other-mods.md) |
+| Coexisting with KatLib/KatSmithy/UIScale, My Weapon Tree, DPS Meter, HD Project and others | [Other mods](references/other-mods.md) |
+| MHGU Definitive Edition: what it patches, its quests | [Definitive Edition](references/definitive-edition.md) |
+| Unverified leads read from other mods' code | [Leads from other mods](references/other-mods-leads.md) |
 | Tests, exports, packaging, legal/support files, commits | [Validation and delivery](references/validation-and-delivery.md) |
 | Failed initialization, logs, historical failures, physical Switch | [Diagnostics](references/diagnostics.md) |
-| Workspace paths, evidence locations, source coverage | [Workspace and sources](references/workspace-and-sources.md) |
+| Workspace paths and evidence locations | [Workspace and sources](references/workspace-and-sources.md) |
+| Which mod or run proved a game fact | [Knowledge sources](references/knowledge-sources.md) |
 
-The companion `mhgu-understanding` skill explains game structures, research
-tools and resource formats. For GUI plans, read
-[Native GUI extensions](references/native-gui-extensions.md) before treating
+## How each mod works
+
+Read the mod's page before changing it, and copy from the closest one when building something similar. Each mod's `DEVELOPMENT.md` keeps its current state, commands, files, "Do not" list and open items.
+
+| Mod | Worked example |
+| --- | --- |
+| Damage Numbers | [Capture](references/worked/damage-capture.md), [crop, projection, assets](references/worked/damage-view.md) |
+| ImGui Meter | [Counting a plugin's ImGui calls](references/worked/imgui-meter.md) |
+| Key Quest Markers | [Classification and badges](references/worked/quest-badges.md) |
+| Lock-on Target, Shared Urgent Quests, Village Quests in Hub | [Small hook mods](references/worked/small-hooks.md) |
+| Modern Weapon Controls | [Remap and hooks](references/worked/weapon-controls.md), [bowgun reload](references/worked/bowgun-reload.md) |
+| Multiplayer Roaming | [Design and hooks](references/worked/multiplayer-roaming.md) |
+| Please do Better | [Capture and attribution](references/worked/reward-capture.md), [hooks and multiplier](references/worked/reward-multiplier.md) |
+| Purple-lib | [Hooks and Options window](references/worked/purple-lib-window.md), [API, registry, help](references/worked/purple-lib-registry.md), [its clients](references/worked/mod-options-clients.md) |
+| Skin Loader | [Paths, attach, skin files](references/worked/skin-loader.md), [raw skins, text, sync](references/worked/skin-loader-save.md) |
+| WishFinder | [Hunter's Notes](references/worked/wishfinder-notes.md), [smithy page](references/worked/wishfinder-smithy.md), [upgrades and kinsects](references/worked/wishfinder-smithy-upgrades.md), [quest rows and pages](references/worked/wishfinder-quests.md), [guide, popups, jingle](references/worked/wishfinder-guide.md), [welcome window](references/worked/wishfinder-welcome.md), [API, save, hooks](references/worked/wishfinder-api.md), [tables](references/worked/wishfinder-tables.md), [other mods](references/worked/wishfinder-other-mods.md) |
+| WishFinder bridge for My Weapon Tree | [Layout and update](references/worked/mwt-bridge.md) |
+| World Sharpness Gauge | [Insertion and cut](references/worked/sharpness-gauge.md), [fill per tier](references/worked/sharpness-fill.md) |
+| GE and cache audits across mods | [Audits](references/worked/ge-audits.md) |
+
+For GUI plans, read [GUI insertion](references/gui-insertion.md) before treating
 the quest-row recipe as a solution for another menu.
 
 ## Portable use

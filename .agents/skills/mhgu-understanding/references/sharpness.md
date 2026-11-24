@@ -1,6 +1,6 @@
 # Sharpness: player data, tier tables and the HUD row
 
-Verified on MHGU Switch 1.4.0 through World Sharpness Gauge. "Run" means an Eden log; everything else is from original bytes, decompiles or the dump's files.
+MHGU Switch 1.4.0. "Run" means a game log; everything else is from original bytes, decompiles or the dump's files.
 
 ## Player fields
 
@@ -16,13 +16,11 @@ The local player is session cell `0x188ca48` +0x30 (hunter index 0..3), then the
 
 The level in the maximum is status stat 14, an s16 at `mpPlParam + 4 + 0x338`, written by main+`0xe1eec`: the weapon's base level, plus 2 for `Sharpness_Plus2` or `HellbladeSoul(X)`, otherwise plus 1 for `Sharpness_Plus1`, `HonedBlade` or `BoltreaverSoul(X)`, capped at 12. Init reads it through player vtable `+0x15c` with argument 14. A bonus can end the maximum partway through a tier's band, so the top band is clipped at `mMaxSharpness`.
 
-A tier is a per-weapon band of points, not a percentage. In runs, 250 points crossed at 189 and 200 points crossed at 190. The bar's length is the fill inside the band its points sit in: `(current - floor) * 10_000 / (ceiling - floor)`, `floor` the top of the tier below (0 in tier 0) and `ceiling` the top of this tier clipped to `mMaxSharpness`, so the bar refills at every colour and a raised maximum reads full partway through its tier. Publish that fill directly: "the need is approximation, so jumpy is okay, no need for fancy smooth animations or lerp" (tester). Colour comes from the game, and a ratio can never pick the tier.
-
-`uPlayerBase::calculateSharpnessType` (main+`0x29cdfc`, `(player, s32 points) -> tier`, 196 bytes) is the game's own points-to-tier rule, and a caller needs no weapon id, level row or table to use it: gate main+`0x27c7ec` with argument 1 answers nonzero for the sharpness states, the fixed-tier flag main+`0x27b918` (bit 3 of the byte at `player + 0x13cc`, set only on the lobby classes `uOtomoLobby` and `uPlayerPreview`, so a quest player does not carry it) picks vtable `+0x144`, and otherwise the equip record's `+0x4` field `(& 0x3ff) >> 5` goes through vtable `+0x84`, which counts the thresholds as the RomFS section below describes. All 11 melee level classes share slots 0x7c/0x80/0x84 (23 vtable words equal the rule main+`0xf4794`), and all melee base classes share slot 0xd8 `0x127070`, the equip record, whose `(cell, index) -> cell + index * 44 + 20` address helper is main+`0xdf814`. The function's two dereferences, `player + 0x13c4` (main+`0x29ce34`) and that pointer's `+ 0x4d4` (main+`0x27c848`, main+`0x27c84c`), are unchecked, and every gate and lookup failure returns 0, the red tier; the body stores nothing. Validate the player and both pointers before calling it. Points equal to a threshold answer with the tier below, which makes the top of a band a point of that band, and the tier rule is monotonic, so a band search is sound. Log samples at kireaji row 10 and maximum 150: 150 tier 2, 131 tier 2, 130 tier 1, 100 tier 1, 90 tier 0, 8 tier 0. A rule answering 0 for any points makes a band search span the whole maximum.
+A tier is a per-weapon band of points, not a percentage. In runs, 250 points crossed at 189 and 200 points crossed at 190. `uPlayerBase::calculateSharpnessType` (main+`0x29cdfc`, `(player, s32 points) -> tier`, 196 bytes) is the game's own points-to-tier rule, and a caller needs no weapon id, level row or table to use it: gate main+`0x27c7ec` with argument 1 answers nonzero for the sharpness states, the fixed-tier flag main+`0x27b918` (bit 3 of the byte at `player + 0x13cc`, set only on the lobby classes `uOtomoLobby` and `uPlayerPreview`, so a quest player does not carry it) picks vtable `+0x144`, and otherwise the equip record's `+0x4` field `(& 0x3ff) >> 5` goes through vtable `+0x84`, which counts the thresholds as the RomFS section below describes. All 11 melee level classes share slots 0x7c/0x80/0x84 (23 vtable words equal the rule main+`0xf4794`), and all melee base classes share slot 0xd8 `0x127070`, the equip record, whose `(cell, index) -> cell + index * 44 + 20` address helper is main+`0xdf814`. The function's two dereferences, `player + 0x13c4` (main+`0x29ce34`) and that pointer's `+ 0x4d4` (main+`0x27c848`, main+`0x27c84c`), are unchecked, and every gate and lookup failure returns 0, the red tier; the body stores nothing. Validate the player and both pointers before calling it. Points equal to a threshold answer with the tier below, which makes the top of a band a point of that band, and the tier rule is monotonic, so a band search is sound. Log samples at kireaji row 10 and maximum 150: 150 tier 2, 131 tier 2, 130 tier 1, 100 tier 1, 90 tier 0, 8 tier 0. A rule answering 0 for any points makes a band search span the whole maximum.
 
 A hunter changes weapon at the box, never mid-quest (tester). A weapon with no sharpness, such as a bowgun, has no gauge row at all, and the HUD is also absent in the hub and during loading screens.
 
-More code, read from the bytes for World Sharpness Gauge:
+More code, read from the bytes:
 
 | Address | Meaning |
 | --- | --- |
@@ -64,9 +62,3 @@ The runtime tree is the controller with `Txt_sharp`, `Txt_sharpefx` and `Txt_sha
 The blade's length runs along `u`; `v` selects the tier band. The atlas is greyscale, and the tier colour is `VertexColor`. The bands differ in their bottom outline: 280 is straight, 304 has chips at columns 46, 58 and 70, and 328 has more chips and a raised bottom over columns 62 to 73.
 
 Sequences: `DEFAULT`; looping `sharp_0..6` (IDs 1000017..23, 50 frames), which key `VertexColor` on the bar and glow and hide the edge; static `sharp_0a..6a` (IDs 1000052..58, 0 frames), which fix the colour, hide the glow and show the edge. The looping set is the normal quest display, and the static set shows while the Heavy Polish timer runs. The driver is main+`0x62bb0c` (vtable word `0x177633c`): each frame it takes the main player's tier through vtable `+0x1fc`, clamps it to 6, and indexes table `0x1638ecc` (looping) or, when `player+0x2844 & 0x200` is set, table `0x1638ee8` (static). That flag is `+0x277c > 0`, built at `0x29f644` and stored at `0x29f834`. The HUD widget driver `0x61912c` is not this: its case 8 reads `+0x2784` through vtable `+0x1a0`, a different field whose meaning is unread.
-
-## Measured geometry
-
-Not derived from the atlas. The accepted cut runs 128 to 200 px on the 110..238 rect, the tester's measurement, carried as offsets 18 and 90 of the rect's 128. The ink measured 124..200 px on screen, with a few px of noise from downscaled screenshots.
-
-Sources: `mods/world-sharpness-gauge/{DEVELOPMENT.md,core/src/lib.rs,src/insert.rs}`; `work/world-sharpness-gauge/{PHASE0_RESEARCH.md,PHASE2_RESEARCH.md,PHASE5_RESEARCH.md,hud0-sharpness.json}`.

@@ -168,7 +168,7 @@ MaxScripts need licensed compatible 3ds Max. 3ds Max/Photoshop/010 Editor are
 uninstalled. ImHex cannot run `.bt`; use templates as format
 references. Several are wrong for some files (weapon families,
 `apd`, keyed `gmd`); check the verified list in
-`.agents/skills/mhgu-understanding/references/resources-and-tooling.md` first.
+`.agents/skills/mhgu-understanding/references/resource-editing.md` first.
 
 ## Local compatibility adjustments
 

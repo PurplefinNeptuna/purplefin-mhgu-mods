@@ -4,7 +4,7 @@ Use this when a plugin needs the game's data (tables, text, textures) at run
 time instead of shipping a copy. WishFinder is the worked example
 (`mods/wishfinder/src/config.rs` `GameFiles`, `core/src/{quest_build.rs,texture.rs,imitation.rs}`).
 File formats (ARC, GMD, `rTexture`, block-linear) are game facts and live in
-`mhgu-understanding` [Resources and tooling](../../mhgu-understanding/references/resources-and-tooling.md#formats-a-plugin-reads).
+`mhgu-understanding` [File layouts](../../mhgu-understanding/references/file-formats.md#file-layouts).
 
 ## Prefer reading the user's files over shipping copies
 
@@ -68,7 +68,7 @@ Rules:
   +0xf1c`): the game's save routines commit while the count is held and unmount only at 0, so a held count
   leaves the game's saving alone (Skin Loader r15 to r18).
 - To make the game load a file from the save, use the resource path filter (`sResource +0x13040`, in the
-  understanding [resources reference](../../mhgu-understanding/references/resources-and-tooling.md#how-the-resource-manager-loads-and-shares-files)).
+  understanding [How the resource manager loads and shares files](../../mhgu-understanding/references/file-formats.md#how-the-resource-manager-loads-and-shares-files)).
   Keep it cheap: it runs on every load (Skin Loader's costs 190 instructions on a path it leaves alone).
 
 ## Big entries: stream, cut, drop
@@ -87,7 +87,7 @@ under 1 MiB in one update.
   `0x1838bb4` takes two loads (WishFinder `native::session_language`: `cell(SESSION_CELL)` then `memory::word`).
   One load from the GOT word reads a static byte that never says Chinese (Skin Loader r17). Values, folder codes
   and the Korean patch check (scan the GMD strings only) are in the understanding
-  [resources reference](../../mhgu-understanding/references/resources-and-tooling.md#formats-a-plugin-reads).
+  [File layouts](../../mhgu-understanding/references/file-formats.md#file-layouts).
 - Copy a working reader whole, helpers included, not its constants. Port WishFinder's `session_language` and
   `imitation::korean` as they are, and test the port on the real tables: a constant pulled out of the helper
   that dereferences it, and a byte scan in place of the string reader, made Skin Loader r17 show Korean in a
@@ -141,7 +141,7 @@ every Begin, table, wrap and font push with its end whatever Begin returns.
 
 A native GUI node draws a texture the row's resource already loads, so it needs
 no file read: find the loaded descriptor and logical atlas coordinates
-([Native GUI extensions](native-gui-extensions.md#art-colour-and-paired-nodes)).
+([Art, colour and paired nodes](gui-insertion.md#art-colour-and-paired-nodes)).
 Atlas lookup `0xb80fd0` returns the loaded record for an id; Definitive
 Edition's IPS hooks that site and claims only its own ids (WishFinder
 *Other mods in the checked windows*), so check the record's id, size and

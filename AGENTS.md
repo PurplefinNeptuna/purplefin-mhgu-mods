@@ -8,8 +8,9 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 | --- | --- |
 | New or changed mod, builds, settings/INIs, packaging, release READMEs | docs/DEVELOPMENT.md, then the mod's AGENTS.md and DEVELOPMENT.md |
 | Forge plugin code, hooks, ABI, NRO builds, GUI insertion, ImGui, input/keybinds, reading game files, host differences (Recomp, gu-native) | `.agents/skills/mhgu-forge-modding/SKILL.md` (step-by-step: its `references/playbooks.md`) |
-| A mod's settings in the game's Options (Mod Options) or topics in the game's help | `mods/purple-lib/API.md`; copy from Purple-lib Tester (every feature) and Please do Better (a shipping mod's page); rules in forge-modding `references/api-and-builds.md`, "A library that calls its clients" |
-| Game code, Ghidra/DTI, resources, IDs, native GUI research | `.agents/skills/mhgu-understanding/SKILL.md` (step-by-step: its `references/research-playbook.md`), Key Quest Markers DEVELOPMENT.md for GUI rows, WishFinder DEVELOPMENT.md for menus, screens and the button guide; a game window on another screen or in a quest: forge-modding `references/native-gui-extensions.md`, "Borrow a game window on another screen" |
+| A mod's settings in the game's Options (Mod Options) or topics in the game's help | `mods/purple-lib/API.md`; copy from Purple-lib Tester (every feature) and Please do Better (a shipping mod's page); rules in forge-modding `references/plugin-apis.md`, "A library that calls its clients" |
+| Game code, Ghidra/DTI, resources, IDs, native GUI research, menus and screens | `.agents/skills/mhgu-understanding/SKILL.md` (step-by-step: its `references/research-playbook.md`). It holds only what the game does |
+| How one of our mods works, or building something like it | "How each mod works" in the forge-modding `SKILL.md` (`references/worked/`); a game window on another screen or in a quest: `references/gui-screen-reuse.md` |
 | Toolbox (START_TOOLS.sh, scripts/tool.sh), Ghidra, ARC/GMD/Kuriimu2, models | docs/TOOLS.md |
 | HD Project resources, merge order, ownership | mods/hd-project/README.md |
 | User-facing prose (READMEs, guides) | `.agents/skills/humanizer/SKILL.md` and the release README standard in docs/DEVELOPMENT.md |
@@ -77,7 +78,7 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   question first. Checks: mhgu-understanding research playbook, step 6.
 - **Base and unit at every boundary.** Every level, index or count that crosses a function,
   file or plugin has a stated base and unit. Game box and row levels count from 0; RomFS
-  and the screen count from 1 (mhgu-understanding equipment reference).
+  and the screen count from 1 (mhgu-understanding `references/equipment-box.md`).
 - **Keys have two ends.** A key built here and compared there: read both ends, for every
   screen or state that reaches the comparison. A test whose fake builds the value proves
   nothing about the real consumer, so drive the compiled producer or real bytes.
@@ -143,7 +144,9 @@ describe the project as it is now, not how it got here.
 
 | Content | Goes in |
 | --- | --- |
-| Current state, commands, native facts, open items | `mods/NAME/DEVELOPMENT.md` |
+| Current state, commands, files, open items of one mod | `mods/NAME/DEVELOPMENT.md` |
+| What the game does, found by any mod | The matching `mhgu-understanding` reference, with no mod named; its source in forge-modding `references/knowledge-sources.md` |
+| How a mod works, hooks and designs | Its page in forge-modding `references/worked/` |
 | A refuted approach | One line in that file's "Do not" list: what not to do and why |
 | Run results: hashes, log counts, tester quotes | `mods/NAME/EVIDENCE.json` |
 | Tester steps and log-line meanings, current version only | `mods/NAME/TESTING.md` |

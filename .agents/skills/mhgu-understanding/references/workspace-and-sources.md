@@ -4,33 +4,15 @@ The source workspace is `/mnt/storage2/Programs/MHGU_Modding`. All other source 
 
 ## Local inputs
 
-Machine paths (RomFS, library, emulator packages and logs, MHGURecomp) are in the
+Machine paths (RomFS, library, logs) are in the
 workspace's root `AGENTS.md`, "Runtime evidence and installation paths"; the
-other local inputs (sealed game files, copied executables, Forge packages,
-research tooling) are in `docs/LOCAL_STATE.md`. Outside this workspace, supply
+other local inputs (sealed game files, copied executables, research tooling) are in `docs/LOCAL_STATE.md`. Outside this workspace, supply
 equivalent inputs explicitly; the skill's Markdown stays usable without them.
-Copied executables and research indexes are under `work/shared/game-exefs/` and `work/research-tooling/`; mod-specific copies under `work/<mod>/`.
+Copied executables and research indexes are under `work/shared/game-exefs/` and `work/research-tooling/`; task copies under `work/<task>/`.
 
 What each input holds and when to use it: the Game data section of this skill's SKILL.md.
 
-Library material is not an installed mod. A RomFS-only dump cannot supply executable bytes. Folder presence is not activation. For runtime diagnosis, correlate a fresh launch log with the exact relevant installed payload hashes and game/emulator versions. Do not inspect unrelated saves or alter settings to answer a data lookup.
-
-## Source coverage
-
-| Topic / reference | First sources to inspect |
-| --- | --- |
-| Discovery / executable identity | `docs/TOOLS.md`, `scripts/{research_tools.py,mhgu_binary.py}`, `work/research-tooling/ghidra-export/summary.json`, DTI provenance |
-| DTI trial / limitations | `mods/dti-dumper-support/README.md`, `scripts/dti_dumper.py` |
-| Native GUI | Key Quest Markers `src/{gui.rs,native.rs}`, `mods/key-quest-markers/scripts/gui_layout.py`, `tests/native_adapter.py`, `research/theme-colours.json`; Please do Better native geometry research |
-| Sharpness | World Sharpness Gauge `DEVELOPMENT.md`, `core/src/lib.rs`, `src/insert.rs`; `work/world-sharpness-gauge/PHASE*_RESEARCH.md` |
-| Quests / progression | Key Quest Markers `core/src/lib.rs`, `src/{native.rs,offers.rs}`, native tests and `DEVELOPMENT.md` |
-| Input / actions | Modern Weapon Controls `src/`, `core/src/`, native fixtures, `core/src/signatures.rs`, `DEVELOPMENT.md`, `RUNTIME_RESULTS.json` |
-| Damage / cameras | Damage Numbers `src/signatures.rs`, `core/src/{capture.rs,lib.rs,presentation.rs,mailbox.rs}`, tests, `work/damage-numbers/projection-r27/` |
-| Rewards / Luck | Please do Better `src/runtime.rs`, `core/src/{quantity.rs,attribution.rs}`, native fixtures, `DEVELOPMENT.md`, research/layout receipts |
-| Resource/tool workflows | `docs/TOOLS.md`, tool wrappers/tests, offline wiki/templates/indexes, `mods/hd-project/README.md` |
-| Exact current release/evidence scope | Each mod's `DISTRIBUTION.json` / `EVIDENCE.json` |
-
-Current instructions and source establish present implementation. Dated evidence retains original hashes/claims. Mod development documents include older investigations, so check the current release/source before copying a colour, loader assumption, fixed key count, hook recipe, or unresolved-state workaround. Superseded materials live in Git or accepted backups.
+A RomFS-only dump cannot supply executable bytes. Folder presence is not activation. Do not inspect unrelated saves or alter settings to answer a data lookup.
 
 ## Reproducible reference snapshots
 

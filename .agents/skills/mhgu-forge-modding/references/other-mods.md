@@ -19,7 +19,9 @@ version named here is the one read; another build can differ.
   "install at the first update" loses a guarded site to nobody and wins it
   from them. WishFinder waits for the foreign hook and installs on top.
 
-## Definitive Edition (MHGU Definitive Edition 2.0.0)
+## Definitive Edition
+
+Read at 2.0.0 unless marked; versions, quests and stand-ins are in [Definitive Edition](definitive-edition.md).
 
 An IPS patch for main (`FB08F1D20FD1204FE7070672777F869B.ips`, 252 records)
 plus its own `subsdk1` (loaded at main+`0x2715000`; main image `0x2147000`,
@@ -49,7 +51,7 @@ No released source; read from their NROs, inis, logs and our runs.
   `sFestaPad+0x6bfc`. It keeps a stack of GUI instances being drawn (`0x4138`).
 - **UIScale** edits a sprite in the uploaded matrix block at
   `*(ctx+4)+0x18bc` after the GUI publishers, keyed per instance (`0x13b8`),
-  so the node's own matrix stays unscaled ([HUD movers](native-gui-extensions.md#hud-movers-gu-native-and-uiscale)).
+  so the node's own matrix stays unscaled ([HUD movers](gui-masks-and-movers.md#hud-movers-gu-native-and-uiscale)).
   A copy node under the same instance gets the same transform.
 - **On Eden** KatLib, UIScale and BetterBox all fail to load with
   `0x00000616`, because all three NROs have an all-zero build ID. On MHGURecomp
@@ -102,5 +104,37 @@ Layout and the update procedure: `mods/wishfinder-mwt-bridge/DEVELOPMENT.md`,
 | Eden cheat engine | Writes 12 times a second (`CHEAT_ENGINE_NS = 1000000000 / 12`), so a cheat that relies on a value running out between writes works on Eden and not on MHGURecomp, which writes every frame | As above |
 | HD Project | Replaces atlases (not `HD_cmn_icon_GSM_NOMIP`) and `common_eng.arc`; Eden takes the alphabetically first of two replacements, so never ship a competing ARC: insert natively instead. Merge order Base -> HD Project -> Z_Balanced -> others | `mods/key-quest-markers/DEVELOPMENT.md`, `mods/modern-weapon-controls/DEVELOPMENT.md`, `mods/hd-project/README.md` |
 | Modern Weapon Controls (ours) | Ships a double-size `HD_cmn_icon_GSM_NOMIP` (1024x2048), so read atlas sizes from the header | `mods/wishfinder/DEVELOPMENT.md` |
-| Faster Field Hunter | Uses the centre popup and popup icons; leads from its code are in `mhgu-understanding` menus-and-screens | `work/wishfinder/POPUP_PLAN.md` | `mods/key-quest-markers/DEVELOPMENT.md` |
+| Faster Field Hunter | Uses the centre popup and popup icons; leads from its code are in [Leads from other mods](other-mods-leads.md) | `work/wishfinder/POPUP_PLAN.md` | `mods/key-quest-markers/DEVELOPMENT.md` |
 | MHGURecomp's own Village feature | Runs beside Village Quests in Hub (with its `hpscale.c`); the tester reports our mod fixes some of its problems | `mods/village-quests-in-hub/DEVELOPMENT.md` |
+
+## What KatSmithy and My Weapon Tree showed about smithy data
+
+All 700 material groups KatSmithy logged in
+  `work/wishfinder/runs/r10-recomp-2026-11-07.txt` (tables 03, 04, 06, 07, 08, 10, 12, 13) equal a create row's four
+  items exactly, 163 distinct rows (`work/wishfinder-katsmithy-bridge/rise_vs_wcd.py`); in the 2026-11-09 log 22 of
+  the 25 distinct groups equal the matching row of `work/wishfinder/inputs/weaponPath.bin` at the number and level
+  named, 2 equal that number's create row at its own level, and one group is KatSmithy leaving one of four items
+  out (`Clero Blade 1` omits 582x4, which the game's own row carries) —
+  `work/wishfinder-katsmithy-bridge/rise_vs_path.py` reproduces that count. KatSmithy prints only the four items,
+  never the row's pieces. Its `FULL layout type=N` is the weapon table N, not the equip type.
+
+What My Weapon Tree 0.55 reads is built in memory, from that plugin's own code (copied in
+  `mods/wishfinder-mwt-bridge/core/src/lib.rs::level`): a per-class `{ptr, len}` pair of 80-byte level entries with the
+  name `{ptr,len}` at words 0/1, a craft list `{ptr,len}` at 6/7 and an upgrade list `{ptr,len}` at 10/11, whose
+  8-byte elements `{u16 id, u8 kind, u8 0, u32 count}` carry the parent link in `kind`: 0 is an item, 1..15 names the
+  weapon that level comes from, in table `kind - 1`, at `id = number << 8 | level`. That shape is MWT's reader's, not
+  a fact about the RomFS files above.
+
+**The window names the selected weapon, not its level.** What is reliable across a co-installed weapon-tree mod is
+category (`+0x5c` u16) and number (`+0x5c` high half, repeated at `+0x5e` u16), which the game and the mod agree on;
+the row's `+9` level byte belongs to whatever row the game last built for that slot. Over 30 right-stick presses on
+2026-11-09 the category and number matched KatSmithy's own `5C=`/`5E=` in every one and the row's level byte matched
+its tree level in none, because that mod rewrites the displayed rows and the level field it leaves alone
+(`DIRECT rows(+2) before: 0001 000B 001A … m2 after 6F53E4: 005B 0086 0085 0084 0008 0051 0000 0000 cur=4 page=4
+5E=8`). Untried alternative: the entry array at window `+0x1f80 + index*0x30` (`+0xcc` class, `+0xd0` level).
+
+## Merge ownership and companions
+
+Resource priority is Base -> HD Project -> Z_Balanced -> others. Later changed resources win whole; unchanged resources retain lower improvements. Same-path ARC conflicts need internal resource merging, not choosing one archive wholesale. Preserve language/controller/icon selections, matching font/texture pairs, and base companions. Choose one FPS/FOV variant. V4 donors are retired.
+
+The HD cleanup's 7,931-file reproduction and 407-resource comparisons are static/deployment evidence from that operation. They do not establish current activation or every visual improvement. Historical paths to retired loader reports are not present-day baseline instructions. Read actual ownership/manifests before touching shared resources.

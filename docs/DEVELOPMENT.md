@@ -15,7 +15,7 @@ targets before their first build, preserving other required arguments. Forge's
 Rust runtime supplies startup metadata and init/fini. Reject DT_TEXTREL/DF_TEXTREL
 and verify that final ELF/NRO dynamic relocation writes target writable data/BSS.
 Keep linker errors and exact artifact hashes. See the modding skill's
-[build requirements](../.agents/skills/mhgu-forge-modding/references/api-and-builds.md#rust-nro-relocation-requirements)
+[build requirements](../.agents/skills/mhgu-forge-modding/references/rust-builds.md#rust-nro-relocation-requirements)
 for the reviewed Lawrence hardware-test fork and its separate validation scope.
 
 Each `mods/NAME/` owns its source, recipes, tests, dependency locks, licenses,
