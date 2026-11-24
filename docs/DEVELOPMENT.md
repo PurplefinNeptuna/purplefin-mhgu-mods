@@ -111,8 +111,8 @@ DEVELOPMENT means unapproved work; LOCAL_ONLY means a local dependency/tool;
 READY_TO_DISTRIBUTE requires approved, verified local delivery; PUBLISHED also
 requires the publication URL/date. Retired trees belong in Git history.
 
-Runtime changes and example code changes require a new version. A change that touches no code
-(READMEs, notices, the API book, comments in examples) refreshes the current version with
+Runtime changes require a new version. A change that leaves the runtime as it is (READMEs,
+notices, the API book, example code in the API kit) refreshes the current version with
 `package NAME --refresh-support`, which backs up the old files and refuses if any runtime file
 differs. Keep user release approval separate from
 exact binary gameplay acceptance. Build/host/static results never become manual

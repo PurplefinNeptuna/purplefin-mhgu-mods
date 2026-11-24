@@ -111,8 +111,8 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   the rest says "inference". Checks for premises, conflicting readings, partial matches
   and failed cross-checks: mhgu-understanding research playbook, step 6.
 - **Versions.** A change to the runtime (NRO, data files, `manifest.json`, any payload
-  in the mod folder) or to example code gets a new version. A change that touches no
-  code (READMEs, notices, the API book, comments in examples) ships in the current
+  in the mod folder) gets a new version. A change that leaves the runtime as it is
+  (READMEs, notices, the API book, example code in the API kit) ships in the current
   version: `python3 scripts/mod_distribution.py package NAME --refresh-support`. Wire a
   new payload into build, verify and package only in the phase that ships it.
   `DISTRIBUTION.json` is authoritative.
