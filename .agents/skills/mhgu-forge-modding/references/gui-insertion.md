@@ -72,7 +72,7 @@ The game allocates a row's map in `FUN_01401bc0` and frees it in `0xa38828` (`se
 - Nodes that only work together (WishFinder's shadow and pin) are created together or not at all, on one rect. Link the one painted first first, and give both a Priority above the row's own (the counter row uses 0..2, WishFinder 3 and 4) so the `0xa4915c` re-sort keeps that order.
 - A row that does not need the decoration gets no children, so the native tree stays the game's own on every other row.
 
-Worked example: WishFinder's [quest rows](worked/wishfinder-quests.md) and [smithy page](worked/wishfinder-smithy.md) (the smithy's `cUIOFacilityShopMenu` rows are `shop_menu.gui` animation 25, four drawables, no cache prefix).
+Worked example: WishFinder's [quest rows](../../../../mods/wishfinder/docs/worked/wishfinder-quests.md) and [smithy page](../../../../mods/wishfinder/docs/worked/wishfinder-smithy.md) (the smithy's `cUIOFacilityShopMenu` rows are `shop_menu.gui` animation 25, four drawables, no cache prefix).
 
 ## Material, geometry, and title fitting
 
@@ -82,7 +82,7 @@ For clipping, establish both the mask writer and consuming material/draw, their 
 
 Reuse texture descriptors the row already loaded and native logical atlas coordinates; logical coordinates need not match physical HD image pixels. Validate the live descriptor, dimensions and texture pointer, and ship no extracted texture or replacement ARC.
 
-Place a decoration from the row's own objects and their live visibility (+`0x54` bit 0 after the native update), not from fixed offsets. Key Quest Markers' badge geometry, title widths and colours are its contract: [its page](worked/quest-badges.md).
+Place a decoration from the row's own objects and their live visibility (+`0x54` bit 0 after the native update), not from fixed offsets. Key Quest Markers' badge geometry, title widths and colours are its contract: [its page](../../../../mods/key-quest-markers/docs/worked/quest-badges.md).
 
 Title binding 4/ID 6 is `cGUIObjMessage`, CRC `0x2fb82eae`, size 352. It is not `cGUIObjText` size 384. Derive fixture classes and getDTI from the real resource. Common setter addresses alone do not prove a subclass. Native Size/AutoScale setters need the glyph-cache dirty bit at +`0xf0` bit 16. Restore the original title size/AutoScale before a reusable row can exit early on missing metadata.
 

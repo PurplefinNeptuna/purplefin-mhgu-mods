@@ -135,6 +135,6 @@ fails there. A way to import them optionally has not been researched.
 Sources: `tools/forge-local/source/forge/{input.cpp,graphics.cpp,config.c}`,
 `graphics/imgui_impl_nvn.cpp:753`; `tools/forge-rs/forge/src/{input.rs,graphics.rs}`;
 `references/MHGURecomp/runtime/forge.c` (rechecked at `471b3b9`);
-WishFinder [welcome window](worked/wishfinder-welcome.md), [button guide](worked/wishfinder-guide.md),
+WishFinder [welcome window](../../../../mods/wishfinder/docs/worked/wishfinder-welcome.md), [button guide](../../../../mods/wishfinder/docs/worked/wishfinder-guide.md),
 `mods/village-quests-in-hub/{DEVELOPMENT.md,src/lib.rs}`,
 `mods/wishfinder-katsmithy-bridge/DEVELOPMENT.md` (retired; in Git at `2888d72`).

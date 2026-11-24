@@ -29,4 +29,4 @@ It leaves the start code `0x3ad988`, the pop file choice `0x31a404` and `0x3a8cc
 - WishFinder's table from the loaded smithy tables holds 17083 rows beside it, against 16698 in 1.4.0 (Eden log).
 - Captures and breaks are in `mhgu_de/*.bin` (`MH4P`). It ships no `result.arc`.
 
-Read tables from the loaded game or the layered RomFS, never from base-game counts. How WishFinder reads all this: [its tables](worked/wishfinder-tables.md), [its checked windows](worked/wishfinder-other-mods.md).
+Read tables from the loaded game or the layered RomFS, never from base-game counts. How WishFinder reads all this: [its tables](../../../../mods/wishfinder/docs/worked/wishfinder-tables.md), [its checked windows](../../../../mods/wishfinder/docs/worked/wishfinder-other-mods.md).

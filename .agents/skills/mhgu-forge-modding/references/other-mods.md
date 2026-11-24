@@ -61,7 +61,7 @@ No released source; read from their NROs, inis, logs and our runs.
     everything read from that build (draw helpers, tree records, armor cells) is
     in `work/wishfinder-katsmithy-bridge/FINDINGS.md`.
 
-Source: [WishFinder and other mods](worked/wishfinder-other-mods.md), [World Sharpness Gauge](worked/sharpness-gauge.md).
+Source: [WishFinder and other mods](../../../../mods/wishfinder/docs/worked/wishfinder-other-mods.md), [World Sharpness Gauge](../../../../mods/world-sharpness-gauge/docs/worked/sharpness-gauge.md).
 
 ## My Weapon Tree
 
@@ -70,7 +70,7 @@ update `0x6f1ae8` in its `forge_onInit`, only if the entry still has its
 original bytes. It leaves smithy state 5 and state 7 with +0x5c below 7 to the
 game. Written in Rust; its wish list, lines, levels and armor pieces live in
 its image at offsets that move per release (0.50, 0.55, 0.59, 0.60 are mapped).
-Layout and the update procedure: [the bridge](worked/mwt-bridge.md),
+Layout and the update procedure: [the bridge](../../../../mods/wishfinder-mwt-bridge/docs/worked/mwt-bridge.md),
 `scripts/mwt_layout.py`.
 
 ## Others

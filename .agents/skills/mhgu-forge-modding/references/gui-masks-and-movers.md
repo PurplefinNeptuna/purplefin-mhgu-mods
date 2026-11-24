@@ -98,7 +98,7 @@ Rules:
 
 ## Survive a row's end
 
-The sharpness gauge's row lasts a quest (inference, see Lifecycle in [the gauge's page](worked/sharpness-gauge.md#accepted-shape)), other rows are unmeasured, and `cGUIObjRoot`'s destructor has fired in no saved log.
+The sharpness gauge's row lasts a quest (inference, see Lifecycle in [the gauge's page](../../../../mods/world-sharpness-gauge/docs/worked/sharpness-gauge.md#accepted-shape)), other rows are unmeasured, and `cGUIObjRoot`'s destructor has fired in no saved log.
 
 - Detect the death from a callback that keeps running. A freed mask's enter stops being called, so a check placed only there goes silent. Check from the draw walker: read-only, the marker, the mask's parent against the root and the root's child against the mask. On failure, drop every captured address and re-arm discovery, so the next row is read and inserted like the first.
 - Write only where the game hands over a live object. In the mask's enter, when the links are gone, turn the mask off and drop the addresses. Left alone, it keeps applying its last box.

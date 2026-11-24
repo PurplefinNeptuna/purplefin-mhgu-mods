@@ -10,7 +10,7 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 | Forge plugin code, hooks, ABI, NRO builds, GUI insertion, ImGui, input/keybinds, reading game files, host differences (Recomp, gu-native) | `.agents/skills/mhgu-forge-modding/SKILL.md` (step-by-step: its `references/playbooks.md`) |
 | A mod's settings in the game's Options (Mod Options) or topics in the game's help | `mods/purple-lib/API.md`; copy from Purple-lib Tester (every feature) and Please do Better (a shipping mod's page); rules in forge-modding `references/plugin-apis.md`, "A library that calls its clients" |
 | Game code, Ghidra/DTI, resources, IDs, native GUI research, menus and screens | `.agents/skills/mhgu-understanding/SKILL.md` (step-by-step: its `references/research-playbook.md`). It holds only what the game does |
-| How one of our mods works, or building something like it | "How each mod works" in the forge-modding `SKILL.md` (`references/worked/`); a game window on another screen or in a quest: `references/gui-screen-reuse.md` |
+| How one of our mods works, or building something like it | "How each mod works" in the forge-modding `SKILL.md` (each mod's `docs/worked/`); a game window on another screen or in a quest: `references/gui-screen-reuse.md` |
 | Toolbox (START_TOOLS.sh, scripts/tool.sh), Ghidra, ARC/GMD/Kuriimu2, models | docs/TOOLS.md |
 | HD Project resources, merge order, ownership | mods/hd-project/README.md |
 | User-facing prose (READMEs, guides) | `.agents/skills/humanizer/SKILL.md` and the release README standard in docs/DEVELOPMENT.md |
@@ -146,7 +146,7 @@ describe the project as it is now, not how it got here.
 | --- | --- |
 | Current state, commands, files, open items of one mod | `mods/NAME/DEVELOPMENT.md` |
 | What the game does, found by any mod | The matching `mhgu-understanding` reference, with no mod named; its source in forge-modding `references/knowledge-sources.md` |
-| How a mod works, hooks and designs | Its page in forge-modding `references/worked/` |
+| How a mod works, hooks and designs | Its page in `mods/NAME/docs/worked/`, listed in forge-modding `SKILL.md` |
 | A refuted approach | One line in that file's "Do not" list: what not to do and why |
 | Run results: hashes, log counts, tester quotes | `mods/NAME/EVIDENCE.json` |
 | Tester steps and log-line meanings, current version only | `mods/NAME/TESTING.md` |

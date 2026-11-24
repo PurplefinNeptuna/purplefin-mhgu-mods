@@ -161,23 +161,24 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 
 ## How each mod works
 
-Read the mod's page before changing it, and copy from the closest one when building something similar. Each mod's `DEVELOPMENT.md` keeps its current state, commands, files, "Do not" list and open items.
+Each mod's pages live in its own `docs/worked/`, because a mod's repo stays private until it is published; a link here resolves only when that mod is checked out. Read the mod's page before changing it, and copy from the closest one when building something similar. Each mod's `DEVELOPMENT.md` keeps its current state, commands, files, "Do not" list and open items.
 
 | Mod | Worked example |
 | --- | --- |
-| Damage Numbers | [Capture](references/worked/damage-capture.md), [crop, projection, assets](references/worked/damage-view.md) |
-| ImGui Meter | [Counting a plugin's ImGui calls](references/worked/imgui-meter.md) |
-| Key Quest Markers | [Classification and badges](references/worked/quest-badges.md) |
-| Lock-on Target, Shared Urgent Quests, Village Quests in Hub | [Small hook mods](references/worked/small-hooks.md) |
-| Modern Weapon Controls | [Remap and hooks](references/worked/weapon-controls.md), [bowgun reload](references/worked/bowgun-reload.md) |
-| Multiplayer Roaming | [Design and hooks](references/worked/multiplayer-roaming.md) |
-| Please do Better | [Capture and attribution](references/worked/reward-capture.md), [hooks and multiplier](references/worked/reward-multiplier.md) |
-| Purple-lib | [Hooks and Options window](references/worked/purple-lib-window.md), [API, registry, help](references/worked/purple-lib-registry.md), [its clients](references/worked/mod-options-clients.md) |
-| Skin Loader | [Paths, attach, skin files](references/worked/skin-loader.md), [raw skins, text, sync](references/worked/skin-loader-save.md) |
-| WishFinder | [Hunter's Notes](references/worked/wishfinder-notes.md), [smithy page](references/worked/wishfinder-smithy.md), [upgrades and kinsects](references/worked/wishfinder-smithy-upgrades.md), [quest rows and pages](references/worked/wishfinder-quests.md), [guide, popups, jingle](references/worked/wishfinder-guide.md), [welcome window](references/worked/wishfinder-welcome.md), [API, save, hooks](references/worked/wishfinder-api.md), [tables](references/worked/wishfinder-tables.md), [other mods](references/worked/wishfinder-other-mods.md) |
-| WishFinder bridge for My Weapon Tree | [Layout and update](references/worked/mwt-bridge.md) |
-| World Sharpness Gauge | [Insertion and cut](references/worked/sharpness-gauge.md), [fill per tier](references/worked/sharpness-fill.md) |
-| GE and cache audits across mods | [Audits](references/worked/ge-audits.md) |
+| Damage Numbers | [Capture](../../../mods/damage-numbers/docs/worked/damage-capture.md), [crop, projection, assets](../../../mods/damage-numbers/docs/worked/damage-view.md), [Mod Options and preview](../../../mods/damage-numbers/docs/worked/mod-options.md), [GE audit](../../../mods/damage-numbers/docs/worked/ge-audit.md) |
+| ImGui Meter | [Counting a plugin's ImGui calls](../../../mods/imgui-meter/docs/worked/imgui-meter.md) |
+| Key Quest Markers | [Classification and badges](../../../mods/key-quest-markers/docs/worked/quest-badges.md) |
+| Lock-on Target | [Hook](../../../mods/lock-on-target/docs/worked/hook.md) |
+| Shared Urgent Quests | [Design and hooks](../../../mods/shared-urgent-quests/docs/worked/hooks.md) |
+| Modern Weapon Controls | [Remap and hooks](../../../mods/modern-weapon-controls/docs/worked/weapon-controls.md), [bowgun reload](../../../mods/modern-weapon-controls/docs/worked/bowgun-reload.md) |
+| Multiplayer Roaming | [Design and hooks](../../../mods/online-roaming/docs/worked/multiplayer-roaming.md) |
+| Please do Better | [Capture and attribution](../../../mods/please-do-better/docs/worked/reward-capture.md), [hooks and multiplier](../../../mods/please-do-better/docs/worked/reward-multiplier.md), [Mod Options](../../../mods/please-do-better/docs/worked/mod-options.md), [cache audit](../../../mods/please-do-better/docs/worked/cache-audit.md) |
+| Purple-lib | [Hooks and Options window](../../../mods/purple-lib/docs/worked/purple-lib-window.md), [API, registry, help](../../../mods/purple-lib/docs/worked/purple-lib-registry.md) |
+| Skin Loader | [Paths, attach, skin files](../../../mods/skin-loader/docs/worked/skin-loader.md), [raw skins, text, sync](../../../mods/skin-loader/docs/worked/skin-loader-save.md) |
+| Village Quests in Hub | [Design and hooks](../../../mods/village-quests-in-hub/docs/worked/hooks.md) |
+| WishFinder | [Hunter's Notes](../../../mods/wishfinder/docs/worked/wishfinder-notes.md), [smithy page](../../../mods/wishfinder/docs/worked/wishfinder-smithy.md), [upgrades and kinsects](../../../mods/wishfinder/docs/worked/wishfinder-smithy-upgrades.md), [quest rows and pages](../../../mods/wishfinder/docs/worked/wishfinder-quests.md), [guide, popups, jingle](../../../mods/wishfinder/docs/worked/wishfinder-guide.md), [welcome window](../../../mods/wishfinder/docs/worked/wishfinder-welcome.md), [API, save, hooks](../../../mods/wishfinder/docs/worked/wishfinder-api.md), [tables](../../../mods/wishfinder/docs/worked/wishfinder-tables.md), [other mods](../../../mods/wishfinder/docs/worked/wishfinder-other-mods.md) |
+| WishFinder bridge for My Weapon Tree | [Layout and update](../../../mods/wishfinder-mwt-bridge/docs/worked/mwt-bridge.md) |
+| World Sharpness Gauge | [Insertion and cut](../../../mods/world-sharpness-gauge/docs/worked/sharpness-gauge.md), [fill per tier](../../../mods/world-sharpness-gauge/docs/worked/sharpness-fill.md) |
 
 For GUI plans, read [GUI insertion](references/gui-insertion.md) before treating
 the quest-row recipe as a solution for another menu.
