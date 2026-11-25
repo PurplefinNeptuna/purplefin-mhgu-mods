@@ -135,6 +135,10 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   Start, promote, withdraw and roll back only with `scripts/mod_lifecycle.py`, never by
   hand. Every `./build.sh` runs through the candidate guard ("Version and status changes"
   in docs/DEVELOPMENT.md); when it refuses, start a new version, never work around it.
+- **No compatibility with unreleased versions (hard rule).** Keep backward compatibility only with
+  what a READY_TO_DISTRIBUTE or PUBLISHED release wrote or read (its `DISTRIBUTION.json` status).
+  An INI key, value, file format, API shape or setting that only DEVELOPMENT candidates ever had
+  gets no fallback, migration or alias: rename or drop it freely, and remove any such code you find.
 - **manifest.json.** Every new candidate or release ships the mod-manager
   `manifest.json` beside `romfs/`, registered as a payload (format: "Releases" in
   docs/DEVELOPMENT.md; rules: `scripts/mod_manifest.py`); `package` refuses one
