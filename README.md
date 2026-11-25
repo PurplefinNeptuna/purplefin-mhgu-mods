@@ -13,7 +13,7 @@ others are still private, so their folders stay empty in a clone.
 | Mod | What it does |
 | --- | --- |
 | [Damage Numbers](https://github.com/PurplefinNeptuna/mhgu-damage-numbers) | Shows damage numbers at each impact, with physical and elemental damage combined, in Wilds, Rise or Classic style. |
-| [Key Quest Markers](https://github.com/PurplefinNeptuna/mhgu-key-quest-markers) | Adds Rise-style badges to key and urgent quests, coloured by whether you still need them to progress. |
+| [Key Quest Markers](https://github.com/PurplefinNeptuna/mhgu-key-quest-markers) | Adds Rise-style badges to key and urgent quests, colored by whether you still need them to progress. |
 | [Lock-on Target](https://github.com/PurplefinNeptuna/mhgu-lock-on-target) | Keeps the target camera on the monster the game targets and hides the target reticle. Tap the target button to turn the lock off, and hold R to aim freely. |
 | Modern Weapon Controls | Moves weapon actions from R to ZR and keeps R for sprinting while sheathed. |
 | Multiplayer Roaming | Lets you visit the villages, the bedrooms, the Palico ranch and the Soaratorium during an online session without leaving it. |
