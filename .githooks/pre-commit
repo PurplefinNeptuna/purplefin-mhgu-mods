@@ -2,6 +2,7 @@
 set -eu
 git diff --cached --name-only --diff-filter=ACMR -- AGENTS.md README.md 'docs/*.md' 'mods/*.md' '.agents/skills/mhgu-*.md' 'templates/*.md' | scripts/doc_hook.sh
 git diff --cached --name-only --diff-filter=ACMR -z | xargs -0 -r python3 scripts/code_rules.py --staged
+git diff --cached --name-only --diff-filter=ACMR -z | xargs -0 -r python3 scripts/spelling_rules.py --staged
 python3 scripts/mod_distribution.py check --staged
 python3 scripts/mod_distribution.py check --touched
 git diff --cached --check

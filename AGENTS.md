@@ -76,6 +76,11 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   check, final) before it is built, packaged or committed. Show the final text to
   the user in the reply. No exception for short or temporary text. Read the skill
   file directly if the Skill tool does not list it.
+- **American English (hard rule).** Every new or changed word in user-facing text, docs, comments
+  and commit messages uses American spelling: color, gray, behavior, center, organize. The
+  pre-commit hooks refuse British spellings on added or changed lines (`scripts/spelling_rules.py`:
+  Markdown lines and string literals). A test that feeds British input marks the line above with
+  `spelling: allow`. Fix older British text when you next edit that line.
 - **Every language.** A change to a mod's user-facing text goes into every language
   file it ships, in the same change.
 - **Research first.** Search saved Ghidra/DTI before gameplay code:

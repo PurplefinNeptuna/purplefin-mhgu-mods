@@ -5,6 +5,7 @@ set -eu
 root=$(cd "$(dirname "$0")/../.." && pwd)
 git diff --cached --name-only --diff-filter=ACMR -- '*.md' | "$root/scripts/doc_hook.sh"
 git diff --cached --name-only --diff-filter=ACMR -z | xargs -0 -r python3 "$root/scripts/code_rules.py" --staged --repo .
+git diff --cached --name-only --diff-filter=ACMR -z | xargs -0 -r python3 "$root/scripts/spelling_rules.py" --staged --repo .
 # The workspace's distribution checker on this repo's index. A mod's own scripts/mod_distribution.py
 # is an older copy that predates rules such as manifest.json, so it is not the one that decides.
 python3 - "$root/scripts" <<'EOF'
