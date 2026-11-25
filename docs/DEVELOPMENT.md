@@ -175,37 +175,32 @@ Archive superseded releases outside active releases.
 A renamed mod sets `archive_stem` in `DISTRIBUTION.json`, and its archive starts with that stem. Its
 ID, folders and runtime keep the old name, so the runtime bytes don't change.
 
-### Starting a new version
+### Version and status changes
 
-1. Search the mod for the old version (`grep -rnw OLD mods/NAME`) and update
-   every copy: `mod.json`, `manifest.json` and any build/path scripts, plugin labels and test
-   expectations that repeat it. Ignore unrelated hits such as register names. A mod still
-   on `manifest.txt` replaces it with `manifest.json` in the source, `build.py`, `verify.py`
-   and `payloads`.
-2. If the old version is READY_TO_DISTRIBUTE or PUBLISHED, copy
-   `build/NAME/releases/OLD/` to `backups/accepted/NAME/OLD-before-CHANGE/release/`.
-   Beside it, put the committed `DEVELOPMENT.md`, `DISTRIBUTION.json`,
-   `EVIDENCE.json` and `README.md`, and a `preservation.json` with `version`,
-   `release_sha256` (one entry per release file), `"runtime": "UNCHANGED"` and
-   `reason`. Confirm the copy with `diff -r`, then remove the build copy and
-   any empty `releases/`. `check` allows only a READY version there.
-   `backups/` is optional and the user may clear it, so if OLD is the mod's last
-   gameplay-accepted build, first copy its ZIP to `build/NAME/candidates/OLD/`
-   with a `SHA256SUMS`, and update the table in `docs/LOCAL_STATE.md`.
-3. In `DISTRIBUTION.json`, set `status` to DEVELOPMENT and update `version`,
-   `reason`, `archive`, `candidate`, `candidate_builder`, payload sources and
-   hashes, `limitations` and the evidence summaries. Delete `approval`; it
-   belonged to the old version. While the status is still READY,
-   `./build.sh package` re-verifies the old release instead of packaging the
-   candidate.
-4. Run `./build.sh build`, `test` and `verify`, in that order. Use only the
-   wrapper: a plain `cargo` run inside the mod leaves a `target/` that blocks
-   the next build. Update READMEs before `package`, because the ZIP includes
-   README.md.
-5. Replace the mod's DEVELOPMENT.md current-state paragraph and its
-   `docs/LOCAL_STATE.md` rows; the old version's story goes nowhere but
-   `EVIDENCE.json` (`scripts/doc_rules.py` refuses chains). The root README table lists the approved release,
-   not the candidate.
+Change a mod's version or status only with `scripts/mod_lifecycle.py`, from the workspace root. Each
+command checks its inputs before it writes anything. A release leaves `build/NAME/releases/` only by
+move into `backups/accepted/NAME/`, with hashes checked after the move.
+
+| Step | Command | What it does |
+| --- | --- | --- |
+| New version | `start NAME --reason TEXT` | Next unused rN as DEVELOPMENT. Archives a READY release first and keeps its candidate. Moves `mod.json`, `scripts/paths.py` and `manifest.json` to rN. |
+| Promote | `promote NAME --basis TEXT` | Releases the packaged candidate's exact bytes. The basis quotes the user's approval and names the installed NRO hash. |
+| Withdraw | `withdraw NAME --reason TEXT` | A release goes back to DEVELOPMENT at the same version. Needs that version's packaged delivery. |
+| Roll back | `rollback NAME --to rK --reason TEXT` | An archived release is current again: same runtime and ZIP, support files refreshed. |
+
+Run `start` before the first code change of a version, on a clean mod repo, and commit it alone.
+It prints what it leaves to you: lines still naming the old version, `limitations`, the evidence
+summaries, the current-state paragraph and the `docs/LOCAL_STATE.md` rows. A mod still on
+`manifest.txt` writes `manifest.json` and moves `build.py`, `verify.py` and `payloads` to it.
+After `promote`, `rollback` or `withdraw`, update DEVELOPMENT.md, both `docs/LOCAL_STATE.md` tables
+and the root README table. The root README lists the approved release, never a candidate.
+
+Every `./build.sh` command runs through `scripts/candidate_guard.py`, a copy of
+`templates/standalone/scripts/candidate_guard.py` that `check` holds every mod to. It refuses
+before running when `scripts/paths.py` and `DISTRIBUTION.json` name different versions, or when the
+version is not DEVELOPMENT. Once a candidate has a `delivery/`, a run that leaves another runtime is
+undone: the folder is restored and the command fails. A runtime change after packaging is a new
+version. Use only the wrapper: a plain `cargo` run leaves a `target/` that blocks the next build.
 
 `THIRD_PARTY.md` records development provenance;
 `DISTRIBUTION_NOTICES.md` and current licenses cover only shipped components and

@@ -8,9 +8,7 @@ import io
 import json
 from pathlib import Path, PurePosixPath
 import re
-import shutil
-import stat
-import subprocess
+import shutil, stat, subprocess
 import sys
 import tempfile
 import zipfile
@@ -517,12 +515,12 @@ def mod_manifest(spec, root=ROOT):
 def package(mod, root=ROOT, refresh_support=False):
     spec = spec_for(mod, root)
     if spec['status'] == 'DEVELOPMENT' and spec.get('candidate_builder'):
-        # The owned builder performs its exact-build tests/receipts check before
-        # producing files. This path never changes distribution approval/status.
-        builder = relative(spec['candidate_builder'])
+        # The owned builder runs through its candidate guard, which keeps a packaged candidate's
+        # runtime as it was. This path never changes distribution approval/status.
+        require(spec['candidate_builder'] == 'scripts/build.py', f'candidate_builder must be scripts/build.py: {mod}')
         folder = root if (root / 'mod.json').is_file() else root / 'mods' / mod
         mod_manifest(spec, root)
-        subprocess.run([sys.executable, folder / builder, 'package'], cwd=folder, check=True)
+        subprocess.run([sys.executable, folder / 'scripts/candidate_guard.py', 'package'], cwd=folder, check=True)
         return verify_candidate(spec, root)
     require(spec['status'] in READY, f'Mod is not approved for distribution: {mod}')
     files = expected_files(spec, root)
@@ -620,6 +618,8 @@ def check(root=ROOT, source_only=False, only=None):
                         f'Superseded/unregistered release entries must be archived: {releases}')
         result.append((mod, spec['status'], archive))
     purple_lib_clients(root)
+    import mod_lifecycle
+    mod_lifecycle.guarded_builders(root)
     if not source_only:
         registered = {mod for mod, _, _ in result}
         for releases in (root / 'build').glob('*/releases'):

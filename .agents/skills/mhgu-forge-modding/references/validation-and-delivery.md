@@ -25,7 +25,7 @@ No automated in-game suite exists. After a reported run, read that emulator's la
 
 Each `mods/NAME/DISTRIBUTION.json` is authoritative. DEVELOPMENT is unapproved work, LOCAL_ONLY is local tooling/dependency, READY_TO_DISTRIBUTE is approved verified local delivery, and PUBLISHED additionally records URL/date. Distribution approval and exact-binary gameplay acceptance remain distinct.
 
-Runtime changes require a new version. Promote accepted candidate bytes without rebuilding. Keep the last gameplay-accepted build under `build/NAME/`, and treat `backups/` as an optional archive. Support-only refreshes back up the prior delivery and keep runtime hashes unchanged. Do not rebuild into a candidate/output directory whose receipts an immutable release still references.
+Runtime changes require a new version. Version and status changes go through `scripts/mod_lifecycle.py` (`start`, `promote`, `withdraw`, `rollback`; docs/DEVELOPMENT.md). Every `./build.sh` command runs through the mod's `scripts/candidate_guard.py`. Promote accepted candidate bytes without rebuilding. Keep the last gameplay-accepted build under `build/NAME/`, and treat `backups/` as an optional archive. Support-only refreshes back up the prior delivery and keep runtime hashes unchanged. Do not rebuild into a candidate/output directory whose receipts an immutable release still references.
 
 The payload NRO hash identifies a build. An archive's hash moves with any repackaging or README refresh, so record both and scope acceptance to the NRO. A comment-only source edit is not a runtime change once a scratch rebuild gives the released NRO hash: rebuild outside `build/NAME/`, never into a folder an immutable release references.
 
@@ -40,7 +40,7 @@ python3 scripts/mod_distribution.py package NAME
 python3 scripts/mod_distribution.py check
 ```
 
-Packaging a new DEVELOPMENT candidate does not rewrite the `sha256` pins in `payloads`, and `check` does not compare them for a DEVELOPMENT mod: Skin Loader r18's candidate kept r17's NRO and manifest pins until the release packaging. After each candidate package, compare every pin with its staged file, and set them to the bytes that ran before promoting. A `target/` folder inside the mod blocks `./build.sh build` ("Preserving existing target/ or loose NRO"); besides a plain `cargo` run, the editor's rust-analyzer can make one. It is a cargo cache: move it aside, then build.
+`start` empties the `sha256` pins in `payloads`, and `check` does not compare them for a DEVELOPMENT mod. `promote` sets each pin from the packaged delivery and refuses when a payload source differs from it (source: `scripts/mod_lifecycle.py`). A `target/` folder inside the mod blocks `./build.sh build` ("Preserving existing target/ or loose NRO"); besides a plain `cargo` run, the editor's rust-analyzer can make one. It is a cargo cache: move it aside, then build.
 
 The full `check` is required before readiness or commit. `--source-only` is not a readiness check. Use mod-local packaging when building an independent export. Follow the current command's help for support refresh options.
 

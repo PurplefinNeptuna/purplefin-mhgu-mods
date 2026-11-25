@@ -4,8 +4,11 @@ import json, os, sys, shutil
 MOD=Path(__file__).resolve().parents[1]
 SCRIPTS=MOD/'scripts'
 NAME=json.loads((MOD/'mod.json').read_text())['mod']
+VERSION=json.loads((MOD/'mod.json').read_text())['version']
 WORKSPACE=(MOD.parent.name=='mods' and (MOD.parent.parent/'scripts/mod_distribution.py').is_file())
 ROOT=MOD.parent.parent if WORKSPACE else MOD
+# The version's own folder; candidate_guard.py keeps it as it was once it holds a delivery.
+BUILD_ROOT=ROOT/'build'/NAME/'candidates'/VERSION
 CONFIG=json.loads((MOD/'build.local.json').read_text()) if (MOD/'build.local.json').exists() else {}
 def configured(name, default):
     value=CONFIG.get(name)

@@ -5,6 +5,7 @@ import unittest
 import zipfile
 
 import mod_distribution as distribution
+import mod_lifecycle as lifecycle
 import test_mod_distribution as base
 
 
@@ -27,8 +28,12 @@ class CandidateTests(unittest.TestCase):
                                 for name, value in manifest['payloads'].items()}
         (directory / 'manifest.json').write_bytes(distribution.json_bytes(manifest))
         self.spec.update(status='DEVELOPMENT', candidate='build/sample-mod/candidates/r1/delivery/',
-                         candidate_builder='scripts/candidate.py')
-        self.write('mods/sample-mod/scripts/candidate.py', b'import sys; assert sys.argv[1:] == ["package"]\n')
+                         candidate_builder='scripts/build.py')
+        # The builder runs through the real candidate guard, as every mod's build.sh does.
+        self.write('mods/sample-mod/scripts/build.py', b'import sys; assert sys.argv[1:] == ["package"]\n')
+        self.write('mods/sample-mod/scripts/candidate_guard.py', lifecycle.GUARD.read_bytes())
+        self.write('mods/sample-mod/scripts/paths.py', f'BUILD_ROOT = {str(directory.parent)!r}\n'.encode())
+        self.write('mods/sample-mod/build.sh', b'exec python3 "$MOD_DIR/scripts/candidate_guard.py" "$@"\n')
         self.save_spec()
         self.candidate_checksums(directory)
         return directory

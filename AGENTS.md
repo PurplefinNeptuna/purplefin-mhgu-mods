@@ -116,6 +116,9 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   version: `python3 scripts/mod_distribution.py package NAME --refresh-support`. Wire a
   new payload into build, verify and package only in the phase that ships it.
   `DISTRIBUTION.json` is authoritative.
+  Start, promote, withdraw and roll back only with `scripts/mod_lifecycle.py`, never by
+  hand. Every `./build.sh` runs through the candidate guard ("Version and status changes"
+  in docs/DEVELOPMENT.md); when it refuses, start a new version, never work around it.
 - **manifest.json.** Every new candidate or release ships the mod-manager
   `manifest.json` beside `romfs/`, registered as a payload (format: "Releases" in
   docs/DEVELOPMENT.md; rules: `scripts/mod_manifest.py`); `package` refuses one

@@ -68,7 +68,7 @@ def scaffold(path,name,kind):
    if n=='DEVELOPMENT.md':(path/n).write_text((path/n).read_text().replace('key-quest-markers',name))
   (path/'scripts').mkdir();(path/'src').mkdir();(path/'tests').mkdir();(path/'recipes').mkdir()
   (path/'tests/README.md').write_text('Add focused behavior, failure and persistence tests here. test --host needs no game inputs.\n')
-  helpers=['build.py','paths.py','mod_distribution.py','export_source.py']
+  helpers=['build.py','candidate_guard.py','paths.py','mod_distribution.py','export_source.py']
   if kind=='plugin':helpers+=['mhgu_binary.py','native_support.py','fetch_vendor.py']
   for n in helpers:
    shutil.copy2(source/'scripts'/n,path/'scripts'/n)
@@ -76,7 +76,7 @@ def scaffold(path,name,kind):
   (path/'THIRD_PARTY.md').write_text('The author keeps all rights to owned code. Vendored dependencies retain their included license notices. The plugin scaffold uses the project-owned ARM32 startup and linker scaffold; libnx-derived SVC code is not included.\n')
   cfg={'schema_version':1,'mod':name,'kind':kind,'version':'r1','compiler_image':json.loads((source/'mod.json').read_text())['compiler_image']}
   (path/'mod.json').write_text(json.dumps(cfg,indent=2)+'\n')
-  (path/'DISTRIBUTION.json').write_text(json.dumps({'schema_version':1,'mod':name,'status':'DEVELOPMENT','reason':'New mod; distribution approval and verified package are not recorded.','publication':{'published':False,'url':None,'date':None}},indent=2)+'\n')
+  (path/'DISTRIBUTION.json').write_text(json.dumps({'schema_version':1,'mod':name,'status':'DEVELOPMENT','version':'r1','reason':'New mod; distribution approval and verified package are not recorded.','publication':{'published':False,'url':None,'date':None}},indent=2)+'\n')
   (path/'README.md').write_text(f'# {name}\n\n{kind.capitalize()} source scaffold; DEVELOPMENT, with no gameplay validation.\n\nRun `./build.sh doctor`, `./build.sh prepare`, `./build.sh build`, `./build.sh test --host`, `./build.sh verify`, and `./build.sh package`. Dependencies are fetched only with `./build.sh prepare --fetch`. Copy `build.local.example.json` to ignored `build.local.json` for supplied inputs. Outputs are ignored `build/` and `work/`; the coordinating workspace retains its root output locations.\n\nFor resources, cheats and tools, map owned source or copied ignored inputs to runtime paths in recipe.json payloads. Plugin callbacks begin without settings or hooks. Implement the mod-specific behavior and focused tests before claiming a working mod. Export with ./build.sh export --output DEST; refresh its explicit allowlist with python3 scripts/export_source.py --refresh. Runtime acceptance and publication require separate evidence.\n')
   if kind=='plugin':
    shutil.copytree(source/'vendor',path/'vendor')
