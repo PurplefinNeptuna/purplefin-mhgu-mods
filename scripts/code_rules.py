@@ -9,7 +9,8 @@ A file over LIMIT lines is refused unless a scripts/code_size_limits.json lists 
 or for a file under mods/NAME/ that mod's own, keyed from the mod's folder. A listed file may not grow
 past its entry, and when it shrinks the entry must come down with it, so the list only falls.
 Every line the commit adds or changes must also pass `line_rules`, so a file cannot meet its limit
-by packing code onto fewer lines.
+by packing code onto fewer lines. Tests stay out of source files: an added or changed
+`#[cfg(test)]` line is refused outside a `tests/` folder (AGENTS.md, "Tests outside source").
 """
 import json
 import re
@@ -40,7 +41,23 @@ def problems(lines, limits):
             yield f'{path}: shrank to {count} lines; {fix} in its scripts/code_size_limits.json'
 
 
+INLINE_TEST = re.compile(r'^\s*#\[cfg\(test\)\]')
+
+
+def inline_tests(path, text, changed):
+    """An added or changed line that opens an inline Rust test block, in a file outside a tests/ folder."""
+    if not path.endswith('.rs') or '/tests/' in '/' + path:
+        return
+    for number, line in enumerate(text.splitlines(), 1):
+        if number in changed and INLINE_TEST.match(line):
+            yield f'{path}:{number}: tests go in the crate\'s tests/ folder, not in a #[cfg(test)] block'
+
+
 def self_check():
+    assert list(inline_tests('mods/x/core/src/a.rs', 'fn a() {}\n#[cfg(test)]\nmod tests {}', {2}))
+    assert not list(inline_tests('mods/x/core/src/a.rs', '#[cfg(test)]', set()))
+    assert not list(inline_tests('mods/x/core/tests/a.rs', '#[cfg(test)]', {1}))
+    assert not list(inline_tests('mods/x/tests/hooks-harness/src/lib.rs', '#[cfg(test)]', {1}))
     limits = {'a.rs': 700}
     assert not list(problems({'a.rs': 700, 'b.rs': 599}, limits))
     assert len(list(problems({'a.rs': 701, 'b.rs': 600}, limits))) == 2
@@ -81,7 +98,9 @@ def dense(repo, files, staged):
         if not staged and not (repo / inside).exists():
             continue
         text = content(repo, inside, staged).decode('utf-8', 'replace')
-        yield from line_rules.problems(path, text, line_rules.changed_lines(repo, inside, staged))
+        changed = line_rules.changed_lines(repo, inside, staged)
+        yield from line_rules.problems(path, text, changed)
+        yield from inline_tests(path, text, changed)
 
 
 if __name__ == '__main__':
@@ -109,7 +128,7 @@ if __name__ == '__main__':
     if found:
         print(f'Code rule: source files stay under {LIMIT} lines, one topic per file.', file=sys.stderr)
     if lines:
-        rule = f'one statement per line, at most {line_rules.WIDTH} characters'
+        rule = f'one statement per line, at most {line_rules.WIDTH} characters, tests outside source files'
         print(f'Line rule: {rule}, on every line you add or change.', file=sys.stderr)
     found += lines
     sys.exit(1 if found else 0)

@@ -57,7 +57,8 @@ the task to one phase:
    DEVELOPMENT.md or `work/NAME/`, with their sources.
 3. The code implements the requested behavior, not only a diagnostic. Verified
    API gaps are documented beside the workaround.
-4. Focused host tests cover the pure logic, and `./build.sh test` passes.
+4. Focused host tests cover the pure logic, in `tests/` folders outside the source files, and
+   `./build.sh test` passes.
 5. The README follows the release README standard below, since candidate ZIPs ship it.
    What the tester should try and which log lines to send go in
    `mods/NAME/TESTING.md`, outside the ZIP, and into the report's "To test".
