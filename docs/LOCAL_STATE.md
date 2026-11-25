@@ -23,8 +23,8 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Purple-lib Tester | r14 | DEVELOPMENT, not for distribution | Not run (8 extra sets); r13 on MHGU Recomp with Purple-lib r20 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Skin Loader | r18 | READY_TO_DISTRIBUTE, release, with a `-fast` package | MHGU Recomp (full); r16 on Eden too; fast not run since r14 |
-| Village Quests in Hub | r7 | DEVELOPMENT, candidate | Not run; r6 accepted on Eden beside MHGU Definitive Edition 2.0.0 |
-| WishFinder (was Wishlist) | r147 | DEVELOPMENT, candidate | Not run; r146 accepted on MHGU Recomp with KatSmithy, r134 on Eden with MHGU Definitive Edition 3.0.0. Needs Key Quest Markers r20+ |
+| Village Quests in Hub | r7 | DEVELOPMENT, candidate | Accepted on Eden beside MHGU Definitive Edition 3.1.0 |
+| WishFinder (was Wishlist) | r147 | DEVELOPMENT, candidate | Accepted on Eden with MHGU Definitive Edition 3.1.0; r146 on MHGU Recomp with KatSmithy. Needs Key Quest Markers r20+ |
 | WishFinder bridge for My Weapon Tree | r11 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.67 and WishFinder r83 |
 | World Sharpness Gauge | r70 | PUBLISHED, GitHub release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
