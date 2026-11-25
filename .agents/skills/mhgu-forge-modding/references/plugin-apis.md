@@ -20,7 +20,7 @@ To use it from a mod, read `mods/purple-lib/API.md` and copy from the two workin
 - **Purple-lib Tester** (`mods/purple-lib-tester`) uses every feature: each row kind, action rows with the mod's own window, the input hold, a preview beside the page, page help, help topics with `open`.
 - **Please do Better** (`mods/please-do-better/src/purple_lib.rs` and `core/src/purple_lib.rs`) is a shipping mod's page: two labels rows in seven languages, a help topic per row, lock-free `get`/`set`, saving on `closed`.
 
-`mods/purple-lib/examples/` holds the same in a single file for C++ and Rust.
+`mods/purple-lib/examples/` holds the same as twin C++ and Rust plugins, with Rust bindings in `purplelib.rs`. Its book is the standard for [API books](api-books.md).
 
 How it works, and what to keep when another library needs the same:
 

@@ -121,6 +121,7 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 | Rust NRO relocations, fetched dependencies, the hardware-test loader | [Rust builds](references/rust-builds.md) |
 | Plugin-to-plugin exports; a library that calls its clients | [Plugin APIs](references/plugin-apis.md) |
 | Put a mod's settings in the game's Options (Mod Options) or its topics in the game's help | `mods/purple-lib/API.md`, then [Plugin APIs](references/plugin-apis.md#a-library-that-calls-its-clients-purple-lib) |
+| An API book (mdBook) for other mods' authors: layout, twin examples, build checks | [API books](references/api-books.md) |
 | Detours, trampolines, flags, TLS, transactions, rollback | [Hooks and lifetimes](references/hooks-and-lifetimes.md) |
 | Game functions known to take a hook, and their pitfalls | [Multiplayer sessions](../mhgu-understanding/references/multiplayer-and-areas.md#hook-points-and-pitfalls) (mhgu-understanding) |
 | Add game-owned GUI objects to a native tree | [GUI insertion](references/gui-insertion.md) |
