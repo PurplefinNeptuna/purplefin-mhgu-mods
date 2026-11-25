@@ -20,7 +20,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Multiplayer Roaming (`online-roaming`) | r16 | READY_TO_DISTRIBUTE, release | Multiplayer, user report; Eden and MHGU Recomp installed |
 | Please do Better | r37 | PUBLISHED, GitHub release | MHGU Recomp with Purple-lib r17 (r36 registers on Eden too) |
 | Purple-lib | r27 | DEVELOPMENT candidate | Not run (higher limits; r26's empty help lines too); r25 on MHGU Recomp; r22 accepted |
-| Purple-lib Tester | r18 | DEVELOPMENT, not for distribution | Not run (188 pages, random depths); r16 on MHGU Recomp with Purple-lib r25 |
+| Purple-lib Tester | r19 | DEVELOPMENT, not for distribution | Not run (help bar widths); r18 on MHGU Recomp with Purple-lib r27 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Skin Loader | r18 | READY_TO_DISTRIBUTE, release, with a `-fast` package | MHGU Recomp (full); r16 on Eden too; fast not run since r14 |
 | Village Quests in Hub | r7 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition 3.1.0 and without it |
