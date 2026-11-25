@@ -73,6 +73,7 @@ Opening the XCI/NSP needs hactool. Only its source is in `tools/hactool-source/`
 | Object classes, sizes, setters, runtime fields, flag bits, ownership | [GUI objects](references/gui-objects.md) |
 | Draw walker, draw block, coordinates, colours, message text (line breaks, colour tags, no clipping), reward frames | [GUI drawing](references/gui-drawing.md) |
 | Which thread runs the GUI | [GUI threads](references/gui-threads.md) |
+| How the save is mounted, written and committed; the save mutex; why a commit fails | [Save data](references/save-data.md) |
 
 **Menus and screens**
 

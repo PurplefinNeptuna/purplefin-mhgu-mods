@@ -17,6 +17,7 @@ The understanding skill states what the game does and labels it bytes, run or in
 | discovery-and-evidence | `docs/TOOLS.md`, `scripts/{research_tools.py,mhgu_binary.py,dti_dumper.py}`, `scripts/ghidra/`, saved summary/provenance, `mods/dti-dumper-support/README.md`, `references/MHGU-Modding.wiki/`, and `references/MHGU-Modding/`. [Workspace and sources](workspace-and-sources.md) provides snapshot revisions and machine paths. |
 | input-and-actions | `mods/modern-weapon-controls/core/src/` (input, binding, bowgun and install), `src/`, `DEVELOPMENT.md`, `core/src/signatures.rs`, native tests, `RUNTIME_RESULTS.json`, `EVIDENCE.json`. Static coverage of 84 weapon/style combinations and 8 Prowler biases is not an exhaustive gameplay run. |
 | sharpness | `mods/world-sharpness-gauge/{DEVELOPMENT.md,core/src/lib.rs,src/insert.rs}`; `work/world-sharpness-gauge/{PHASE0_RESEARCH.md,PHASE2_RESEARCH.md,PHASE5_RESEARCH.md,hud0-sharpness.json}`. |
+| save-data | `work/save-guard/notes.md` (static: main's disassembly and MOD0 relocations, the decompressed `sdk` and its symbols); `tools/forge-local/source/forge/fs.cpp`; `references/eden/src/core/hle/service/filesystem/fsp/fs_i_filesystem.cpp`; WishFinder `src/save_lock.rs` and its adapter fakes. No runtime read yet. |
 
 ## By topic
 
