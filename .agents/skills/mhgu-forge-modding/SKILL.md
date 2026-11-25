@@ -135,6 +135,7 @@ Topic-specific mistakes live with their topic: native GUI in [Native GUI extensi
 | Changing rewards safely | [Reward editing](references/reward-editing.md) |
 | Armor mods, renaming their files, skins | [Armor skins](references/armor-skins.md) |
 | Reading RomFS files, ARC entries, text and textures; writing into the save; CJK fonts; a one-time message window | [Game files at runtime](references/game-files-at-runtime.md) |
+| Writing into the save without breaking the game's own save; which of our mods hold the save lock | [Save lock](references/save-lock.md) |
 | Read another plugin's memory when it has no API (bridges) | [Plugin bridges](references/plugin-bridges.md) |
 | Coexisting with KatLib/KatSmithy/UIScale, My Weapon Tree, DPS Meter, HD Project and others | [Other mods](references/other-mods.md) |
 | MHGU Definitive Edition: what it patches, its quests | [Definitive Edition](references/definitive-edition.md) |

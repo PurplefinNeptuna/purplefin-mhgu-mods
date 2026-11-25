@@ -1,6 +1,6 @@
 # Save data
 
-How the game mounts, writes and commits its save, and how a commit can fail. Main-relative offsets on 1.4.0, read from the bytes (`research dis`/`xref`, main's MOD0 relocations for import names) and the `sdk` module's symbol table. No runtime read yet.
+How the game mounts, writes and commits its save, and how a commit can fail. Main-relative offsets on 1.4.0, read from the bytes (`research dis`/`xref`, main's MOD0 relocations for import names) and the `sdk` module's symbol table. One run confirms the cell, the object vtable and the mutex: on Eden a plugin's object check and `TryLockMutex` on `+0xe80` succeeded and its write landed (run). The rest is static.
 
 ## sSavedata
 
