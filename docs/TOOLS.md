@@ -48,12 +48,12 @@ with its revision in `references/provenance.json`.
 | Source | Checkout |
 | --- | --- |
 | Forge 2.0.0 | `tools/forge-local/`, submodule of https://github.com/Fexty12573/forge.git |
-| MHGURecomp 0.18.0 | `references/MHGURecomp/` (blobless sparse clone of https://github.com/morerokk/MHGURecomp at tag `0.18.0`: `runtime`, `tools`, `docs`, `third_party/cimgui/imgui`; `tools/` is gitignored) |
+| MHGURecomp 0.20.0+ | `references/MHGURecomp/` (blobless sparse clone of https://github.com/morerokk/MHGURecomp at commit `f22f026` (11 past tag `0.20.0`): `runtime`, `tools`, `docs`, `third_party/cimgui/imgui`; `tools/` is gitignored) |
 | forge-rs 2.0.0 | `tools/forge-rs/`, submodule of https://github.com/Fexty12573/forge-rs.git |
 | hactool | `tools/hactool-source/` (https://github.com/SciresM/hactool.git) |
 | Eden | `references/eden/` (https://git.eden-emu.dev/eden-emu/eden.git) |
 | Ryujinx-Nextendo | `references/ryujinx-nextendo/` (https://github.com/NextendoNetwork/Ryujinx-Nextendo.git) |
-| MHGU Definitive Edition 3.0.0 | `references/MHGU-Definitive-Edition/` (shallow clone of https://github.com/Scrimas/MHGU-Definitive-Edition at tag `v3.0.0`, commit `cf91bd5`; WishFinder's `core/src/definitive_edition.rs` comes from its `allocations.toml`). Installed mod files: `/mnt/storage2/Programs/MHGU-DE/mod/` |
+| MHGU Definitive Edition 3.1.0 | `references/MHGU-Definitive-Edition/` (shallow clone of https://github.com/Scrimas/MHGU-Definitive-Edition at tag `v3.1.0`, commit `bd3785d`; WishFinder's `core/src/definitive_edition.rs` comes from its `allocations.toml`). Installed mod files: `/mnt/storage2/Programs/MHGU-DE/mod/` |
 | MHGU Charge Blade to 4G docs | `references/MHGU-Charge-Blade-To-4G/` (`docs/` and `README.md` of https://github.com/Lawrence-al/MHGU-Charge-Blade-To-4G at commit `c1e5693`, in Chinese; later commits turn the docs into stubs pointing at the author's private notes). Charge Blade Forge plugins in Rust: moveset, SAED, hitdata, presentation |
 | Ryubing | same checkout, remote `ryubing` (https://git.ryujinx.app/projects/Ryubing.git), tag `ryubing-1.3.3` = upstream `1.3.3`, commit `e2143d43b` |
 

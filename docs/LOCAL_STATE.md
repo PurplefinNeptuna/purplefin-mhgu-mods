@@ -23,8 +23,8 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Purple-lib Tester | r14 | DEVELOPMENT, not for distribution | Not run (8 extra sets); r13 on MHGU Recomp with Purple-lib r20 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Skin Loader | r18 | READY_TO_DISTRIBUTE, release, with a `-fast` package | MHGU Recomp (full); r16 on Eden too; fast not run since r14 |
-| Village Quests in Hub | r6 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition 2.0.0; inactive beside 3.0.0 |
-| WishFinder (was Wishlist) | r146 | READY_TO_DISTRIBUTE, release | MHGU Recomp with KatSmithy; r134 accepted on Eden with MHGU Definitive Edition 3.0.0. Needs Key Quest Markers r20+ |
+| Village Quests in Hub | r7 | DEVELOPMENT, candidate | Not run; r6 accepted on Eden beside MHGU Definitive Edition 2.0.0 |
+| WishFinder (was Wishlist) | r147 | DEVELOPMENT, candidate | Not run; r146 accepted on MHGU Recomp with KatSmithy, r134 on Eden with MHGU Definitive Edition 3.0.0. Needs Key Quest Markers r20+ |
 | WishFinder bridge for My Weapon Tree | r11 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.67 and WishFinder r83 |
 | World Sharpness Gauge | r70 | PUBLISHED, GitHub release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
@@ -48,8 +48,8 @@ The rollback for a current build that has no run of its own.
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Skin Loader | r18 (r16 before it) | `build/skin-loader/releases/r18/`, `candidates/r18/`, `r16/` |
-| Village Quests in Hub | r6 | `build/village-quests-in-hub/candidates/r6/` |
-| WishFinder | r146 | `build/wishfinder/releases/r146/`, `candidates/r145/`, `r134/`, `r131/`, `r127/`, `r122/`, `r119/`, `r114/`, `r111/`, `r107/`, `r105/`, `r103/`, `r102/`, `r92/`, `r86/`, `r85/`, `r82/`, `r76/`, `r72/` |
+| Village Quests in Hub | r7 (r6 before it) | `build/village-quests-in-hub/candidates/r7/`, `r6/` |
+| WishFinder | r147 (r146 before it) | `build/wishfinder/candidates/r147/`, `r146/`, `r145/`, `r134/`, `r131/`, `r127/`, `r122/`, `r119/`, `r114/`, `r111/`, `r107/`, `r105/`, `r103/`, `r102/`, `r92/`, `r86/`, `r85/`, `r82/`, `r76/`, `r72/` |
 | WishFinder bridge for My Weapon Tree | r11 | `build/wishfinder-mwt-bridge/candidates/r11/`, `r10/` |
 | World Sharpness Gauge | r70 (r68 on Eden and Ryubing) | `build/world-sharpness-gauge/candidates/r70/`, `r68/` |
 

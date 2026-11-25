@@ -11,7 +11,7 @@ Players run our plugins beside these. Each entry says what the mod changes, wher
 
 ## Definitive Edition
 
-Version 3.0.0 patches main through an IPS and adds its own `subsdk1`, quests, maps and items. Every patched site and its effect on our mods: [Definitive Edition](definitive-edition.md).
+Version 3.1.0 patches main through an IPS and adds its own `subsdk1`, quests, maps and items. Every patched site and its effect on our mods: [Definitive Edition](definitive-edition.md).
 
 ## KatLib, KatSmithy and UIScale
 
