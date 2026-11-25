@@ -43,6 +43,22 @@ class ClientTests(unittest.TestCase):
         self.write('mods/purple-lib/examples/rust/client.rs', b'// no records\n')
         self.rejected(lambda: distribution.purple_lib_clients(self.root))
 
+    def test_a_copy_of_a_record_read_by_size_may_end_early(self):
+        later = '    pub value_help: u32,\n}\n'
+        library = ''.join(RECORD.replace('Help', name).replace('}\n', later)
+                          for name in ('Help', 'Options', 'OptionRow', 'Api'))
+        library = 'pub const CLIENT_EXPORT: &[u8] = b"purplelib_on_register";\n' + library
+        self.write('mods/purple-lib/core/src/api.rs', library.encode())
+        self.write('mods/purple-lib/link/exported.txt', b'{ global: purplelib_api_version; local: *; };')
+        older = 'const NAME: &[u8] = b"purplelib_api_version";\n' + UNNAMED.replace('Help', 'Options')
+        self.write('mods/purple-lib/examples/rust/client.rs', older.encode())
+        self.assertEqual(len(distribution.purple_lib_clients(self.root)), 1, 'an older Options copy')
+        self.write('mods/purple-lib/examples/rust/client.rs', older.replace('Options', 'OptionRow').encode())
+        self.rejected(lambda: distribution.purple_lib_clients(self.root))
+        reordered = older.replace('pub size: u32,\n', '').replace('}\n', '    pub size: u32,\n}\n')
+        self.write('mods/purple-lib/examples/rust/client.rs', reordered.encode())
+        self.rejected(lambda: distribution.purple_lib_clients(self.root))
+
 
 if __name__ == '__main__':
     unittest.main()
