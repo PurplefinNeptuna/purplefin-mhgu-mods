@@ -29,6 +29,9 @@ Sizers (slot 0xb0) give submenus only to lobby indices 4..11 and quest 4..5.
 - **Row record** (0x50 bytes, on the caller's stack): +0 name `char*`, +4 kind, +8 u8 wrap, +0xa u16 min, +0xc u16 max, +0xe u8 label count, +0x10 sixteen `char*`.
   - The base redraw describes and reads get for every row (`0x5e65e0`, `0x5e660c`). It draws through the plain-string text setter. Kinds 0..4 take StartMenuMsg texts by value. Kind 8 shows `label[value]` when value <= 15 and value < count (`0x5e673c`), else a default text.
   - On the edited row both arrows show when wrap is set, else the left one while value != min and the right one while value != max (`0x5e67d0`..`0x5e6840`). A copy of the vtable with these slots replaced shows any rows (run).
+- **No disabled rows**: no slot or record field greys a row or refuses A. Slot 0x70 (page, row) only gates Left/Right in editing (`0x5e5df0`, `0x5e5ee4`; ForGame's `0x5e69b4` returns 1).
+  - The redraw draws page row n into GUI instance `[3, 4, 5, 6, 9, 10, 11, 12][n]` (table `0x16256bc`, loaded at `0x5e6474`): the name as part 1 (`0x5e662c`), the value as part 2 (`0x5e67ac`). It sets no colour.
+  - A text part's colour goes through `0x54700c(gui, instance, part, colour)`. For a `cGUIObjMessage` or `cGUIObjText` part it calls the DTI `Color` setter `0xa530bc(holder, &colour)`, which stores the u32 at holder +0xbc and asks for a redraw; the getter is `0xa530b0(out, holder)`.
 - **L/R**: `0x65f8c4`/`0x65f914` return the menu-pad bits 0x100/0x200, or 0x400/0x800 when the shoulder swap byte +0x446e is set; the cursor mover `0x54ee98` uses them only in modes 4, 5, 9 and 10.
 
 ## Help
