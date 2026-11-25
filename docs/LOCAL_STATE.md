@@ -19,7 +19,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r16 | READY_TO_DISTRIBUTE, release | Multiplayer, user report; Eden and MHGU Recomp installed |
 | Please do Better | r37 | PUBLISHED, GitHub release | MHGU Recomp with Purple-lib r17 (r36 registers on Eden too) |
-| Purple-lib | r23 | DEVELOPMENT candidate | Not run (picker lists); r22 on Eden and MHGU Recomp 0.17 |
+| Purple-lib | r24 | DEVELOPMENT candidate | Not run (greyed Mod Options, picker lists); r22 on Eden and MHGU Recomp 0.17 |
 | Purple-lib Tester | r15 | DEVELOPMENT, not for distribution | Not run (picker lists); r14 on Eden and MHGU Recomp with Purple-lib r22 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Skin Loader | r18 | READY_TO_DISTRIBUTE, release, with a `-fast` package | MHGU Recomp (full); r16 on Eden too; fast not run since r14 |
