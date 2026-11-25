@@ -77,6 +77,17 @@ Split along the topics the file already has (`mods/wishfinder/src/native/` is th
 `mod.rs` with the shared state and helpers, then one file per screen) and never into numbered
 parts. Tests follow the same rule: one test file per area.
 
+The limit counts lines, so it only means something while each line is readable. Every line a
+commit adds or changes holds one statement and is at most 120 characters (`scripts/line_rules.py`):
+
+- Python, read with `ast`: no `a; b`, no block body on its header line (`if x: y`, `def f():
+  return y`) and no `import a, b`.
+- Rust, C, C++, JS: one `;` per line outside strings, comments and brackets.
+- A line that is a single string literal may be longer.
+
+Never meet the limit by joining lines, shortening names or dropping comments. Split the file by topic
+instead. Older lines are checked once a commit touches them.
+
 `scripts/code_size_limits.json` lists the files that were already longer, each with its length
 as a ceiling; a mod's own files are listed in that mod's `scripts/code_size_limits.json`, keyed
 from the mod's folder. A listed file may shrink but not grow; when it shrinks, lower its entry in the

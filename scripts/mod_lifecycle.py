@@ -117,7 +117,8 @@ def set_version_copies(root, mod, old, new):
     folder, changed = root / 'mods' / mod, []
     edits = [('mod.json', lambda s: s.replace(f'"version": "{old}"', f'"version": "{new}"')),
              ('scripts/paths.py', lambda s: re.sub(rf"(['/]){old}((?:-[a-z0-9]+)?')", rf'\g<1>{new}\2', s)),
-             ('manifest.json', lambda s: s.replace(f'"version": "0.{number(old)}.0"', f'"version": "0.{number(new)}.0"'))]
+             ('manifest.json', lambda s: s.replace(f'"version": "0.{number(old)}.0"',
+                                                   f'"version": "0.{number(new)}.0"'))]
     for name, edit in edits:
         path = folder / name
         if path.is_file() and (text := path.read_text()) != (after := edit(text)):
@@ -141,7 +142,8 @@ def start(root, mod, reason):
     if spec['status'] in distribution.READY:
         archived = archive_release(root, mod, spec, f'before-{new}', reason)
     else:
-        require(spec['status'] == 'DEVELOPMENT', f'{mod} is {spec["status"]}; only DEVELOPMENT and released mods move on')
+        require(spec['status'] == 'DEVELOPMENT',
+                f'{mod} is {spec["status"]}; only DEVELOPMENT and released mods move on')
     candidate_fields(spec, new)
     spec['reason'] = reason
     spec['runtime_test'] = f'{new} has not run. See EVIDENCE.json.'
@@ -154,7 +156,8 @@ def start(root, mod, reason):
     changed = set_version_copies(root, mod, old, new)
     print(f'{mod}: {old} -> {new} (DEVELOPMENT). Changed DISTRIBUTION.json, {", ".join(changed) or "no other file"}.')
     if archived:
-        print(f'{old} release archived by move to {archived.relative_to(root)}; its candidate stays in build/{mod}/candidates/{old}/.')
+        print(f'{old} release archived by move to {archived.relative_to(root)}; '
+              f'its candidate stays in build/{mod}/candidates/{old}/.')
     print('Still yours to write: limitations, the evidence summaries, the README/TESTING mentions below,\n'
           'the DEVELOPMENT.md current-state paragraph and the docs/LOCAL_STATE.md row.')
     rest = leftovers(root, mod, old)
@@ -174,7 +177,8 @@ def promote(root, mod, basis):
                 f'{record["source"]} is not the packaged {path}; the release must be the bytes that were handed out')
         record['sha256'] = distribution.digest(blob)
         if path.endswith('.nro'):
-            require(record['sha256'][:8] in basis, f'The basis must name the installed {path} hash ({record["sha256"][:8]}...)')
+            require(record['sha256'][:8] in basis,
+                    f'The basis must name the installed {path} hash ({record["sha256"][:8]}...)')
     spec.update(status='READY_TO_DISTRIBUTE', archive=archive_name(spec, version, False),
                 approval={'date': datetime.date.today().isoformat(), 'basis': basis})
     spec.pop('candidate')
@@ -185,7 +189,8 @@ def promote(root, mod, basis):
     try:
         distribution.package(mod, root)
         packaged = {p: distribution.digest((release / spec['package_name'] / p).read_bytes()) for p in spec['payloads']}
-        require(packaged == {p: r['sha256'] for p, r in spec['payloads'].items()}, 'Release runtime differs from the candidate')
+        pinned = {p: r['sha256'] for p, r in spec['payloads'].items()}
+        require(packaged == pinned, 'Release runtime differs from the candidate')
     except BaseException:
         spec_path(root, mod).write_bytes(before)
         shutil.rmtree(release, ignore_errors=True)
@@ -200,7 +205,8 @@ def withdraw(root, mod, reason):
     require(spec['status'] in distribution.READY, f'{mod} is {spec["status"]}; only a release can be withdrawn')
     version = spec['version']
     require((root / 'build' / mod / 'candidates' / version / 'delivery').is_dir(),
-            f'build/{mod}/candidates/{version}/delivery is missing; without it {version} would be rebuilt from newer source')
+            f'build/{mod}/candidates/{version}/delivery is missing; '
+            f'without it {version} would be rebuilt from newer source')
     published = spec['publication']['published']
     archived = archive_release(root, mod, spec, 'withdrawn', reason)
     candidate_fields(spec, version)
@@ -216,8 +222,10 @@ def rollback(root, mod, to, reason):
     spec = load(root, mod)
     require(spec['status'] in distribution.READY, f'{mod} is {spec["status"]}; rollback replaces a release')
     archives = root / 'backups' / 'accepted' / mod
-    sources = sorted(p for p in archives.glob(f'{to}-*') if (p / 'release').is_dir() and (p / 'DISTRIBUTION.json').is_file())
-    require(len(sources) == 1, f'Need exactly one archived {to} release with its DISTRIBUTION.json in {archives}; found {[p.name for p in sources]}')
+    sources = sorted(p for p in archives.glob(f'{to}-*')
+                     if (p / 'release').is_dir() and (p / 'DISTRIBUTION.json').is_file())
+    require(len(sources) == 1, f'Need exactly one archived {to} release with its DISTRIBUTION.json in {archives}; '
+                               f'found {[p.name for p in sources]}')
     source = sources[0]
     kept = json.loads((source / 'preservation.json').read_text())['release_sha256']
     require(inventory(source / 'release') == kept, f'The archived {to} release differs from its preservation.json')
@@ -227,7 +235,8 @@ def rollback(root, mod, to, reason):
     for path, record in old['payloads'].items():
         blob = (source / 'release' / old['package_name'] / path).read_bytes()
         require(distribution.digest(blob) == record['sha256'] and (root / record['source']).read_bytes() == blob,
-                f'{record["source"]} no longer holds the released {to} {path}; restore it from the archived release first')
+                f'{record["source"]} no longer holds the released {to} {path}; '
+                f'restore it from the archived release first')
     archived = archive_release(root, mod, spec, f'rolled-back-to-{to}', reason)
     shutil.copytree(source / 'release', root / 'build' / mod / 'releases' / to)
     # The release record hashes DISTRIBUTION.json, so both go back byte for byte; why is in the archive.
@@ -254,7 +263,8 @@ def guarded_builders(root=ROOT):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     commands = parser.add_subparsers(dest='command', required=True)
-    for name, text in [('start', '--reason'), ('promote', '--basis'), ('withdraw', '--reason'), ('rollback', '--reason')]:
+    flags = [('start', '--reason'), ('promote', '--basis'), ('withdraw', '--reason'), ('rollback', '--reason')]
+    for name, text in flags:
         command = commands.add_parser(name)
         command.add_argument('mod')
         command.add_argument(text, required=True)

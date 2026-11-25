@@ -11,8 +11,11 @@ import test_mod_distribution as base
 
 class CandidateTests(unittest.TestCase):
     # The release tests' fixture: a READY sample mod in a temporary workspace.
-    setUp, write, save_spec = base.DistributionTests.setUp, base.DistributionTests.write, base.DistributionTests.save_spec
-    package, rejected = base.DistributionTests.package, base.DistributionTests.rejected
+    setUp = base.DistributionTests.setUp
+    write = base.DistributionTests.write
+    save_spec = base.DistributionTests.save_spec
+    package = base.DistributionTests.package
+    rejected = base.DistributionTests.rejected
 
     def development_candidate(self):
         """Convert only this temporary fixture into an explicit candidate delivery."""

@@ -58,6 +58,8 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
 - **Short source files.** Under 600 lines, one topic per file. A change that would pass
   that splits the file first, in its own behaviour-neutral commit. Files already longer
   may only shrink ("Source file size" in docs/DEVELOPMENT.md; the pre-commit hook checks).
+  Every added or changed line holds one statement and stays within 120 characters, so never
+  meet the limit by packing code onto fewer lines.
 - **Humanize user-facing text (hard rule).** Every new or changed README, guide,
   release note, setting label, tooltip, in-game window or message, and log line a
   player reads MUST go through the full process in

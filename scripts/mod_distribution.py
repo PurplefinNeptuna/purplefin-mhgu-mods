@@ -8,7 +8,9 @@ import io
 import json
 from pathlib import Path, PurePosixPath
 import re
-import shutil, stat, subprocess
+import shutil
+import stat
+import subprocess
 import sys
 import tempfile
 import zipfile

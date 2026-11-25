@@ -8,12 +8,16 @@ Usage: code_rules.py [--staged] [--repo DIR] [FILE...]
 A file over LIMIT lines is refused unless a scripts/code_size_limits.json lists it: the workspace's,
 or for a file under mods/NAME/ that mod's own, keyed from the mod's folder. A listed file may not grow
 past its entry, and when it shrinks the entry must come down with it, so the list only falls.
+Every line the commit adds or changes must also pass `line_rules`, so a file cannot meet its limit
+by packing code onto fewer lines.
 """
 import json
 import re
 import subprocess
 import sys
 from pathlib import Path
+
+import line_rules
 
 LIMIT = 600
 SOURCE = re.compile(r'\.(rs|c|cc|cpp|h|hpp|py|S|s|sh|js|ts|lua)$')
@@ -60,16 +64,29 @@ def tracked(repo, paths):
     return {prefix + p: p for p in out.splitlines() if SOURCE.search(prefix + p) and not SKIP.search(prefix + p)}
 
 
-def count(repo, path, staged):
+def content(repo, path, staged):
     if staged:
-        data = subprocess.run(['git', 'show', f':{path}'], cwd=repo, capture_output=True, check=True).stdout
-    else:
-        data = (repo / path).read_bytes()
+        return subprocess.run(['git', 'show', f':{path}'], cwd=repo, capture_output=True, check=True).stdout
+    return (repo / path).read_bytes()
+
+
+def count(repo, path, staged):
+    data = content(repo, path, staged)
     return data.count(b'\n') + (0 if data.endswith(b'\n') or not data else 1)
+
+
+def dense(repo, files, staged):
+    """line_rules problems on the lines each file's commit (or working tree) adds or changes."""
+    for path, inside in files.items():
+        if not staged and not (repo / inside).exists():
+            continue
+        text = content(repo, inside, staged).decode('utf-8', 'replace')
+        yield from line_rules.problems(path, text, line_rules.changed_lines(repo, inside, staged))
 
 
 if __name__ == '__main__':
     self_check()
+    line_rules.self_check()
     args = sys.argv[1:]
     staged = '--staged' in args
     repo = ROOT
@@ -86,8 +103,13 @@ if __name__ == '__main__':
     found = [f'{p}: no longer exists; remove its entry' for p in gone]
     # A tracked file deleted in the working tree has nothing to count.
     found += list(problems({p: count(repo, r, staged) for p, r in files.items() if staged or (repo / r).exists()}, limits))
-    for p in found:
+    lines = list(dense(repo, files, staged))
+    for p in found + lines:
         print(p, file=sys.stderr)
     if found:
         print(f'Code rule: source files stay under {LIMIT} lines, one topic per file.', file=sys.stderr)
+    if lines:
+        rule = f'one statement per line, at most {line_rules.WIDTH} characters'
+        print(f'Line rule: {rule}, on every line you add or change.', file=sys.stderr)
+    found += lines
     sys.exit(1 if found else 0)

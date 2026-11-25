@@ -147,7 +147,8 @@ class LifecycleTests(unittest.TestCase):
                              'url': 'https://example.com/library', 'scope': 'MIT-licensed code.'}]},
             'payloads': {'romfs/nativeNX/plugins/plugin.nro': {
                 'source': f'{package}/plugin.nro', 'sha256': distribution.digest(runtime)},
-                'manifest.json': {'source': f'{package}/manifest.json', 'sha256': distribution.digest(manifest.encode())}},
+                'manifest.json': {'source': f'{package}/manifest.json',
+                                  'sha256': distribution.digest(manifest.encode())}},
             'evidence': {'static': [f'build/sample-mod/candidates/{version}/tests.json'], 'manual_summary': 'None'},
         }
         self.write('mods/sample-mod/DISTRIBUTION.json', distribution.json_bytes(spec))
@@ -165,7 +166,8 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(json.loads((archived / 'DISTRIBUTION.json').read_text())['status'], 'READY_TO_DISTRIBUTE')
         self.assertFalse((self.root / 'build/sample-mod/releases').exists())
         spec = self.spec()
-        self.assertEqual((spec['status'], spec['version'], spec['archive']), ('DEVELOPMENT', 'r2', 'sample-mod-r2-candidate.zip'))
+        self.assertEqual((spec['status'], spec['version'], spec['archive']),
+                         ('DEVELOPMENT', 'r2', 'sample-mod-r2-candidate.zip'))
         self.assertEqual(spec['candidate'], 'build/sample-mod/candidates/r2/delivery')
         self.assertNotIn('approval', spec)
         self.assertEqual(spec['payloads']['romfs/nativeNX/plugins/plugin.nro']['source'],
@@ -206,7 +208,8 @@ class LifecycleTests(unittest.TestCase):
         self.assertTrue((self.root / 'backups/accepted/sample-mod/r2-rolled-back-to-r1/release').is_dir())
         spec = distribution.spec_for('sample-mod', self.root)
         self.assertEqual(spec['version'], 'r1')
-        kept = json.loads((self.root / 'backups/accepted/sample-mod/r2-rolled-back-to-r1/preservation.json').read_text())
+        archived = self.root / 'backups/accepted/sample-mod/r2-rolled-back-to-r1'
+        kept = json.loads((archived / 'preservation.json').read_text())
         self.assertEqual(kept['reason'], 'r2 crashes on load')
         distribution.verify_release(spec, self.root)
 
