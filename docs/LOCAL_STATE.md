@@ -24,7 +24,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Skin Loader | r18 | READY_TO_DISTRIBUTE, release, with a `-fast` package | MHGU Recomp (full); r16 on Eden too; fast not run since r14 |
 | Village Quests in Hub | r7 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition 3.1.0 and without it |
-| WishFinder (was Wishlist) | r148 | DEVELOPMENT, candidate | Not run; r147 accepted on Eden with MHGU Definitive Edition 3.1.0. Needs Key Quest Markers r20+ |
+| WishFinder (was Wishlist) | r148 | DEVELOPMENT, candidate | Ran on Eden; r147 accepted on Eden with MHGU Definitive Edition 3.1.0. Needs Key Quest Markers r20+ |
 | WishFinder bridge for My Weapon Tree | r11 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.67 and WishFinder r83 |
 | World Sharpness Gauge | r70 | PUBLISHED, GitHub release | MHGU Recomp; r68 on Eden and Ryubing |
 | HD Project, wiki cheats, DTI dumper support | — | LOCAL_ONLY | — |
