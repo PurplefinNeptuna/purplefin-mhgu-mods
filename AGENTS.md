@@ -64,8 +64,9 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   `#[cfg(test)]` block inside `src/`. Python and ARM tests stay in the mod's `tests/`. The pre-commit
   hook refuses an added `#[cfg(test)]` line (`scripts/code_rules.py`). WishFinder still has inline
   tests in 16 files; move a file's tests out when you change that file.
-- **Know a test's cost before running it.** KQM's `tests/native_adapter.py` takes about 150 s of
-  `./build.sh test`'s 165 s. Run the one step you need, once. Prove a timing or measuring command on a
+- **Know a test's cost before running it.** An emulator test that hooks every instruction in Python
+  is slow; hook only the addresses it handles (KQM's `tests/native_adapter.py`: 152 s to 5 s). Run the
+  one step you need, once. Prove a timing or measuring command on a
   fast step first: this shell is zsh without `bc` or `/usr/bin/time`, so time with Python's `time`
   around `subprocess.run`.
 - **Humanize user-facing text (hard rule).** Every new or changed README, guide,

@@ -49,12 +49,12 @@ forge-rs's `fs` module only reads (plus the counted mount), so each writer has i
 | Skin Loader | converted skin archives `SkinLoader/skins/FOLDER/*.arc` and `source.bin`, one skin per update (`src/saved.rs`); `skin_loader.ini` (`src/skins.rs`). It holds Forge's mount for the session | `forge_onUpdate` | not yet |
 | WishFinder | `WishFinder/wishfinder.ini`, `wishfinder_quests.bin` (up to 4 MiB), `welcome.bin` (`src/config.rs`) | `forge_onUpdate` | r148 and later |
 | Damage Numbers | `damage_numbers.ini` through forge-rs `Writer` with `ScopedMount` (`src/config.rs`) | free-render callback | not yet |
-| Key Quest Markers | `key_quest_markers.ini` (`src/config.rs`) | its Plugin UI "Save & apply" | not yet |
+| Key Quest Markers | `key_quest_markers.ini` (`src/config.rs`) | its Plugin UI "Save & apply"; Purple-lib Mod Options close, saved from `forge_onUpdate` | r25 and later |
 | Please do Better | `please_do_better.ini` (`src/settings.rs`) | `forge_onImGuiRender`, `forge_onImGuiFreeRender` | not yet |
 
 - Skin Loader keeps the save mounted all session, but a mount opens no file. Lock each write-open..commit span instead, and its stamp-file commit.
 - Damage Numbers uses forge-rs `Writer`, which commits inside. Take the lock before its `ScopedMount` and drop it after.
-- The three ini writers save only on an explicit Save, so their window is tiny; they come last, at each mod's next version.
+- The two remaining ini writers save only on an explicit Save, so their window is tiny; they come last, at each mod's next version.
 - Purple-lib, Purple-lib Tester, World Sharpness Gauge, Modern Weapon Controls, Lock-on Target, Multiplayer Roaming, Shared Urgent Quests, Village Quests in Hub, imgui-meter and the MWT bridge write nothing into the save.
 
 When a mod gains the lock, change its row here in the same commit.
