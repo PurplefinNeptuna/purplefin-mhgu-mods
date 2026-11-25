@@ -30,6 +30,10 @@ Identical duplicate records can retain native completion positions; conflicting 
 
 Key categories are 1..17 and 19..22. Village categories 1..10 compare with Village tier. Hub/G categories 11..22 compare with Hub/G tier+10. Category 18 is a key-free transition; 23 is final/no-key. A star page currently displayed is not the player's current progression.
 
+The Village tier rises only in `0x50cbd0`, which runs after each clear. It becomes k once every urgent of category 23 + k is cleared; at tier 5 only 601 counts in category 29. Key quests never feed it. Script opcode 0x38 (handler `0x3d312c`) also raises it, but no 1.4.0 script uses it. The other stores to +0x3e0 are initialisers (`0x5062bc`, `0x5064c8`, `0x5069fc`) and the save loader `0x507efc`.
+
+A rank-up urgent's unlock can also need quests outside the key categories, through talk conditions ([quest-lists.md](quest-lists.md#unlock-script-and-talk-tables)).
+
 An unfinished key is needed only at its actual progression tier. Completed keys, old unfinished keys, and satisfied Village alternatives are Grey. For Village alternative bytes 1..11, another completed record with the same category/alternative satisfies the shared requirement. Other domains do not inherit that rule by analogy.
 
 ## Rank-up urgents
