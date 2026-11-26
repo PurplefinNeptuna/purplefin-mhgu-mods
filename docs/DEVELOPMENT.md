@@ -266,10 +266,11 @@ may run beside it counts), or a recommended mod listed by name and version alone
 does there; conflicts live in `manifest.json`. Use `### Settings` and `### INI settings` below Usage when applicable. Settings
 tables use `Setting | Default | Effect`. Control tables use `Action | Input`.
 Write overlay paths as **Plugin UI > Plugin name**, keeping the actual UI name
-and button labels exact. Use colour/grey consistently, with plain colour names
+and button labels exact. Use color/gray consistently, with plain color names
 such as Green and Red. Gathering/objective labels belong in research records.
 
-Switch installation steps give both Eden and Ryujinx destinations. Include
+Installation steps give a destination for every platform Requirements lists: Eden, Ryujinx and
+MHGURecomp when it is listed. Include
 hot-reload restrictions only where required by that mod. Link Fexty's Forge fork.
 Build fixtures and co-installed mods do not establish runtime dependencies.
 
@@ -277,6 +278,21 @@ Apply the full local Humanizer process: read the whole guide, rewrite awkward
 passages, then check the result for lost facts and remaining writing patterns.
 Avoid semicolon-heavy prose, em/en dashes, repeated instructions and empty
 sections. Keep code examples, config values and technical claims accurate.
+
+These rules are the user's, from corrections to the Skin Loader README. They hold for every README:
+
+- One topic per paragraph. Parallel options, keys or variants go in a short list.
+- A mod with variants (a full and a fast build) describes the full one first. Each variant's
+  differences get a paragraph of their own at the end of their section, never woven into the full
+  build's text.
+- Say what the player sees, not how the mod does it: no screen rows, hashes, shaders or file
+  formats, unless the player must act on it.
+- State facts, not suggestions: "the skin loads whatever its folder is called", not "you can
+  rename the folder". Offer an action only as a step the player needs.
+- Name only released versions (READY_TO_DISTRIBUTE or PUBLISHED) of the mod and its requirements.
+- Use a word for one thing only: "version" is not both a release and a variant.
+- After any README change, run the humanizer over the whole README, not only the edited
+  paragraph, and show the user the final text.
 Keep implementation, research, testing, approval and release history in
 developer records. Do not add advice about unrelated or retired mods.
 
