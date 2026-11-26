@@ -93,7 +93,7 @@ Checks that catch the usual wrong turns:
 - **Read-only ground truth beats theory.** A save file, an ini the game or a mod wrote, and RomFS rows are free to read and cannot flatter the model. Compare them with the tester's own list.
 - **Know what a measurement covers.** "Matches another mod's log" covers the rows it printed. A rule applied to a whole table is checked over the whole table, with the count of each branch printed.
 - **A layout is proved by its bytes, not its comment.** Dump one row in hex next to the claimed stride; a stride that only fits by eye is a lead.
-- **A refutation travels.** When a finding contradicts an earlier one, `rg` for the old claim and correct every copy (skill references, DEVELOPMENT.md, the plan) in the same commit.
+- **A refutation travels.** When a finding contradicts an earlier one, `grep -rn` for the old claim and correct every copy (skill references, DEVELOPMENT.md, the plan) in the same commit.
 
 ## 7. Record the finding
 
@@ -113,7 +113,7 @@ Before you write it down or commit, answer each line. Any "no" means fix it firs
 2. If two sources disagree, did you write both and the read that would decide, not a story that joins them?
 3. Is a count stated with what did not match ("588 of 632; 44 differ")?
 4. Did a check fail and get dropped, softened or relabelled? Then undo that and change your hypothesis instead.
-5. Does this contradict anything already written? `rg` the old claim across `.agents/skills`, the project docs and the task's `work/` notes, and correct each copy.
+5. Does this contradict anything already written? `grep -rn` the old claim across `.agents/skills`, the project docs and the task's `work/` notes, and correct each copy.
 6. Is it a fact about the game, or the tester's rule for the feature? Keep them apart.
 7. Does the conclusion depend on something you still list as open? Then state it as conditional ("counts it only if the index means kind 0"), and the step is not done. Call it done only when nothing it rests on is open.
 8. Did you read a table or data words by eye from a listing? Print them with a script over `main_image()` and quote that output.

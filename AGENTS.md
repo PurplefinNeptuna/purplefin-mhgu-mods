@@ -121,7 +121,7 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   exact-bytes gate (see "Chaining" in the forge-modding hooks reference).
 - **Forge first.** Use Forge headers and APIs before private substitutes, and
   document each verified gap beside the workaround.
-- **Refutations travel.** When a finding contradicts an earlier one, `rg` for the old
+- **Refutations travel.** When a finding contradicts an earlier one, `grep -rn` for the old
   claim and correct every copy (skill references, DEVELOPMENT.md, the plan) in the same
   commit. A skill reference holds facts verified in bytes or a run, each with its source;
   the rest says "inference". Checks for premises, conflicting readings, partial matches
