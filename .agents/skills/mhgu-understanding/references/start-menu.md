@@ -28,7 +28,7 @@ Opening: on A (`0x66fc30`) slot 0x98 runs, then +0x50 = row, +0x58 = 0, and slot
 
 Submenu object: slot 2 is `cUIOSMenuSub` (vtable `0x1776488`), wired with +0x54 = menu+0xb0 in the lobby create `0x78f784`. Its slot 0x48 (`0x62c8f0`) binds 7 row panels (instances 0x12..0x18, animation 0x1b), and draw loop `0x62c4d4` shows as many rows as the cursor holds (cursor slot 0x30), reading each enabled byte. A seventh row draws (run).
 
-Each submenu row's text colour is `0x550354(enabled, selected, ...)`: id 11 for a disabled row, else 0, or 1 for the cursor's. `0x560e90(_, id)` turns an id into a u32 colour from a table filled at run time (`0x18993e4`, GOT word `0x183f1bc`). `0x56e6fc(object, instance, part, colour)` then writes it (see [Options window](options-and-help.md)).
+Each submenu row's text color is `0x550354(enabled, selected, ...)`: id 11 for a disabled row, else 0, or 1 for the cursor's. `0x560e90(_, id)` turns an id into a u32 color from a table filled at run time (`0x18993e4`, GOT word `0x183f1bc`). `0x56e6fc(object, instance, part, color)` then writes it (see [Options window](options-and-help.md)).
 
 Page runners by top index (lobby slot 0x68's table at `0x790474`):
 
@@ -64,7 +64,7 @@ Input inside a page: the menu view of `sFestaPad` (pressed +0x6bfc, repeat +0x6c
 
 ## Game list objects
 
-The page that owns a list writes each row through `cUIObject` setters (text `0x56e808`, visibility `0x56e530`, colour `0x56e6fc`, number `0x56fde0`, item icon and name `0x56e62c`). The text setter reaches `0x547564`, which `strlen`s a plain `char*`, so any static string works. The generic `cUIOListWindow` (152 bytes) reads only per-row colour bytes from an 8-byte vector at +0x50 and a cursor at +0x54.
+The page that owns a list writes each row through `cUIObject` setters (text `0x56e808`, visibility `0x56e530`, color `0x56e6fc`, number `0x56fde0`, item icon and name `0x56e62c`). The text setter reaches `0x547564`, which `strlen`s a plain `char*`, so any static string works. The generic `cUIOListWindow` (152 bytes) reads only per-row color bytes from an 8-byte vector at +0x50 and a cursor at +0x54.
 
 ## Page cursor
 
