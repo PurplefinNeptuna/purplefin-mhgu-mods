@@ -53,7 +53,8 @@ So a commit refused because some other code held a write handle shows the player
 - `+0x40` (u32, from 0) is the slot the flow works on.
   - Flows 2 and 6 (`0x3e1308`) write a slot without choosing one: `0x3e1648` calls the slot writer `0x3e0980(object, +0x40)`, and nothing in the flow sets +0x40. Bytes.
   - Flow 2's requester `0x3df850` is called from seven sites in the UI code (`0x683c28` to `0x790aa8`).
-  - Flow 2 being the save made in play, and +0x40 holding the loaded slot through play, are inference. No run has logged +0x40.
+  - +0x40 followed every slot the tester loaded on Eden and MHGU Recomp (read once a second from the title screen through play). Run.
+  - Flow 2 being the save made in play is inference. So is +0x40 never changing in a menu during play: no run opened every menu.
   - Flows 1, 4 and 5 (`0x3e21b8`) and 23 (`0x3e2cb8`) set it from the slot cursor (`0x3e2a68`: cursor +0x51 + +0x52 × +0x54), from file byte 0x2b (`0x3e2430`, `0x3e3280`), or to 0 (`0x3e2240`, `0x3e2d38`, `0x3e2f70`). Flow 0 (`0x3dfafc`) sets it too (`0x3dfe5c`, `0x3e0188`, `0x3e0380`). Which screens run those flows is unread.
 - Slot functions, each `(object, slot)`: load `0x3e0d58` (loads every singleton through `0x3e0db8` → `0x3e77b0`), write `0x3e11a8`, summary for the slot list `0x3e1208` (copies 0xe0 bytes from section +0x2c). The manager's own load is `0x3e2580`, with slot +0x40. Bytes.
 - The slot writer `0x3e0980` also stores `used[slot] = 1` (file byte 0x28 + slot) and `last = slot` (file byte 0x2b). Bytes.
