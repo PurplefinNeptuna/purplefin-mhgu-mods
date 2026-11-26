@@ -38,6 +38,7 @@ Offsets are main-relative, MHGU 1.4.0. Each fact names its source: bytes, a tran
 
 - The 242 area schedulers (`stage/mNN?/aNN.arc`, `sdl\mNNaNN?-f`) use types 4 (231), 2 (169), 6 (44) and 5 (2). m05d a02 animates a type 6 corrector 0.5, 0.7, 0.52, 0.5 over 361 frames. Bytes.
 - Bloom extract keeps the brightest channel's excess over `cb4[0].w` (1.0) of `rgb / a * cb3[0].w * cb3[0].z`. Bloom adds the blurred result times its color (`uBloomFilter +96`, threshold +116). Translated shaders and run.
+- `uBloomFilter` is DTI vft `0x178a484`, 192 bytes. Of the 240 area schedulers, 205 start `mThrethold` at 0.9; m01d a06 keys 0.1 throughout and m01n a10 ends at 0.1. m01d a06 keys `mBloomColor` 0.15; 19 areas start it with a channel at 1.0. Bytes.
 - `uMhFilter` (vft `0x177b164`) draws a full-screen quad in vertex colors. Its corners are `mColor[4]` at +48 (R in the low byte; 0 and 1 top, 2 and 3 bottom). Its span is `mTopPos` +68 to `mBottomPos` +70, in rows of 256 from the top. Its blend is `mBreandState` +64. Run: the drawn colors and spans equal these.
 - Blend state 15 multiplies by `rgb + 1 - a` (DST_COLOR, ONE_MINUS_SRC_ALPHA); 0 adds `rgb * a` (SRC_ALPHA, ONE). Run. Quest map overlays multiply red by up to about 1.33 and can darken the screen's bottom band to about 0.25.
 
