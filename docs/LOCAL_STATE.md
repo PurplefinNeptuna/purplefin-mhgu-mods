@@ -22,7 +22,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Purple-lib | r33 | READY_TO_DISTRIBUTE | Eden (r33) and MHGU Recomp (r32); Ryubing untested |
 | Purple-lib Tester | r21 | DEVELOPMENT, not for distribution | Not run; r20 on MHGU Recomp and Eden with Purple-lib r32 and r33 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
-| Skin Loader | r22 | DEVELOPMENT, candidate, with a `-fast` package | not run; r21 ran on MHGU Recomp |
+| Skin Loader | r23 | DEVELOPMENT, candidate, with a `-fast` package | not run; r22 ran on MHGU Recomp and Eden |
 | Village Quests in Hub | r7 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition 3.1.0 and without it |
 | WishFinder (was Wishlist) | r149 | READY_TO_DISTRIBUTE, release | MHGU Recomp in French; r148 accepted on Eden, r147 accepted on Eden with MHGU Definitive Edition 3.1.0. Needs Key Quest Markers r20+ |
 | WishFinder bridge for My Weapon Tree | r11 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.67 and WishFinder r83 |

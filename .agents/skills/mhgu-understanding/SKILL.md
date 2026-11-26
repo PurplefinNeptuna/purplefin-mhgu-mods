@@ -115,6 +115,7 @@ Opening the XCI/NSP needs hactool. Only its source is in `tools/hactool-source/`
 | Input views, button glyphs, local player and weapon, target camera, reload | [Input and actions](references/input-and-actions.md) |
 | How monster HP falls, every damage route, shells and siege weapons | [Damage](references/damage.md) |
 | Camera objects, matrices, projection, applied display size | [Cameras](references/cameras.md) |
+| NVN function table, shader package, unlit shader, color grading, gradient overlays, bloom | [Rendering](references/rendering.md) |
 | Menu sounds, sound data, request slots | [Sounds](references/sounds.md) |
 | Pickup and BBQ jingles | [Jingles](references/jingles.md) |
 | Motion sound events (MSS) | [Motion sounds](references/motion-sounds.md) |

@@ -10,6 +10,18 @@ An overlay that must line up with a HUD part breaks wherever the HUD is moved af
 
 Free-render callbacks execute outside Forge's main window. Use the intended DrawList or matched Begin/End window calls. On `forge_onImGuiInit`, install the provided current context and allocation/free pair before accessing ImGui. Do not assume an old context's fonts or texture handles remain alive.
 
+## Changing how the game draws a model
+
+Forge 1.5.1 has no draw hooks. Skin Loader swaps entries of the game's NVN function table (`mhgu-understanding` [Rendering](../../mhgu-understanding/references/rendering.md)), keeping each previous pointer and calling it, so another plugin's wrapper keeps working. Write the table only after the game has filled it.
+
+- Keep per-command-buffer state in atomics, keyed by the command buffer, and reset it in `BeginRecording`. Draws run on render threads; log only from `forge_onUpdate`.
+- Uniform and vertex buffers are GPU addresses on Eden and Switch. Do not read them there. Take values from CPU objects instead, such as a filter's fields.
+- Recognize a program by its GLSLC control section, which is CPU memory everywhere; shader code is not.
+- Get the device from the game's builder `SetDevice` calls, then make a small CPU-uncached, GPU-cached memory pool in plugin memory. For a draw, write the values with `UpdateUniformBuffer` inline, bind the buffer, draw, then bind the game's buffer again.
+- Prove each step with a forced, unmistakable value on every host before connecting live data.
+
+Worked example: [Skin Loader: Keep skin colors](../../../mods/skin-loader/docs/worked/skin-loader-color.md).
+
 ## Assets and context replacement
 
 Damage Numbers uses file-loaded Open Sans and external RGBA artwork. Ordinary builds copy prepared assets. Raw ImGui bindings are justified for exact glyph ink metrics, texture registration, vertices, and shutdown integration; ordinary draws use forge-rs wrappers.
