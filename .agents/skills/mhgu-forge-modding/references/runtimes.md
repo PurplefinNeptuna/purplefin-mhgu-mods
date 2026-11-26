@@ -7,7 +7,7 @@ One NRO runs on five hosts. Most bugs that show on one host only come from a row
 | Switch | Native ARM32 | Stock Forge 2.0.0 (`subsdk9`); 1.5.1 where players have not updated | Stock |
 | Eden | Emulated ARM | Stock Forge in the emulated process | Stock |
 | Ryubing 1.3.3 (and Ryujinx-Nextendo) | Emulated ARM | Stock Forge in the emulated process | Stock |
-| MHGURecomp (PC, Linux/Windows) | Recompiled to host code | An ARM interpreter | Its own HLE of Forge's exports (`references/MHGURecomp/runtime/forge.c`, `forge_imgui.c`) |
+| MHGURecomp (PC, Linux/Windows) | Recompiled to host code | An ARM interpreter that compiles plugin code to host code (log: `[interp] JIT on (x86-64)`; `MHGU_JIT=0` turns it off; `runtime/interp_jit*.h`) | Its own HLE of Forge's exports (`references/MHGURecomp/runtime/forge.c`, `forge_imgui.c`) |
 | gu-native (Android, Windows) | Recompiled to host code, a fork of MHGURecomp's runtime | Same interpreter | Same HLE plus its own renderer (`/mnt/storage2/Programs/gu-native/src`, local checkout `9a1aef7`; the HUD findings below were read at upstream `c7fc45a`) |
 
 The tester runs Eden, Ryubing and MHGURecomp. Nobody here runs gu-native or a Switch, so findings for those two come from source and user reports only. Say so.
