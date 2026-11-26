@@ -54,7 +54,9 @@ When input updates and where an edge is valid: [Input and keybinds](input-and-ke
 
 ## Folder names in a mod's RomFS
 
-On all three emulators the game reads a RomFS image the emulator builds from the mod folders. The game's own SDK looks names up there by exact bytes. So below the top folders, a name with capitals, spaces or non-ASCII letters loads when the game asks for that exact spelling. Source:
+On all three emulators the game reads a RomFS image the emulator builds from the mod folders. The game's own SDK looks names up there by a hash of each name's bytes, read as unsigned. So below the top folders, a name with capitals or spaces loads when the game asks for that exact spelling.
+
+A name with a byte of 0x80 or more (any non-ASCII letter) lists on Eden but does not open. Eden's builder hashes it with signed `char` (`fsmitm_romfsbuild.cpp` `romfs_calc_path_hash`, `hash ^= path[start + i]`, b4e39d9ae4), so the game's lookup misses. Run: Skin Loader r30 on Eden, a folder `雪姫 ひゆき`. MHGURecomp hashes unsigned bytes (`runtime/romfs.c` `name_hash`) and opens it. Ryujinx's hash is in LibHac, unread. Source:
 
 | Host | How mod folders join the game's | Source |
 | --- | --- | --- |
