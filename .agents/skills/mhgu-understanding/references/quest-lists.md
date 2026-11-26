@@ -24,7 +24,7 @@ The module is rCommonScript `script\check_quest_unlocked` (`loc/arc/village/comm
 
 NPC talk tables (`loc/arc/npc/talk.arc`) set those flags when their quest and flag conditions hold, which is how a clear followed by dialogue unlocks a quest. Opcodes, record layouts and the talk evaluator are in [Unlock script and talk tables](#unlock-script-and-talk-tables). In 1.4.0 every key quest's unlock needs only key or urgent quests; 479 other quests unlock something. One rank-up urgent needs more: The Scorching Blade (601, Village ★5) needs 504, 508 and 510 and their chief request lines 219, 220, 224, 225, 229, 230, 318, 323 and 328, none in a key category.
 
-Hunter Arts and Felyne ingredients are granted only by a talk row's mAction2 (switch `0x247c58`; arts `0x3f0c3c`, ingredients `0x3f1380`), on 7 and 28 quests' clears.
+Felyne ingredients are granted only by a talk row's mAction2 (switch `0x247c58`, `0x3f1380`), on 28 quests' clears. Hunter Arts come from two loops, both gated per art by check `0x3efb30`: talk rows (`0x3f0c3c`) and a loop with no talk row (`0x3ea6e8`). The checks need 78 quests' clears; see [Hunter Art grants](#unlock-script-and-talk-tables).
 
 ## Downloaded event quests
 
@@ -36,7 +36,7 @@ No code constant was found for 0x4618 or 0xf899 (movw search). Offset and slot c
 
 ## Unlock script and talk tables
 
-A quest is unlocked by the first case of the unlock script labelled with it, or through a conversation that sets a flag such a case loads, directly or through further conversations. Talk rows that grant without a quest condition (the 92-art base set on flag 847, level-gated ingredients) depend on no clear. Only mAction1 writes flags; mAction2 rows look like item and count (`1, 1875, 3`). The script module loads only in some scenes and talk tables per NPC.
+A quest is unlocked by the first case of the unlock script labeled with it, or through a conversation that sets a flag such a case loads, directly or through further conversations. Level-gated ingredient rows depend on no clear. The 92-art base set on flag 847 has no quest condition, but each of its arts still passes check `0x3efb30` first, and many cases there load a quest clear. Only mAction1 writes flags; mAction2 rows look like item and count (`1, 1875, 3`). The script module loads only in some scenes and talk tables per NPC.
 
 | Source | Verified behaviour |
 | --- | --- |
@@ -45,6 +45,8 @@ A quest is unlocked by the first case of the unlock script labelled with it, or 
 | VM loads | 0x75..0x78 load quest cleared (0x523da4); 0x40..0x43 load story flag bit P of `[0x18390e0]+0x500`; 0x50 adds, 0x52 sets. Loaded values are only compared == 1 or counted >= N, so a clear never locks a quest. |
 | rNpcTalkData (`npc/talk.arc`, 171 tables) | 37-byte packed records (cNpcTalkData fields). Quest = param plus `[10000,100000,40000][fixed-10002]` for fixed 10002..10004 (table via literal at 0x2464f0). Action switch at 0x2479d8 on mAction1: 1 and 4 set flag mAction1Param in the same array (0x247a14), 2 clears; mAction2 writes no flag. |
 | Tag evaluator 0x2451c8 | Returns 1 when a tag holds: 1 flag set, 2 not set, 11 quest cleared, 12 not cleared, 13 Village key check (`0x526d28` → `0x3b1a18`), 14 Hub/G key check (`0x526d48`). Kinds 16..18 share the handlers of 1, 2, 11; 30..33 always hold. |
+| Hunter Art grants | Two loops set an art's owned bit (+0xd24) when the player lacks it (0x524040) and check 0x3efb30 returns 1. Grant 0x3f0c3c serves talk rows: callers 0x3f1020..0x3f12b4 hold the 92-art base set and nine sets, 118 arts; tag kinds 46..53 call them in mode 1, which only checks. Loop 0x3ea6e8 walks 44 other arts with no talk row, from 0x38669c (called at 0x384968, in the quest result code by address; inference). |
+| Hunter Art check 0x3efb30 | Switch on art - 2 (189 cases, table 0x3efb84). 93 of the 162 granted arts reach quest cleared 0x523da4 with one quest in r1, 78 quests in all; r1 enters as 0x18899. Arts 24 and 138 need 100505 and 100603 only while the Hub/G tier (+0x3e2) is at most 3 and 4. Other cases read story flags; flags 24, 1007 and 1400 come from urgent quests 402, 713 and 10768. |
 | mAction2 grants (switch 0x247c58, kinds 1..26) | 4 Wycademy points (DialogMsg 92); 5..8 `0x523a80` point counters; 9..16, 24, 25 Hunter Arts sets through `0x3f0c3c` mode 0 (DialogMsg 100/101; mode 1 from the tag evaluator only checks them); 17..21 ingredient groups through `0x3f1380` (DialogMsg 73); 22 Poogie/Moofy costumes (25/26); 23 shop music (112). The grant functions have no other direct or table callers. |
 | Talk selector 0x243d00 | A table splits into conversations ending at a row whose page attribute is 2, 7, 8, 10, 14 or 15 (mask 0x3161 at 0x243e48). One plays when the tags of its first row and of every following row up to one whose first tag is 0 hold (0x2443ec). Kinds 16..21, 119, 147 OR with the tag before; 15 only continues. |
 | Talk progress and runner 0x246b1c | Village progress byte (+0x3e0, read at 0x243c2c): 0 any, 1..20 equal, 21..40 at least value-20, 41..60 at most value-40. The runner applies every row's actions without checking tags. |
