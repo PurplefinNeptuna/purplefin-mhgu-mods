@@ -22,7 +22,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Purple-lib | r34 | READY_TO_DISTRIBUTE | MHGU Recomp and Eden (r34); Ryubing untested |
 | Purple-lib Tester | r22 | DEVELOPMENT, not for distribution | Not run; r20 on MHGU Recomp and Eden with Purple-lib r32 and r33 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
-| Skin Loader | r35 | DEVELOPMENT, candidate, with a `-fast` package | not run; r33 works with two players; fast ran as the client |
+| Skin Loader | r35 | READY_TO_DISTRIBUTE, with a `-fast` package | MHGU Recomp (r35); two players on r33; Eden on r31 |
 | Village Quests in Hub | r7 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition 3.1.0 and without it |
 | WishFinder (was Wishlist) | r149 | READY_TO_DISTRIBUTE, release | MHGU Recomp in French; r148 accepted on Eden, r147 accepted on Eden with MHGU Definitive Edition 3.1.0. Needs Key Quest Markers r20+ |
 | WishFinder bridge for My Weapon Tree | r11 | READY_TO_DISTRIBUTE, release | Eden with My Weapon Tree 0.67 and WishFinder r83 |
@@ -47,7 +47,7 @@ The rollback for a current build that has no run of its own.
 | Purple-lib | r34 (r33 before it) | `build/purple-lib/releases/r34/`, `backups/accepted/purple-lib/r33-before-r34/`, `candidates/r33/`, `r22/`, `r21/`, `r20/`, `r19/`, `r18/`, `r17/`, `r16/` |
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
-| Skin Loader | r27 (r18 before it) | `build/skin-loader/candidates/r27/`, `backups/accepted/skin-loader/r18-before-r19/`, `candidates/r18/`, `r16/` |
+| Skin Loader | r35 (r27 before it) | `build/skin-loader/releases/r35/`, `candidates/r27/`, `backups/accepted/skin-loader/r18-before-r19/`, `candidates/r18/` |
 | Village Quests in Hub | r7 (r6 before it) | `build/village-quests-in-hub/releases/r7/`, `candidates/r7/`, `r6/` |
 | WishFinder | r149 (r148 before it) | `build/wishfinder/releases/r149/`, `candidates/r149/`, `r148/`, `r147/`, `r146/`, `r145/`, `r134/`, `r131/`, `r127/`, `r122/`, `r119/`, `r114/`, `r111/`, `r107/`, `r105/`, `r103/`, `r102/`, `r92/`, `r86/`, `r85/`, `r82/`, `r76/`, `r72/` |
 | WishFinder bridge for My Weapon Tree | r11 | `build/wishfinder-mwt-bridge/candidates/r11/`, `r10/` |
