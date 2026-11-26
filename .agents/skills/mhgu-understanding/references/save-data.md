@@ -44,3 +44,31 @@ How the game mounts, writes and commits its save, and how a commit can fail. Mai
 - The message is `0x55bc4c(cell, 8, id)`, shown through the popup `0x65f190`. Table 8 matches `SaveLoadMsg` (`resident_<lang>.arc`), the only message file whose 64 and 93 are save messages. 64 reads "An unknown error has occurred." and 93 "The save data is corrupt."
 
 So a commit refused because some other code held a write handle shows the player "An unknown error has occurred.", and that save is not committed. Other readers of `+0x24`, not read here: `0x2c7b8`, `0x6a97ac`, `0x6a9cb8`, `0x6aa094`.
+
+## The loaded slot
+
+- `sFestaSaveData`: cell `0x188c76c` (GOT slot `0x1838ec0`), DTI size 140, parent `cSystem`, object vtable `0x1754b20`. Constructors `0x3df014` (allocates 0x8c) and `0x3df3c4` (in place) clear +0x40. Bytes.
+- `+0x28` points at the `system` file's bytes from offset 0x24. The requesters (`0x3df7e0`..`0x3dfad8`) clear it, so it is not kept between ops. Bytes.
+- `+0x38` picks one of 24 flows in the update `0x3e6434` (jump table at `0x3e6458`). `+0x3c` is the flow's step. Bytes.
+- `+0x40` (u32, from 0) is the slot the flow works on.
+  - Flows 2 and 6 (`0x3e1308`) write a slot without choosing one: `0x3e1648` calls the slot writer `0x3e0980(object, +0x40)`, and nothing in the flow sets +0x40. Bytes.
+  - Flow 2's requester `0x3df850` is called from seven sites in the UI code (`0x683c28` to `0x790aa8`).
+  - Flow 2 being the save made in play, and +0x40 holding the loaded slot through play, are inference. No run has logged +0x40.
+  - Flows 1, 4 and 5 (`0x3e21b8`) and 23 (`0x3e2cb8`) set it from the slot cursor (`0x3e2a68`: cursor +0x51 + +0x52 × +0x54), from file byte 0x2b (`0x3e2430`, `0x3e3280`), or to 0 (`0x3e2240`, `0x3e2d38`, `0x3e2f70`). Flow 0 (`0x3dfafc`) sets it too (`0x3dfe5c`, `0x3e0188`, `0x3e0380`). Which screens run those flows is unread.
+- Slot functions, each `(object, slot)`: load `0x3e0d58` (loads every singleton through `0x3e0db8` → `0x3e77b0`), write `0x3e11a8`, summary for the slot list `0x3e1208` (copies 0xe0 bytes from section +0x2c). The manager's own load is `0x3e2580`, with slot +0x40. Bytes.
+- The slot writer `0x3e0980` also stores `used[slot] = 1` (file byte 0x28 + slot) and `last = slot` (file byte 0x2b). Bytes.
+- `0x2c7b8` (singleton at cell `0x184de88`, called from `0x684934`) is a pass over every slot. Its +0x20 is a loop counter that walks slots 0 to 2, loading and writing each used one (`0x2ca94`, `0x2cac0`). It is not the loaded slot. Bytes; what the pass is for is unread.
+
+## The `system` file's header
+
+Offsets in the file. The code reads them through `+0x28`, which points at file offset 0x24.
+
+| Offset | Holds |
+| --- | --- |
+| 0x1c | End of the data, 0x4eb898 |
+| 0x28, 0x29, 0x2a | Slot 0, 1, 2 in use (1) or empty (0) |
+| 0x2b | The last slot written, from 0 |
+| 0x30 | The shared section ([Quest lists](quest-lists.md)) |
+| 0x34, 0x38, 0x3c | Slot 0, 1, 2's section, counted from file offset 0x24 (`0x3e0d58`: `+0x28` plus `[+0x28 + 0x10 + slot × 4]`) |
+
+The section offsets differ between saves. Three Eden saves with one hunter each had 0x18cc78, 0x2ac53c and 0x3cbe00. One with two hunters had 0x126474, 0x244c34 and 0x3633f4. In all four, a used slot's section starts with the hunter's name, an empty slot's with zeros, and bytes 0x28 to 0x2a match (read from the saves).

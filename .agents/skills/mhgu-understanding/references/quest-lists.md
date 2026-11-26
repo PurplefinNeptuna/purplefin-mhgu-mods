@@ -30,7 +30,7 @@ Felyne ingredients are granted only by a talk row's mAction2 (switch `0x247c58`,
 
 The game lists event quests (lists 15..17) only while their row is open: `0x54dcac` starts a save job (`0x3dfa2c`), then `0x3bc234(selector, code)` lists the job's set at `[[0x188ad90] + 0xb4]`. That set is empty at any other time, so memory does not show every event quest.
 
-They live in the game's save file `system`. Header word 0x30 gives a shared section (`0xb281`), whose +0x4618 starts 200 slots of 0x1c00 bytes, each `{u32 quest, u32 size, ARC}`. A tester's save had 165 used, 46 of them G rank, and the game lists those 46. The rest of `system`: three hunter sections of 0x11f8c4 bytes at 0x18cc78, 0x2ac53c, 0x3cbe00; end word 0x1c = 0x4eb898.
+They live in the game's save file `system`. Header word 0x30 gives a shared section (`0xb281`), whose +0x4618 starts 200 slots of 0x1c00 bytes, each `{u32 quest, u32 size, ARC}`. A tester's save had 165 used, 46 of them G rank, and the game lists those 46. The rest of `system`: three hunter sections, at the offsets header words 0x34, 0x38 and 0x3c give ([Save data](save-data.md#the-system-files-header)); end word 0x1c = 0x4eb898.
 
 No code constant was found for 0x4618 or 0xf899 (movw search). Offset and slot count were read from saves, not from code, so count a slot only when it holds the ARC magic and an event ID. Listing rule (`0x3bc234`): millions digit 1, ten-thousands digit not 2, and `(id / 100) % 100` is 0, 1 or 10 for star codes 1, 3, 4.
 
