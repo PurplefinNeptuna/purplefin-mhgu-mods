@@ -7,7 +7,7 @@ Skin Loader is the worked example (`mods/skin-loader/`: `src/hooks.rs`, `core/sr
 
 Checked with `make_skin.py` on 18 real armor mods and the plugin's `core::convert` against it:
 
-- An entry or MRL texture path matching `player\mod\[fm]\pl<digits>\[fm]_PART<digits><rest>` becomes `skins\FOLDER\PART<rest>`; anything else keeps its name (`player\mod\common\...`, a mod's own extra names such as `f_2b_leotard`). Results of 64 bytes or more do not fit the field.
+- An entry or MRL texture path matching `player\mod\[fm]\pl<digits>\[fm]_PART<digits><rest>` becomes `skins\ID\PART<rest>`, ID being the skin's short name (1 to 16 of a-z, 0-9, `-`, `_`). Skin Loader keeps the ID apart from the folder name. Anything else keeps its name (`player\mod\common\...`, a mod's own extra names such as `f_2b_leotard`). Results of 64 bytes or more do not fit the field.
 - MOD files are not changed: they name their materials by `crc(name) & 0x7fffffff`, which the MRL's material table matches. Texture rows in the MRL hold paths in fixed 64-byte fields.
 - Repacking: each entry is one zlib stream, unpacked size in `flags & 0x1fffffff`. A rewritten MRL can go back as stored (uncompressed) deflate blocks; other entries are copied packed. The game loads both (run).
 - `player\mod\common\` textures keep their names and stay shared with the game, which is safe only while a mod's copy equals the stock file (true in all 16 converted skins checked).
