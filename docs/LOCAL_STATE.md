@@ -19,7 +19,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r16 | READY_TO_DISTRIBUTE, release | Multiplayer, user report; Eden and MHGU Recomp installed |
 | Please do Better | r37 | PUBLISHED, GitHub release | MHGU Recomp with Purple-lib r17 (r36 registers on Eden too) |
-| Purple-lib | r34 | DEVELOPMENT, candidate | not run; r33 (archived) ran on Eden, r32 on MHGU Recomp; Ryubing untested |
+| Purple-lib | r34 | READY_TO_DISTRIBUTE | MHGU Recomp and Eden (r34); Ryubing untested |
 | Purple-lib Tester | r22 | DEVELOPMENT, not for distribution | Not run; r20 on MHGU Recomp and Eden with Purple-lib r32 and r33 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Skin Loader | r28 | DEVELOPMENT, candidate, with a `-fast` package | not run; r27 accepted on MHGU Recomp and Eden; fast not run since r14 |
@@ -44,7 +44,7 @@ The rollback for a current build that has no run of its own.
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
 | Multiplayer Roaming | r16 | `build/online-roaming/candidates/r16/` |
 | Please do Better | r37 (r31 on Eden, r30 on Ryubing) | `build/please-do-better/candidates/r37/`, `r31/`, `r30/` |
-| Purple-lib | r33 (r22 before it) | `backups/accepted/purple-lib/r33-before-r34/`, `candidates/r33/`, `r22/`, `r21/`, `r20/`, `r19/`, `r18/`, `r17/`, `r16/` |
+| Purple-lib | r34 (r33 before it) | `build/purple-lib/releases/r34/`, `backups/accepted/purple-lib/r33-before-r34/`, `candidates/r33/`, `r22/`, `r21/`, `r20/`, `r19/`, `r18/`, `r17/`, `r16/` |
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Skin Loader | r27 (r18 before it) | `build/skin-loader/candidates/r27/`, `backups/accepted/skin-loader/r18-before-r19/`, `candidates/r18/`, `r16/` |
