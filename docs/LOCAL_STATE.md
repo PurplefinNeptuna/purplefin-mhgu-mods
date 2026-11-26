@@ -19,8 +19,8 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r16 | READY_TO_DISTRIBUTE, release | Multiplayer, user report; Eden and MHGU Recomp installed |
 | Please do Better | r37 | PUBLISHED, GitHub release | MHGU Recomp with Purple-lib r17 (r36 registers on Eden too) |
-| Purple-lib | r29 | DEVELOPMENT candidate | Not run (help bar AutoWrap, both classes); r28 did not find the help bar; r22 accepted |
-| Purple-lib Tester | r19 | DEVELOPMENT, not for distribution | Not run (help bar widths); r18 on MHGU Recomp with Purple-lib r27 |
+| Purple-lib | r33 | READY_TO_DISTRIBUTE | Eden (r33) and MHGU Recomp (r32); Ryubing untested |
+| Purple-lib Tester | r21 | DEVELOPMENT, not for distribution | Not run; r20 on MHGU Recomp and Eden with Purple-lib r32 and r33 |
 | Shared Urgent Quests | r2 | READY_TO_DISTRIBUTE, release | Eden joiner, no joiner log |
 | Skin Loader | r18 | READY_TO_DISTRIBUTE, release, with a `-fast` package | MHGU Recomp (full); r16 on Eden too; fast not run since r14 |
 | Village Quests in Hub | r7 | READY_TO_DISTRIBUTE, release | Accepted on Eden beside MHGU Definitive Edition 3.1.0 and without it |
@@ -44,7 +44,7 @@ The rollback for a current build that has no run of its own.
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
 | Multiplayer Roaming | r16 | `build/online-roaming/candidates/r16/` |
 | Please do Better | r37 (r31 on Eden, r30 on Ryubing) | `build/please-do-better/candidates/r37/`, `r31/`, `r30/` |
-| Purple-lib | r22 | `build/purple-lib/candidates/r22/`, `r21/`, `r20/`, `r19/`, `r18/`, `r17/`, `r16/` |
+| Purple-lib | r33 (r22 before it) | `build/purple-lib/releases/r33/`, `candidates/r33/`, `r22/`, `r21/`, `r20/`, `r19/`, `r18/`, `r17/`, `r16/` |
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
 | Skin Loader | r18 (r16 before it) | `build/skin-loader/releases/r18/`, `candidates/r18/`, `r16/` |
