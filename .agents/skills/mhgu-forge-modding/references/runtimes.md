@@ -52,6 +52,18 @@ When input updates and where an edge is valid: [Input and keybinds](input-and-ke
 | Game input while Forge's menu is open | Still reaches the game | Blocked: the game gets no controller input (README) | Not read |
 | Extra calls | None | Mouse, keybind and `forge_graphics_isMenuOpen` ([Input and keybinds](input-and-keybinds.md#mhgurecomp-extras)) | `forge_graphics_isMenuOpen` only, at `9a1aef7` |
 
+## Folder names in a mod's RomFS
+
+On all three emulators the game reads a RomFS image the emulator builds from the mod folders. The game's own SDK looks names up there by exact bytes. So below the top folders, a name with capitals, spaces or non-ASCII letters loads when the game asks for that exact spelling. Source:
+
+| Host | How mod folders join the game's | Source |
+| --- | --- | --- |
+| Eden | Only the mod's `romfs` folder is found in any case. Below it, layers merge by exact name. | `src/core/file_sys/patch_manager.cpp` `FindSubdirectoryCaseless`, `vfs_layered.cpp` (b4e39d9ae4) |
+| Ryujinx | Each mod file is added by its exact path to a new RomFS. | `src/Ryujinx.HLE/HOS/ModLoader.cs` `ApplyRomFsMods` (Nextendo cf76ece58) |
+| MHGURecomp | A mod folder merges into a game folder of the same name in any case, keeping the game's spelling. A folder new to the game keeps the mod's spelling. | `runtime/romfs.c` `merge` (330f968) |
+
+So a mod's `NativeNX` works on MHGURecomp but not on Eden or Ryujinx. A new folder such as `skins` must be spelled as the plugin asks for it on every host.
+
 ## Other plugins
 
 Other people's plugins differ by host too. KatLib and UIScale load on MHGURecomp but fail on Eden with `0x00000616` beside BetterBox, because all three ship an all-zero build ID. MHGU Definitive Edition 3.0.0 is an IPS plus a `subsdk1`; its words inside your windows are listed per mod (Village Quests in Hub, WishFinder). Load order rules per host are in [Hooks and lifetimes](hooks-and-lifetimes.md).
