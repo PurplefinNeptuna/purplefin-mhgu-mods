@@ -2,11 +2,11 @@
 
 ## Locate the input
 
-Use `rg --files` on a dump or copied extraction and targeted `rg -n` on indexes. The offline `CFileIndex.md` maps ARC containers and internal resources. Search a basename, internal path, extension/type hash, and language variant. Its Windows separators are index notation; Linux paths and case must match actual files.
+Use `find` on a dump or copied extraction and targeted `grep -n` on indexes. The offline `CFileIndex.md` maps ARC containers and internal resources. Search a basename, internal path, extension/type hash, and language variant. Its Windows separators are index notation; Linux paths and case must match actual files.
 
 ```sh
-rg -n -m 8 'itemData|weapon07BaseData' references/MHGU-Modding.wiki/CFileIndex.md
-rg --files references/MHGU-Modding/templates references/MHGU-Modding/weapon_MV_Index
+grep -nE -m 8 'itemData|weapon07BaseData' references/MHGU-Modding.wiki/CFileIndex.md
+find references/MHGU-Modding/templates references/MHGU-Modding/weapon_MV_Index
 ```
 
 | Target | Search location / reference lead |

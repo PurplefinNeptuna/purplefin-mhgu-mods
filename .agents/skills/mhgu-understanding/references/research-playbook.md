@@ -17,7 +17,7 @@ Bad: "find poison". Good: "which native function subtracts poison damage from mo
 ## 2. Check what is already known
 
 1. Search these skills' references for the topic.
-2. `rg -n 'KEYWORD' .agents/skills work/*/` for older notes.
+2. `grep -rn 'KEYWORD' .agents/skills work/*/` for older notes.
 
 Reuse a documented offset only after checking it in step 5.
 

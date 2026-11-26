@@ -74,7 +74,7 @@ The pinned cargo-forge converter remains 1.4.1; it builds the self-contained
 
 Offline MHGU references/wiki are `references/MHGU-Modding/` and
 `references/MHGU-Modding.wiki/`; their source revisions are in
-`references/provenance.json`. Use targeted rg searches in template/hash/resource
+`references/provenance.json`. Use targeted grep searches in template/hash/resource
 indexes and weapon motion-value indexes. Some fields are WIP/MHXX-specific;
 verify game/version, offsets, types, counts and bytes against the actual input.
 Model tutorials establish extraction/conversion, not a complete import workflow.

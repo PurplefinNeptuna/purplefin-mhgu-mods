@@ -21,7 +21,7 @@ These are read-only originals. Copy a file into the scratchpad or `work/NAME/` b
 
 | Location | What it holds | Use it for |
 | --- | --- | --- |
-| `/mnt/storage2/Programs/MHGURecomp/data/romfs/` | Every game resource (ARC archives in `nativeNX/arc/`, GUI, tables, per-language text), 12 GB, no code. A copy of the 1.4.0 RomFS. | Finding and reading resources: `rg --files DUMP/romfs \| rg NAME` |
+| `/mnt/storage2/Programs/MHGURecomp/data/romfs/` | Every game resource (ARC archives in `nativeNX/arc/`, GUI, tables, per-language text), 12 GB, no code. A copy of the 1.4.0 RomFS. | Finding and reading resources: `find DUMP/romfs -iname '*NAME*'` |
 | `work/shared/game-exefs/` | The 1.4.0 code only: `main` (the game), `sdk`, `subsdk0`, `rtld`, `main.npdm`. The `forge` file there is the loader, not game code. | Instruction bytes and signatures. Read `main` with `scripts/mhgu_binary.py` `main_image()`, which refuses any other version. |
 | `work/research-tooling/` | Saved Ghidra project/export and DTI index built from that `main` | Search first: `./scripts/tool.sh research find QUERY --kind functions` |
 | `/mnt/storage2/ROM/Switch/Game/`, the XCI with title ID `0100770008DD8000` and `[v0]` | Sealed base game (v0) | Rarely needed: an original the dump lacks |

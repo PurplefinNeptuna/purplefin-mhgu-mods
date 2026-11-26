@@ -48,6 +48,8 @@ Start with README.md and docs/LOCAL_STATE.md, then read only what the task needs
   empties the file before the read runs. `work/` is gitignored, so nothing can
   undo a lost note there. Run `wc -l` before and after any scripted rewrite,
   and stop if the count dropped when it should have grown.
+- **No ripgrep (hard rule).** Never run `rg` or ripgrep in any form: it breaks Code OSS and the session.
+  Search with `grep -rn` and list files with `find`.
 - **Tool names.** Call only the tools you were given, by their exact names:
   files are read with `read` (`file_path`, `offset`, `limit`), not `read_file`.
 - **Evidence.** Keep source, build, package, installation, activation, user

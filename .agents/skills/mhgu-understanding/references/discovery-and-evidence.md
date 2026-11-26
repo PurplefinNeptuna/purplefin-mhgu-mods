@@ -24,7 +24,7 @@ From the original workspace root:
 ./scripts/tool.sh research find 'cGUIObjTexture' --kind dti --limit 5
 ```
 
-The search is case-insensitive over JSONL text and can match field names as well as record names. Default kind is all, limit 30. No match does not prove absence from the game; an index may be missing or use another name. Use targeted `rg -n` for exact names/fields and inspect surrounding records. Avoid printing huge file/resource indexes wholesale.
+The search is case-insensitive over JSONL text and can match field names as well as record names. Default kind is all, limit 30. No match does not prove absence from the game; an index may be missing or use another name. Use targeted `grep -n` for exact names/fields and inspect surrounding records. Avoid printing huge file/resource indexes wholesale.
 
 Saved files: `work/research-tooling/ghidra-export/{functions,symbols,types}.jsonl`, `summary.json`, and `work/research-tooling/dti/dti.jsonl`. The import contains 47,986 functions, 2,786 types, and 736,837 symbols, including 3,736 user-defined symbols. Generated labels contribute to the total.
 
