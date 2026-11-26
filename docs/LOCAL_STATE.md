@@ -14,7 +14,7 @@ Candidates are under `build/NAME/candidates/VERSION/`, packaged releases under
 | --- | --- | --- | --- |
 | Damage Numbers | r48 | PUBLISHED, GitHub release | Runs on MHGU Recomp with Purple-lib r20 |
 | ImGui Meter | r4 | DEVELOPMENT | NOT RUN; r3 cut Eden to 37 fps (r1 ran on MHGU Recomp, unitemized) |
-| Key Quest Markers | r36 | DEVELOPMENT | NOT RUN; r33 on MHGU Recomp |
+| Key Quest Markers | r36 | READY_TO_DISTRIBUTE, release | MHGU Recomp |
 | Lock-on Target | r6 | PUBLISHED, GitHub release | MHGU Recomp |
 | Modern Weapon Controls | r15 | READY_TO_DISTRIBUTE, release | Loads on MHGU Recomp; controls accepted on r14 (Eden) |
 | Multiplayer Roaming (`online-roaming`) | r16 | READY_TO_DISTRIBUTE, release | Multiplayer, user report; Eden and MHGU Recomp installed |
@@ -39,7 +39,7 @@ The rollback for a current build that has no run of its own.
 | Mod | Build | Where |
 | --- | --- | --- |
 | Damage Numbers | r48 (r38 on Eden) | `build/damage-numbers/releases/r48/`, `candidates/r47/`, `r42/`, `r38-accepted/` |
-| Key Quest Markers | r31 (r23 before it) | `backups/accepted/key-quest-markers/r31-before-r32/`, `build/key-quest-markers/candidates/r31/`, `backups/accepted/key-quest-markers/r23-before-r24/` |
+| Key Quest Markers | r36 (r31 before it) | `build/key-quest-markers/releases/r36/`, `candidates/r36/`, `backups/accepted/key-quest-markers/r31-before-r32/` |
 | Lock-on Target | r6 (r2 before it) | `build/lock-on-target/releases/r6/`, `candidates/r6/`, `r2/` |
 | Modern Weapon Controls | r14 | `build/modern-weapon-controls/candidates/r14/` |
 | Multiplayer Roaming | r16 | `build/online-roaming/candidates/r16/` |
