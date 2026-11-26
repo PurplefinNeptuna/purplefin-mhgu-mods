@@ -320,12 +320,16 @@ def package(mod, root=ROOT, refresh_support=False):
     if not actual:
         mod_manifest(spec, root)  # existing releases from before the rule keep their bytes
     if actual and actual != files:
-        # Runtime stays immutable; the archived README can change with support refresh.
-        runtime = [p for p in files if p.startswith(spec['package_name'] + '/')]
-        require(all(actual.get(p) == files[p] for p in runtime),
-                'Runtime differs from existing release; use a new version')
+        # Runtime stays immutable; the archived README and the mod-manager manifest.json (metadata
+        # such as the GameBanana link, never loaded by the game) can change with support refresh.
         prefix = spec['package_name'] + '/'
-        payloads = {p[len(prefix):]: files[p] for p in runtime}
+        metadata = prefix + 'manifest.json'
+        runtime = [p for p in files if p.startswith(prefix)]
+        require(all(actual.get(p) == files[p] for p in runtime if p != metadata),
+                'Runtime differs from existing release; use a new version')
+        if actual.get(metadata) != files.get(metadata):
+            mod_manifest(spec, root)
+        payloads = {p[len(prefix):]: actual.get(p, files[p]) for p in runtime}
         require(actual.get(spec['archive']) in (
                     make_zip(payloads, spec['package_name'],
                              {p: actual[p] for p in ARCHIVED_SUPPORT if p in actual}),

@@ -46,7 +46,7 @@ The full `check` is required before readiness or commit. `--source-only` is not 
 
 A release under `build/NAME/releases/VERSION/` has versioned ZIP, named runtime folder, README.md/HTML/GameBanana HTML, notices text/HTML, manifest, and SHA256SUMS. The ZIP contains README.md beside the named runtime folder. That README matches its adjacent copy.
 
-Runtime folders contain payloads only, with `romfs/nativeNX/...`, `exefs/`, or `cheats/<build-id>.txt` directly inside, plus the mod-manager `manifest.json` (format in docs/DEVELOPMENT.md, "Releases"; version rN is `0.N.0`) that every new candidate or release ships and `package` requires (source: `scripts/mod_manifest.py`).
+Runtime folders contain payloads only, with `romfs/nativeNX/...`, `exefs/`, or `cheats/<build-id>.txt` directly inside, plus the mod-manager `manifest.json` (format in docs/DEVELOPMENT.md, "Releases"; version rN is `0.N.0`) that every new candidate or release ships and `package` requires (source: `scripts/mod_manifest.py`). The game never loads it. A change to its metadata alone, such as the GameBanana link, is a `--refresh-support` of the current version, not a new version.
 
 HTML, legal notices, receipts, and checksums stay outside the ZIP.
 
