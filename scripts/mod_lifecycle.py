@@ -151,7 +151,10 @@ def start(root, mod, reason):
     for record in spec.get('payloads', {}).values():
         record['source'] = re.sub(rf'/(candidates|releases)/{old}/', f'/candidates/{new}/', record['source'])
         record['sha256'] = ''
-    spec['archives'] = {name.replace(old, new): entries for name, entries in spec.get('archives', {}).items()}
+    # Extra ZIPs built from build/ move to the new version like the payloads.
+    moved = lambda source: re.sub(rf'/(candidates|releases)/{old}/', f'/candidates/{new}/', source)
+    spec['archives'] = {name.replace(old, new): {inner: moved(source) for inner, source in entries.items()}
+                        for name, entries in spec.get('archives', {}).items()}
     save(root, mod, spec)
     changed = set_version_copies(root, mod, old, new)
     print(f'{mod}: {old} -> {new} (DEVELOPMENT). Changed DISTRIBUTION.json, {", ".join(changed) or "no other file"}.')

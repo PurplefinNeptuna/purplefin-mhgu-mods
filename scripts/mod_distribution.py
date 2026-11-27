@@ -143,6 +143,9 @@ def spec_for(mod, root=ROOT):
         for inner, source in entries.items():
             relative(inner)
             source.startswith('build/') or read(root, source)
+            # A file from another version's build would ship that version's bytes under this version's name.
+            require(not source.startswith('build/') or f'/{spec.get("version")}/' in source,
+                    f'Extra archive {name} takes {source} from another version than {spec.get("version")}')
     payloads = spec.get('payloads')
     require(isinstance(payloads, dict) and payloads, f'No declared payloads: {mod}')
     for path, record in payloads.items():
