@@ -47,6 +47,8 @@ What the game does to put an armor piece on a hunter, from the archive on disk t
 - `nDraw::MaterialConstant` ignores the scene's light. Ported armor uses it for whole parts or heads; stock armor only for 4 glowing pieces. `nDraw::MaterialStd` is the lit one. An unlit material's `CBMaterial` `fReflectiveColor` is 1, which the lit shader's cube map turns to chrome. `CBMaterial` starts with `fDiffuseColor` (inference from the shader package's field order). Bytes, run for the look.
 - An unlit material's block is 12 commands, then CBMaterial (128 bytes) and $Globals (320 bytes). The command info's high bits are `0x206dc`. Stock has this layout in 2 materials, the first in f/741's helm. Bytes.
 - The order: FUVTransformPrimary, CBMaterial, FUVTransformSecondary, FUVTransformUnique, FUVTransformExtend, $Globals, FAlbedo, tAlbedoMap, SSAlbedoMap, FUVAlbedoMap, FTransparency, FAmbient. Bytes.
+- In `rMaterial`'s load, `0xb4576c` reads the whole file into `[r8, #0x64]` (`r6` bytes). `0xb45770` is the first instruction after the read, before the magic check and the relocation. No branch reaches `0xb45770`..`0xb45778`. Bytes.
+- `cResource::mPath` is inline at `+8`, up to `mRefCount` at `+72` (getter `0x8875f0` is `add r0, r0, #8`). Bytes.
 - Lit and unlit materials use the same 12-byte command for each of these names. Option values: FAlbedoMap `0xa826a57e`, FAlbedoMapColorOnly `0x9e8c857f`, FTransparencyAlpha `0x8e54a573`, FTransparencyAlphaConstant `0x3ef66776`. Bytes.
 - Ported skins drawn only with lit materials wash out under lamps and bright areas; the same materials drawn unlit with this block look right, alpha cutouts included. Run, MHGU Recomp.
 
