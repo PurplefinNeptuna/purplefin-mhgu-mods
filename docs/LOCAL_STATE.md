@@ -47,7 +47,7 @@ The rollback for a current build that has no run of its own.
 | Purple-lib | r34 (r33 before it) | `build/purple-lib/releases/r34/`, `backups/accepted/purple-lib/r33-before-r34/`, `candidates/r33/`, `r22/`, `r21/`, `r20/`, `r19/`, `r18/`, `r17/`, `r16/` |
 | Purple-lib Tester | r11 | `build/purple-lib-tester/candidates/r11/` |
 | Shared Urgent Quests | r2 | `build/shared-urgent-quests/candidates/r2/` |
-| Skin Loader | r49 (r35 before it) | `build/skin-loader/releases/r49/`, `backups/accepted/skin-loader/r49-withdrawn/`, `backups/accepted/skin-loader/r35-before-r36/`, `candidates/r27/`, `backups/accepted/skin-loader/r18-before-r19/`, `candidates/r18/` |
+| Skin Loader | r49 (r35 before it) | `backups/accepted/skin-loader/r49-before-r50/release/`, `backups/accepted/skin-loader/r49-withdrawn/`, `backups/accepted/skin-loader/r35-before-r36/`, `candidates/r27/`, `backups/accepted/skin-loader/r18-before-r19/`, `candidates/r18/` |
 | Village Quests in Hub | r7 (r6 before it) | `build/village-quests-in-hub/releases/r7/`, `candidates/r7/`, `r6/` |
 | WishFinder | r150 (r149 before it) | `build/wishfinder/releases/r150/`, `backups/accepted/wishfinder/r149-before-r150/`, `build/wishfinder/candidates/r149/`, `r148/`, `r147/`, `r146/`, `r145/`, `r134/`, `r131/`, `r127/`, `r122/`, `r119/`, `r114/`, `r111/`, `r107/`, `r105/`, `r103/`, `r102/`, `r92/`, `r86/`, `r85/`, `r82/`, `r76/`, `r72/` |
 | WishFinder bridge for My Weapon Tree | r11 | `build/wishfinder-mwt-bridge/candidates/r11/`, `r10/` |
